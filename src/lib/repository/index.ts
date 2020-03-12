@@ -1,14 +1,10 @@
 import fs from 'fs';
 import path from 'path';
-import { diffLines, Change } from 'diff';
+import { diffLines } from 'diff';
 import { app } from 'electron';
+import { EventEmitter } from 'events';
 import git, { CallbackFsClient, Errors, ReadCommitResult, TREE, WalkerEntry } from 'isomorphic-git';
-
-export interface DiffResult {
-    filepath: string;
-    oid: string;
-    diff: Change[];
-}
+import { DiffResult } from './types';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
@@ -43,7 +39,7 @@ const diffMapFunction = async function(filepath: string, entries: Array<WalkerEn
     return { filepath, oid, diff };
 }
 
-class Repository {
+class Repository extends EventEmitter {
     /**
      * The default config arguments for isomorphic-git
      */
@@ -66,6 +62,8 @@ class Repository {
     }
 
     constructor() {
+        super();
+
         // Attempt to log the repository commits
         git.log(this.config)
             .then((data) => { console.log('Successfully initiated existing repository at ', REPOSITORY_PATH); return data })
@@ -79,8 +77,8 @@ class Repository {
                     console.error('Unknown error!', e.constructor.name)
                 }
             })
-            .then(console.log)
             .then(() => this.isInitialised = true)
+            .then(() => this.emit('ready'))
             .catch(console.error);
     }
 
@@ -143,8 +141,11 @@ class Repository {
         const trees = [TREE({ ref: refTree }), TREE({ ref: comparedTree || previousTree })]
         return git.walk({ ...this.config, trees, map: diffMapFunction });
     }
+
+    /**
+     * Expose the log function
+     */
+    public log = (): Promise<ReadCommitResult[]> => git.log(this.config);
 }
 
-const repository = new Repository();
-
-export default repository;
+export default Repository;

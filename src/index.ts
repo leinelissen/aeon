@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+import path from 'path';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -11,6 +12,11 @@ const createWindow = (): void => {
     const mainWindow = new BrowserWindow({
         height: 600,
         width: 800,
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js'),
+        }
     });
     
     // and load the index.html of the app.
@@ -44,5 +50,8 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
-import repository from './lib/repository';
+import Repository from './lib/repository';
+import RepositoryBridge from './lib/repository/bridge';
+const repository = new Repository();
+new RepositoryBridge(repository);
 repository.diff().then(console.log);

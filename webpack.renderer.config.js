@@ -3,7 +3,7 @@ const plugins = require('./webpack.plugins');
 
 rules.push({
     test: /\.css$/,
-    use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+    use: [{ loader: 'style-loader', options: { attrs: { nonce: 'devOnly' } } }, { loader: 'css-loader' }],
 });
 
 module.exports = {
@@ -14,4 +14,5 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css']
     },
+    devtool: "inline-source-map",
 };
