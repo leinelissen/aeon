@@ -14,5 +14,10 @@
     "parser": "@typescript-eslint/parser",
     "rules": {
         "indent": ["error", 4]
+    },
+    "settings": {
+        "import/resolver": {
+            "typescript": {} // this loads <rootdir>/tsconfig.json to eslint
+        }
     }
 }

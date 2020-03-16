@@ -32,5 +32,5 @@ import { RepositoryCommands } from './lib/repository/types';
 window.api.sourceMapSupport.install();
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
-window.api.invoke('repository', RepositoryCommands.LOG)
+window.api.invoke('repository', RepositoryCommands.DIFF)
     .then(console.log);

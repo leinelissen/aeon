@@ -52,6 +52,11 @@ app.on('activate', () => {
 // code. You can also put them in separate files and import them here.
 import Repository from './lib/repository';
 import RepositoryBridge from './lib/repository/bridge';
+
+// Initialise the Git repository handler
 const repository = new Repository();
+
+// Inject the repository handler into the bridge for communication with the rendered
 new RepositoryBridge(repository);
+
 repository.diff().then(console.log);

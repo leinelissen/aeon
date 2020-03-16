@@ -1,17 +1,20 @@
-import fs from 'fs';
+// import fs from 'fs';
 import path from 'path';
 import { diffLines } from 'diff';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
-import git, { CallbackFsClient, Errors, ReadCommitResult, TREE, WalkerEntry } from 'isomorphic-git';
+import git, { Errors, ReadCommitResult, TREE, WalkerEntry } from 'isomorphic-git';
 import { DiffResult } from './types';
+import CryptoFs from '../crypto-fs';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
-export const REPOSITORY_PATH = path.resolve(app.getAppPath(), 'data', 'repository');
+export const APP_DATA_PATH = process.env.NODE_ENV === 'production' ? app.getPath('userData') : app.getAppPath();
+export const REPOSITORY_PATH = path.resolve(APP_DATA_PATH, 'data', 'repository');
 export const EMPTY_REPO_HASH = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 
 const utfDecoder = new TextDecoder('utf-8');
+const fs = new CryptoFs('password').init();
 
 /**
  * The map function that loops through a repository and returns a diff
@@ -44,7 +47,7 @@ class Repository extends EventEmitter {
      * The default config arguments for isomorphic-git
      */
     config = {
-        fs: fs.promises as CallbackFsClient,
+        fs: fs,
         dir: REPOSITORY_PATH,
     }
 
@@ -87,12 +90,14 @@ class Repository extends EventEmitter {
      * files and commit, so that we can work from there.
      */
     private async initialiseRepository(): Promise<ReadCommitResult | ReadCommitResult[]> {
+        console.log('Repository was not found, creating a new one');
+
         // First we'll initiate the repository
         await git.init(this.config)
 
         // Then we'll write a file to disk so that the repository is populated
         const readmePath = 'README.md';
-        await fs.promises.writeFile(path.resolve(REPOSITORY_PATH, readmePath), '# Aeon Repository');
+        await fs.promises.writeFile(path.resolve(REPOSITORY_PATH, readmePath), Buffer.from('# Aeon Repository', 'utf8'));
 
         // And create a first commit with the file
         await git.add({ ...this.config, filepath: readmePath });

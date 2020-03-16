@@ -12,7 +12,6 @@ class RepositoryBridge {
         this.repository.on('ready', this.clearMessageCache);
 
         ipcMain.handle('repository', this.handleMessage);
-        console.log('REGISTERED HANDLER', this.repository);
     }
 
     private handleMessage = async (event: IpcMainInvokeEvent, command: number): Promise<any> => {
@@ -22,12 +21,12 @@ class RepositoryBridge {
             this.messageCache.push([event, command]);
             return;
         }
-
-        console.log('Repository Message: ', event);
         
         switch(command) {
         case RepositoryCommands.LOG:
             return await this.repository.log();
+        case RepositoryCommands.DIFF:
+            return await this.repository.diff();
         }
     }
 

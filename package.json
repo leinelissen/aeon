@@ -86,6 +86,7 @@
   },
   "dependencies": {
     "@types/diff": "^4.0.2",
+    "@types/source-map-support": "^0.5.1",
     "diff": "^4.0.2",
     "electron-squirrel-startup": "^1.0.0",
     "isomorphic-git": "^1.2.0"
