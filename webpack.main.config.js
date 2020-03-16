@@ -1,3 +1,5 @@
+const [ Dotenv ] = require('./webpack.plugins');
+
 module.exports = {
     /**
     * This is the main entry point for your application, it's the first file
@@ -17,4 +19,7 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
     },
+    plugins: [
+        Dotenv,
+    ]
 };

@@ -6,6 +6,7 @@ import { EventEmitter } from 'events';
 import git, { Errors, ReadCommitResult, TREE, WalkerEntry } from 'isomorphic-git';
 import { DiffResult } from './types';
 import CryptoFs from '../crypto-fs';
+import nonCryptoFs from 'fs';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
@@ -13,8 +14,9 @@ export const APP_DATA_PATH = process.env.NODE_ENV === 'production' ? app.getPath
 export const REPOSITORY_PATH = path.resolve(APP_DATA_PATH, 'data', 'repository');
 export const EMPTY_REPO_HASH = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 
+const ENABLE_ENCRYPTION = process.env.ENABLE_ENCRYPTION !== 'false';
 const utfDecoder = new TextDecoder('utf-8');
-const fs = new CryptoFs('password').init();
+const fs = ENABLE_ENCRYPTION ? new CryptoFs('password').init() : nonCryptoFs;
 
 /**
  * The map function that loops through a repository and returns a diff
