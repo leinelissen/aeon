@@ -58,5 +58,3 @@ const repository = new Repository();
 
 // Inject the repository handler into the bridge for communication with the rendered
 new RepositoryBridge(repository);
-
-repository.diff().then(console.log);

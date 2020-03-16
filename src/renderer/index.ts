@@ -27,7 +27,7 @@
  */
 
 import './index.css';
-import { RepositoryCommands } from './lib/repository/types';
+import { RepositoryCommands } from '../main/lib/repository/types';
 
 window.api.sourceMapSupport.install();
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
