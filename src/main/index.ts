@@ -1,5 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
+import initialise from './initialise';
+
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -24,6 +26,8 @@ const createWindow = (): void => {
     
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
+
+    initialise();
 };
 
 // This method will be called when Electron has finished
@@ -47,14 +51,3 @@ app.on('activate', () => {
         createWindow();
     }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-import Repository from './lib/repository';
-import RepositoryBridge from './lib/repository/bridge';
-
-// Initialise the Git repository handler
-const repository = new Repository();
-
-// Inject the repository handler into the bridge for communication with the rendered
-new RepositoryBridge(repository);

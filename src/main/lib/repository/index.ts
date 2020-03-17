@@ -149,6 +149,13 @@ class Repository extends EventEmitter {
         return git.walk({ ...this.config, trees, map: diffMapFunction });
     }
 
+    public async saveAndAdd(filepath: string, data: Buffer): Promise<void> {
+        await fs.promises.writeFile(path.resolve(REPOSITORY_PATH, filepath), data, { recursive: true });
+
+        // And create a first commit with the file
+        await git.add({ ...this.config, filepath: filepath });
+    }
+
     /**
      * Expose the log function
      */
