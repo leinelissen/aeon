@@ -1,4 +1,4 @@
-import { Parser, ParserFile } from '../types';
+import { Service, ServiceFile } from '../types';
 import crypto from 'crypto';
 import fetch from 'node-fetch';
 import { BrowserWindow } from 'electron';
@@ -29,10 +29,10 @@ const scrapingUrls = [
     'https://www.instagram.com/accounts/access_tool/ads_interests?__a=1',
 ];
 
-class Instagram implements Parser {
+class Instagram implements Service {
     key = 'instagram';
 
-    async update(): Promise<ParserFile[]> {
+    async update(): Promise<ServiceFile[]> {
         // In order to retrieve login cookies, we create a new window into which
         // the user enters theirs credentials.
         const window = new BrowserWindow({ width: 400, height: 400});
@@ -78,7 +78,7 @@ class Instagram implements Parser {
         return responses.map(response => {
             return {
                 filepath: `${response.page_name}.json`,
-                data: Buffer.from(JSON.stringify(response.data)),
+                data: JSON.stringify(response.data.data),
             };
         });
     }

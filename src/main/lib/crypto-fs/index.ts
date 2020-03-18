@@ -1,6 +1,5 @@
 import crypto from 'crypto';
 import fs from 'fs';
-import { PromiseFsClient } from 'isomorphic-git';
 
 const ALGORITHM = 'aes-256-cbc';
 
@@ -11,7 +10,10 @@ class CryptoFs {
         this.key = crypto.createHash('sha256').update(password).digest();
     }
 
-    init(): PromiseFsClient {
+    /**
+     * Return a FS Client that overrides the relevant methods on FS
+     */
+    init(): typeof fs {
         return {
             ...fs,
             promises: {
@@ -22,7 +24,7 @@ class CryptoFs {
         }
     }
 
-    public writeFile = (filepath: string, data: Uint8Array, opts?: {}): Promise<any> => {
+    public writeFile = (filepath: string, data: Uint8Array, opts?: {}): Promise<void> => {
         return new Promise((resolve, reject) => {
             // Initialise the stream
             const stream = fs.createWriteStream(filepath);
@@ -34,7 +36,7 @@ class CryptoFs {
             const cipheredContents = Buffer.concat([ initVect, cipher.update(data), cipher.final() ]);
     
             // Pipe output to file
-            stream.write(cipheredContents, resolve);
+            stream.write(cipheredContents, (error) => { error ? reject(error) : resolve() });
             stream.end();
         })
     }

@@ -3,8 +3,8 @@ import path from 'path';
 import { diffLines } from 'diff';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
-import git, { Errors, ReadCommitResult, TREE, WalkerEntry } from 'isomorphic-git';
-import { DiffResult } from './types';
+import git, { Errors, ReadCommitResult, TREE, WalkerEntry, Walker, StatusRow } from 'isomorphic-git';
+import { DiffResult, StatusResult } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
 
@@ -117,13 +117,13 @@ class Repository extends EventEmitter {
      * @param comparedTree The tree the reference is compared to. Defaults to
      * the previous commit.
      */
-    public async diff(refTree = 'HEAD', comparedTree?: string): Promise<DiffResult[]> {
+    public async diff(refTree: string | Walker = 'HEAD', comparedTree: string | Walker = ''): Promise<DiffResult[]> {
         let previousTree;
 
         // First we define the trees we want to traverse. The defaults are to
         // look at HEAD, and compare it to the previous commit. Both defaults
         // can be overwritten.
-        if (!comparedTree) {
+        if (comparedTree === '') {
             // Retrieve the Git log so that we can locate the r
             const log = await git.log(this.config);
 
@@ -145,21 +145,42 @@ class Repository extends EventEmitter {
         }
 
         // Now that all trees are setup, we pour it into the walk function
-        const trees = [TREE({ ref: refTree }), TREE({ ref: comparedTree || previousTree })]
+        const trees = [
+            typeof refTree === 'string' ? TREE({ ref: refTree }) : refTree,
+            typeof comparedTree === 'string' ? TREE({ ref: comparedTree || previousTree }) : comparedTree
+        ];
         return git.walk({ ...this.config, trees, map: diffMapFunction });
     }
 
-    public async saveAndAdd(filepath: string, data: Buffer): Promise<void> {
-        await fs.promises.writeFile(path.resolve(REPOSITORY_PATH, filepath), data, { recursive: true });
+    /**
+     * Save a file to disk
+     * @param filepath The path to the file relative to the repository root
+     * @param data The data that needs to be written to disk
+     */
+    public async save(filepath: string, data: string | Buffer): Promise<void> {
+        const absolutePath = path.resolve(REPOSITORY_PATH, filepath);
+        const dirPath = path.dirname(absolutePath);
 
-        // And create a first commit with the file
-        await git.add({ ...this.config, filepath: filepath });
+        // Check if the directory already exists
+        if (!fs.existsSync(dirPath)) {
+            // If not, create the full path
+            await fs.promises.mkdir(dirPath);
+        }
+
+        // Write file to disk
+        await fs.promises.writeFile(absolutePath, data);
     }
 
-    /**
-     * Expose the log function
-     */
-    public log = (): Promise<ReadCommitResult[]> => git.log(this.config);
+    /** 
+     * Expose a number of Git functions directly
+    */
+    public add = (filepath: string, args: { [key: string]: any } = {}): Promise<void> => git.add({ ...this.config, filepath, ...args });
+    
+    public log = (args: { [key: string]: any } = {}): Promise<ReadCommitResult[]> => git.log({ ...this.config, ...args });
+    
+    public commit = (message: string, args: { [key: string]: any } = {}): Promise<string> => git.commit({ ...this.config, author: this.author, message, ...args })
+
+    public status = (args: { [key: string]: any } = {}): Promise<StatusRow[]> => git.statusMatrix({ ...this.config, ...args });
 }
 
 export default Repository;

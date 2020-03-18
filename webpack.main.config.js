@@ -10,7 +10,8 @@ module.exports = {
         preload: './src/renderer/preload.ts',
     },
     output: {
-        filename: '[name].js'
+        filename: '[name].js',
+        devtoolModuleFilenameTemplate: '[absolute-resource-path]'
     },
     // Put your normal webpack config below here
     module: {
@@ -21,5 +22,5 @@ module.exports = {
     },
     plugins: [
         Dotenv,
-    ]
+    ],
 };

@@ -1,3 +1,5 @@
+require('source-map-support').install();
+
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import initialise from './initialise';
@@ -14,6 +16,7 @@ const createWindow = (): void => {
     const mainWindow = new BrowserWindow({
         height: 600,
         width: 800,
+        titleBarStyle: 'hiddenInset',
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,

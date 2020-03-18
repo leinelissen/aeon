@@ -1,6 +1,7 @@
 import Repository from '.';
-import { RepositoryCommands } from './types';
+import { RepositoryCommands, RepositoryArguments } from './types';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
+import { TREE, WORKDIR, STAGE } from 'isomorphic-git';
 
 class RepositoryBridge {
     repository: Repository = null;
@@ -14,7 +15,7 @@ class RepositoryBridge {
         ipcMain.handle('repository', this.handleMessage);
     }
 
-    private handleMessage = async (event: IpcMainInvokeEvent, command: number): Promise<any> => {
+    private handleMessage = async (event: IpcMainInvokeEvent, command: number, ...args: any[]): Promise<any> => {
         // GUARD: Check if the repository is initialised. If not, defer to the
         // messagecache, so that it can be injected later.
         if (!this.repository.isInitialised) {
@@ -24,9 +25,26 @@ class RepositoryBridge {
         
         switch(command) {
         case RepositoryCommands.LOG:
-            return await this.repository.log();
-        case RepositoryCommands.DIFF:
-            return await this.repository.diff();
+            return this.repository.log(...args);
+        case RepositoryCommands.DIFF: {
+            const replacedArgs = args.map(arg => {
+                switch(arg) {
+                case RepositoryArguments.HEAD:
+                    return TREE({});
+                case RepositoryArguments.STAGE:
+                    return STAGE();
+                case RepositoryArguments.WORKDIR:
+                    return WORKDIR();
+                default:
+                    return arg;
+                }
+            });
+            console.log(replacedArgs);
+            return this.repository.diff(...replacedArgs);
+        }
+        case RepositoryCommands.STATUS: {
+            return this.repository.status(...args);
+        }
         }
     }
 

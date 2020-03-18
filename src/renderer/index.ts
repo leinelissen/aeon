@@ -1,36 +1,15 @@
-/**
- * This file will automatically be loaded by webpack and run in the "renderer" context.
- * To learn more about the differences between the "main" and the "renderer" context in
- * Electron, visit:
- *
- * https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes
- *
- * By default, Node.js integration in this file is disabled. When enabling Node.js integration
- * in a renderer process, please be aware of potential security implications. You can read
- * more about security risks here:
- *
- * https://electronjs.org/docs/tutorial/security
- *
- * To enable Node.js integration in this file, open up `main.js` and enable the `nodeIntegration`
- * flag:
- *
- * ```
- *  // Create the browser window.
- *  mainWindow = new BrowserWindow({
- *    width: 800,
- *    height: 600,
- *    webPreferences: {
- *      nodeIntegration: true
- *    }
- *  });
- * ```
- */
-
 import './index.css';
-import { RepositoryCommands } from '../main/lib/repository/types';
+import { RepositoryCommands, RepositoryArguments } from '../main/lib/repository/types';
+import { ServiceCommands } from '../main/services/types';
 
 window.api.sourceMapSupport.install();
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
-window.api.invoke('repository', RepositoryCommands.DIFF)
+window.api.invoke('repository', RepositoryCommands.STATUS)
+    .then(console.log);
+
+window.api.invoke('services', ServiceCommands.UPDATE, 'instagram')
+    .then(() => window.api.invoke('repository', RepositoryCommands.DIFF, RepositoryArguments.STAGE, RepositoryArguments.HEAD))
+    .then(console.log)
+    .then(() => window.api.invoke('repository', RepositoryCommands.LOG))
     .then(console.log);
