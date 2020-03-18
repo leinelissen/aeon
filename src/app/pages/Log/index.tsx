@@ -12,7 +12,12 @@ interface State {
 
 const Container = styled.div`
     display: flex;
-`
+
+    & > * {
+        overflow-y: scroll;
+        height: calc(100vh - 40px);
+    }
+`;
 
 const CommitContainer = styled.div`
     display: flex;
@@ -20,8 +25,8 @@ const CommitContainer = styled.div`
     position: sticky;
     top: 0;
     flex-shrink: 0;
-`
-
+    border-right: 1px solid #eee;
+`;
 
 class Log extends Component<{}, State> {
     state: State = {

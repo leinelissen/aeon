@@ -1,6 +1,6 @@
 // import fs from 'fs';
 import path from 'path';
-import { diffJson } from 'diff';
+import { diffJson, Change } from 'diff';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
 import git, { Errors, ReadCommitResult, TREE, WalkerEntry, Walker, StatusRow } from 'isomorphic-git';
@@ -117,7 +117,11 @@ class Repository extends EventEmitter {
      * @param comparedTree The tree the reference is compared to. Defaults to
      * the previous commit.
      */
-    public async diff(refTree: string | Walker = 'HEAD', comparedTree: string | Walker = ''): Promise<DiffResult[]> {
+    public async diff(
+        refTree: string | Walker = 'HEAD', 
+        comparedTree: string | Walker = '',
+        options: { showUnchangedFiles?: boolean } = {}
+    ): Promise<DiffResult[]> {
         let previousTree;
 
         // First we define the trees we want to traverse. The defaults are to
@@ -149,7 +153,23 @@ class Repository extends EventEmitter {
             typeof refTree === 'string' ? TREE({ ref: refTree }) : refTree,
             typeof comparedTree === 'string' ? TREE({ ref: comparedTree || previousTree }) : comparedTree
         ];
-        return git.walk({ ...this.config, trees, map: diffMapFunction });
+        
+        // Calculate diff
+        const diff: DiffResult[] = await git.walk({ ...this.config, trees, map: diffMapFunction });
+
+        // Optionally remove all files from the diff without changes
+        if (!options.showUnchangedFiles) {
+            // Loop through all files one-by-one
+            return diff.filter(file =>
+                // Then check if there are any changes that have a flag for
+                // parts being either removed or added
+                file.diff.reduce((result, change: Change) => 
+                    result || change.removed || change.added, false
+                )
+            );
+        }
+
+        return diff;
     }
 
     /**

@@ -31,7 +31,7 @@ const StyledCommit = styled.button<{ active?: boolean }>`
     }
 
     ${(props) => props.active && css`
-        background-color: ${theme.colors.blue.veryLight} !important;
+        background-color: #eee !important;
         /* font-weight: 500; */
     `}
 `

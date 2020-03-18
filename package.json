@@ -1,110 +1,110 @@
 {
-  "name": "aeon",
-  "productName": "aeon",
-  "version": "1.0.0",
-  "description": "My Electron application description",
-  "main": ".webpack/main",
-  "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts ."
-  },
-  "keywords": [],
-  "author": {
-    "name": "Lei Nelissen",
-    "email": "lei@codified.nl"
-  },
-  "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "aeon"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ],
-      "plugins": [
-        [
-          "@electron-forge/plugin-webpack",
-          {
-            "mainConfig": "./webpack.main.config.js",
-            "renderer": {
-              "config": "./webpack.renderer.config.js",
-              "entryPoints": [
+    "name": "aeon",
+    "productName": "aeon",
+    "version": "1.0.0",
+    "description": "My Electron application description",
+    "main": ".webpack/main",
+    "scripts": {
+        "start": "electron-forge start",
+        "package": "electron-forge package",
+        "make": "electron-forge make",
+        "publish": "electron-forge publish",
+        "lint": "eslint --ext .ts ."
+    },
+    "keywords": [],
+    "author": {
+        "name": "Lei Nelissen",
+        "email": "lei@codified.nl"
+    },
+    "license": "MIT",
+    "config": {
+        "forge": {
+            "packagerConfig": {},
+            "makers": [
                 {
-                  "html": "./src/app/index.html",
-                  "js": "./src/app/index.tsx",
-                  "name": "main_window"
+                    "name": "@electron-forge/maker-squirrel",
+                    "config": {
+                        "name": "aeon"
+                    }
+                },
+                {
+                    "name": "@electron-forge/maker-zip",
+                    "platforms": [
+                        "darwin"
+                    ]
+                },
+                {
+                    "name": "@electron-forge/maker-deb",
+                    "config": {}
+                },
+                {
+                    "name": "@electron-forge/maker-rpm",
+                    "config": {}
                 }
-              ]
-            },
-            "loggerPort": 9001
-          }
-        ]
-      ]
+            ],
+            "plugins": [
+                [
+                    "@electron-forge/plugin-webpack",
+                    {
+                        "mainConfig": "./webpack.main.config.js",
+                        "renderer": {
+                            "config": "./webpack.renderer.config.js",
+                            "entryPoints": [
+                                {
+                                    "html": "./src/app/index.html",
+                                    "js": "./src/app/index.tsx",
+                                    "name": "main_window"
+                                }
+                            ]
+                        },
+                        "loggerPort": 9001
+                    }
+                ]
+            ]
+        }
+    },
+    "devDependencies": {
+        "@electron-forge/cli": "6.0.0-beta.50",
+        "@electron-forge/maker-deb": "6.0.0-beta.50",
+        "@electron-forge/maker-rpm": "6.0.0-beta.50",
+        "@electron-forge/maker-squirrel": "6.0.0-beta.50",
+        "@electron-forge/maker-zip": "6.0.0-beta.50",
+        "@electron-forge/plugin-webpack": "6.0.0-beta.50",
+        "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+        "@types/react": "^16.9.23",
+        "@types/react-dom": "^16.9.5",
+        "@typescript-eslint/eslint-plugin": "^2.18.0",
+        "@typescript-eslint/parser": "^2.23.0",
+        "css-loader": "^3.0.0",
+        "dotenv-webpack": "^1.7.0",
+        "electron": "8.1.1",
+        "eslint": "^6.8.0",
+        "eslint-import-resolver-typescript": "^2.0.0",
+        "eslint-plugin-import": "^2.20.1",
+        "eslint-plugin-react": "^7.19.0",
+        "file-loader": "^6.0.0",
+        "fork-ts-checker-webpack-plugin": "^3.1.1",
+        "node-loader": "^0.6.0",
+        "react-hot-loader": "^4.12.20",
+        "style-loader": "^0.23.1",
+        "ts-loader": "^6.2.1",
+        "typescript": "^3.7.0"
+    },
+    "dependencies": {
+        "@openfonts/ibm-plex-mono_all": "^1.44.0",
+        "@openfonts/ibm-plex-sans_all": "^1.44.0",
+        "@types/diff": "^4.0.2",
+        "@types/node": "^13.9.1",
+        "@types/node-fetch": "^2.5.5",
+        "@types/source-map-support": "^0.5.1",
+        "@types/styled-components": "^5.0.1",
+        "diff": "^4.0.2",
+        "electron-squirrel-startup": "^1.0.0",
+        "hex-to-rgba": "^2.0.1",
+        "isomorphic-git": "^1.2.0",
+        "node-fetch": "^2.6.0",
+        "react": "^16.13.0",
+        "react-dom": "^16.13.0",
+        "styled-components": "^5.0.1"
     }
-  },
-  "devDependencies": {
-    "@electron-forge/cli": "6.0.0-beta.50",
-    "@electron-forge/maker-deb": "6.0.0-beta.50",
-    "@electron-forge/maker-rpm": "6.0.0-beta.50",
-    "@electron-forge/maker-squirrel": "6.0.0-beta.50",
-    "@electron-forge/maker-zip": "6.0.0-beta.50",
-    "@electron-forge/plugin-webpack": "6.0.0-beta.50",
-    "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
-    "@types/react": "^16.9.23",
-    "@types/react-dom": "^16.9.5",
-    "@typescript-eslint/eslint-plugin": "^2.18.0",
-    "@typescript-eslint/parser": "^2.23.0",
-    "css-loader": "^3.0.0",
-    "dotenv-webpack": "^1.7.0",
-    "electron": "8.1.1",
-    "eslint": "^6.8.0",
-    "eslint-import-resolver-typescript": "^2.0.0",
-    "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-react": "^7.19.0",
-    "file-loader": "^6.0.0",
-    "fork-ts-checker-webpack-plugin": "^3.1.1",
-    "node-loader": "^0.6.0",
-    "react-hot-loader": "^4.12.20",
-    "style-loader": "^0.23.1",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.7.0"
-  },
-  "dependencies": {
-    "@openfonts/ibm-plex-mono_all": "^1.44.0",
-    "@openfonts/ibm-plex-sans_all": "^1.44.0",
-    "@types/diff": "^4.0.2",
-    "@types/node": "^13.9.1",
-    "@types/node-fetch": "^2.5.5",
-    "@types/source-map-support": "^0.5.1",
-    "@types/styled-components": "^5.0.1",
-    "diff": "^4.0.2",
-    "electron-squirrel-startup": "^1.0.0",
-    "hex-to-rgba": "^2.0.1",
-    "isomorphic-git": "^1.2.0",
-    "node-fetch": "^2.6.0",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "styled-components": "^5.0.1"
-  }
 }

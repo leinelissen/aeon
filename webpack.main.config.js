@@ -1,4 +1,5 @@
 const [ Dotenv ] = require('./webpack.plugins');
+const path = require('path');
 
 module.exports = {
     /**
@@ -18,7 +19,11 @@ module.exports = {
         rules: require('./webpack.rules'),
     },
     resolve: {
-        extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
+        extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+        alias: {
+            app: path.resolve(__dirname, 'src', 'app'),
+            main: path.resolve(__dirname, 'src', 'main'),
+        }
     },
     plugins: [
         Dotenv,

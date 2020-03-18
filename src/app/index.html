@@ -9,14 +9,42 @@
                 content="default-src 'self'; connect-src *; style-src 'self' 'nonce-devOnly'"
             /> -->
         <% } else { %>
-            <meta
+            <!-- <meta
                 http-equiv="Content-Security-Policy"
                 content="default-src 'none'; connect-src *; style-src 'self'"
-            />
+            /> -->
         <% } %>
+        <style type="text/css">
+            #loader {
+                display: flex;
+                width: 100vw;
+                height: 100vh;
+                justify-content: center;
+                align-items: center;
+                font-size: 144px;
+                font-weight: 800;
+                color: #296BFF;
+                user-select: none;
+                animation: bounce 0.5s; 
+                animation-direction: alternate; 
+                animation-timing-function: cubic-bezier(.5, 0.05, 1, .5); 
+                animation-iteration-count: infinite; 
+                margin-top: -50px;
+            }
+               
+            @keyframes bounce { 
+                from { 
+                    transform: translate3d(0, 0px, 0); 
+                } 
+                to { 
+                    transform: translate3d(0, 50px, 0); 
+                } 
+            } 
+        </style>
     </head>
     <body>
         <div id="root"></div>
+        <div id="loader">·</div>
     </body>
 </html>
         

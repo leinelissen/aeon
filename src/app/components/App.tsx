@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import 'app/styles';
 import MenuBar from './MenuBar';
 import Log from 'app/pages/Log';
-import styled from 'styled-components';
+import styled, { StyleSheetManager } from 'styled-components';
 
 const Main = styled.main`
     padding-top: 40px;
@@ -11,14 +11,20 @@ const Main = styled.main`
 `;
 
 class App extends Component {
+    componentDidMount(): void {
+        document.getElementById('loader').style.display = 'none';
+    }
+
     render(): JSX.Element {
         return (
-            <div>
-                <MenuBar />
-                <Main>
-                    <Log />
-                </Main>
-            </div>
+            <StyleSheetManager disableVendorPrefixes>
+                <div>
+                    <MenuBar />
+                    <Main>
+                        <Log />
+                    </Main>
+                </div>
+            </StyleSheetManager>
         );
     }
 }

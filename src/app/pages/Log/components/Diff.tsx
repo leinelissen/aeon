@@ -16,15 +16,21 @@ interface State {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
+    width: 100%;
+
+    h3 {
+        margin-left: 25px;
+    }
 `;
 
 const Code = styled.div<{ removed?: boolean; added?: boolean }>`
     font-family: 'IBM Plex Mono';
-    background-color: #eee;
+    background-color: #f8f8f8;
     padding: 25px;
     min-width: 100%;
     line-height: 2;
-    white-space: pre;
+    white-space: pre-wrap;
+    user-select: text;
 
     ${props => props.added && css`
         background-color: ${theme.colors.green}22;

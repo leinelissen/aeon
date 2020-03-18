@@ -19,7 +19,7 @@ class CryptoFs {
             promises: {
                 ...fs.promises,
                 writeFile: this.writeFile,
-                readFile: this.readFile,
+                readFile: this.readFile as typeof fs.promises.readFile,
             }
         }
     }
