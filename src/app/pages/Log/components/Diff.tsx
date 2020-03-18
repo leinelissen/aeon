@@ -4,6 +4,7 @@ import Repository from 'app/utilities/Repository';
 import styled, { css } from 'styled-components';
 import { Change } from 'diff';
 import theme from 'app/styles/theme';
+import Loading from 'app/components/Loading';
 
 interface Props {
     commit: string;
@@ -66,7 +67,7 @@ class Diff extends Component<Props, State> {
         const { diff } = this.state;
 
         if (!diff) {
-            return <h1>Loading</h1>;
+            return <Loading />;
         }
 
         return (

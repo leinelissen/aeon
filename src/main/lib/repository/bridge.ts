@@ -39,7 +39,7 @@ class RepositoryBridge {
                     return arg;
                 }
             });
-            console.log(replacedArgs);
+
             return this.repository.diff(...replacedArgs);
         }
         case RepositoryCommands.STATUS: {

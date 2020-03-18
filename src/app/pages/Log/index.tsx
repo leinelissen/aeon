@@ -4,10 +4,14 @@ import { ReadCommitResult } from 'isomorphic-git';
 import styled from 'styled-components';
 import Commit from './components/Commit';
 import Diff from './components/Diff';
+import Loading from 'app/components/Loading';
+import Button from 'app/components/Button';
+import Services from 'app/utilities/Services';
 
 interface State {
     log: ReadCommitResult[];
     selectedCommit?: string;
+    updating: boolean;
 }
 
 const Container = styled.div`
@@ -32,10 +36,15 @@ class Log extends Component<{}, State> {
     state: State = {
         log: [],
         selectedCommit: null,
+        updating: false,
     };
 
     componentDidMount(): void {
-        Repository.log()
+        this.fetchLog();
+    }
+
+    fetchLog = (): Promise<void> => {
+        return Repository.log()
             .then(log => this.setState({ log, selectedCommit: log[0].oid }));
     }
 
@@ -43,11 +52,18 @@ class Log extends Component<{}, State> {
         this.setState({ selectedCommit: hash });
     }
 
+    handleRefresh = async (): Promise<void> => {
+        this.setState({ updating: true });
+        await Services.updateAll();
+        this.setState({ updating: false });
+        this.fetchLog();
+    }
+
     render(): JSX.Element {
-        const { log, selectedCommit } = this.state;
+        const { log, selectedCommit, updating } = this.state;
 
         if (!log.length) {
-            return <h1>Loading...</h1>;
+            return <Loading />;
         }
 
         return (
@@ -56,6 +72,7 @@ class Log extends Component<{}, State> {
                     {log.map((entry: ReadCommitResult) => (
                         <Commit key={entry.oid} entry={entry} onClick={this.handleClick} active={entry.oid === selectedCommit} />
                     ))}
+                    <Button onClick={this.handleRefresh} loading={updating}>Refresh</Button>
                 </CommitContainer>
                 <Diff commit={selectedCommit} />
             </Container>
