@@ -1,6 +1,6 @@
 // import fs from 'fs';
 import path from 'path';
-import { diffLines } from 'diff';
+import { diffJson } from 'diff';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
 import git, { Errors, ReadCommitResult, TREE, WalkerEntry, Walker, StatusRow } from 'isomorphic-git';
@@ -33,7 +33,7 @@ const diffMapFunction = async function(filepath: string, entries: Array<WalkerEn
     ]);
     
     // Calculate the diff
-    const diff = diffLines(comparedTreeContents ? utfDecoder.decode(comparedTreeContents) : '', refTreeContents ? utfDecoder.decode(refTreeContents) : '');
+    const diff = diffJson(comparedTreeContents ? utfDecoder.decode(comparedTreeContents) : '', refTreeContents ? utfDecoder.decode(refTreeContents) : '');
 
     // Filter any instances where there are no changes
     if (diff.length === 1 && diff[0].count === 0) {

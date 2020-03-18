@@ -78,7 +78,7 @@ class Instagram implements Service {
         return responses.map(response => {
             return {
                 filepath: `${response.page_name}.json`,
-                data: JSON.stringify(response.data.data),
+                data: JSON.stringify(response.data.data, null, 4),
             };
         });
     }

@@ -14,6 +14,8 @@ const Container = styled.div`
     color: ${theme.colors.blue.primary};
     font-weight: 800;
     font-size: 12px;
+    position: fixed;
+    z-index: 10;
 `;
 
 function MenuBar(): JSX.Element {

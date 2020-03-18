@@ -33,6 +33,7 @@ module.exports = {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
         alias: {
             app: path.resolve(__dirname, 'src', 'app'),
+            main: path.resolve(__dirname, 'src', 'main'),
         }
     },
     devtool: "inline-source-map",

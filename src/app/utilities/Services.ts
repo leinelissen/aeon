@@ -2,7 +2,7 @@ import { ServiceCommands } from 'main/services/types';
 
 const channel = 'services';
 
-class Repository {
+class Services {
     static update(key: string): Promise<void> {
         return window.api.invoke(channel, ServiceCommands.UPDATE, key);
     }
@@ -12,4 +12,4 @@ class Repository {
     }
 }
 
-export default Repository;
+export default Services;
