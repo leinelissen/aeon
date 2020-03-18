@@ -77,8 +77,6 @@ class ServiceManager extends EventEmitter {
             ([file, HeadStatus, WorkdirStatus, StageStatus]) => WorkdirStatus !== 1 && StageStatus > 1
         );
 
-        console.log(status, hasChangedFiles);
-
         if (hasChangedFiles) {
             await this.repository.commit(`Auto-update ${new Date().toLocaleString()}`);
         }

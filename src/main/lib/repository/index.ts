@@ -4,7 +4,7 @@ import { diffLines } from 'diff';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
 import git, { Errors, ReadCommitResult, TREE, WalkerEntry, Walker, StatusRow } from 'isomorphic-git';
-import { DiffResult, StatusResult } from './types';
+import { DiffResult } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
 

@@ -1,0 +1,12 @@
+body {
+    /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif; */
+    font-family: 'IBM Plex Sans';
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+body * {
+    box-sizing: border-box;
+}

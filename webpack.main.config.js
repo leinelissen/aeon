@@ -7,7 +7,7 @@ module.exports = {
     */
     entry: {
         index: './src/main/index.ts', 
-        preload: './src/renderer/preload.ts',
+        preload: './src/app/preload.ts',
     },
     output: {
         filename: '[name].js',

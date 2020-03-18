@@ -51,8 +51,8 @@
               "config": "./webpack.renderer.config.js",
               "entryPoints": [
                 {
-                  "html": "./src/renderer/index.html",
-                  "js": "./src/renderer/index.ts",
+                  "html": "./src/app/index.html",
+                  "js": "./src/app/index.tsx",
                   "name": "main_window"
                 }
               ]
@@ -71,6 +71,8 @@
     "@electron-forge/maker-zip": "6.0.0-beta.50",
     "@electron-forge/plugin-webpack": "6.0.0-beta.50",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+    "@types/react": "^16.9.23",
+    "@types/react-dom": "^16.9.5",
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.23.0",
     "css-loader": "^3.0.0",
@@ -79,6 +81,8 @@
     "eslint": "^6.8.0",
     "eslint-import-resolver-typescript": "^2.0.0",
     "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-react": "^7.19.0",
+    "file-loader": "^6.0.0",
     "fork-ts-checker-webpack-plugin": "^3.1.1",
     "node-loader": "^0.6.0",
     "style-loader": "^0.23.1",
@@ -86,13 +90,20 @@
     "typescript": "^3.7.0"
   },
   "dependencies": {
+    "@openfonts/ibm-plex-mono_all": "^1.44.0",
+    "@openfonts/ibm-plex-sans_all": "^1.44.0",
     "@types/diff": "^4.0.2",
     "@types/node": "^13.9.1",
     "@types/node-fetch": "^2.5.5",
     "@types/source-map-support": "^0.5.1",
+    "@types/styled-components": "^5.0.1",
     "diff": "^4.0.2",
     "electron-squirrel-startup": "^1.0.0",
+    "hex-to-rgba": "^2.0.1",
     "isomorphic-git": "^1.2.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "styled-components": "^5.0.1"
   }
 }

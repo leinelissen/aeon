@@ -6,15 +6,18 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
-      "*": ["node_modules/*"]
-    }
+      "*": ["node_modules/*"],
+      "main": ["./main"],
+      "app": ["./app"],
+    },
+    "jsx": "react",
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
   ]
 }
