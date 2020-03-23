@@ -1,15 +1,15 @@
 import Instagram from './instagram';
-import { Service, ServiceFile } from './types';
+import { Provider, ProviderFile } from './types';
 import Repository from '../lib/repository';
 import path from 'path';
 import { EventEmitter } from 'events';
 
-const services = [
+const providers = [
     Instagram
 ];
 
-class ServiceManager extends EventEmitter {
-    instances: Service[] = [];
+class ProviderManager extends EventEmitter {
+    instances: Provider[] = [];
     repository: Repository;
     isInitialised = false;
 
@@ -19,8 +19,8 @@ class ServiceManager extends EventEmitter {
         // Store the repository in this class
         this.repository = repository;
 
-        // Construct all services that have been defined at the top
-        this.instances = services.map(Service => new Service());
+        // Construct all providers that have been defined at the top
+        this.instances = providers.map(Provider => new Provider());
 
         // Then initialise all classes
         // And after send out a ready event
@@ -31,10 +31,10 @@ class ServiceManager extends EventEmitter {
     }
 
     /**
-     * Update all services
+     * Update all providers
      */
     updateAll = async (): Promise<void> => {
-        // Loop through all registered services and execute their updates
+        // Loop through all registered providers and execute their updates
         await Promise.all(this.instances.map(async (instance, index) => {
             return this.update(index);
         }));
@@ -62,7 +62,7 @@ class ServiceManager extends EventEmitter {
         const files = await instance.update();
 
         // Then store all files using the repositor save and add handler
-        await Promise.all(files.map(async (file: ServiceFile): Promise<void> => {
+        await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
             // Prepend the supplied path with the key from the spcific service
             const location = path.join(instance.key, file.filepath);
 
@@ -83,4 +83,4 @@ class ServiceManager extends EventEmitter {
     }
 }
 
-export default ServiceManager;
+export default ProviderManager;

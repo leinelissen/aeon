@@ -1,4 +1,4 @@
-import { Service, ServiceFile } from '../types';
+import { Provider, ProviderFile } from '../types';
 import crypto from 'crypto';
 import fetch from 'node-fetch';
 import { BrowserWindow } from 'electron';
@@ -29,14 +29,15 @@ const scrapingUrls = [
     'https://www.instagram.com/accounts/access_tool/ads_interests?__a=1',
 ];
 
-class Instagram implements Service {
+class Instagram implements Provider {
     key = 'instagram';
 
-    async update(): Promise<ServiceFile[]> {
+    async update(): Promise<ProviderFile[]> {
         // In order to retrieve login cookies, we create a new window into which
         // the user enters theirs credentials.
         const window = new BrowserWindow({ width: 400, height: 400});
         const toolUrl = 'https://www.instagram.com/accounts/access_tool/';
+        await window.webContents.session.clearCache();
         window.loadURL(toolUrl);
 
         // We then bind a handler to navigation changes and wait until a user is
@@ -52,6 +53,8 @@ class Instagram implements Service {
                 }
             });
         });
+
+        console.log(cookies);
 
         // We then extract the right cookies, and create a config we can then
         // use for successive requests

@@ -6,7 +6,7 @@ import Commit from './components/Commit';
 import Diff from './components/Diff';
 import Loading from 'app/components/Loading';
 import Button from 'app/components/Button';
-import Services from 'app/utilities/Services';
+import Providers from 'app/utilities/Providers';
 
 interface State {
     log: ReadCommitResult[];
@@ -54,7 +54,7 @@ class Log extends Component<{}, State> {
 
     handleRefresh = async (): Promise<void> => {
         this.setState({ updating: true });
-        await Services.updateAll();
+        await Providers.updateAll();
         this.setState({ updating: false });
         this.fetchLog();
     }
@@ -72,7 +72,7 @@ class Log extends Component<{}, State> {
                     {log.map((entry: ReadCommitResult) => (
                         <Commit key={entry.oid} entry={entry} onClick={this.handleClick} active={entry.oid === selectedCommit} />
                     ))}
-                    <Button onClick={this.handleRefresh} loading={updating}>Refresh</Button>
+                    <Button onClick={this.handleRefresh} loading={updating}>Refresh 🦄</Button>
                 </CommitContainer>
                 <Diff commit={selectedCommit} />
             </Container>

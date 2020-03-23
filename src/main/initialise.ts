@@ -1,7 +1,7 @@
 import Repository from './lib/repository';
 import RepositoryBridge from './lib/repository/bridge';
-import ServiceManager from './services';
-import ServiceBridge from './services/bridge';
+import ProviderManager from './providers';
+import ProviderBridge from './providers/bridge';
 
 function initialise(): void {
     // Initialise the Git repository handler
@@ -9,10 +9,10 @@ function initialise(): void {
     // Inject the repository handler into the bridge for communication with the rendered
     new RepositoryBridge(repository);
 
-    // Also initialise the Service Manager
-    const serviceManager = new ServiceManager(repository);
+    // Also initialise the Provider Manager
+    const providerManager = new ProviderManager(repository);
     // And also inject this into its respective bridge
-    new ServiceBridge(serviceManager);
+    new ProviderBridge(providerManager);
 }
 
 export default initialise;

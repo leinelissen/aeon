@@ -1,8 +1,8 @@
 import Repository from '.';
-import { ServiceCommands } from './types';
+import { ProviderCommands } from './types';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 
-class ServiceBridge {
+class ProviderBridge {
     repository: Repository = null;
 
     messageCache: [IpcMainInvokeEvent, number][] = [];
@@ -11,7 +11,7 @@ class ServiceBridge {
         this.repository = repository;
         this.repository.on('ready', this.clearMessageCache);
 
-        ipcMain.handle('services', this.handleMessage);
+        ipcMain.handle('providers', this.handleMessage);
     }
 
     private handleMessage = async (event: IpcMainInvokeEvent, command: number, ...args: any[]): Promise<void> => {
@@ -23,10 +23,10 @@ class ServiceBridge {
         }
         
         switch(command) {
-        case ServiceCommands.UPDATE:
+        case ProviderCommands.UPDATE:
             this.repository.update(args[0]);
             break;
-        case ServiceCommands.UPDATE_ALL:
+        case ProviderCommands.UPDATE_ALL:
             this.repository.updateAll();
             break;
         }
@@ -38,4 +38,4 @@ class ServiceBridge {
     }
 }
 
-export default ServiceBridge;
+export default ProviderBridge;
