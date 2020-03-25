@@ -23,12 +23,16 @@ class ProviderBridge {
         }
         
         switch(command) {
-        case ProviderCommands.UPDATE:
-            this.repository.update(args[0]);
-            break;
-        case ProviderCommands.UPDATE_ALL:
-            this.repository.updateAll();
-            break;
+            case ProviderCommands.UPDATE:
+                return this.repository.update(args[0]);
+            case ProviderCommands.UPDATE_ALL:
+                return this.repository.updateAll();
+            case ProviderCommands.DISPATCH_DATA_REQUEST:
+                return this.repository.dispatchDataRequest(args[0]);
+            case ProviderCommands.DISPATCH_DATA_REQUEST_TO_ALL:
+                return this.repository.dispatchDataRequestToAll();
+            case ProviderCommands.REFRESH_DATA_REQUESTS:
+                return this.repository.refreshDataRequests();
         }
     }
 

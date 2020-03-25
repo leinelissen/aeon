@@ -184,7 +184,7 @@ class Repository extends EventEmitter {
         // Check if the directory already exists
         if (!fs.existsSync(dirPath)) {
             // If not, create the full path
-            await fs.promises.mkdir(dirPath);
+            await fs.promises.mkdir(dirPath, { recursive: true });
         }
 
         // Write file to disk

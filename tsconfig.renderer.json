@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.json",
+    "exclude": [
+      "src/main"
+    ],
+    "compilerOptions": {
+        "module": "es6",
+        "target": "ESNext"
+    }
+}

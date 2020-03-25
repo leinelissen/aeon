@@ -1,5 +1,6 @@
 require('source-map-support').install();
 
+import './lib/map-map';
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import initialise from './initialise';

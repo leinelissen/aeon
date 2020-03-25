@@ -54,6 +54,13 @@ class Log extends Component<{}, State> {
 
     handleRefresh = async (): Promise<void> => {
         this.setState({ updating: true });
+        await Providers.refreshDataRequests();
+        this.setState({ updating: false });
+        this.fetchLog();
+    }
+
+    handleUpdate = async (): Promise<void> => {
+        this.setState({ updating: true });
         await Providers.updateAll();
         this.setState({ updating: false });
         this.fetchLog();
@@ -72,7 +79,8 @@ class Log extends Component<{}, State> {
                     {log.map((entry: ReadCommitResult) => (
                         <Commit key={entry.oid} entry={entry} onClick={this.handleClick} active={entry.oid === selectedCommit} />
                     ))}
-                    <Button onClick={this.handleRefresh} loading={updating}>Refresh 🦄</Button>
+                    <Button onClick={this.handleUpdate} loading={updating}>Refresh regular API 🦄</Button>
+                    <Button onClick={this.handleRefresh} loading={updating}>Refresh data requests API 🦄</Button>
                 </CommitContainer>
                 <Diff commit={selectedCommit} />
             </Container>

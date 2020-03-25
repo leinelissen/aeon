@@ -1,72 +1,99 @@
-import { Provider, ProviderFile } from '../types';
+import { ProviderFile, DataRequestProvider, WithWindow } from '../types';
 import crypto from 'crypto';
+import path from 'path';
 import fetch from 'node-fetch';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, WebRequest, webContents, app } from 'electron';
+import scrapingUrls from './urls.json';
+import AdmZip from 'adm-zip';
+import fs from 'fs';
 
-const scrapingUrls = [
-    'https://www.instagram.com/accounts/access_tool/account_privacy_changes?__a=1',
-    'https://www.instagram.com/accounts/access_tool/password_changes?__a=1',
-    'https://www.instagram.com/accounts/access_tool/former_emails?__a=1',
-    'https://www.instagram.com/accounts/access_tool/former_phones?__a=1',
-    'https://www.instagram.com/accounts/access_tool/current_follow_requests?__a=1',
-    'https://www.instagram.com/accounts/access_tool/accounts_following_you?__a=1',
-    'https://www.instagram.com/accounts/access_tool/accounts_you_follow?__a=1',
-    'https://www.instagram.com/accounts/access_tool/hashtags_you_follow?__a=1',
-    'https://www.instagram.com/accounts/access_tool/accounts_you_blocked?__a=1',
-    'https://www.instagram.com/accounts/access_tool/logins?__a=1',
-    'https://www.instagram.com/accounts/access_tool/logouts?__a=1',
-    'https://www.instagram.com/accounts/access_tool/search_history?__a=1',
-    'https://www.instagram.com/accounts/access_tool/former_usernames?__a=1',
-    'https://www.instagram.com/accounts/access_tool/former_full_names?__a=1',
-    'https://www.instagram.com/accounts/access_tool/former_bio_texts?__a=1',
-    'https://www.instagram.com/accounts/access_tool/former_links_in_bio?__a=1',
-    'https://www.instagram.com/accounts/access_tool/story_poll_votes?__a=1',
-    'https://www.instagram.com/accounts/access_tool/story_emoji_slider_votes?__a=1',
-    'https://www.instagram.com/accounts/access_tool/story_question_responses?__a=1',
-    'https://www.instagram.com/accounts/access_tool/story_question_music_responses?__a=1',
-    'https://www.instagram.com/accounts/access_tool/story_countdown_follows?__a=1',
-    'https://www.instagram.com/accounts/access_tool/story_quiz_responses?__a=1',
-    'https://www.instagram.com/accounts/access_tool/ads_interests?__a=1',
-];
+const requestSavePath = path.join(app.getAppPath(), 'data');
 
-class Instagram implements Provider {
+class Instagram extends DataRequestProvider implements WithWindow {
     key = 'instagram';
+    dataRequestIntervalDays = 5;
 
-    async update(): Promise<ProviderFile[]> {
-        // In order to retrieve login cookies, we create a new window into which
-        // the user enters theirs credentials.
-        const window = new BrowserWindow({ width: 400, height: 400});
-        const toolUrl = 'https://www.instagram.com/accounts/access_tool/';
-        await window.webContents.session.clearCache();
-        window.loadURL(toolUrl);
+    window: BrowserWindow;
+    cookies: Electron.Cookie[] = [];
 
-        // We then bind a handler to navigation changes and wait until a user is
-        // successfully logged in.
-        const cookies: Electron.Cookie[] = await new Promise((resolve) => {
-            window.webContents.on('did-navigate', async (event, url) => {
-                if (toolUrl === url) {
-                    // If the user is successfully login, we hijack the cookies
-                    // from the window and the close it.
-                    const cookies = await(window.webContents.session.cookies.get({ url: 'https://instagram.com' }))
-                    window.close();
-                    resolve(cookies);
-                }
-            });
+    constructor() {
+        super();
+
+        this.window = new BrowserWindow({ 
+            width: 400, 
+            height: 400, 
+            alwaysOnTop: true, 
+            show: false, 
+            webPreferences: {
+                // enableRemoteModule: false,
+                offscreen: true,
+                // sandbox: true,
+            }
         });
+    }
 
-        console.log(cookies);
+    verifyLoggedInStatus = async (): Promise<void> => {
+        // Load a URL in the browser, and see if we get redirected or not
+        const profileUrl = 'https://www.instagram.com/accounts/access_tool/ads_interests';
+        // await this.window.webContents.session.clearStorageData();
+        this.window.loadURL(profileUrl);
+        this.window.show();
 
-        // We then extract the right cookies, and create a config we can then
+        // TODO: Introduce optimisation so that we don't have to issue the
+        // request every time
+        this.cookies = await new Promise((resolve) => {
+            const eventHandler = async (): Promise<void> => {
+                // Check if we ended up at the right page
+                if (profileUrl === this.window.webContents.getURL()) {
+                    // If we did, we can siphon off the cookies from this page
+                    // for API requests
+                    const cookies = await this.window.webContents.session.cookies.get({});
+                    
+                    // Do a check if the language is set to English, and if not,
+                    // change it to English
+                    const lang = cookies.find(cookie => cookie.name === 'ig_lang');
+                    if (lang && lang.value !== 'en') {
+                        await this.window.webContents.session.cookies.set({ 
+                            url: 'https://instagram.com',
+                            name: 'ig_lang',
+                            value: 'en',
+                            domain: '.instagram.com',
+                            secure: true,
+                            expirationDate: Math.pow(2, 31) - 1,
+                        });
+                    }
+
+                    // We can then return the cookies and clean up the window
+                    this.window.hide();
+                    this.window.webContents.removeListener('did-navigate', eventHandler);
+                    resolve(cookies);
+                } else if (!this.window.isVisible()) {
+                    // If not, we'll check if we need to open the window for the
+                    // user to enter their credentials.
+                    this.window.show();
+                }
+            };
+
+            this.window.webContents.on('did-navigate', eventHandler);
+            this.window.webContents.once('did-finish-load', eventHandler);
+        });
+    }
+
+    update = async (): Promise<ProviderFile[]> => {
+        await this.verifyLoggedInStatus();
+
+        // We extract the right cookies, and create a config we can then
         // use for successive requests
-        const sessionid = cookies.find(cookie => cookie.name === 'sessionid').value;
-        const shbid = cookies.find(cookie => cookie.name === 'shbid').value;
+        console.log(this.cookies);
+        const sessionid = this.cookies.find(cookie => cookie.name === 'sessionid').value;
+        // const shbid = this.cookies.find(cookie => cookie.name === 'shbid').value;
         const fetchConfig =  {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
                 Referer: 'https://www.instagram.com/accounts/access_tool/ads_interests',
                 'X-CSRFToken': crypto.randomBytes(20).toString('hex'),
-                cookie: `sessionid=${sessionid}; shbid=${shbid}`
+                cookie: `sessionid=${sessionid}; shbid=${''}`
             },
         };
 
@@ -84,6 +111,131 @@ class Instagram implements Provider {
                 data: JSON.stringify(response.data.data, null, 4),
             };
         });
+    }
+
+    async dispatchDataRequest(): Promise<void> {
+        await this.verifyLoggedInStatus();
+
+        // Load the dispatched window
+        this.window.show();
+        await this.window.loadURL('https://www.instagram.com/download/request/');
+
+        // And now we dive into the page contents to dispatch the request
+        const button = await this.window.webContents.executeJavaScript(`
+            let nextButton = Array.from(document.querySelectorAll('button'))
+                .find(el => el.textContent === 'Next');
+            nextButton;
+        `);
+
+        // GUARD: The button's value must be 'Next' 
+        console.log('BUTTON', button);
+        if (!button) {
+            throw new Error('UnknownPageState');
+        }
+
+        // Now that we've found the button, we trigger it.
+        await this.window.webContents.executeJavaScript(`
+            nextButton.click();
+        `);
+
+        // Now we must defer the page to the user, so that they can enter their
+        // password. We then listen for a succesfull AJAX call 
+        await new Promise((resolve) => {
+            this.window.webContents.session.webRequest.onCompleted({
+                urls: [ 'https://*.instagram.com/*' ]
+            }, (details: any) => {
+                console.log('NEW REQUEST', details);
+            });
+        })
+        
+    }
+
+    async isDataRequestComplete(): Promise<boolean> {
+        await this.verifyLoggedInStatus();
+
+        console.log('Verified login status');
+
+        // Load page URL
+        this.window.hide();
+        await new Promise((resolve) => {
+            this.window.once('ready-to-show', resolve)
+            this.window.loadURL('https://www.instagram.com/download/request/');
+        });
+
+        console.log('Verification page is loaded');
+        
+        // Find a heading that reads 'Your Download is Ready'
+        return this.window.webContents.executeJavaScript(`
+            !!Array.from(document.querySelectorAll('h1'))
+                .find(el => el.textContent === 'Your Download is Ready');
+        `);
+    }
+
+    async parseDataRequest(): Promise<ProviderFile[]> {
+        console.log('Started parsing request');
+
+        // We'll force a click on the button
+        await new Promise((resolve) => {
+            // Now we defer to the user to enter their credentials
+            this.window.webContents.once('did-navigate', resolve); 
+            this.window.webContents.executeJavaScript(`
+                Array.from(document.querySelectorAll('button'))
+                    .find(el => el.textContent === 'Log In Again')
+                    .click?.()
+            `);
+        });
+
+        console.log('Page navigated after button press');
+
+        // We can now show the window for the login screen
+        this.window.show();
+
+        // Then we'll await the navigation back to the data download page from
+        // the login page
+        await new Promise((resolve) => {
+            this.window.webContents.once('will-navigate', resolve); 
+        });
+
+        console.log('Credentials were successfully entered');
+
+        // We can now close the window
+        this.window.hide();
+
+        // Now that we're successfully authenticated on the data download page,
+        // the only thing we have to do is download the data.
+        const filePath = path.join(requestSavePath, 'instagram.zip');
+        await new Promise((resolve) => {
+            // Create a handler for any file saving actions
+            this.window.webContents.session.once('will-download', (event, item) => {
+                // Save the item to the data folder temporarily
+                item.setSavePath(filePath);
+                item.once('done', resolve);
+            });
+
+            // And then trigger the button click
+            this.window.webContents.executeJavaScript(`
+                Array.from(document.querySelectorAll('button'))
+                    .find(el => el.textContent === 'Download Data')
+                    .click?.()
+            `);
+        });
+
+        // We have the ZIP, all that's left to do is unpack it and pipe it to
+        // the repository
+        const zip = new AdmZip(filePath);
+
+        // Translate this into a form that is readable for the ParserManager
+        const files = zip.getEntries().map((entry): ProviderFile => {
+            return {
+                filepath: entry.entryName,
+                data: entry.getData(),
+            };
+        });
+
+        // And dont forget to remove the zip file after it's been processed
+        await fs.promises.unlink(filePath);
+
+        return files;
     }
 }
 
