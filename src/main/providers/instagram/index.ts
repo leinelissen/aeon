@@ -21,7 +21,7 @@ class Instagram extends DataRequestProvider implements WithWindow {
 
         this.window = new BrowserWindow({ 
             width: 400, 
-            height: 400, 
+            height: 600, 
             alwaysOnTop: true, 
             show: false, 
             webPreferences: {
@@ -30,14 +30,14 @@ class Instagram extends DataRequestProvider implements WithWindow {
                 // sandbox: true,
             }
         });
+        this.window.webContents.session.clearStorageData();
+
     }
 
     verifyLoggedInStatus = async (): Promise<void> => {
         // Load a URL in the browser, and see if we get redirected or not
         const profileUrl = 'https://www.instagram.com/accounts/access_tool/ads_interests';
-        // await this.window.webContents.session.clearStorageData();
         this.window.loadURL(profileUrl);
-        this.window.show();
 
         // TODO: Introduce optimisation so that we don't have to issue the
         // request every time
@@ -52,7 +52,7 @@ class Instagram extends DataRequestProvider implements WithWindow {
                     // Do a check if the language is set to English, and if not,
                     // change it to English
                     const lang = cookies.find(cookie => cookie.name === 'ig_lang');
-                    if (lang && lang.value !== 'en') {
+                    if (lang?.value !== 'en') {
                         await this.window.webContents.session.cookies.set({ 
                             url: 'https://instagram.com',
                             name: 'ig_lang',
@@ -84,7 +84,6 @@ class Instagram extends DataRequestProvider implements WithWindow {
 
         // We extract the right cookies, and create a config we can then
         // use for successive requests
-        console.log(this.cookies);
         const sessionid = this.cookies.find(cookie => cookie.name === 'sessionid').value;
         // const shbid = this.cookies.find(cookie => cookie.name === 'shbid').value;
         const fetchConfig =  {
@@ -103,6 +102,8 @@ class Instagram extends DataRequestProvider implements WithWindow {
                 fetch(url, fetchConfig).then(response => response.json())
             )
         );
+
+        console.log(responses);
 
         // We then transform the data so that we can return it to the handler
         return responses.map(response => {
@@ -156,9 +157,9 @@ class Instagram extends DataRequestProvider implements WithWindow {
         console.log('Verified login status');
 
         // Load page URL
-        this.window.hide();
+        this.window.show();
         await new Promise((resolve) => {
-            this.window.once('ready-to-show', resolve)
+            this.window.webContents.on('did-finish-load', resolve)
             this.window.loadURL('https://www.instagram.com/download/request/');
         });
 

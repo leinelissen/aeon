@@ -45,7 +45,10 @@ class Log extends Component<{}, State> {
 
     fetchLog = (): Promise<void> => {
         return Repository.log()
-            .then(log => this.setState({ log, selectedCommit: log[0].oid }));
+            .then(log => this.setState({ 
+                log, 
+                selectedCommit: this.state.selectedCommit || log[0].oid 
+            }));
     }
 
     handleClick = (hash: string): void => {
@@ -68,6 +71,7 @@ class Log extends Component<{}, State> {
 
     render(): JSX.Element {
         const { log, selectedCommit, updating } = this.state;
+        console.log(this.state);
 
         if (!log.length) {
             return <Loading />;

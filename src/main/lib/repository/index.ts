@@ -7,6 +7,8 @@ import git, { Errors, ReadCommitResult, TREE, WalkerEntry, Walker, StatusRow } f
 import { DiffResult } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
+import path from 'path';
+import optionalJsonDecode from './optional-json-decode';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
@@ -15,8 +17,12 @@ export const REPOSITORY_PATH = path.resolve(APP_DATA_PATH, 'data', 'repository')
 export const EMPTY_REPO_HASH = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 
 const ENABLE_ENCRYPTION = process.env.ENABLE_ENCRYPTION !== 'false';
-const utfDecoder = new TextDecoder('utf-8');
 const fs = ENABLE_ENCRYPTION ? new CryptoFs('password').init() : nonCryptoFs;
+
+const diffableExtensions = [
+    '.json',
+    '.md',
+];
 
 /**
  * The map function that loops through a repository and returns a diff
@@ -28,15 +34,18 @@ const diffMapFunction = async function(filepath: string, entries: Array<WalkerEn
     const [ refTree, comparedTree ] = entries;
     const [ oid, refTreeContents, comparedTreeContents ] = await Promise.all([
         refTree.oid(),
-        refTree ? refTree.content() : null,
-        comparedTree ? comparedTree.content() : null,
+        refTree?.content(),
+        comparedTree?.content(),
     ]);
     
     // Calculate the diff
-    const diff = diffJson(comparedTreeContents ? utfDecoder.decode(comparedTreeContents) : '', refTreeContents ? utfDecoder.decode(refTreeContents) : '');
+    const extension = path.extname(filepath);
+    const diff = diffableExtensions.includes(extension)
+        ? diffJson(optionalJsonDecode(comparedTreeContents), optionalJsonDecode(refTreeContents))
+        : diffJson(comparedTreeContents ? '<BINARY BLOB>' : '', refTreeContents ? '<BINARY BLOB>' : '');
 
     // Filter any instances where there are no changes
-    if (diff.length === 1 && diff[0].count === 0) {
+    if (diff?.length === 1 && diff[0]?.count === 0) {
         return;
     }
 

@@ -51,8 +51,8 @@ class ProviderManager extends EventEmitter {
     updateAll = async (): Promise<void> => {
         // Loop through all registered providers and execute their updates
         await Promise.all(this.instances.map(key => 
-            this.instances.get(key).update())
-        );
+            this.update(key)
+        ));
 
         // TODO: We can create a commit now!
     }
@@ -80,6 +80,8 @@ class ProviderManager extends EventEmitter {
      * Save a bunch of files and auto-commit the result
      */
     saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<void> => {
+        console.log(files);
+
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
             // Prepend the supplied path with the key from the spcific service
@@ -95,6 +97,8 @@ class ProviderManager extends EventEmitter {
         const hasChangedFiles = status.find(
             ([, , WorkdirStatus, StageStatus]) => WorkdirStatus !== 1 && StageStatus > 1
         );
+
+        console.log(status, hasChangedFiles);
 
         if (hasChangedFiles) {
             await this.repository.commit(message);
@@ -161,7 +165,7 @@ class ProviderManager extends EventEmitter {
             if (await instance.isDataRequestComplete()) {
                 // If it is complete now, we'll fetch the data and parse it
                 const files = await instance.parseDataRequest();
-                this.saveFilesAndCommit(files, instance.key, `Data Request [${instance.key}] ${new Date().toLocaleString()}`)
+                await this.saveFilesAndCommit(files, instance.key, `Data Request [${instance.key}] ${new Date().toLocaleString()}`)
             }
 
             this.dispatchedDataRequests.set(key, {

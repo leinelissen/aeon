@@ -1,5 +1,5 @@
 const path = require('path');
-const rules = require('./webpack.rules');
+const rules = require('./webpack.rules')('tsconfig.renderer.json');
 const plugins = require('./webpack.plugins');
 
 rules.push({
