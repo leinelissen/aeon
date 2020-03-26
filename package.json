@@ -101,6 +101,7 @@
         "@types/source-map-support": "^0.5.1",
         "@types/styled-components": "^5.0.1",
         "adm-zip": "^0.4.14",
+        "cogo-toast": "^4.2.3",
         "date-fns": "^2.11.0",
         "diff": "^4.0.2",
         "electron-squirrel-startup": "^1.0.0",

@@ -1,4 +1,3 @@
-// import fs from 'fs';
 import path from 'path';
 import { diffJson, Change } from 'diff';
 import { app } from 'electron';
@@ -7,8 +6,8 @@ import git, { Errors, ReadCommitResult, TREE, WalkerEntry, Walker, StatusRow } f
 import { DiffResult } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
-import path from 'path';
 import optionalJsonDecode from './optional-json-decode';
+import Notifications from '../notifications';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
@@ -207,7 +206,11 @@ class Repository extends EventEmitter {
     
     public log = (args: { [key: string]: any } = {}): Promise<ReadCommitResult[]> => git.log({ ...this.config, ...args });
     
-    public commit = (message: string, args: { [key: string]: any } = {}): Promise<string> => git.commit({ ...this.config, author: this.author, message, ...args })
+    public commit = async (message: string, args: { [key: string]: any } = {}): Promise<string> => {
+        const result = await git.commit({ ...this.config, author: this.author, message, ...args });
+        Notifications.success(`A new commit was created: ${message}`);
+        return result;
+    }
 
     public status = (args: { [key: string]: any } = {}): Promise<StatusRow[]> => git.statusMatrix({ ...this.config, ...args });
 }

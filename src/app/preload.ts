@@ -11,6 +11,7 @@ declare global {
           send: typeof ipcRenderer.send;
           invoke: typeof ipcRenderer.invoke;
           on: typeof ipcRenderer.on;
+          removeListener: typeof ipcRenderer.removeListener;
           sourceMapSupport: typeof sourceMapSupport;
           git: {
               WORKDIR: typeof WORKDIR;
@@ -21,7 +22,7 @@ declare global {
     }
 }
 
-const channelWhitelist = ['repository', 'providers' ];
+const channelWhitelist = ['repository', 'providers', 'notifications' ];
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
@@ -42,7 +43,12 @@ contextBridge.exposeInMainWorld(
         on: (channel: string, func: any) => {
             if (channelWhitelist.includes(channel)) {
                 // Deliberately strip event as it includes `sender` 
-                ipcRenderer.on(channel, (event, ...args) => func(...args));
+                return ipcRenderer.on(channel, func);
+            }
+        },
+        removeListener: (channel: string, func: any) => {
+            if (channelWhitelist.includes(channel)) {
+                return ipcRenderer.removeListener(channel, func);
             }
         },
         sourceMapSupport: sourceMapSupport,

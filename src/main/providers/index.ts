@@ -4,6 +4,7 @@ import Repository from '../lib/repository';
 import path from 'path';
 import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns'
+import Notifications from 'main/lib/notifications';
 
 const providers: Array<typeof Provider | typeof DataRequestProvider> = [
     Instagram,
@@ -73,13 +74,14 @@ class ProviderManager extends EventEmitter {
         // Execute individual update, which should return a list of files to
         // be saved to disk
         const files = await instance.update();
-        await this.saveFilesAndCommit(files, instance.key, `Auto-update ${new Date().toLocaleString()}`);
+        const changedFiles = await this.saveFilesAndCommit(files, instance.key, `Auto-update ${new Date().toLocaleString()}`);
+        Notifications.success(`The update for ${instance.name} was successfully completed. ${changedFiles} files were changed.`)
     }
 
     /**
      * Save a bunch of files and auto-commit the result
      */
-    saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<void> => {
+    saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<number> => {
         console.log(files);
 
         // Then store all files using the repositor save and add handler
@@ -94,15 +96,17 @@ class ProviderManager extends EventEmitter {
 
         // Check if any files have been added
         const status = await this.repository.status();
-        const hasChangedFiles = status.find(
+        const amountOfFilesChanged = status.filter(
             ([, , WorkdirStatus, StageStatus]) => WorkdirStatus !== 1 && StageStatus > 1
-        );
+        ).length;
 
-        console.log(status, hasChangedFiles);
+        console.log(status, amountOfFilesChanged);
 
-        if (hasChangedFiles) {
+        if (amountOfFilesChanged) {
             await this.repository.commit(message);
         }
+
+        return amountOfFilesChanged;
     }
 
     /**
@@ -165,8 +169,10 @@ class ProviderManager extends EventEmitter {
             if (await instance.isDataRequestComplete()) {
                 // If it is complete now, we'll fetch the data and parse it
                 const files = await instance.parseDataRequest();
-                await this.saveFilesAndCommit(files, instance.key, `Data Request [${instance.key}] ${new Date().toLocaleString()}`)
+                const changedFiles = await this.saveFilesAndCommit(files, instance.key, `Data Request [${instance.key}] ${new Date().toLocaleString()}`)
+                Notifications.success(`The data request for ${instance.name} was successfully completed. ${changedFiles} files were changed.`)
             }
+
 
             this.dispatchedDataRequests.set(key, {
                 ...dispatchedRequest,

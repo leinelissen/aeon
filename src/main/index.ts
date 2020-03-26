@@ -4,6 +4,7 @@ import './lib/map-map';
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import initialise from './initialise';
+import WindowStore from './lib/window-store';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
@@ -29,6 +30,9 @@ const createWindow = (): void => {
     
     // and load the index.html of the app.
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+
+    // save the window to a singleton so that we can access it later
+    WindowStore.getInstance().window = mainWindow;
     
     // Open the DevTools.
     // mainWindow.webContents.openDevTools();

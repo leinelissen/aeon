@@ -21,6 +21,7 @@ export abstract class Provider {
         // @ts-ignore
         this.constructor['key'] = value; 
     };
+    public get name(): string { return this.constructor['name'] };
     /** Update the data that is retrieved by this Provider. Should return an
      * object with all new files, so they can be saved to disk. */
     abstract update(): Promise<ProviderFile[]>;

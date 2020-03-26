@@ -1,6 +1,7 @@
 import { hot } from 'react-hot-loader';
 import React, { Component } from 'react';
 import 'app/styles';
+import Notifications from './Notifications';
 import MenuBar from './MenuBar';
 import Log from 'app/pages/Log';
 import styled, { StyleSheetManager } from 'styled-components';
@@ -19,6 +20,7 @@ class App extends Component {
         return (
             <StyleSheetManager disableVendorPrefixes>
                 <div>
+                    <Notifications />
                     <MenuBar />
                     <Main>
                         <Log />
