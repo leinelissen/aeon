@@ -7,6 +7,7 @@ import Diff from './components/Diff';
 import Loading from 'app/components/Loading';
 import Button from 'app/components/Button';
 import Providers from 'app/utilities/Providers';
+import { faSync } from '@fortawesome/pro-light-svg-icons';
 
 interface State {
     log: ReadCommitResult[];
@@ -64,7 +65,7 @@ class Log extends Component<{}, State> {
 
     handleUpdate = async (): Promise<void> => {
         this.setState({ updating: true });
-        await Providers.updateAll();
+        await Providers.update('instagram');
         this.setState({ updating: false });
         this.fetchLog();
     }
@@ -83,8 +84,8 @@ class Log extends Component<{}, State> {
                     {log.map((entry: ReadCommitResult) => (
                         <Commit key={entry.oid} entry={entry} onClick={this.handleClick} active={entry.oid === selectedCommit} />
                     ))}
-                    <Button onClick={this.handleUpdate} loading={updating}>Refresh regular API 🦄</Button>
-                    <Button onClick={this.handleRefresh} loading={updating}>Refresh data requests API 🦄</Button>
+                    <Button icon={faSync} onClick={this.handleUpdate} loading={updating}>Refresh regular API</Button>
+                    <Button icon={faSync} onClick={this.handleRefresh} loading={updating}>Refresh data requests API</Button>
                 </CommitContainer>
                 <Diff commit={selectedCommit} />
             </Container>

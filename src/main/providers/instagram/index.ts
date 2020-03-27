@@ -31,7 +31,12 @@ class Instagram extends DataRequestProvider implements WithWindow {
             }
         });
         this.window.webContents.session.clearStorageData();
+    }
 
+    async initialise(): Promise<boolean> {
+        await this.verifyLoggedInStatus();
+
+        return true;
     }
 
     verifyLoggedInStatus = async (): Promise<void> => {

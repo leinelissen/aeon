@@ -3,6 +3,10 @@ import { ProviderCommands } from 'main/providers/types';
 const channel = 'providers';
 
 class Providers {
+    static initialise(key: string): Promise<boolean> {
+        return window.api.invoke(channel, ProviderCommands.INITIALISE, key);
+    }
+
     static update(key: string): Promise<void> {
         return window.api.invoke(channel, ProviderCommands.UPDATE, key);
     }

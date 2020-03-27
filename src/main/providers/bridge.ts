@@ -14,7 +14,7 @@ class ProviderBridge {
         ipcMain.handle('providers', this.handleMessage);
     }
 
-    private handleMessage = async (event: IpcMainInvokeEvent, command: number, ...args: any[]): Promise<void> => {
+    private handleMessage = async (event: IpcMainInvokeEvent, command: number, ...args: any[]): Promise<any> => {
         // GUARD: Check if the repository is initialised. If not, defer to the
         // messagecache, so that it can be injected later.
         if (!this.repository.isInitialised) {
@@ -23,6 +23,8 @@ class ProviderBridge {
         }
         
         switch(command) {
+            case ProviderCommands.INITIALISE:
+                return this.repository.initialise(args[0]);
             case ProviderCommands.UPDATE:
                 return this.repository.update(args[0]);
             case ProviderCommands.UPDATE_ALL:

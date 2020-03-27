@@ -14,10 +14,10 @@
               //
             ],
             "cwd": "${workspaceFolder}",
-            "program": "${workspaceFolder}/src/main/index.ts",
-            "outFiles": [
-              "${workspaceFolder}/.webpack/main/index.js"
-            ],
+            // "program": "${workspaceFolder}/src/main/index.ts",
+            // "outFiles": [
+            //   "${workspaceFolder}/.webpack/main/index.js"
+            // ],
             "sourceMaps": true
           }
     ]

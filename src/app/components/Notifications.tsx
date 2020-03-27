@@ -10,12 +10,12 @@ class Notifications extends Component {
         hideAfter: 10,
     };
 
-    componentDidMount() {
+    componentDidMount(): void {
         window.api.on('notifications', this.handleMessage)
         console.log('Registered handler')
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         window.api.removeListener('notifications', this.handleMessage);
     }
 

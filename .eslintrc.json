@@ -30,7 +30,6 @@
         "import/resolver": {
             "typescript": {}, // this loads <rootdir>/tsconfig.json to eslint
             "node": {
-                "extensions": [".js", ".jsx", ".ts", ".tsx"],
                 "paths": [ "src" ]
             }
         }

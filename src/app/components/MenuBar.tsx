@@ -12,7 +12,7 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     color: ${theme.colors.blue.primary};
-    font-weight: 800;
+    font-weight: 600;
     font-size: 12px;
     position: fixed;
     z-index: 10;
@@ -20,7 +20,7 @@ const Container = styled.div`
 
 function MenuBar(): JSX.Element {
     return (
-        <Container />
+        <Container>Aeon</Container>
     )
 }
 

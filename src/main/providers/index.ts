@@ -32,18 +32,13 @@ class ProviderManager extends EventEmitter {
 
         // Construct all providers that have been defined at the top
         providers.forEach((SingleProvider): void => {
-            this.instances.set(SingleProvider.key, new SingleProvider());
+            this.instances.set('instagram', new SingleProvider());
         });
 
         // Then initialise all classes
         // And after send out a ready event
-        Promise.all(this.instances.map(async (key): Promise<void> => {
-
-            this.instances.get(key).initialise?.()
-        })).then(() => {
-            this.isInitialised = true;
-            this.emit('ready');
-        });
+        this.isInitialised = true;
+        this.emit('ready');
     }
 
     /**
@@ -51,11 +46,15 @@ class ProviderManager extends EventEmitter {
      */
     updateAll = async (): Promise<void> => {
         // Loop through all registered providers and execute their updates
-        await Promise.all(this.instances.map(key => 
+        await Promise.all(this.instances.map((key) => 
             this.update(key)
         ));
 
         // TODO: We can create a commit now!
+    }
+
+    initialise = async (key: string): Promise<boolean> => {
+        return this.instances.get(key)?.initialise();
     }
 
     /**
@@ -150,7 +149,9 @@ class ProviderManager extends EventEmitter {
     }
 
     refreshDataRequests = async (): Promise<void> => {
-        await Promise.all(this.dispatchedDataRequests.map(async (key, dispatchedRequest): Promise<void> => {
+        const keys = Array.from(this.instances.keys());
+        await Promise.all(keys.map(async (key): Promise<void> => {
+            const dispatchedRequest = this.dispatchedDataRequests.get(key);
             const instance = this.instances.get(key);
 
             // GUARD: If a request has already been completed, we do not need to

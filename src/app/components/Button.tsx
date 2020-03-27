@@ -1,7 +1,9 @@
 import React from 'react';
-import theme from 'app/styles/theme';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import theme from 'app/styles/theme';
 import { Ball } from './Loading';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 const StyledButton = styled.button`
     background-color: ${theme.colors.blue.primary};
@@ -39,13 +41,15 @@ interface Props {
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     children?: string | JSX.Element | JSX.Element[];
     disabled?: boolean;
+    icon?: IconProp;
 }
 
-const Button = ({ children, loading, onClick, disabled }: Props): JSX.Element => {
+const Button = ({ children, loading, onClick, disabled, icon }: Props): JSX.Element => {
     return (
         <StyledButton onClick={onClick} disabled={loading || disabled}>
+            {icon ? <FontAwesomeIcon icon={icon} style={{ marginRight: 5 }} fixedWidth /> : null}
             {children}
-            {loading ? (<><Margin /><Ball size={10} /></>) : null}
+            {loading ? (<><Margin /><Ball size={10} color={theme.colors.white} /></>) : null}
         </StyledButton>
     )
 }

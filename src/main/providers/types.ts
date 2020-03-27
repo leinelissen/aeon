@@ -5,26 +5,25 @@ export interface ProviderFile {
     data: Buffer | string;
 }
 
-export interface Provider {
-    /** Initialise the Provider. If usesKeychain is set to true, this function
-     * will contain the keychain info for this Provider. */
-    initialise?(): Promise<void>;
-}
-
 export abstract class Provider {
     /** The key under which all files will be stored. Should be filesystem-safe
      * (no spaces, all-lowercase) */
     private static key: string;
     // @ts-ignore
-    public get key(): string { return this.constructor['key'] };
+    public get key(): string { return this.constructor['key'] }
     public set key(value: string) { 
         // @ts-ignore
         this.constructor['key'] = value; 
-    };
-    public get name(): string { return this.constructor['name'] };
+    }
+    public get name(): string { return this.constructor['name'] }
     /** Update the data that is retrieved by this Provider. Should return an
      * object with all new files, so they can be saved to disk. */
     abstract update(): Promise<ProviderFile[]>;
+    /** Initialise the provider. This function is called only when it is
+     * initialised for the first time during onboarding. The return boolean
+     * indicates whether the provider succeeded in initialising, ie. by logging
+     * into a particular service */
+    abstract initialise(): Promise<boolean>;
 }
 
 export interface DataRequestProvider extends Provider {
@@ -44,11 +43,11 @@ export abstract class DataRequestProvider extends Provider {
     private static dataRequestIntervalDays: number;
     /** The amount of days that are required between successive data requests */
     // @ts-ignore
-    public get dataRequestIntervalDays(): number { return this.constructor['dataRequestIntervalDays'] };
+    public get dataRequestIntervalDays(): number { return this.constructor['dataRequestIntervalDays'] }
     public set dataRequestIntervalDays(value: number) { 
         // @ts-ignore
         this.constructor['dataRequestIntervalDays'] = value; 
-    };
+    }
 }
 
 export interface WithWindow {
@@ -68,4 +67,5 @@ export enum ProviderCommands {
     DISPATCH_DATA_REQUEST = 0xfd,
     DISPATCH_DATA_REQUEST_TO_ALL = 0xfc,
     REFRESH_DATA_REQUESTS = 0xfb,
+    INITIALISE = 0xfa,
 }

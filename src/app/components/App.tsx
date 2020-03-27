@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import 'app/styles';
 import Notifications from './Notifications';
 import MenuBar from './MenuBar';
-import Log from 'app/pages/Log';
+import Pages from 'app/pages';
 import styled, { StyleSheetManager } from 'styled-components';
 
 const Main = styled.main`
@@ -23,7 +23,7 @@ class App extends Component {
                     <Notifications />
                     <MenuBar />
                     <Main>
-                        <Log />
+                        <Pages />
                     </Main>
                 </div>
             </StyleSheetManager>
