@@ -37,7 +37,8 @@ function createSecureWindow(origin: string, options: Electron.BrowserWindowConst
     window.webContents.on('will-navigate', (event, navigationUrl: string): void => {
         const parsedUrl = new URL(navigationUrl); 
 
-        if (parsedUrl.origin !== origin) {
+        if (!parsedUrl.origin.endsWith(origin)) {
+            console.error(`[BROWSER-WINDOW] A request for ${navigationUrl} was blocked because it did not match the predefined domain (${origin}, read ${parsedUrl.origin})`);
             event.preventDefault();
         }
     });

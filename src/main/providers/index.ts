@@ -96,8 +96,6 @@ class ProviderManager extends EventEmitter {
      * Save a bunch of files and auto-commit the result
      */
     saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<number> => {
-        console.log(files);
-
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
             // Prepend the supplied path with the key from the spcific service
@@ -113,8 +111,6 @@ class ProviderManager extends EventEmitter {
         const amountOfFilesChanged = status.filter(
             ([, , WorkdirStatus, StageStatus]) => WorkdirStatus !== 1 && StageStatus > 1
         ).length;
-
-        console.log(status, amountOfFilesChanged);
 
         if (amountOfFilesChanged) {
             await this.repository.commit(message);
@@ -186,13 +182,18 @@ class ProviderManager extends EventEmitter {
 
             // If it is uncompleted, we need to check upon it
             if (await instance.isDataRequestComplete()) {
-                ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
                 console.log('A data request has completed! Starting to parse...')
 
                 // If it is complete now, we'll fetch the data and parse it
                 const files = await instance.parseDataRequest();
-                const changedFiles = await this.saveFilesAndCommit(files, instance.key, `Data Request [${instance.key}] ${new Date().toLocaleString()}`)
-                Notifications.success(`The data request for ${instance.name} was successfully completed. ${changedFiles} files were changed.`)
+                const changedFiles = await this.saveFilesAndCommit(files, instance.key, `Data Request [${instance.key}] ${new Date().toLocaleString()}`);
+                Notifications.success(`The data request for ${instance.name} was successfully completed. ${changedFiles} files were changed.`);
+                
+                // Set the flag for completion
+                this.dispatchedDataRequests.set(key, { ...status, lastCheck: new Date(), completed: new Date() });
+                ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
+
+                return;
             }
 
 

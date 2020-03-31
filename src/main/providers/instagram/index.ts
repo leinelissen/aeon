@@ -20,7 +20,7 @@ class Instagram extends DataRequestProvider implements WithWindow {
     constructor() {
         super();
 
-        this.window = createSecureWindow('https://instagram.com');
+        this.window = createSecureWindow('instagram.com');
 
         // this.window.webContents.session.clearStorageData();
     }
@@ -154,7 +154,6 @@ class Instagram extends DataRequestProvider implements WithWindow {
         console.log('Verified login status');
 
         // Load page URL
-        this.window.show();
         await new Promise((resolve) => {
             this.window.webContents.once('did-finish-load', resolve)
             this.window.loadURL('https://www.instagram.com/download/request/');
@@ -172,23 +171,14 @@ class Instagram extends DataRequestProvider implements WithWindow {
     async parseDataRequest(): Promise<ProviderFile[]> {
         console.log('Started parsing request');
 
-        // Force the window to reload for non-obvious magic reasons
-        await new Promise((resolve) => {
-            this.window.webContents.once('did-finish-load', resolve);
-            this.window.reload();
-        });
-
-        console.log('WINDOW IS RELOADED');
-
         await new Promise(async (resolve) => {
             // Now we defer to the user to enter their credentials
             this.window.webContents.once('did-navigate', resolve); 
-            // const result = await this.window.webContents.executeJavaScript(`
-            //     Array.from(document.querySelectorAll('button'))
-            //         .find(el => el.textContent === 'Log In Again')
-            //         .click?.()
-            // `);
-            // console.log('BUTTON WAS CLICKED', result);
+            this.window.webContents.executeJavaScript(`
+                Array.from(document.querySelectorAll('button'))
+                    .find(el => el.textContent === 'Log In Again')
+                    .click?.()
+            `);
         });
 
         console.log('Page navigated after button press');

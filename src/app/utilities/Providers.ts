@@ -1,4 +1,4 @@
-import { ProviderCommands, DataRequestStatus, Provider } from 'main/providers/types';
+import { ProviderCommands, DataRequestStatus, Provider, ProviderEvents } from 'main/providers/types';
 
 const channel = 'providers';
 
