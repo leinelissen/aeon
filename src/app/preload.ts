@@ -56,6 +56,6 @@ contextBridge.exposeInMainWorld(
             TREE: TREE,
             WORKDIR: WORKDIR,
             STAGE: STAGE,
-        }
+        },
     },
 );

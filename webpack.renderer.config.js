@@ -18,7 +18,6 @@ rules.push({
     test: /\.css$/,
     use: [{ 
         loader: 'style-loader', 
-        options: { attrs: { nonce: 'devOnly' } } 
     }, { 
         loader: 'css-loader',
     }],

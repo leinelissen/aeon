@@ -6,6 +6,7 @@ import { BrowserWindow, WebRequest, webContents, app } from 'electron';
 import scrapingUrls from './urls.json';
 import AdmZip from 'adm-zip';
 import fs from 'fs';
+import createSecureWindow from 'main/lib/create-secure-window';
 
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
@@ -19,18 +20,9 @@ class Instagram extends DataRequestProvider implements WithWindow {
     constructor() {
         super();
 
-        this.window = new BrowserWindow({ 
-            width: 400, 
-            height: 600, 
-            alwaysOnTop: true, 
-            show: false, 
-            webPreferences: {
-                // enableRemoteModule: false,
-                offscreen: true,
-                // sandbox: true,
-            }
-        });
-        this.window.webContents.session.clearStorageData();
+        this.window = createSecureWindow('https://instagram.com');
+
+        // this.window.webContents.session.clearStorageData();
     }
 
     async initialise(): Promise<boolean> {

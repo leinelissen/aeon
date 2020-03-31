@@ -13,6 +13,8 @@ interface State {
 const Container = styled.div`
     width: 100%;
     height: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
     min-height: calc(100vh - 40px);
     display: flex;
     flex-direction: column;
@@ -113,7 +115,7 @@ class Onboarding extends Component<{}, State> {
                     </BrandContainer>
                 </Center>
                 <Bottom>
-                    {isInitialised ? <Link to="/log">Continue</Link> : 'null'}
+                    {isInitialised ? <Link to="/log">Continue</Link> : <br />}
                 </Bottom>
             </Container>
         );
