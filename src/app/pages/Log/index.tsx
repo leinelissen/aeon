@@ -8,6 +8,7 @@ import Loading from 'app/components/Loading';
 import Button from 'app/components/Button';
 import Providers from 'app/utilities/Providers';
 import { faSync } from '@fortawesome/pro-light-svg-icons';
+import Requests from './components/Requests';
 
 interface State {
     log: ReadCommitResult[];
@@ -63,16 +64,15 @@ class Log extends Component<{}, State> {
         this.fetchLog();
     }
 
-    handleUpdate = async (): Promise<void> => {
+    handleDispatch = async (): Promise<void> => {
         this.setState({ updating: true });
-        await Providers.update('instagram');
+        await Providers.dispatchDataRequest('instagram');
         this.setState({ updating: false });
         this.fetchLog();
     }
 
     render(): JSX.Element {
         const { log, selectedCommit, updating } = this.state;
-        console.log(this.state);
 
         if (!log.length) {
             return <Loading />;
@@ -84,8 +84,9 @@ class Log extends Component<{}, State> {
                     {log.map((entry: ReadCommitResult) => (
                         <Commit key={entry.oid} entry={entry} onClick={this.handleClick} active={entry.oid === selectedCommit} />
                     ))}
-                    <Button icon={faSync} onClick={this.handleUpdate} loading={updating}>Refresh regular API</Button>
-                    <Button icon={faSync} onClick={this.handleRefresh} loading={updating}>Refresh data requests API</Button>
+                    <Button icon={faSync} onClick={this.handleRefresh} loading={updating}>Refresh data requests</Button>
+                    <Button icon={faSync} onClick={this.handleDispatch} loading={updating}>Initiate data request</Button>
+                    <Requests />
                 </CommitContainer>
                 <Diff commit={selectedCommit} />
             </Container>

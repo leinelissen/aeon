@@ -68,4 +68,10 @@ export enum ProviderCommands {
     DISPATCH_DATA_REQUEST_TO_ALL = 0xfc,
     REFRESH_DATA_REQUESTS = 0xfb,
     INITIALISE = 0xfa,
+    GET_DISPATCHED_DATA_REQUESTS = 0xf9
+}
+
+export enum ProviderEvents {
+    CHECKING_DATA_REQUESTS = 0xff,
+    DATA_REQUEST_COMPLETED = 0xfe,
 }

@@ -1,6 +1,9 @@
 import Repository from '.';
-import { ProviderCommands } from './types';
+import { ProviderCommands, ProviderEvents } from './types';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
+import WindowStore from 'main/lib/window-store';
+
+const channelName = 'providers';
 
 class ProviderBridge {
     repository: Repository = null;
@@ -11,7 +14,7 @@ class ProviderBridge {
         this.repository = repository;
         this.repository.on('ready', this.clearMessageCache);
 
-        ipcMain.handle('providers', this.handleMessage);
+        ipcMain.handle(channelName, this.handleMessage);
     }
 
     private handleMessage = async (event: IpcMainInvokeEvent, command: number, ...args: any[]): Promise<any> => {
@@ -35,12 +38,23 @@ class ProviderBridge {
                 return this.repository.dispatchDataRequestToAll();
             case ProviderCommands.REFRESH_DATA_REQUESTS:
                 return this.repository.refreshDataRequests();
+            case ProviderCommands.GET_DISPATCHED_DATA_REQUESTS:
+                return this.repository.dispatchedDataRequests;
         }
     }
 
     private clearMessageCache = (): void => {
         this.messageCache.forEach(args => this.handleMessage(...args));
         this.messageCache = [];
+    }
+
+    /**
+     * Send an event to the renderer
+     * @param event The event to send out
+     */
+    public static send(event: ProviderEvents): void {
+        const window = WindowStore.getInstance().window;
+        window.webContents.send(channelName, event);
     }
 }
 

@@ -115,36 +115,36 @@ class Instagram extends DataRequestProvider implements WithWindow {
         await this.verifyLoggedInStatus();
 
         // Load the dispatched window
+        this.window.hide();
+        await new Promise((resolve) => {
+            this.window.webContents.on('did-finish-load', resolve)
+            this.window.loadURL('https://www.instagram.com/download/request/');
+        });
+
+        // We'll click the button for the user, but we'll need to defer to the
+        // user for a password
+        this.window.webContents.executeJavaScript(`
+            Array.from(document.querySelectorAll('button'))
+                .find(el => el.textContent === 'Next')
+                .click?.()
+        `);
         this.window.show();
-        await this.window.loadURL('https://www.instagram.com/download/request/');
-
-        // And now we dive into the page contents to dispatch the request
-        const button = await this.window.webContents.executeJavaScript(`
-            let nextButton = Array.from(document.querySelectorAll('button'))
-                .find(el => el.textContent === 'Next');
-            nextButton;
-        `);
-
-        // GUARD: The button's value must be 'Next' 
-        console.log('BUTTON', button);
-        if (!button) {
-            throw new Error('UnknownPageState');
-        }
-
-        // Now that we've found the button, we trigger it.
-        await this.window.webContents.executeJavaScript(`
-            nextButton.click();
-        `);
 
         // Now we must defer the page to the user, so that they can enter their
         // password. We then listen for a succesfull AJAX call 
-        await new Promise((resolve) => {
+        return new Promise((resolve) => {
             this.window.webContents.session.webRequest.onCompleted({
                 urls: [ 'https://*.instagram.com/*' ]
-            }, (details: any) => {
+            }, (details: Electron.OnCompletedListenerDetails) => {
                 console.log('NEW REQUEST', details);
+
+                if (details.url === 'https://www.instagram.com/download/request_download_data_ajax/'
+                    && details.statusCode === 200) {
+                    this.window.hide();
+                    resolve();
+                }
             });
-        })
+        });
         
     }
 
@@ -156,7 +156,7 @@ class Instagram extends DataRequestProvider implements WithWindow {
         // Load page URL
         this.window.show();
         await new Promise((resolve) => {
-            this.window.webContents.on('did-finish-load', resolve)
+            this.window.webContents.once('did-finish-load', resolve)
             this.window.loadURL('https://www.instagram.com/download/request/');
         });
 
@@ -172,15 +172,23 @@ class Instagram extends DataRequestProvider implements WithWindow {
     async parseDataRequest(): Promise<ProviderFile[]> {
         console.log('Started parsing request');
 
-        // We'll force a click on the button
+        // Force the window to reload for non-obvious magic reasons
         await new Promise((resolve) => {
+            this.window.webContents.once('did-finish-load', resolve);
+            this.window.reload();
+        });
+
+        console.log('WINDOW IS RELOADED');
+
+        await new Promise(async (resolve) => {
             // Now we defer to the user to enter their credentials
             this.window.webContents.once('did-navigate', resolve); 
-            this.window.webContents.executeJavaScript(`
-                Array.from(document.querySelectorAll('button'))
-                    .find(el => el.textContent === 'Log In Again')
-                    .click?.()
-            `);
+            // const result = await this.window.webContents.executeJavaScript(`
+            //     Array.from(document.querySelectorAll('button'))
+            //         .find(el => el.textContent === 'Log In Again')
+            //         .click?.()
+            // `);
+            // console.log('BUTTON WAS CLICKED', result);
         });
 
         console.log('Page navigated after button press');

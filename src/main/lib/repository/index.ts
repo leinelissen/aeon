@@ -1,12 +1,12 @@
 import path from 'path';
-import { diffJson, Change } from 'diff';
+import { Change } from 'diff';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
 import git, { Errors, ReadCommitResult, TREE, WalkerEntry, Walker, StatusRow } from 'isomorphic-git';
 import { DiffResult } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
-import optionalJsonDecode from './optional-json-decode';
+import generateDiff from './generate-diff';
 import Notifications from '../notifications';
 
 // Define a location where the repository will be saved
@@ -17,11 +17,6 @@ export const EMPTY_REPO_HASH = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 
 const ENABLE_ENCRYPTION = process.env.ENABLE_ENCRYPTION !== 'false';
 const fs = ENABLE_ENCRYPTION ? new CryptoFs('password').init() : nonCryptoFs;
-
-const diffableExtensions = [
-    '.json',
-    '.md',
-];
 
 /**
  * The map function that loops through a repository and returns a diff
@@ -38,18 +33,15 @@ const diffMapFunction = async function(filepath: string, entries: Array<WalkerEn
     ]);
     
     // Calculate the diff
-    const extension = path.extname(filepath);
-    const diff = diffableExtensions.includes(extension)
-        ? diffJson(optionalJsonDecode(comparedTreeContents), optionalJsonDecode(refTreeContents))
-        : diffJson(comparedTreeContents ? '<BINARY BLOB>' : '', refTreeContents ? '<BINARY BLOB>' : '');
+    const diff = generateDiff(filepath, comparedTreeContents, refTreeContents);
 
     // Filter any instances where there are no changes
-    if (diff?.length === 1 && diff[0]?.count === 0) {
+    if (!diff.hasChanges) {
         return;
     }
 
     // Then return the data as expected
-    return { filepath, oid, diff };
+    return { filepath, oid, ...diff };
 }
 
 class Repository extends EventEmitter {
@@ -168,13 +160,7 @@ class Repository extends EventEmitter {
         // Optionally remove all files from the diff without changes
         if (!options.showUnchangedFiles) {
             // Loop through all files one-by-one
-            return diff.filter(file =>
-                // Then check if there are any changes that have a flag for
-                // parts being either removed or added
-                file.diff.reduce((result, change: Change) => 
-                    result || change.removed || change.added, false
-                )
-            );
+            return diff.filter(file => file.hasChanges);
         }
 
         return diff;

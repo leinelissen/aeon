@@ -1,10 +1,13 @@
-import Instagram from './instagram';
-import { Provider, ProviderFile, DataRequestProvider, DataRequestStatus } from './types';
-import Repository from '../lib/repository';
 import path from 'path';
 import { EventEmitter } from 'events';
-import { differenceInDays } from 'date-fns'
+import { differenceInDays } from 'date-fns';
+import Store from 'electron-store';
+import Instagram from './instagram';
+import { Provider, ProviderFile, DataRequestProvider, DataRequestStatus, ProviderEvents } from './types';
+import Repository from '../lib/repository';
 import Notifications from 'main/lib/notifications';
+import ProviderBridge from './bridge';
+import PersistedMap from 'main/lib/persisted-map';
 
 const providers: Array<typeof Provider | typeof DataRequestProvider> = [
     Instagram,
@@ -22,7 +25,7 @@ class ProviderManager extends EventEmitter {
 
     // Stores data requests that have been dispatched, so that we can check upon
     // their state once in a while.
-    dispatchedDataRequests: Map<string, DataRequestStatus> = new Map().set('instagram', { dispatched: new Date() });
+    dispatchedDataRequests: PersistedMap<string, DataRequestStatus>;
 
     constructor(repository: Repository) {
         super();
@@ -34,6 +37,18 @@ class ProviderManager extends EventEmitter {
         providers.forEach((SingleProvider): void => {
             this.instances.set('instagram', new SingleProvider());
         });
+
+        // Construct the dispatchedDataRequests file so that we can save it to
+        // disk whenever neccessary
+        const store = new Store();
+        const retrievedRequests = JSON.parse(store.get('dispatched-data-requests', '[]'));
+        this.dispatchedDataRequests = new PersistedMap(retrievedRequests, (map) => {
+            store.set('dispatched-data-requests', map.toString());
+        });
+
+        // Then we create a timeout function that checks for completed data
+        // requests
+        // setInterval(this.refreshDataRequests, 60000);
 
         // Then initialise all classes
         // And after send out a ready event
@@ -142,24 +157,27 @@ class ProviderManager extends EventEmitter {
      * Dispatch data requests for all instances that support it
      */
     dispatchDataRequestToAll = async (): Promise<void> => {
-        await Promise.all(this.instances.map(key =>
+        await Promise.all(this.instances.map((instance, key) =>
             this.dispatchDataRequest(key)
                 .catch(() => null)
         ));
     }
 
     refreshDataRequests = async (): Promise<void> => {
-        const keys = Array.from(this.instances.keys());
-        await Promise.all(keys.map(async (key): Promise<void> => {
-            const dispatchedRequest = this.dispatchedDataRequests.get(key);
+        // Send out an event so the front-end knows we are busy checking
+        // outstanding data requests
+        ProviderBridge.send(ProviderEvents.CHECKING_DATA_REQUESTS);
+        console.log('Checking for completed data requests...');
+
+        await Promise.all(this.dispatchedDataRequests.map(async (status, key): Promise<void> => {
             const instance = this.instances.get(key);
 
             // GUARD: If a request has already been completed, we do not need to
             // check upon it further
-            if (dispatchedRequest.completed) {
+            if (status.completed) {
                 // However, we will check if we need to purge it from the map if
                 // it has been completed for x days
-                if (differenceInDays(dispatchedRequest.completed, new Date()) > instance.dataRequestIntervalDays) {
+                if (differenceInDays(status.completed, new Date()) > instance.dataRequestIntervalDays) {
                     this.dispatchedDataRequests.delete(key);
                 }
 
@@ -168,6 +186,9 @@ class ProviderManager extends EventEmitter {
 
             // If it is uncompleted, we need to check upon it
             if (await instance.isDataRequestComplete()) {
+                ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
+                console.log('A data request has completed! Starting to parse...')
+
                 // If it is complete now, we'll fetch the data and parse it
                 const files = await instance.parseDataRequest();
                 const changedFiles = await this.saveFilesAndCommit(files, instance.key, `Data Request [${instance.key}] ${new Date().toLocaleString()}`)
@@ -176,7 +197,7 @@ class ProviderManager extends EventEmitter {
 
 
             this.dispatchedDataRequests.set(key, {
-                ...dispatchedRequest,
+                ...status,
                 lastCheck: new Date(),
             });
         }));

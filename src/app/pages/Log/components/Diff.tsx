@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DiffResult } from 'main/lib/repository/types';
+import { DiffResult, DiffType } from 'main/lib/repository/types';
 import Repository from 'app/utilities/Repository';
 import styled, { css } from 'styled-components';
 import { Change } from 'diff';
@@ -77,7 +77,7 @@ class Diff extends Component<Props, State> {
                     <div key={file.filepath}>
                         <h3>{file.filepath}</h3>
                         <div>
-                            {file.diff.map((change: Change, index) => (
+                            {file.type === DiffType.OTHER && file.diff.map((change: Change, index: number) => (
                                 <Code key={index} added={change.added} removed={change.removed}>{change.value}</Code>
                             ))}
                         </div>

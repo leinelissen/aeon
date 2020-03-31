@@ -1,4 +1,4 @@
-import { ProviderCommands } from 'main/providers/types';
+import { ProviderCommands, DataRequestStatus, Provider } from 'main/providers/types';
 
 const channel = 'providers';
 
@@ -25,6 +25,10 @@ class Providers {
 
     static refreshDataRequests(): Promise<void> {
         return window.api.invoke(channel, ProviderCommands.REFRESH_DATA_REQUESTS);
+    }
+
+    static getDataRequests(): Promise<Map<string, DataRequestStatus>> {
+        return window.api.invoke(channel, ProviderCommands.GET_DISPATCHED_DATA_REQUESTS);
     }
 }
 
