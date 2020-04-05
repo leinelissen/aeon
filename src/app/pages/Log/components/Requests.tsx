@@ -35,7 +35,6 @@ class Requests extends Component<{}, State> {
 
     async retriveDataRequests(): Promise<void> {
         const dataRequests = await Providers.getDataRequests();
-        console.log('DATA REQUESTS', dataRequests);
         this.setState({ dataRequests });
     }
 
@@ -47,7 +46,6 @@ class Requests extends Component<{}, State> {
 
     render(): JSX.Element {
         const { dataRequests } = this.state;
-        console.log(dataRequests);
 
         if (!dataRequests) {
             return <Loading />

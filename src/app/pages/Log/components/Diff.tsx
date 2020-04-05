@@ -66,6 +66,7 @@ class Diff extends Component<Props, State> {
 
     render(): JSX.Element {
         const { diff } = this.state;
+        console.log(diff);
 
         if (!diff) {
             return <Loading />;

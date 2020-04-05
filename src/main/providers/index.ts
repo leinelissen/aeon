@@ -41,14 +41,15 @@ class ProviderManager extends EventEmitter {
         // Construct the dispatchedDataRequests file so that we can save it to
         // disk whenever neccessary
         const store = new Store();
-        const retrievedRequests = JSON.parse(store.get('dispatched-data-requests', '[]'));
+        const retrievedData = store.get('dispatched-data-requests', '[]');
+        const retrievedRequests = JSON.parse(retrievedData, (key, value) => Date.parse(value) ? new Date(value) : value);
         this.dispatchedDataRequests = new PersistedMap(retrievedRequests, (map) => {
             store.set('dispatched-data-requests', map.toString());
         });
 
         // Then we create a timeout function that checks for completed data
-        // requests
-        // setInterval(this.refreshDataRequests, 60000);
+        // requests every five minutes
+        setInterval(this.refreshDataRequests, 300_000);
 
         // Then initialise all classes
         // And after send out a ready event

@@ -1,9 +1,9 @@
 import { Change } from 'diff';
 
 export enum DiffType {
-    OBJECT = 0xff,
-    BINARY_BLOB = 0xfe,
-    OTHER = 0xfd,
+    OBJECT,
+    BINARY_BLOB,
+    OTHER,
 }
 
 export interface ObjectChange {
@@ -28,13 +28,13 @@ export interface StatusResult {
 }
 
 export enum RepositoryCommands {
-    LOG = 0xff,
-    DIFF = 0xfe,
-    STATUS = 0xfd,
+    LOG,
+    DIFF,
+    STATUS,
 } 
 
 export enum RepositoryArguments {
-    WORKDIR = 0xffff,
-    STAGE = 0xfffe,
-    HEAD = 0xfffd,
+    WORKDIR,
+    STAGE,
+    HEAD,
 }

@@ -8,6 +8,7 @@ import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
 import generateDiff from './generate-diff';
 import Notifications from '../notifications';
+import runParsers from './parse';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
@@ -84,6 +85,8 @@ class Repository extends EventEmitter {
             })
             .then(() => this.isInitialised = true)
             .then(() => this.emit('ready'))
+            .then(() => runParsers(this))
+            .then(console.log)
             .catch(console.error);
     }
 
@@ -199,6 +202,8 @@ class Repository extends EventEmitter {
     }
 
     public status = (args: { [key: string]: any } = {}): Promise<StatusRow[]> => git.statusMatrix({ ...this.config, ...args });
+    
+    public readFile = (filePath: string): Promise<Buffer> => fs.promises.readFile(filePath);
 }
 
 export default Repository;

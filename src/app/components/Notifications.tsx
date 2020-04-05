@@ -12,7 +12,6 @@ class Notifications extends Component {
 
     componentDidMount(): void {
         window.api.on('notifications', this.handleMessage)
-        console.log('Registered handler')
     }
 
     componentWillUnmount(): void {
