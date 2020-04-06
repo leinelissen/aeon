@@ -1,6 +1,6 @@
 import path from 'path';
 import Repository, { REPOSITORY_PATH } from 'main/lib/repository';
-import { ProviderDatum, ProviderSchema } from 'main/providers/types';
+import { ProviderDatum, ProviderParser } from 'main/providers/types';
 import parsers from 'main/providers/parsers';
 
 const decoder = new TextDecoder('utf-8');
@@ -68,10 +68,10 @@ function recursivelyExtractData(haystack: {[key: string]: any}, needle: string):
  * Extract all data from a given file according to the provided schema
  * @param file The provided file in buffer format
  * @param provider The provider for this specific set of schemas
- * @param schema A providerschema that gives the rules
+ * @param schema A ProviderParser that gives the rules
  */
-async function parseSchema(file: Buffer | { [key: string] : any }, provider: string, schema: ProviderSchema): Promise<ProviderDatum<any, any>[]> {
-    const { source } = this.schema;
+function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderParser): ProviderDatum<any, any>[] {
+    const { source, provider } = parser;
 
     // Then we decode the file
     const object = file instanceof Buffer 
@@ -84,8 +84,8 @@ async function parseSchema(file: Buffer | { [key: string] : any }, provider: str
     }
 
     // Now we can start parsing the file
-    return schema.schema.map((singleSchema): ProviderDatum<any, any> => {
-        const { type, transformer, key } = singleSchema;
+    return parser.schemas.map((schema): ProviderDatum<any, any> => {
+        const { type, transformer, key } = schema;
         // We then recursively extract and possibly transform the data
         const extractedData = key ? recursivelyExtractData(object, key) : object;
         const transformedData = transformer 

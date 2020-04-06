@@ -195,11 +195,13 @@ export type PostSeen = ProviderDatum<string, ProvidedDataTypes.POST_SEEN>;
 export type PrivacySetting = ProviderDatum<{ key: string; value: any }, ProvidedDataTypes.PRIVACY_SETTING>;
 export type UploadedContact = ProviderDatum<unknown, ProvidedDataTypes.UPLOADED_CONTACT>;
 
-export interface ProviderSchema {
+export interface ProviderParser {
     // The file from which the data has originated
     source: string;
+    // An optional provider string
+    provider?: string;
     // The schema for accessing the data in the particular file
-    schema: {
+    schemas: {
         // The key which is used to access the data. This key may be nested. If
         // the key is not set, the root object is assumed to be the key
         key?: string;

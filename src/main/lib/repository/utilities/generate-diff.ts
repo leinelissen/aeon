@@ -1,7 +1,9 @@
 import path from 'path';
 import { diffJson, diffLines, Change } from 'diff';
 import { detailedDiff } from 'deep-object-diff';
-import { DiffType, ObjectChange } from '../types';
+import { DiffType, ObjectChange, ObjectDiff, TextDiff, ExtractedDataDiff, BlobDiff } from '../types';
+import parseSchema from './parse-schema';
+import { parsersByFile } from 'main/providers/parsers';
 
 const utfDecoder = new TextDecoder('utf-8');
 
@@ -23,7 +25,7 @@ function generateDiff(
 ): {
     hasChanges: boolean;
     type: DiffType;
-    diff: Change[] | ObjectChange;
+    diff: ObjectDiff | TextDiff | ExtractedDataDiff | BlobDiff;
 } {
     // GUARD: Check if the files are binary blobs
     const extension = path.extname(filepath)
@@ -52,9 +54,24 @@ function generateDiff(
     
             // Return the diff
             const diff = detailedDiff(refObject, comparedObject) as ObjectChange;
+            
+            // Now that we've calculated the diff, we might as well try to
+            // extract the data from the files using JSON. This does depend on
+            // whether there is a parser available for the particular file.
+            // We'll start out by tring to find a parser for the current file
+            const parser = parsersByFile.get(filepath);
+            // And if the parser is there, we'll extract the data for the three keys
+            const extractedDiff = parser ? {
+                added: parseSchema(diff.added, parser),
+                deleted: parseSchema(diff.deleted, parser),
+                updated: parseSchema(diff.updated, parser),
+            } : undefined;
+
             return { 
-                diff,
-                type: DiffType.OBJECT,
+                // We return the extracted data if it exists
+                diff: extractedDiff || diff,
+                // And modify the DiffType accordingly
+                type: extractedDiff ? DiffType.OBJECT : DiffType.EXTRACTED_DATA,
                 hasChanges: Object.keys(diff.added).length > 0
                     || Object.keys(diff.deleted).length > 0
                     || Object.keys(diff.updated).length > 0
@@ -68,7 +85,7 @@ function generateDiff(
     const diff = diffLines(refString || '', comparedString || '');
     return {
         diff,
-        type: DiffType.OTHER,
+        type: DiffType.TEXT,
         hasChanges: diff?.length === 1 && diff[0]?.count === 0
     }
 }

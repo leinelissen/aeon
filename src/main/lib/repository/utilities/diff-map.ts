@@ -8,7 +8,7 @@ import { DiffResult } from '../types';
  * @param filepath The filepath for the currently handled file
  * @param entries The references to the walker functions for the individual trees
  */
-const diffMapFunction = async function(filepath: string, entries: Array<WalkerEntry>): Promise<DiffResult> {
+const diffMapFunction = async function(filepath: string, entries: Array<WalkerEntry>): Promise<DiffResult<unknown>> {
     // Extract entries and file contents
     const [ refTree, comparedTree ] = entries;
     const [ oid, refTreeContents, comparedTreeContents ] = await Promise.all([

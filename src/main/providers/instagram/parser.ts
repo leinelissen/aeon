@@ -1,4 +1,4 @@
-import { ProvidedDataTypes, ProviderSchema, Follower, AccountFollowing, Photo, JoinDate, PrivacySetting, PostSeen } from '../types';
+import { ProvidedDataTypes, ProviderParser, Follower, AccountFollowing, Photo, JoinDate, PrivacySetting, PostSeen } from '../types';
 import { parseISO } from 'date-fns';
 import { objectToKeyValueTransformer } from 'main/lib/map-object-to-key-value';
 
@@ -11,10 +11,10 @@ type GenericKeyedData = {
     [key: string]: string
 };
 
-const schema: ProviderSchema[] = [
+const parsers: ProviderParser[] = [
     {
         source: 'account_history.json',
-        schema: [
+        schemas: [
             {
                 key: 'ip_address',
                 type: ProvidedDataTypes.IP_ADDRESS,
@@ -31,7 +31,7 @@ const schema: ProviderSchema[] = [
     },
     {
         source: 'accounts_following_you.json',
-        schema: [
+        schemas: [
             {
                 key: 'text',
                 type: ProvidedDataTypes.FOLLOWER
@@ -40,7 +40,7 @@ const schema: ProviderSchema[] = [
     },
     {
         source: 'accounts_following_you.json',
-        schema: [
+        schemas: [
             {
                 key: 'text',
                 type: ProvidedDataTypes.FOLLOWER
@@ -49,7 +49,7 @@ const schema: ProviderSchema[] = [
     },
     {
         source: 'accounts_you_follow.json',
-        schema: [
+        schemas: [
             {
                 key: 'text',
                 type: ProvidedDataTypes.ACCOUNT_FOLLOWING
@@ -58,7 +58,7 @@ const schema: ProviderSchema[] = [
     },
     {
         source: 'ads_interests.json',
-        schema: [
+        schemas: [
             {
                 key: 'text',
                 type: ProvidedDataTypes.AD_INTEREST
@@ -67,7 +67,7 @@ const schema: ProviderSchema[] = [
     },
     {
         source: 'ads_interests.json',
-        schema: [
+        schemas: [
             {
                 key: 'text',
                 type: ProvidedDataTypes.AD_INTEREST
@@ -76,7 +76,7 @@ const schema: ProviderSchema[] = [
     },
     {
         source: 'connections.json',
-        schema: [
+        schemas: [
             {
                 key: 'followers',
                 type: ProvidedDataTypes.FOLLOWER,
@@ -104,7 +104,7 @@ const schema: ProviderSchema[] = [
     },
     {
         source: "information_about_you.json",
-        schema: [
+        schemas: [
             {
                 key: 'city_name',
                 type: ProvidedDataTypes.PLACE_OF_RESIDENCE
@@ -113,7 +113,7 @@ const schema: ProviderSchema[] = [
     },
     {
         source: 'media.json',
-        schema: [
+        schemas: [
             {
                 key: 'profile',
                 type: ProvidedDataTypes.PHOTO,
@@ -131,7 +131,7 @@ const schema: ProviderSchema[] = [
     }, 
     {
         source: 'profile.json',
-        schema: [
+        schemas: [
             {
                 key: 'date_joined',
                 type: ProvidedDataTypes.JOIN_DATE,
@@ -175,7 +175,7 @@ const schema: ProviderSchema[] = [
     },
     {
         source: 'seen_content.json',
-        schema: [
+        schemas: [
             {
                 key: 'posts_seen',
                 type: ProvidedDataTypes.POST_SEEN,
@@ -190,7 +190,7 @@ const schema: ProviderSchema[] = [
     },
     {
         source: 'settings.json',
-        schema: [
+        schemas: [
             {
                 type: ProvidedDataTypes.PRIVACY_SETTING,
                 transformer: objectToKeyValueTransformer
@@ -199,4 +199,4 @@ const schema: ProviderSchema[] = [
     },
 ];
 
-export default schema;
+export default parsers;
