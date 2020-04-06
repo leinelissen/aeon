@@ -1,7 +1,7 @@
 import path from 'path';
 import { diffJson, diffLines, Change } from 'diff';
 import { detailedDiff } from 'deep-object-diff';
-import { DiffType, ObjectChange, ObjectDiff, TextDiff, ExtractedDataDiff, BlobDiff } from '../types';
+import { DiffType, ObjectChange, ObjectDiff, TextDiff, ExtractedDataDiff, BlobDiff, DiffResult } from '../types';
 import parseSchema from './parse-schema';
 import { parsersByFile } from 'main/providers/parsers';
 
@@ -22,11 +22,7 @@ function generateDiff(
     filepath: string, 
     ref: Uint8Array | void, 
     compared: Uint8Array | void
-): {
-    hasChanges: boolean;
-    type: DiffType;
-    diff: ObjectDiff | TextDiff | ExtractedDataDiff | BlobDiff;
-} {
+): DiffResult<unknown> {
     // GUARD: Check if the files are binary blobs
     const extension = path.extname(filepath)
     if (!diffableExtensions.includes(extension)) {
@@ -34,6 +30,7 @@ function generateDiff(
         const diff = diffJson(ref ? '<BINARY BLOB>' : '', compared ? '<BINARY BLOB>' : '');
         
         return {
+            filepath,
             diff,
             type: DiffType.BINARY_BLOB,
             hasChanges: !ref || !compared,
@@ -67,7 +64,8 @@ function generateDiff(
                 updated: parseSchema(diff.updated, parser),
             } : undefined;
 
-            return { 
+            return {
+                filepath, 
                 // We return the extracted data if it exists
                 diff: extractedDiff || diff,
                 // And modify the DiffType accordingly
@@ -84,6 +82,7 @@ function generateDiff(
     // Else we just do a normal diff and return the results
     const diff = diffLines(refString || '', comparedString || '');
     return {
+        filepath,
         diff,
         type: DiffType.TEXT,
         hasChanges: diff?.length === 1 && diff[0]?.count === 0

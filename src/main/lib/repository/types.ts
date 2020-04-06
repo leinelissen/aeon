@@ -29,7 +29,6 @@ export interface ObjectChange<O = object> {
  */
 export interface DiffResult<D> {
     filepath: string;
-    oid: string;
     diff: Change[] | ObjectChange<unknown> | ObjectChange<ProviderDatum<unknown, unknown>>;
     type: DiffType;
     hasChanges: boolean;

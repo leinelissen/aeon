@@ -11,8 +11,7 @@ import { DiffResult } from '../types';
 const diffMapFunction = async function(filepath: string, entries: Array<WalkerEntry>): Promise<DiffResult<unknown>> {
     // Extract entries and file contents
     const [ refTree, comparedTree ] = entries;
-    const [ oid, refTreeContents, comparedTreeContents ] = await Promise.all([
-        refTree.oid(),
+    const [ refTreeContents, comparedTreeContents ] = await Promise.all([
         refTree?.content(),
         comparedTree?.content(),
     ]);
@@ -26,7 +25,7 @@ const diffMapFunction = async function(filepath: string, entries: Array<WalkerEn
     }
 
     // Then return the data as expected
-    return { filepath, oid, ...diff };
+    return diff;
 }
 
 export default diffMapFunction;
