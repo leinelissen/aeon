@@ -6,9 +6,8 @@ import git, { Errors, ReadCommitResult, TREE, WalkerEntry, Walker, StatusRow } f
 import { DiffResult } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
-import generateDiff from './generate-diff';
 import Notifications from '../notifications';
-import runParsers from './parse';
+import diffMapFunction from './utilities/diff-map';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
@@ -18,32 +17,6 @@ export const EMPTY_REPO_HASH = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 
 const ENABLE_ENCRYPTION = process.env.ENABLE_ENCRYPTION !== 'false';
 const fs = ENABLE_ENCRYPTION ? new CryptoFs('password').init() : nonCryptoFs;
-
-/**
- * The map function that loops through a repository and returns a diff
- * @param filepath The filepath for the currently handled file
- * @param entries The references to the walker functions for the individual trees
- */
-const diffMapFunction = async function(filepath: string, entries: Array<WalkerEntry>): Promise<DiffResult> {
-    // Extract entries and file contents
-    const [ refTree, comparedTree ] = entries;
-    const [ oid, refTreeContents, comparedTreeContents ] = await Promise.all([
-        refTree.oid(),
-        refTree?.content(),
-        comparedTree?.content(),
-    ]);
-    
-    // Calculate the diff
-    const diff = generateDiff(filepath, comparedTreeContents, refTreeContents);
-
-    // Filter any instances where there are no changes
-    if (!diff.hasChanges) {
-        return;
-    }
-
-    // Then return the data as expected
-    return { filepath, oid, ...diff };
-}
 
 class Repository extends EventEmitter {
     /**
@@ -85,7 +58,6 @@ class Repository extends EventEmitter {
             })
             .then(() => this.isInitialised = true)
             .then(() => this.emit('ready'))
-            .then(() => runParsers(this))
             .then(console.log)
             .catch(console.error);
     }

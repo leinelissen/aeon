@@ -1,7 +1,7 @@
 import path from 'path';
 import { diffJson, diffLines, Change } from 'diff';
 import { detailedDiff } from 'deep-object-diff';
-import { DiffType, ObjectChange } from './types';
+import { DiffType, ObjectChange } from '../types';
 
 const utfDecoder = new TextDecoder('utf-8');
 
