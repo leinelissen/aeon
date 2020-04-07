@@ -35,7 +35,7 @@ class ProviderManager extends EventEmitter {
 
         // Construct all providers that have been defined at the top
         providers.forEach((SingleProvider): void => {
-            this.instances.set('instagram', new SingleProvider());
+            this.instances.set(SingleProvider.key, new SingleProvider());
         });
 
         // Construct the dispatchedDataRequests file so that we can save it to
@@ -62,7 +62,7 @@ class ProviderManager extends EventEmitter {
      */
     updateAll = async (): Promise<void> => {
         // Loop through all registered providers and execute their updates
-        await Promise.all(this.instances.map((key) => 
+        await Promise.all(this.instances.map((provider, key) => 
             this.update(key)
         ));
 
@@ -89,8 +89,8 @@ class ProviderManager extends EventEmitter {
         // Execute individual update, which should return a list of files to
         // be saved to disk
         const files = await instance.update();
-        const changedFiles = await this.saveFilesAndCommit(files, instance.key, `Auto-update ${new Date().toLocaleString()}`);
-        Notifications.success(`The update for ${instance.name} was successfully completed. ${changedFiles} files were changed.`)
+        const changedFiles = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`);
+        Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`)
     }
 
     /**
@@ -139,7 +139,7 @@ class ProviderManager extends EventEmitter {
         }
 
         // GUARD: Check if a data request hasn't already been dispatched
-        if (this.dispatchedDataRequests.has(instance.key)) {
+        if (this.dispatchedDataRequests.has(key)) {
             throw new Error('DataRequestAlreadyInProgress');
         }
 
@@ -147,7 +147,7 @@ class ProviderManager extends EventEmitter {
         await instance.dispatchDataRequest();
 
         // Then store the update time
-        this.dispatchedDataRequests.set(instance.key, { dispatched: new Date() });
+        this.dispatchedDataRequests.set(key, { dispatched: new Date() });
     }
 
     /**
@@ -174,7 +174,8 @@ class ProviderManager extends EventEmitter {
             if (status.completed) {
                 // However, we will check if we need to purge it from the map if
                 // it has been completed for x days
-                if (differenceInDays(status.completed, new Date()) > instance.dataRequestIntervalDays) {
+                const ProviderClass: typeof DataRequestProvider = Object.getPrototypeOf(instance).constructor;
+                if (differenceInDays(status.completed, new Date()) > ProviderClass.dataRequestIntervalDays) {
                     this.dispatchedDataRequests.delete(key);
                 }
 
@@ -187,8 +188,8 @@ class ProviderManager extends EventEmitter {
 
                 // If it is complete now, we'll fetch the data and parse it
                 const files = await instance.parseDataRequest();
-                const changedFiles = await this.saveFilesAndCommit(files, instance.key, `Data Request [${instance.key}] ${new Date().toLocaleString()}`);
-                Notifications.success(`The data request for ${instance.name} was successfully completed. ${changedFiles} files were changed.`);
+                const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`);
+                Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
                 
                 // Set the flag for completion
                 this.dispatchedDataRequests.set(key, { ...status, lastCheck: new Date(), completed: new Date() });

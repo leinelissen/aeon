@@ -8,14 +8,7 @@ export interface ProviderFile {
 export abstract class Provider {
     /** The key under which all files will be stored. Should be filesystem-safe
      * (no spaces, all-lowercase) */
-    private static key: string;
-    // @ts-ignore
-    public get key(): string { return this.constructor['key'] }
-    public set key(value: string) { 
-        // @ts-ignore
-        this.constructor['key'] = value; 
-    }
-    public get name(): string { return this.constructor['name'] }
+    public static key: string;
     /** Update the data that is retrieved by this Provider. Should return an
      * object with all new files, so they can be saved to disk. */
     abstract update(): Promise<ProviderFile[]>;
@@ -40,14 +33,7 @@ export interface DataRequestProvider extends Provider {
 
 export abstract class DataRequestProvider extends Provider {
     /** The amount of days that are required between successive data requests */
-    private static dataRequestIntervalDays: number;
-    /** The amount of days that are required between successive data requests */
-    // @ts-ignore
-    public get dataRequestIntervalDays(): number { return this.constructor['dataRequestIntervalDays'] }
-    public set dataRequestIntervalDays(value: number) { 
-        // @ts-ignore
-        this.constructor['dataRequestIntervalDays'] = value; 
-    }
+    public static dataRequestIntervalDays: number;
 }
 
 export interface WithWindow {

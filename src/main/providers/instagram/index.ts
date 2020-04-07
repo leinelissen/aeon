@@ -2,7 +2,7 @@ import { ProviderFile, DataRequestProvider, WithWindow } from '../types';
 import crypto from 'crypto';
 import path from 'path';
 import fetch from 'node-fetch';
-import { BrowserWindow, WebRequest, webContents, app } from 'electron';
+import { BrowserWindow, app } from 'electron';
 import scrapingUrls from './urls.json';
 import AdmZip from 'adm-zip';
 import fs from 'fs';
@@ -11,8 +11,8 @@ import createSecureWindow from 'main/lib/create-secure-window';
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
 class Instagram extends DataRequestProvider implements WithWindow {
-    key = 'instagram';
-    dataRequestIntervalDays = 5;
+    public static key = 'instagram';
+    public static dataRequestIntervalDays = 5;
 
     window: BrowserWindow;
     cookies: Electron.Cookie[] = [];
