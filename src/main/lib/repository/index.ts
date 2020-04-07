@@ -96,7 +96,7 @@ class Repository extends EventEmitter {
         refTree: string | Walker = 'HEAD', 
         comparedTree: string | Walker = '',
         options: { showUnchangedFiles?: boolean } = {}
-    ): Promise<DiffResult[]> {
+    ): Promise<DiffResult<unknown>[]> {
         let previousTree;
 
         // First we define the trees we want to traverse. The defaults are to
@@ -130,7 +130,7 @@ class Repository extends EventEmitter {
         ];
         
         // Calculate diff
-        const diff: DiffResult[] = await git.walk({ ...this.config, trees, map: diffMapFunction });
+        const diff: DiffResult<unknown>[] = await git.walk({ ...this.config, trees, map: diffMapFunction });
 
         // Optionally remove all files from the diff without changes
         if (!options.showUnchangedFiles) {

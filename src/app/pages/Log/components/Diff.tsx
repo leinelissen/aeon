@@ -1,17 +1,19 @@
-import React, { Component } from 'react';
-import { DiffResult, DiffType } from 'main/lib/repository/types';
+import React, { PureComponent } from 'react';
+import { DiffResult, DiffType, ExtractedDataDiff, ObjectChange } from 'main/lib/repository/types';
 import Repository from 'app/utilities/Repository';
 import styled, { css } from 'styled-components';
-import { Change } from 'diff';
+import DataType from 'app/utilities/DataType';
 import theme from 'app/styles/theme';
 import Loading from 'app/components/Loading';
+import { ProviderDatum, ProvidedDataTypes } from 'main/providers/types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface Props {
     commit: string;
 }
 
 interface State {
-    diff?: DiffResult[];
+    diff?: DiffResult<unknown>[];
 }
 
 const Container = styled.div`
@@ -43,7 +45,7 @@ const Code = styled.div<{ removed?: boolean; added?: boolean }>`
     `}
 `;
 
-class Diff extends Component<Props, State> {
+class Diff extends PureComponent<Props, State> {
     state: State = {
         diff: null,
     }
@@ -64,25 +66,49 @@ class Diff extends Component<Props, State> {
         this.setState({ diff });
     }
 
+    filterAndSortExtractedData(): ExtractedDataDiff {
+        const { diff } = this.state;
+        const filteredDiff = diff.filter(file => file.type !== DiffType.EXTRACTED_DATA) as DiffResult<ExtractedDataDiff>[];
+
+        const sortingFunction = (a: ProviderDatum<unknown>, b: ProviderDatum<unknown>): number => {
+            return a.type.localeCompare(b.type);
+        };
+
+        console.log(filteredDiff, filteredDiff.flatMap((file) => file.diff.added || []));
+
+        const added = filteredDiff.flatMap((file) => file.diff.added || []).sort(sortingFunction);
+        const updated = filteredDiff.flatMap((file) => file.diff.updated || []).sort(sortingFunction);
+        const deleted = filteredDiff.flatMap((file) => file.diff.deleted || []).sort(sortingFunction);
+
+        return {
+            added,
+            updated,
+            deleted
+        };
+    }
+
     render(): JSX.Element {
         const { diff } = this.state;
-        console.log(diff);
 
         if (!diff) {
             return <Loading />;
         }
 
+        const dataDiff = this.filterAndSortExtractedData();
+
         return (
             <Container>
-                {diff.map((file: DiffResult) => (
-                    <div key={file.filepath}>
-                        <h3>{file.filepath}</h3>
-                        <div>
-                            {file.type === DiffType.OTHER && file.diff.map((change: Change, index: number) => (
-                                <Code key={index} added={change.added} removed={change.removed}>{change.value}</Code>
-                            ))}
-                        </div>
-                    </div>
+                {dataDiff.added.map((datum, index) => (
+                    <Code key={index} added={true}>
+                        <FontAwesomeIcon icon={DataType.getIcon(datum.type)} />
+                        {DataType.toString(datum)}
+                    </Code>
+                ))}
+                {dataDiff.deleted.map((datum, index) => (
+                    <Code key={index} removed={true}>
+                        <FontAwesomeIcon icon={DataType.getIcon(datum.type)} />
+                        {DataType.toString(datum)}
+                    </Code>
                 ))}
             </Container>
         )

@@ -29,13 +29,13 @@ export interface ObjectChange<O = object> {
  */
 export interface DiffResult<D> {
     filepath: string;
-    diff: Change[] | ObjectChange<unknown> | ObjectChange<ProviderDatum<unknown, unknown>>;
+    diff: D;
     type: DiffType;
     hasChanges: boolean;
 }
 
 export type ObjectDiff = ObjectChange<unknown>;
-export type ExtractedDataDiff = ObjectChange<ProviderDatum<unknown, unknown>>
+export type ExtractedDataDiff = ObjectChange<ProviderDatum<unknown>[]>
 export type BlobDiff = Change[];
 export type TextDiff = Change[];
 

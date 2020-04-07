@@ -54,7 +54,7 @@ export enum ProviderCommands {
     DISPATCH_DATA_REQUEST_TO_ALL,
     REFRESH_DATA_REQUESTS,
     INITIALISE,
-    GET_DISPATCHED_DATA_REQUEST9
+    GET_DISPATCHED_DATA_REQUESTS
 }
 
 export enum ProviderEvents {
@@ -131,7 +131,7 @@ export enum ProvidedDataTypes {
     UPLOADED_CONTACT = 'uploaded_contact',
 }
 
-export interface ProviderDatum<D, T> {
+export interface ProviderDatum<D, T = ProvidedDataTypes> {
     // The data format, as it is retrieved from a file
     data: D;
     // The type of this datum
