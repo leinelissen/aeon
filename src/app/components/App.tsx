@@ -5,6 +5,7 @@ import Notifications from './Notifications';
 import MenuBar from './MenuBar';
 import Pages from 'app/pages';
 import styled, { StyleSheetManager } from 'styled-components';
+import Store from 'app/store';
 
 const Main = styled.main`
     padding-top: 40px;
@@ -19,13 +20,15 @@ class App extends Component {
     render(): JSX.Element {
         return (
             <StyleSheetManager disableVendorPrefixes>
-                <div>
-                    <Notifications />
-                    <MenuBar />
-                    <Main>
-                        <Pages />
-                    </Main>
-                </div>
+                <Store.Container>
+                    <div>
+                        <Notifications />
+                        <MenuBar />
+                        <Main>
+                            <Pages />
+                        </Main>
+                    </div>
+                </Store.Container>
             </StyleSheetManager>
         );
     }

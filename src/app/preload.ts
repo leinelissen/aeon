@@ -4,21 +4,26 @@ import {
 } from 'electron';
 import sourceMapSupport from 'source-map-support';
 import { WORKDIR, STAGE, TREE } from 'isomorphic-git';
+import store from 'main/store';
 
 declare global {
     interface Window {
-      api: {
-          send: typeof ipcRenderer.send;
-          invoke: typeof ipcRenderer.invoke;
-          on: typeof ipcRenderer.on;
-          removeListener: typeof ipcRenderer.removeListener;
-          sourceMapSupport: typeof sourceMapSupport;
-          git: {
-              WORKDIR: typeof WORKDIR;
-              STAGE: typeof STAGE;
-              TREE: typeof TREE;
-          };
-      };
+        api: {
+            send: typeof ipcRenderer.send;
+            invoke: typeof ipcRenderer.invoke;
+            on: typeof ipcRenderer.on;
+            removeListener: typeof ipcRenderer.removeListener;
+            sourceMapSupport: typeof sourceMapSupport;
+            git: {
+                WORKDIR: typeof WORKDIR;
+                STAGE: typeof STAGE;
+                TREE: typeof TREE;
+            };
+            store: {
+                persist: (store: Object) => void;
+                retrieve: () => Object;
+            }
+        };
     }
 }
 
@@ -51,6 +56,15 @@ contextBridge.exposeInMainWorld(
                 return ipcRenderer.removeListener(channel, func);
             }
         },
+        store: {
+            persist: (state: Object) => {
+                return store.set('app_store', state);
+                
+            },
+            retrieve: () => {
+                return store.get('app_store');
+            },
+        },
         sourceMapSupport: sourceMapSupport,
         git: {
             TREE: TREE,
@@ -58,4 +72,4 @@ contextBridge.exposeInMainWorld(
             STAGE: STAGE,
         },
     },
-);
+    );

@@ -1,13 +1,13 @@
 import path from 'path';
 import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns';
-import Store from 'electron-store';
 import Instagram from './instagram';
 import { Provider, ProviderFile, DataRequestProvider, DataRequestStatus, ProviderEvents } from './types';
 import Repository from '../lib/repository';
 import Notifications from 'main/lib/notifications';
 import ProviderBridge from './bridge';
 import PersistedMap from 'main/lib/persisted-map';
+import store from 'main/store';
 
 const providers: Array<typeof Provider | typeof DataRequestProvider> = [
     Instagram,
@@ -40,7 +40,6 @@ class ProviderManager extends EventEmitter {
 
         // Construct the dispatchedDataRequests file so that we can save it to
         // disk whenever neccessary
-        const store = new Store();
         const retrievedData = store.get('dispatched-data-requests', '[]');
         const retrievedRequests = JSON.parse(retrievedData, (key, value) => Date.parse(value) ? new Date(value) : value);
         this.dispatchedDataRequests = new PersistedMap(retrievedRequests, (map) => {

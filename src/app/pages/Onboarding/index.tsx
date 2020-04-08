@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faFacebookF, faSpotify, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import theme from 'app/styles/theme';
 import Providers from 'app/utilities/Providers';
+import Store, { StoreProps } from 'app/store';
 
 interface State {
     isInitialised: boolean;
@@ -77,7 +78,7 @@ const Provider = styled.button<ProviderProps>`
     }
 `;
 
-class Onboarding extends Component<{}, State> {
+class Onboarding extends Component<StoreProps, State> {
     state = {
         isInitialised: false
     };
@@ -85,6 +86,7 @@ class Onboarding extends Component<{}, State> {
     handleClick = async (): Promise<void> => {
         const isInitialised = await Providers.initialise('instagram');
         this.setState({ isInitialised });
+        this.props.store.set('isOnboarded')(true);
     }
 
     render(): JSX.Element {
@@ -94,7 +96,7 @@ class Onboarding extends Component<{}, State> {
             <Container>
                 <Center>
                     <div>
-                        <p>There is lots of data out there on you.  You don't always have power over what makes up your online identity, how you're perceived, how you're treated and so on. ERASURE allows you to exercise your rights to manage your online identity by changing or deleting details, or even fully start over.</p>
+                        <p>There is lots of data out there on you.  You don't always have power over what makes up your online identity, how you're perceived, how you're treated and so on. Aeon allows you to exercise your rights to manage your online identity by changing or deleting details, or even fully start over.</p>
                         <p><strong>Connect to the platforms of your choice in order to reshape your online identity.</strong></p>
                     </div>
                     <BrandContainer>
@@ -122,4 +124,4 @@ class Onboarding extends Component<{}, State> {
     }
 }
 
-export default Onboarding;
+export default Store.withStore(Onboarding);
