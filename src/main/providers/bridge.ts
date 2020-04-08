@@ -39,7 +39,7 @@ class ProviderBridge {
             case ProviderCommands.REFRESH_DATA_REQUESTS:
                 return this.repository.refreshDataRequests();
             case ProviderCommands.GET_DISPATCHED_DATA_REQUESTS:
-                return this.repository.dispatchedDataRequests;
+                return [this.repository.dispatchedDataRequests, this.repository.lastDataRequestCheck];
         }
     }
 

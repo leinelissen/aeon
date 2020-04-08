@@ -27,6 +27,9 @@ module.exports = {
     module: {
         rules,
     },
+    node: { 
+        global: true, 
+    },
     plugins: plugins,
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],

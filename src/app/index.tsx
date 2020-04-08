@@ -1,4 +1,5 @@
 import 'react-hot-loader';
+import './polyfill';
 import React from 'react'
 import ReactDOM from 'react-dom';
 import App from './components/App';

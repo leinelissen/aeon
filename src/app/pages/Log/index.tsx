@@ -32,6 +32,7 @@ const CommitContainer = styled.div`
     top: 0;
     flex-shrink: 0;
     border-right: 1px solid #eee;
+    width: 66vw;
 `;
 
 class Log extends Component<{}, State> {

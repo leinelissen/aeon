@@ -27,6 +27,9 @@ class ProviderManager extends EventEmitter {
     // their state once in a while.
     dispatchedDataRequests: PersistedMap<string, DataRequestStatus>;
 
+    // The last time the data requests were checked 
+    lastDataRequestCheck: Date;
+
     constructor(repository: Repository) {
         super();
 
@@ -197,12 +200,15 @@ class ProviderManager extends EventEmitter {
                 return;
             }
 
-
             this.dispatchedDataRequests.set(key, {
                 ...status,
                 lastCheck: new Date(),
             });
         }));
+
+        ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
+        this.lastDataRequestCheck = new Date();
+        console.log('Check completed.')
     }
 
 }

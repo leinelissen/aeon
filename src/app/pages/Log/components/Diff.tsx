@@ -30,11 +30,23 @@ const Container = styled.div`
 const Code = styled.div<{ removed?: boolean; added?: boolean }>`
     font-family: 'IBM Plex Mono';
     background-color: #f8f8f8;
-    padding: 25px;
+    padding: 5px 25px;
     min-width: 100%;
     line-height: 2;
     white-space: pre-wrap;
     user-select: text;
+
+    /* display: flex;
+    flex-direction: row;
+    align-items: top; */
+
+    & > span {
+        margin-left: 10px;
+    }
+
+    &.icon {
+        height: 1em;
+    }
 
     ${props => props.added && css`
         background-color: ${theme.colors.green}22;
@@ -74,8 +86,6 @@ class Diff extends PureComponent<Props, State> {
             return a.type.localeCompare(b.type);
         };
 
-        console.log(filteredDiff, filteredDiff.flatMap((file) => file.diff.added || []));
-
         const added = filteredDiff.flatMap((file) => file.diff.added || []).sort(sortingFunction);
         const updated = filteredDiff.flatMap((file) => file.diff.updated || []).sort(sortingFunction);
         const deleted = filteredDiff.flatMap((file) => file.diff.deleted || []).sort(sortingFunction);
@@ -100,14 +110,14 @@ class Diff extends PureComponent<Props, State> {
             <Container>
                 {dataDiff.added.map((datum, index) => (
                     <Code key={index} added={true}>
-                        <FontAwesomeIcon icon={DataType.getIcon(datum.type)} />
-                        {DataType.toString(datum)}
+                        <FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth />
+                        <span>{DataType.toString(datum)}</span>
                     </Code>
                 ))}
                 {dataDiff.deleted.map((datum, index) => (
                     <Code key={index} removed={true}>
-                        <FontAwesomeIcon icon={DataType.getIcon(datum.type)} />
-                        {DataType.toString(datum)}
+                        <FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth />
+                        <span>{DataType.toString(datum)}</span>
                     </Code>
                 ))}
             </Container>

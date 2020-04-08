@@ -103,6 +103,7 @@
         "@fortawesome/react-fontawesome": "^0.1.9",
         "@openfonts/ibm-plex-mono_all": "^1.44.0",
         "@openfonts/ibm-plex-sans_all": "^1.44.0",
+        "@popperjs/core": "^2.2.1",
         "@types/diff": "^4.0.2",
         "@types/node": "^13.9.1",
         "@types/node-fetch": "^2.5.5",
@@ -122,8 +123,10 @@
         "node-fetch": "^2.6.0",
         "react": "^16.13.0",
         "react-dom": "^16.13.0",
+        "react-popper": "^2.1.0",
         "react-router": "^5.1.2",
         "react-router-dom": "^5.1.2",
+        "react-spring": "^8.0.27",
         "styled-components": "^5.0.1",
         "undux": "^5.2.0"
     }
