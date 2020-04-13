@@ -50,8 +50,10 @@ class ProviderManager extends EventEmitter {
         });
 
         // Then we create a timeout function that checks for completed data
-        // requests every five minutes
+        // requests every five minutes. Also immediately commence with queueing
+        // the refresher
         setInterval(this.refreshDataRequests, 300_000);
+        this.refreshDataRequests();
 
         // Then initialise all classes
         // And after send out a ready event

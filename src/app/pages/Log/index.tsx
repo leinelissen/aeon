@@ -85,8 +85,6 @@ class Log extends Component<{}, State> {
                     {log.map((entry: ReadCommitResult) => (
                         <Commit key={entry.oid} entry={entry} onClick={this.handleClick} active={entry.oid === selectedCommit} />
                     ))}
-                    <Button icon={faSync} onClick={this.handleRefresh} loading={updating}>Refresh data requests</Button>
-                    <Button icon={faSync} onClick={this.handleDispatch} loading={updating}>Initiate data request</Button>
                     <Requests />
                 </CommitContainer>
                 <Diff commit={selectedCommit} />

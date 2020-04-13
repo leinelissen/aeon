@@ -35,6 +35,12 @@ const Margin = styled.div`
     width: 10px;
 `;
 
+export const LinkButton = styled.button`
+    border: 0;
+    margin: 0;
+    padding: 0;
+`;
+
 
 interface Props {
     loading?: boolean;

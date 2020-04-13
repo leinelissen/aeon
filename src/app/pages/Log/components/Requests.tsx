@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, FunctionComponent, useCallback } from 'react';
 import Loading, { Ball } from 'app/components/Loading';
 import { DataRequestStatus, ProviderEvents } from 'main/providers/types';
 import Providers from 'app/utilities/Providers';
@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Repository from 'app/utilities/Repository';
 import { HoverArea, Tooltip, TooltipContainer } from 'app/components/Tooltip';
 import { formatDistanceToNow } from 'date-fns';
+import { LinkButton } from 'app/components/Button';
 
 interface State {
     dataRequests?: Map<string, DataRequestStatus>,
@@ -30,10 +31,13 @@ const Container = styled.div`
 const Request = styled.div<{ color: string; }>`
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     font-size: 16px;
-    padding: 15px;
+    width: 48px;
+    height: 48px;
     margin-left: auto;
-    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
     border-bottom: 5px solid ${props => props.color};
     opacity: 0.5;
 
@@ -56,6 +60,23 @@ const LastCheck = styled.div<{ loading: boolean }>`
         }
     `}
 `;
+
+interface ClickableRequestProps {
+    key: string;
+    onClick: (key: string) => void;
+}
+
+const ClickableRequest: FunctionComponent<ClickableRequestProps> = (props): JSX.Element => {
+    const handleClick = useCallback(() => {
+        return props.onClick(props.key);
+    }, [props.onClick, props.key]);
+
+    return (
+        <LinkButton onClick={handleClick}>
+            {props.children}
+        </LinkButton>
+    );
+}
 
 class Requests extends Component<{}, State> {
     state: State = {
@@ -102,6 +123,14 @@ class Requests extends Component<{}, State> {
         }
     }
 
+    handleUpdateDataRequests = (): void => {
+        Providers.refreshDataRequests();
+    }
+
+    handleRequestForRequest = (key: string): void => {
+        Providers.dispatchDataRequest(key);
+    }
+
     render(): JSX.Element {
         const { dataRequests, lastCheck, checking } = this.state;
 
@@ -119,9 +148,11 @@ class Requests extends Component<{}, State> {
                             {({ handleChange, isHovered }) => (
                                 <>
                                     <HoverArea onChange={handleChange}>
-                                        <Request key={key} color={this.getColor(status)}>
-                                            <FontAwesomeIcon icon={Repository.getIcon(key)} />
-                                        </Request>
+                                        <ClickableRequest key={key} onClick={this.handleRequestForRequest}>
+                                            <Request key={key} color={this.getColor(status)}>
+                                                <FontAwesomeIcon icon={Repository.getIcon(key)} />
+                                            </Request>
+                                        </ClickableRequest>
                                     </HoverArea>
                                     <Tooltip placement="top" active={isHovered}>
                                     <>
@@ -137,9 +168,11 @@ class Requests extends Component<{}, State> {
                 <LastCheck loading={checking}>
                     {checking ? (
                         <Ball size={10} />
-                    ) : lastCheck && (<>
-                        Last check: {formatDistanceToNow(lastCheck)} ago
-                    </>)}
+                    ) : lastCheck && (
+                        <LinkButton onClick={this.handleUpdateDataRequests}>
+                            Last check: {formatDistanceToNow(lastCheck)} ago
+                        </LinkButton>
+                    )}
                 </LastCheck>
                 {!dataRequests.size && 
                     <div>No dispatched requests</div>
