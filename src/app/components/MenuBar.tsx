@@ -7,7 +7,7 @@ const Container = styled.div`
     -webkit-user-select: none;
     width: 100%;
     height: 40px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid ${theme.colors.border};
     display: flex;
     align-items: center;
     justify-content: center;

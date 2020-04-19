@@ -10,7 +10,7 @@ interface Props {
     active: boolean;
 }
 
-const StyledCommit = styled.button<{ active?: boolean }>`
+export const StyledCommit = styled.button<{ active?: boolean }>`
     padding: 25px;
     text-align: left;
     border: 0;

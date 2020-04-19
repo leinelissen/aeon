@@ -15,7 +15,7 @@ class PersistedMap<K, V> extends Map<K, V> {
     }
 
     set(key: K, value: V) {
-        const ret = super.set(...arguments);
+        const ret = super.set(key, value);
 
         if (this.isInitialised) {
             this.callback(this);

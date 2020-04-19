@@ -2,6 +2,7 @@ import React from 'react';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Onboarding from './Onboarding';
 import Log from './Log';
+import NewCommit from './NewCommit';
 import Store from 'app/store';
 
 /**
@@ -25,6 +26,7 @@ function Router(): JSX.Element {
             <Switch>
                 <Route path='/log' component={Log} />
                 <Route path='/onboarding' exact component={Onboarding} />
+                <Route path="/commit/new" component={NewCommit} />
                 <Route path="/" component={initialiseRoute} />
             </Switch>
         </HashRouter>

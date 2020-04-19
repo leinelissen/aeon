@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import theme from 'app/styles/theme';
@@ -18,6 +18,7 @@ const StyledButton = styled.button`
     outline: 0 !important;
     margin: 5px 10px;
     border: 0;
+    padding: 0 16px;
 
     &:hover&:not(:disabled) {
         cursor: pointer;
@@ -41,6 +42,22 @@ export const LinkButton = styled.button`
     padding: 0;
 `;
 
+export const GhostButton = styled(LinkButton)`
+    color: black;
+    opacity: 0.3;
+    font-size: 14px;
+    padding: 8px 16px;
+    margin: 8px;
+
+    &:hover {
+        opacity: 0.5;
+    }
+
+    &:active {
+        opacity: 0.7;
+    }
+`;
+
 
 interface Props {
     loading?: boolean;
@@ -48,11 +65,12 @@ interface Props {
     children?: string | JSX.Element | JSX.Element[];
     disabled?: boolean;
     icon?: IconProp;
+    style?: CSSProperties;
 }
 
-const Button = ({ children, loading, onClick, disabled, icon }: Props): JSX.Element => {
+const Button = ({ children, loading, onClick, disabled, icon, ...props }: Props): JSX.Element => {
     return (
-        <StyledButton onClick={onClick} disabled={loading || disabled}>
+        <StyledButton onClick={onClick} disabled={loading || disabled} {...props}>
             {icon ? <FontAwesomeIcon icon={icon} style={{ marginRight: 5 }} fixedWidth /> : null}
             {children}
             {loading ? (<><Margin /><Ball size={10} color={theme.colors.white} /></>) : null}

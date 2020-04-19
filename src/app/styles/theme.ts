@@ -14,6 +14,7 @@ const theme = {
         green: '#89CC0C',
         red: '#FF6142',
         yellow: '#FFBE29',
+        border: '#eee',
     },
 };
 

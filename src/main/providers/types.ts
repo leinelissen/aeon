@@ -108,7 +108,7 @@ export enum ProvidedDataTypes {
     // A saved instance of the user logging in
     LOGIN_INSTANCE = 'login_instance',
     // A saved instance of the user logging out
-    LOGOUT_INSTANCE = 'login_instance',
+    LOGOUT_INSTANCE = 'logout_instance',
     // A photo
     PHOTO = 'photo',
     // A message by the user, to another user

@@ -21,6 +21,7 @@ const createWindow = (): void => {
         height: 600,
         width: 800,
         titleBarStyle: 'hiddenInset',
+        icon: path.resolve(__dirname, '..', 'icon.icns'),
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -42,8 +43,8 @@ const createWindow = (): void => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', (): void =>  { 
-    initialise();
     createWindow();
+    initialise();
 });
 
 // Quit when all windows are closed.
