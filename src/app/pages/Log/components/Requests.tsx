@@ -98,7 +98,6 @@ class Requests extends Component<{}, State> {
     }
 
     handleEvent = (event: Event, type: ProviderEvents): void => {
-        console.log(type);
         if (type === ProviderEvents.DATA_REQUEST_COMPLETED) {
             this.retriveDataRequests();
             this.setState({ checking: false });

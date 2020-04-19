@@ -10,6 +10,7 @@ import Providers from 'app/utilities/Providers';
 import { faSync } from '@fortawesome/pro-light-svg-icons';
 import Requests from './components/Requests';
 import { Link } from 'react-router-dom';
+import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 
 interface State {
     log: ReadCommitResult[];
@@ -19,6 +20,7 @@ interface State {
 
 const Container = styled.div`
     display: flex;
+    background: white;
 
     & > * {
         overflow-y: scroll;
@@ -83,7 +85,7 @@ class Log extends Component<{}, State> {
         return (
             <Container>
                 <CommitContainer>
-                    <Link to="/commit/new">
+                    <Link to={`/commit/new?transition=${TransitionDirection.right}`}>
                         <StyledCommit active={false}>
                             Create a new commit
                         </StyledCommit>

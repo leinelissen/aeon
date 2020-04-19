@@ -4,6 +4,7 @@ import Onboarding from './Onboarding';
 import Log from './Log';
 import NewCommit from './NewCommit';
 import Store from 'app/store';
+import AnimatedSwitch from 'app/utilities/AnimatedSwitch';
 
 /**
  * A helper to determine what the starting screen should be for the application.
@@ -23,12 +24,12 @@ function initialiseRoute(): JSX.Element {
 function Router(): JSX.Element {
     return (
         <HashRouter >
-            <Switch>
+            <AnimatedSwitch>
                 <Route path='/log' component={Log} />
                 <Route path='/onboarding' exact component={Onboarding} />
                 <Route path="/commit/new" component={NewCommit} />
                 <Route path="/" component={initialiseRoute} />
-            </Switch>
+            </AnimatedSwitch>
         </HashRouter>
     );
 }

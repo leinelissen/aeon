@@ -9,7 +9,6 @@ import { StoreDefinition, Store, Effects } from 'undux';
 function persistStore<State extends Object>() {
     const withStore: Effects<State> = (store): StoreDefinition<State> => {
         store.onAll().subscribe(() => {
-            console.log('PERSISTING STORE', store.getState());
             window.api.store.persist(store.getState());
         });
 

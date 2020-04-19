@@ -8,6 +8,7 @@ import { H2 } from 'app/components/Typography';
 import theme from 'app/styles/theme';
 import { ProvidedDataTypes } from 'main/providers/types';
 import DataType from 'app/utilities/DataType';
+import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 
 interface State {
     category?: ProvidedDataTypes;
@@ -18,6 +19,7 @@ const Container = styled.div`
     grid-template-columns: 33% 67%;
     grid-template-rows: auto 1fr;
     height: calc(100vh - 40px);
+    background: white;
 `;
 
 const TopBar = styled.div`
@@ -118,7 +120,7 @@ class NewCommit extends Component<{}, State> {
         return (
             <Container>
                 <TopBar>
-                    <Link to="/log">
+                    <Link to={`/log?transition=${TransitionDirection.left}`}>
                         <GhostButton>
                             <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: 5 }} /> Back
                         </GhostButton>
