@@ -8,6 +8,8 @@ import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
 import Notifications from '../notifications';
 import diffMapFunction from './utilities/diff-map';
+import generateParsedCommit from './utilities/generate-parsed-commit';
+import { ProviderDatum } from 'main/providers/types';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
@@ -158,6 +160,21 @@ class Repository extends EventEmitter {
 
         // Write file to disk
         await fs.promises.writeFile(absolutePath, data);
+    }
+
+    /**
+     * Generate a fully parsed tree
+     */
+    public async getParsedCommit(tree = TREE({ ref: 'HEAD' })): Promise<ProviderDatum<unknown, unknown>[]> {
+        const data = await git.walk({ 
+            ...this.config,
+            trees: [tree],
+            map: generateParsedCommit,
+        }) as ProviderDatum<unknown, unknown>[][];
+
+        return data.flat().sort((a: ProviderDatum<unknown>, b: ProviderDatum<unknown>): number => {
+            return a.type.localeCompare(b.type);
+        });
     }
 
     /** 

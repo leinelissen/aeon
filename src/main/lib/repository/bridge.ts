@@ -3,6 +3,25 @@ import { RepositoryCommands, RepositoryArguments } from './types';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import { TREE, WORKDIR, STAGE } from 'isomorphic-git';
 
+/**
+ * Replace instances of calls to TREE and STAGE with the appropriate objects, as
+ * we can only call those functions in NodeJS.
+ */
+function replaceArgs(args: any[]) {
+    return args.map(arg => {
+        switch(arg) {
+            case RepositoryArguments.HEAD:
+                return TREE({});
+            case RepositoryArguments.STAGE:
+                return STAGE();
+            case RepositoryArguments.WORKDIR:
+                return WORKDIR();
+            default:
+                return arg;
+            }
+    });
+}
+
 class RepositoryBridge {
     repository: Repository = null;
 
@@ -24,27 +43,15 @@ class RepositoryBridge {
         }
         
         switch(command) {
-        case RepositoryCommands.LOG:
-            return this.repository.log(...args);
-        case RepositoryCommands.DIFF: {
-            const replacedArgs = args.map(arg => {
-                switch(arg) {
-                case RepositoryArguments.HEAD:
-                    return TREE({});
-                case RepositoryArguments.STAGE:
-                    return STAGE();
-                case RepositoryArguments.WORKDIR:
-                    return WORKDIR();
-                default:
-                    return arg;
-                }
-            });
-
-            return this.repository.diff(...replacedArgs);
-        }
-        case RepositoryCommands.STATUS: {
-            return this.repository.status(...args);
-        }
+            case RepositoryCommands.LOG:
+                return this.repository.log(...args);
+            case RepositoryCommands.DIFF:
+                return this.repository.diff(...replaceArgs(args));
+            case RepositoryCommands.STATUS:
+                return this.repository.status(...args);
+            case RepositoryCommands.PARSED_COMMIT: {
+                return this.repository.getParsedCommit(...replaceArgs(args));
+            }
         }
     }
 

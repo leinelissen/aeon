@@ -50,6 +50,7 @@ export enum RepositoryCommands {
     LOG,
     DIFF,
     STATUS,
+    PARSED_COMMIT
 } 
 
 export enum RepositoryArguments {

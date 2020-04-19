@@ -1,12 +1,12 @@
 import React, { CSSProperties } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import theme from 'app/styles/theme';
 import { Ball } from './Loading';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
-const StyledButton = styled.button`
-    background-color: ${theme.colors.blue.primary};
+const StyledButton = styled.button<{ color?: string; fullWidth?: boolean; }>`
+    background-color: ${props => props.color || theme.colors.blue.primary};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -30,6 +30,10 @@ const StyledButton = styled.button`
         cursor: not-allowed;
         color: ${theme.colors.white}55;
     }
+
+    ${props => props.fullWidth && css`
+        width: 100%;
+    `}
 `;
 
 const Margin = styled.div`
@@ -66,6 +70,8 @@ interface Props {
     disabled?: boolean;
     icon?: IconProp;
     style?: CSSProperties;
+    fullWidth?: boolean;
+    color?: string;
 }
 
 const Button = ({ children, loading, onClick, disabled, icon, ...props }: Props): JSX.Element => {

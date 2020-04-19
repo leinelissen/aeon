@@ -6,12 +6,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faCloudUpload, IconDefinition, faChevronRight } from '@fortawesome/pro-light-svg-icons';
 import { H2 } from 'app/components/Typography';
 import theme from 'app/styles/theme';
-import { ProvidedDataTypes } from 'main/providers/types';
+import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
 import DataType from 'app/utilities/DataType';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
+import Repository from 'app/utilities/Repository';
+import Loading from 'app/components/Loading';
+
+type GroupedData =  { [key: string]: ProviderDatum<string, unknown>[] };
 
 interface State {
     category?: ProvidedDataTypes;
+    groupedData?: GroupedData;
+    datum?: ProviderDatum<unknown, unknown>;
 }
 
 const Container = styled.div`
@@ -20,6 +26,7 @@ const Container = styled.div`
     grid-template-rows: auto 1fr;
     height: calc(100vh - 40px);
     background: white;
+    position: relative;
 `;
 
 const TopBar = styled.div`
@@ -28,6 +35,18 @@ const TopBar = styled.div`
     border-bottom: 1px solid ${theme.colors.border};
     padding: 16px 8px;
     grid-column: 1 / span 2;
+`;
+
+const RightSideOverlay = styled.div`
+    position: absolute;
+    right: 0;
+    height: 80vh;
+    width: 33vw;
+    bottom: 0;
+    background-color: white;
+    border-left: 1px solid ${theme.colors.border};
+    z-index: 2;
+    padding: 16px;
 `;
 
 const List = styled.div`
@@ -87,21 +106,43 @@ const ListButton = styled.button<{ active?: boolean }>`
     `}
 `;
 
-interface ClickableItemProps {
+interface ClickableCategoryProps {
     type: ProvidedDataTypes;
     onClick: (activity: ProvidedDataTypes) => void;
     active?: boolean;
+    disabled?: boolean;
 }
 
-const ClickableItem = ({ type, onClick, active }: ClickableItemProps): JSX.Element => {
+const ClickableCategory = ({ type, onClick, ...props }: ClickableCategoryProps): JSX.Element => {
     const handleClick = useCallback(() => {
         return onClick(type);
     }, [onClick, type]);
 
     return (
-        <ListButton onClick={handleClick} active={active}>
+        <ListButton onClick={handleClick} {...props}>
             <FontAwesomeIcon icon={DataType.getIcon(type)} fixedWidth style={{ marginRight: 8 }} />
             {type}
+            <FontAwesomeIcon icon={faChevronRight} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+        </ListButton>
+    );
+};
+
+interface ClickableDataPointProps {
+    datum: ProviderDatum<unknown, unknown>;
+    onClick: (datum: ProviderDatum<unknown, unknown>) => void;
+    active?: boolean;
+    disabled?: boolean;
+}
+
+const ClickableDataPoint = ({ datum, onClick, ...props }: ClickableDataPointProps): JSX.Element => {
+    const handleClick = useCallback(() => {
+        return onClick(datum);
+    }, [onClick, datum]);
+
+    return (
+        <ListButton onClick={handleClick} {...props}>
+            <FontAwesomeIcon icon={DataType.getIcon(datum.type as ProvidedDataTypes)} fixedWidth style={{ marginRight: 8 }} />
+            {DataType.toString(datum)}
             <FontAwesomeIcon icon={faChevronRight} style={{ marginLeft: 'auto', opacity: 0.5 }} />
         </ListButton>
     );
@@ -110,12 +151,33 @@ const ClickableItem = ({ type, onClick, active }: ClickableItemProps): JSX.Eleme
 class NewCommit extends Component<{}, State> {
     state: State = {
         category: null,
+        groupedData: null,
     }
 
-    setCategory = (category: ProvidedDataTypes): void => this.setState({ category });
+    async componentDidMount(): Promise<void> {
+        const data = await Repository.parsedCommit() as ProviderDatum<string, any>[];
+        const groupedData = data.reduce((accumulator: GroupedData, datum): GroupedData => {
+            if (!accumulator[datum.type]) {
+                accumulator[datum.type] = [];
+            }
+
+            accumulator[datum.type].push(datum);
+
+            return accumulator;
+        }, {});
+
+        this.setState({ groupedData });
+    }
+
+    setCategory = (category: ProvidedDataTypes): void => this.setState({ category, datum: null });
+    setDatum = (datum: ProviderDatum<unknown, unknown>): void => this.setState({ datum });
 
     render(): JSX.Element {
-        const { category } = this.state;
+        const { category, groupedData, datum } = this.state;
+
+        if (!groupedData) {
+            return <Loading />;
+        }
 
         return (
             <Container>
@@ -133,18 +195,37 @@ class NewCommit extends Component<{}, State> {
                 <List>
                     <RowHeading>CATEGORIES</RowHeading>
                     {Object.values(ProvidedDataTypes).map((key) => (
-                        <ClickableItem
+                        <ClickableCategory
                             key={key}
                             type={key}
                             active={category === key}
+                            disabled={!(key in groupedData)}
                             onClick={this.setCategory}
                         />
                     ))}
                 </List>
                 <List>
                     <RowHeading>DATA POINTS</RowHeading>
-                    <ListItem>{category}</ListItem>
+                    {category && groupedData[category].map((datum, index) => (
+                        <ClickableDataPoint
+                            datum={datum}
+                            key={`${datum.type}-${index}`} 
+                            onClick={this.setDatum}
+                        />
+                    ))}
                 </List>
+                {datum && (
+                    <RightSideOverlay>
+                        <p><strong>{DataType.toString(datum)}</strong></p>
+                        <p>{datum.timestamp?.toLocaleString()}</p>
+                        <Button fullWidth color={theme.colors.red}>
+                            Delete this data point
+                        </Button>
+                        <Button fullWidth color={theme.colors.yellow}>
+                            Modify this data point
+                        </Button>
+                    </RightSideOverlay>
+                )}
             </Container>
         );
     }
