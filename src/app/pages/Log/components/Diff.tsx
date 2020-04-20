@@ -105,6 +105,7 @@ class Diff extends PureComponent<Props, State> {
         }
 
         const dataDiff = this.filterAndSortExtractedData();
+        console.log(diff, dataDiff);
 
         return (
             <Container>

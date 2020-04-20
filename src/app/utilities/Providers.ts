@@ -4,6 +4,12 @@ import { faSquare } from '@fortawesome/pro-light-svg-icons';
 
 const channel = 'providers';
 
+interface DataRequestReturnType {
+    dispatched: Map<string, DataRequestStatus>;
+    lastChecked: Date;
+    providers: string[];
+}
+
 class Providers {
     static initialise(key: string): Promise<boolean> {
         return window.api.invoke(channel, ProviderCommands.INITIALISE, key);
@@ -25,11 +31,11 @@ class Providers {
         return window.api.invoke(channel, ProviderCommands.DISPATCH_DATA_REQUEST_TO_ALL);
     }
 
-    static refreshDataRequests(): Promise<void> {
-        return window.api.invoke(channel, ProviderCommands.REFRESH_DATA_REQUESTS);
+    static refresh(): Promise<void> {
+        return window.api.invoke(channel, ProviderCommands.REFRESH);
     }
 
-    static getDataRequests(): Promise<[Map<string, DataRequestStatus>, Date]> {
+    static getDataRequests(): Promise<DataRequestReturnType> {
         return window.api.invoke(channel, ProviderCommands.GET_DISPATCHED_DATA_REQUESTS);
     }
 

@@ -36,10 +36,14 @@ class ProviderBridge {
                 return this.repository.dispatchDataRequest(args[0]);
             case ProviderCommands.DISPATCH_DATA_REQUEST_TO_ALL:
                 return this.repository.dispatchDataRequestToAll();
-            case ProviderCommands.REFRESH_DATA_REQUESTS:
-                return this.repository.refreshDataRequests();
+            case ProviderCommands.REFRESH:
+                return this.repository.refresh();
             case ProviderCommands.GET_DISPATCHED_DATA_REQUESTS:
-                return [this.repository.dispatchedDataRequests, this.repository.lastDataRequestCheck];
+                return {
+                    dispatched: this.repository.dispatchedDataRequests, 
+                    lastChecked: this.repository.lastDataRequestCheck,
+                    providers: Array.from(this.repository.instances.keys()),
+                };
         }
     }
 

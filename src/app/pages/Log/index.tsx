@@ -63,7 +63,7 @@ class Log extends Component<{}, State> {
 
     handleRefresh = async (): Promise<void> => {
         this.setState({ updating: true });
-        await Providers.refreshDataRequests();
+        await Providers.refresh();
         this.setState({ updating: false });
         this.fetchLog();
     }

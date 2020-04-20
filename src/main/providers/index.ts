@@ -52,8 +52,8 @@ class ProviderManager extends EventEmitter {
         // Then we create a timeout function that checks for completed data
         // requests every five minutes. Also immediately commence with queueing
         // the refresher
-        setInterval(this.refreshDataRequests, 300_000);
-        this.refreshDataRequests();
+        setInterval(this.refresh, 300_000);
+        this.refresh();
 
         // Then initialise all classes
         // And after send out a ready event
@@ -164,13 +164,13 @@ class ProviderManager extends EventEmitter {
         ));
     }
 
-    refreshDataRequests = async (): Promise<void> => {
+    refresh = async (): Promise<void> => {
         // Send out an event so the front-end knows we are busy checking
         // outstanding data requests
         ProviderBridge.send(ProviderEvents.CHECKING_DATA_REQUESTS);
         console.log('Checking for completed data requests...');
 
-        await Promise.all(this.dispatchedDataRequests.map(async (status, key): Promise<void> => {
+        const dataRequests = Promise.all(this.dispatchedDataRequests.map(async (status, key): Promise<void> => {
             const instance = this.instances.get(key);
 
             // GUARD: If a request has already been completed, we do not need to
@@ -207,6 +207,9 @@ class ProviderManager extends EventEmitter {
                 lastCheck: new Date(),
             });
         }));
+
+        // Also dispatch regular update requests
+        await(Promise.all([dataRequests, await this.updateAll()]));
 
         ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
         this.lastDataRequestCheck = new Date();
