@@ -27,7 +27,7 @@ const Container = styled.div`
     }
 `;
 
-const Code = styled.div<{ removed?: boolean; added?: boolean }>`
+const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean }>`
     font-family: 'IBM Plex Mono';
     background-color: #f8f8f8;
     padding: 5px 25px;
@@ -54,6 +54,10 @@ const Code = styled.div<{ removed?: boolean; added?: boolean }>`
 
     ${props => props.removed && css`
         background-color: ${theme.colors.red}22;
+    `}
+
+    ${props => props.updated && css`
+        background-color: ${theme.colors.yellow}22;
     `}
 `;
 
@@ -111,6 +115,12 @@ class Diff extends PureComponent<Props, State> {
             <Container>
                 {dataDiff.added.map((datum, index) => (
                     <Code key={index} added={true}>
+                        <FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth />
+                        <span>{DataType.toString(datum)}</span>
+                    </Code>
+                ))}
+                {dataDiff.updated.map((datum, index) => (
+                    <Code key={index} updated={true}>
                         <FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth />
                         <span>{DataType.toString(datum)}</span>
                     </Code>
