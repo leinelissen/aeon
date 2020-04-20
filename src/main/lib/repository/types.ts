@@ -58,3 +58,7 @@ export enum RepositoryArguments {
     STAGE,
     HEAD,
 }
+
+export enum RepositoryEvents {
+    NEW_COMMIT,
+}

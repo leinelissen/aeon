@@ -11,6 +11,8 @@ import { faSync } from '@fortawesome/pro-light-svg-icons';
 import Requests from './components/Requests';
 import { Link } from 'react-router-dom';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
+import { RepositoryEvents } from 'main/lib/repository/types';
+import { IpcRendererEvent } from 'electron';
 
 interface State {
     log: ReadCommitResult[];
@@ -47,6 +49,17 @@ class Log extends Component<{}, State> {
 
     componentDidMount(): void {
         this.fetchLog();
+        Repository.subscribe(this.handleEvent);
+    }
+
+    componentWillUnmount(): void {
+        Repository.unsubscribe(this.handleEvent);
+    }
+
+    handleEvent = (event: IpcRendererEvent, type: RepositoryEvents): void => {
+        if (type === RepositoryEvents.NEW_COMMIT) {
+            this.fetchLog();
+        }
     }
 
     fetchLog = (): Promise<void> => {

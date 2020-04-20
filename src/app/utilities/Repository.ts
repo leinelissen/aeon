@@ -1,12 +1,23 @@
-import { DiffResult, RepositoryCommands, RepositoryArguments } from 'main/lib/repository/types';
+import { DiffResult, RepositoryCommands, RepositoryArguments, RepositoryEvents } from 'main/lib/repository/types';
 import { ProviderDatum } from 'main/providers/types';
 import { ReadCommitResult, StatusRow } from 'isomorphic-git';
 import { faInstagram, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faSquare } from '@fortawesome/pro-light-svg-icons';
+import { IpcRendererEvent } from 'electron';
 
 const channel = 'repository';
 
+type SubscriptionHandler = (event: IpcRendererEvent, type: RepositoryEvents) => void;
+
 class Repository {
+    static subscribe(handler: SubscriptionHandler): void {
+        window.api.on(channel, handler);
+    }
+
+    static unsubscribe(handler: SubscriptionHandler): void {
+        window.api.removeListener(channel, handler);
+    }
+
     static diff(refTree?: string | RepositoryArguments, comparedTree?: string | RepositoryArguments): Promise<DiffResult<unknown>[]> {
         return window.api.invoke(channel, RepositoryCommands.DIFF, refTree, comparedTree);
     }

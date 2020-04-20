@@ -3,13 +3,14 @@ import { Change } from 'diff';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
 import git, { Errors, ReadCommitResult, TREE, WalkerEntry, Walker, StatusRow } from 'isomorphic-git';
-import { DiffResult } from './types';
+import { DiffResult, RepositoryEvents } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
 import Notifications from '../notifications';
 import diffMapFunction from './utilities/diff-map';
 import generateParsedCommit from './utilities/generate-parsed-commit';
 import { ProviderDatum } from 'main/providers/types';
+import RepositoryBridge from './bridge';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
@@ -186,7 +187,7 @@ class Repository extends EventEmitter {
     
     public commit = async (message: string, args: { [key: string]: any } = {}): Promise<string> => {
         const result = await git.commit({ ...this.config, author: this.author, message, ...args });
-        Notifications.success(`A new commit was created: ${message}`);
+        RepositoryBridge.send(RepositoryEvents.NEW_COMMIT);
         return result;
     }
 

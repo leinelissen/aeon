@@ -1,6 +1,6 @@
 import React, { Component, FunctionComponent, useCallback } from 'react';
 import Loading, { Ball } from 'app/components/Loading';
-import { DataRequestStatus, ProviderEvents } from 'main/providers/types';
+import { DataRequestStatus, ProviderEvents, Provider } from 'main/providers/types';
 import Providers from 'app/utilities/Providers';
 import styled, { css } from 'styled-components';
 import theme from 'app/styles/theme';
@@ -88,10 +88,15 @@ class Requests extends Component<{}, State> {
 
     componentDidMount(): void {
         // Subscribe to the providers' events
+        Providers.subscribe(this.handleEvent);
         window.api.on('providers', this.handleEvent);
 
         // And also retrieve the status of any data requests
         this.retriveDataRequests();
+    }
+
+    componentWillUnmount(): void {
+        Providers.unsubscribe(this.handleEvent);
     }
 
     async retriveDataRequests(): Promise<void> {

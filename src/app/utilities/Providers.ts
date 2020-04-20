@@ -1,6 +1,7 @@
 import { ProviderCommands, DataRequestStatus, Provider, ProviderEvents } from 'main/providers/types';
 import { faInstagram, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faSquare } from '@fortawesome/pro-light-svg-icons';
+import { IpcRendererEvent } from 'electron';
 
 const channel = 'providers';
 
@@ -10,7 +11,17 @@ interface DataRequestReturnType {
     providers: string[];
 }
 
+type SubscriptionHandler = (event: IpcRendererEvent, type: ProviderEvents) => void;
+
 class Providers {
+    static subscribe(handler: SubscriptionHandler): void {
+        window.api.on(channel, handler);
+    }
+
+    static unsubscribe(handler: SubscriptionHandler): void {
+        window.api.removeListener(channel, handler);
+    }
+
     static initialise(key: string): Promise<boolean> {
         return window.api.invoke(channel, ProviderCommands.INITIALISE, key);
     }
@@ -47,6 +58,7 @@ class Providers {
                 return faSquare;
         }
     }
+
 }
 
 export default Providers;
