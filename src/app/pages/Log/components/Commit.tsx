@@ -16,6 +16,7 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     border: 0;
     font-size: 16px;
     font-weight: 400;
+    width: 100%;
 
     &:hover {
         cursor: pointer;

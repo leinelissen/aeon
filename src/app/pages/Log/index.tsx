@@ -13,6 +13,8 @@ import { Link } from 'react-router-dom';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 import { RepositoryEvents } from 'main/lib/repository/types';
 import { IpcRendererEvent } from 'electron';
+import MenuBar from 'app/components/MenuBar';
+import { H2 } from 'app/components/Typography';
 
 interface State {
     log: ReadCommitResult[];
@@ -21,23 +23,26 @@ interface State {
 }
 
 const Container = styled.div`
-    display: flex;
+    display: grid;
     background: white;
-
-    & > * {
-        overflow-y: scroll;
-        height: calc(100vh - 40px);
-    }
+    height: 100%;
+    grid-template-rows: auto 1fr 50px;
+    grid-template-columns: 50% 50%;
+    grid-template-areas: 
+        "head head" 
+        "commits diff" 
+        "requests diff";
 `;
 
 const CommitContainer = styled.div`
     display: flex;
+    grid-area: "comits";
     flex-direction: column;
     position: sticky;
     top: 0;
     flex-shrink: 0;
     border-right: 1px solid #eee;
-    width: 66vw;
+    overflow-y: scroll;
 `;
 
 class Log extends Component<{}, State> {
@@ -97,6 +102,9 @@ class Log extends Component<{}, State> {
 
         return (
             <Container>
+                <MenuBar>
+                    <H2>Identities</H2>
+                </MenuBar>
                 <CommitContainer>
                     <Link to={`/commit/new?transition=${TransitionDirection.right}`}>
                         <StyledCommit active={false}>
@@ -106,8 +114,8 @@ class Log extends Component<{}, State> {
                     {log.map((entry: ReadCommitResult) => (
                         <Commit key={entry.oid} entry={entry} onClick={this.handleClick} active={entry.oid === selectedCommit} />
                     ))}
-                    <Requests />
                 </CommitContainer>
+                <Requests />
                 <Diff commit={selectedCommit} />
             </Container>
         );

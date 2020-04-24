@@ -18,14 +18,11 @@ interface State {
 }
 
 const Container = styled.div`
-    position: absolute;
-    bottom: 0;
-    left: 0;
     display: flex;
     flex-direction: row;
     font-size: 12px;
     border-top: 1px solid #eee;
-    width: 100%;
+    border-right: 1px solid #eee;
     background-color: white;
 `
 

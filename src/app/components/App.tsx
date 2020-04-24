@@ -8,8 +8,9 @@ import styled, { StyleSheetManager } from 'styled-components';
 import Store from 'app/store';
 
 const Main = styled.main`
-    padding-top: 40px;
+    /* padding-top: 40px; */
     position: relative;
+    height: 100vh;
 `;
 
 class App extends Component {
@@ -23,7 +24,7 @@ class App extends Component {
                 <Store.Container>
                     <div>
                         <Notifications />
-                        <MenuBar />
+                        {/* <MenuBar /> */}
                         <Main>
                             <Pages />
                         </Main>

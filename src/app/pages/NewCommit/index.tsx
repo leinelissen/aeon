@@ -11,6 +11,9 @@ import DataType from 'app/utilities/DataType';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 import Repository from 'app/utilities/Repository';
 import Loading from 'app/components/Loading';
+import MenuBar from 'app/components/MenuBar';
+import { slideProps, SlideDirection } from 'app/components/SlideIn';
+import { Transition } from 'react-spring/renderprops';
 
 type GroupedData =  { [key: string]: ProviderDatum<string, unknown>[] };
 
@@ -24,29 +27,26 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: 33% 67%;
     grid-template-rows: auto 1fr;
-    height: calc(100vh - 40px);
+    height: 100%;
     background: white;
     position: relative;
-`;
-
-const TopBar = styled.div`
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid ${theme.colors.border};
-    padding: 16px 8px;
-    grid-column: 1 / span 2;
 `;
 
 const RightSideOverlay = styled.div`
     position: absolute;
     right: 0;
-    height: 80vh;
+    height: 100%;
     width: 33vw;
     bottom: 0;
     background-color: white;
-    border-left: 1px solid ${theme.colors.border};
     z-index: 2;
     padding: 16px;
+    box-shadow: -1px 0 1px rgba(0,0,0,0.01), 
+              -2px 0 2px rgba(0,0,0,0.01), 
+              -4px 0 4px rgba(0,0,0,0.01), 
+              -8px 0 8px rgba(0,0,0,0.01), 
+              -16px 0 16px rgba(0,0,0,0.01), 
+              -32px 0 32px rgba(0,0,0,0.01);
 `;
 
 const List = styled.div`
@@ -181,7 +181,7 @@ class NewCommit extends Component<{}, State> {
 
         return (
             <Container>
-                <TopBar>
+                <MenuBar>
                     <Link to={`/log?transition=${TransitionDirection.left}`}>
                         <GhostButton>
                             <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: 5 }} /> Back
@@ -191,7 +191,7 @@ class NewCommit extends Component<{}, State> {
                     <Button icon={faCloudUpload} style={{ marginLeft: 'auto' }}>
                         Save Identity
                     </Button>
-                </TopBar>
+                </MenuBar>
                 <List>
                     <RowHeading>CATEGORIES</RowHeading>
                     {Object.values(ProvidedDataTypes).map((key) => (
@@ -213,19 +213,26 @@ class NewCommit extends Component<{}, State> {
                             onClick={this.setDatum}
                         />
                     ))}
+                    <Transition 
+                        items={datum}
+                        {...slideProps(SlideDirection.RIGHT)}
+                    >
+                        {providedDatum => providedDatum && 
+                            (props =>
+                                <RightSideOverlay style={props}>
+                                    <p><strong>{DataType.toString(providedDatum)}</strong></p>
+                                    <p>{providedDatum.timestamp?.toLocaleString()}</p>
+                                    <Button fullWidth color={theme.colors.red}>
+                                        Delete this data point
+                                    </Button>
+                                    <Button fullWidth color={theme.colors.yellow}>
+                                        Modify this data point
+                                    </Button>
+                                </RightSideOverlay>
+                            )
+                        }
+                    </Transition>
                 </List>
-                {datum && (
-                    <RightSideOverlay>
-                        <p><strong>{DataType.toString(datum)}</strong></p>
-                        <p>{datum.timestamp?.toLocaleString()}</p>
-                        <Button fullWidth color={theme.colors.red}>
-                            Delete this data point
-                        </Button>
-                        <Button fullWidth color={theme.colors.yellow}>
-                            Modify this data point
-                        </Button>
-                    </RightSideOverlay>
-                )}
             </Container>
         );
     }

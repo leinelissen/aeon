@@ -20,7 +20,9 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     font-size: 12px;
-    width: 100%;
+    grid-row: span 2;
+    grid-area: diff;
+    overflow-y: scroll;
 
     h3 {
         margin-left: 25px;
@@ -35,10 +37,6 @@ const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean 
     line-height: 2;
     white-space: pre-wrap;
     user-select: text;
-
-    /* display: flex;
-    flex-direction: row;
-    align-items: top; */
 
     & > span {
         margin-left: 10px;
