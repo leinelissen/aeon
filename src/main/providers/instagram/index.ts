@@ -100,8 +100,6 @@ class Instagram extends DataRequestProvider implements WithWindow {
             )
         );
 
-        console.log(responses);
-
         // We then transform the data so that we can return it to the handler
         return responses.map(response => {
             return {

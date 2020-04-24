@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macOS-10.14, windows-2016, ubuntu-18.04]
+        os: [macOS-latest, windows-latest, ubuntu-18.04]
 
     steps:
       - name: Context
@@ -25,6 +25,8 @@ jobs:
           node-version: 13.x
       - name: Install dependencies
         run: |
+          npmc onfig set '@fortawesome:registry=https://npm.fontawesome.com/'
+          npm config set '//npm.fontawesome.com/:_authToken' "${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}"
           npm ci
       - name: Publish
         run: |

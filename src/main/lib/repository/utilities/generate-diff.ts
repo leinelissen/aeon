@@ -51,6 +51,7 @@ function generateDiff(
     
             // Return the diff
             const diff = detailedDiff(refObject, comparedObject) as ObjectChange;
+            console.log(filepath, diff, refObject, comparedObject);
             
             // Now that we've calculated the diff, we might as well try to
             // extract the data from the files using JSON. This does depend on
