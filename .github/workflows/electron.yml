@@ -25,7 +25,7 @@ jobs:
           node-version: 13.x
       - name: Install dependencies
         run: |
-          npm install
+          npm ci
       - name: Publish
         run: |
           npm run make
