@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
-      - name: Use Node.js 13.x
+      - name: Setup Node
         uses: actions/setup-node@v1
         with:
           node-version: 13.x
@@ -28,7 +28,7 @@ jobs:
           npm config set '@fortawesome:registry=https://npm.fontawesome.com/'
           npm config set '//npm.fontawesome.com/:_authToken' "${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}"
           npm ci
-      - name: Publish
+      - name: Compile
         run: |
           npm run make
       # - name: Cleanup artifacts
@@ -38,11 +38,11 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: ${{ matrix.os }}
-          path: dist
+          path: out
       - name: Release
         uses: softprops/action-gh-release@v1
         # if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: "dist/**/*.zip"
+          files: "out/**/*.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
