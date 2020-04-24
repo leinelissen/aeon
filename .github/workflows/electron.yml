@@ -31,18 +31,15 @@ jobs:
       - name: Compile
         run: |
           npm run make
-      - name: Cleanup artifacts
-        run: |
-          npx rimraf "out/**/!(*.zip|*.deb|*.rpm|*.exe)"
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
           name: ${{ matrix.os }}
-          path: out
+          path: out/make
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: "out/**"
+          files: "out/make/**"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
