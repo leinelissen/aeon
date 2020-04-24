@@ -27,7 +27,7 @@
                 {
                     "name": "@electron-forge/maker-squirrel",
                     "config": {
-                        "iconUrl": "./src/icon.ico",
+                        "iconUrl": "https://raw.githubusercontent.com/leinelissen/aeon/master/src/icon.ico",
                         "setupIcon": "./src/icon.ico"
                     }
                 },
