@@ -33,7 +33,7 @@ jobs:
           npm run make
       - name: Cleanup artifacts
         run: |
-          npx rimraf "out/!(*.zip|*.deb|*.rpm)"
+          npx rimraf "out/**/!(*.zip|*.deb|*.rpm|*.exe)"
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
