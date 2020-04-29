@@ -7,6 +7,8 @@ import theme from 'app/styles/theme';
 import Loading from 'app/components/Loading';
 import { ProviderDatum, ProvidedDataTypes } from 'main/providers/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { H3 } from 'app/components/Typography';
+import { Margin } from 'app/components/Utility';
 
 interface Props {
     commit: string;
@@ -103,14 +105,20 @@ class Diff extends PureComponent<Props, State> {
         const { diff } = this.state;
 
         if (!diff) {
-            return <Loading />;
+            return (
+                <Container>
+                    <Loading />
+                </Container>
+            );
         }
 
         const dataDiff = this.filterAndSortExtractedData();
-        console.log(diff, dataDiff);
 
         return (
             <Container>
+                <Margin>
+                    <H3>Title</H3>
+                </Margin>
                 {dataDiff.added.map((datum, index) => (
                     <Code key={index} added={true}>
                         <FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth />

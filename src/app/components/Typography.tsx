@@ -11,3 +11,9 @@ export const H2 = styled.h2`
     margin: 8px 0;
     color: #666;
 `;
+
+export const H3 = styled.h2`
+    font-weight: 400;
+    font-size: 16px;
+    margin: 8px 0;
+`;

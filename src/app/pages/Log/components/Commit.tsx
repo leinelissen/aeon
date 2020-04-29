@@ -17,6 +17,10 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     font-size: 16px;
     font-weight: 400;
     width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    color: #666;
 
     &:hover {
         cursor: pointer;
@@ -33,8 +37,27 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
 
     ${(props) => props.active && css`
         background-color: #eee !important;
+        color: inherit;
     `}
 `
+
+const Dot = styled.div`
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    margin-right: 16px; 
+    background-color: ${theme.colors.grey.medium};
+    z-index: 2;
+`;
+
+const Timeline = styled.div`
+    position: absolute;
+    left: 36px;
+    width: 2px;
+    height: 100%;
+    background-color: #ddd;
+    z-index: 0;
+`;
 
 class Commit extends Component<Props> {
     handleClick = (): void => {
@@ -46,6 +69,8 @@ class Commit extends Component<Props> {
 
         return (
             <StyledCommit active={active} onClick={this.handleClick}>
+                <Timeline />
+                <Dot />
                 {commit.message}
             </StyledCommit>
         )

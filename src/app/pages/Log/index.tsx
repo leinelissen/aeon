@@ -7,14 +7,17 @@ import Diff from './components/Diff';
 import Loading from 'app/components/Loading';
 import Button from 'app/components/Button';
 import Providers from 'app/utilities/Providers';
-import { faSync } from '@fortawesome/pro-light-svg-icons';
 import Requests from './components/Requests';
 import { Link } from 'react-router-dom';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 import { RepositoryEvents } from 'main/lib/repository/types';
 import { IpcRendererEvent } from 'electron';
 import MenuBar from 'app/components/MenuBar';
-import { H2 } from 'app/components/Typography';
+import { H2, H3 } from 'app/components/Typography';
+import Logo from 'app/assets/aeon-logo.svg';
+import theme from 'app/styles/theme';
+import { faSparkles } from '@fortawesome/pro-light-svg-icons';
+import { Margin } from 'app/components/Utility';
 
 interface State {
     log: ReadCommitResult[];
@@ -26,23 +29,32 @@ const Container = styled.div`
     display: grid;
     background: white;
     height: 100%;
-    grid-template-rows: auto 1fr 50px;
+    grid-template-rows: auto auto 1fr 50px;
     grid-template-columns: 50% 50%;
     grid-template-areas: 
         "head head" 
+        "new new"
         "commits diff" 
         "requests diff";
 `;
 
 const CommitContainer = styled.div`
     display: flex;
-    grid-area: "comits";
+    grid-area: "commits";
     flex-direction: column;
     position: sticky;
     top: 0;
     flex-shrink: 0;
     border-right: 1px solid #eee;
     overflow-y: scroll;
+`;
+
+const NewCommitContainer = styled.div`
+    background-color: ${theme.colors.blue.primary};
+    grid-area: "new";
+    grid-column: -1 / 1;
+    padding: 32px;
+    color: ${theme.colors.white};
 `;
 
 class Log extends Component<{}, State> {
@@ -104,13 +116,23 @@ class Log extends Component<{}, State> {
             <Container>
                 <MenuBar>
                     <H2>Identities</H2>
+                    <img src={Logo} style={{ height: 16, marginLeft: 'auto' }} />
                 </MenuBar>
-                <CommitContainer>
+                <NewCommitContainer>
+                    <Margin>
+                        <H3>You have no changes</H3>
+                    </Margin>
                     <Link to={`/commit/new?transition=${TransitionDirection.right}`}>
-                        <StyledCommit active={false}>
+                        <Button
+                            icon={faSparkles}
+                            color={theme.colors.blue.primary}
+                            backgroundColor={theme.colors.white}
+                        >
                             Create a new commit
-                        </StyledCommit>
+                        </Button>
                     </Link>
+                </NewCommitContainer>
+                <CommitContainer>
                     {log.map((entry: ReadCommitResult) => (
                         <Commit key={entry.oid} entry={entry} onClick={this.handleClick} active={entry.oid === selectedCommit} />
                     ))}

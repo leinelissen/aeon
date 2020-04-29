@@ -3,7 +3,7 @@ const rules = require('./webpack.rules')('tsconfig.renderer.json');
 const plugins = require('./webpack.plugins');
 
 rules.push({
-    test: /\.(woff|woff2)$/,
+    test: /\.(woff|woff2|svg)$/,
     use: [{
         loader: 'file-loader',
         options: {

@@ -263,10 +263,10 @@ class NewCommit extends Component<RouteComponentProps, State> {
                                 </CloseButton>
                                 <p><strong>{DataType.toString(providedDatum)}</strong></p>
                                 <p>{providedDatum.timestamp?.toLocaleString()}</p>
-                                <Button fullWidth color={theme.colors.red}>
+                                <Button fullWidth backgroundColor={theme.colors.red}>
                                     Delete this data point
                                 </Button>
-                                <Button fullWidth color={theme.colors.yellow}>
+                                <Button fullWidth backgroundColor={theme.colors.yellow}>
                                     Modify this data point
                                 </Button>
                             </RightSideOverlay>
