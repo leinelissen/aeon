@@ -14,8 +14,11 @@ const providers: Array<typeof Provider | typeof DataRequestProvider> = [
 ];
 
 class ProviderManager extends EventEmitter {
-    // Contains all initialised provider instances
+    // Contains all provider instances
     instances: Map<string, Provider & Partial<DataRequestProvider>> = new Map();
+
+    // Contains the keys of all providers that have been initialised by the user
+    initialisedProviders: string[];
 
     // Refers to the repository obejct
     repository: Repository;
@@ -49,6 +52,9 @@ class ProviderManager extends EventEmitter {
             store.set('dispatched-data-requests', map.toString());
         });
 
+        // Construct the initialised providers from the store
+        this.initialisedProviders = JSON.parse(store.get('initialised-providers', '[]'));
+
         // Then we create a timeout function that checks for completed data
         // requests every five minutes. Also immediately commence with queueing
         // the refresher
@@ -74,7 +80,19 @@ class ProviderManager extends EventEmitter {
     }
 
     initialise = async (key: string): Promise<boolean> => {
-        return this.instances.get(key)?.initialise();
+        // Call the respective initialise function
+        const success = await this.instances.get(key)?.initialise();
+
+        // If the initialisation was a success, we save this, so that we can act
+        // on it later.
+        if (success) {
+            // Save the key to the array
+            this.initialisedProviders = [...this.initialisedProviders, key];
+            // And also save the array to the store
+            store.set('dispatched-data-requests', JSON.stringify(this.initialisedProviders));
+        }
+
+        return success;
     }
 
     /**
@@ -88,6 +106,12 @@ class ProviderManager extends EventEmitter {
         // GUARD: Check if we've found an instance
         if (!instance) {
             throw new Error('NotFoundError');
+        }
+
+        // GUARD: Check if the provider is already initialised
+        if (!this.initialisedProviders.includes(key)) {
+            return;
+            throw new Error('ProviderWasNotInitialised');
         }
 
         // Execute individual update, which should return a list of files to
@@ -135,6 +159,11 @@ class ProviderManager extends EventEmitter {
         // GUARD: Check if we've found an instance
         if (!instance) {
             throw new Error('NotFoundError');
+        }
+
+        // GUARD: Check if the provider is already initialised
+        if (!this.initialisedProviders.includes(key)) {
+            throw new Error('ProviderWasNotInitialised');
         }
 
         // GUARD: Check if the instance supports data request dispatching

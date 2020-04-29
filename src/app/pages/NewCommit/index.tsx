@@ -14,18 +14,19 @@ import Loading from 'app/components/Loading';
 import MenuBar from 'app/components/MenuBar';
 import { slideProps, SlideDirection } from 'app/components/SlideIn';
 import { Transition } from 'react-spring/renderprops';
+import { RouteComponentProps } from 'react-router';
 
 type GroupedData =  { [key: string]: ProviderDatum<string, unknown>[] };
 
 interface State {
-    category?: ProvidedDataTypes;
     groupedData?: GroupedData;
-    datum?: ProviderDatum<unknown, unknown>;
+    selectedCategory?: ProvidedDataTypes;
+    selectedDatum?: ProviderDatum<unknown, unknown>;
 }
 
 const Container = styled.div`
     display: grid;
-    grid-template-columns: 33% 67%;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto 1fr;
     height: 100%;
     background: white;
@@ -34,13 +35,13 @@ const Container = styled.div`
 
 const RightSideOverlay = styled.div`
     position: absolute;
-    right: 0;
-    height: 100%;
-    width: 33vw;
-    bottom: 0;
     background-color: white;
     z-index: 2;
-    padding: 16px;
+    grid-column: 3 / 4;
+    grid-row: 2 / 3;
+    width: 100%;
+    height: 100%;
+    padding: 32px 16px 16px 16px;
     box-shadow: -1px 0 1px rgba(0,0,0,0.01), 
               -2px 0 2px rgba(0,0,0,0.01), 
               -4px 0 4px rgba(0,0,0,0.01), 
@@ -56,6 +57,10 @@ const List = styled.div`
     flex-grow: 1;
     overflow-y: scroll;
     position: relative;
+`;
+
+const DataPointList = styled(List)`
+    grid-column: 2 / 4;
 `;
 
 const ListItem = styled.div`
@@ -106,6 +111,12 @@ const ListButton = styled.button<{ active?: boolean }>`
     `}
 `;
 
+const CloseButton = styled(GhostButton)`
+    position: absolute;
+    left: 8px;
+    top: 8px;
+`;
+
 interface ClickableCategoryProps {
     type: ProvidedDataTypes;
     onClick: (activity: ProvidedDataTypes) => void;
@@ -148,9 +159,9 @@ const ClickableDataPoint = ({ datum, onClick, ...props }: ClickableDataPointProp
     );
 };
 
-class NewCommit extends Component<{}, State> {
+class NewCommit extends Component<RouteComponentProps, State> {
     state: State = {
-        category: null,
+        selectedCategory: null,
         groupedData: null,
     }
 
@@ -167,13 +178,38 @@ class NewCommit extends Component<{}, State> {
         }, {});
 
         this.setState({ groupedData });
+        
+        document.addEventListener('keyup', this.handleKeyUp);
     }
 
-    setCategory = (category: ProvidedDataTypes): void => this.setState({ category, datum: null });
-    setDatum = (datum: ProviderDatum<unknown, unknown>): void => this.setState({ datum });
+    componentWillUnmount() {
+        document.removeEventListener('keyup', this.handleKeyUp);
+    }
+
+    handleKeyUp = (event: KeyboardEvent): void => {
+        if ((event.key === 'Left' && this.state.selectedDatum)) {
+            this.setState({ selectedDatum: null });
+        } else if (event.key === 'Escape') {
+            if (this.state.selectedDatum) {
+                this.setState({ selectedDatum: null });
+            } else if (this.state.selectedCategory) {
+                this.setState({ selectedCategory: null });
+            } else {
+                this.props.history.push(`/log?transition=${TransitionDirection.left}`);
+            }
+        }
+    }
+
+
+    setCategory = (selectedCategory: ProvidedDataTypes): void => 
+        this.setState({ selectedCategory, selectedDatum: null });
+
+    setDatum = (selectedDatum: ProviderDatum<unknown, unknown>): void => this.setState({ selectedDatum });
+    
+    closeOverlay = (): void => this.setState({ selectedDatum: null });
 
     render(): JSX.Element {
-        const { category, groupedData, datum } = this.state;
+        const { selectedCategory, groupedData, selectedDatum } = this.state;
 
         if (!groupedData) {
             return <Loading />;
@@ -198,41 +234,45 @@ class NewCommit extends Component<{}, State> {
                         <ClickableCategory
                             key={key}
                             type={key}
-                            active={category === key}
+                            active={selectedCategory === key}
                             disabled={!(key in groupedData)}
                             onClick={this.setCategory}
                         />
                     ))}
                 </List>
-                <List>
+                <DataPointList>
                     <RowHeading>DATA POINTS</RowHeading>
-                    {category && groupedData[category].map((datum, index) => (
+                    {selectedCategory && groupedData[selectedCategory].map((datum, index) => (
                         <ClickableDataPoint
                             datum={datum}
+                            active={selectedDatum === datum}
                             key={`${datum.type}-${index}`} 
                             onClick={this.setDatum}
                         />
                     ))}
-                    <Transition 
-                        items={datum}
-                        {...slideProps(SlideDirection.RIGHT)}
-                    >
-                        {providedDatum => providedDatum && 
-                            (props =>
-                                <RightSideOverlay style={props}>
-                                    <p><strong>{DataType.toString(providedDatum)}</strong></p>
-                                    <p>{providedDatum.timestamp?.toLocaleString()}</p>
-                                    <Button fullWidth color={theme.colors.red}>
-                                        Delete this data point
-                                    </Button>
-                                    <Button fullWidth color={theme.colors.yellow}>
-                                        Modify this data point
-                                    </Button>
-                                </RightSideOverlay>
-                            )
-                        }
-                    </Transition>
-                </List>
+                </DataPointList>
+                <Transition 
+                    items={selectedDatum}
+                    {...slideProps(SlideDirection.RIGHT)}
+                >
+                    {providedDatum => providedDatum && 
+                        (props =>
+                            <RightSideOverlay style={props}>
+                                <CloseButton onClick={this.closeOverlay}>
+                                    <FontAwesomeIcon icon={faChevronRight} />
+                                </CloseButton>
+                                <p><strong>{DataType.toString(providedDatum)}</strong></p>
+                                <p>{providedDatum.timestamp?.toLocaleString()}</p>
+                                <Button fullWidth color={theme.colors.red}>
+                                    Delete this data point
+                                </Button>
+                                <Button fullWidth color={theme.colors.yellow}>
+                                    Modify this data point
+                                </Button>
+                            </RightSideOverlay>
+                        )
+                    }
+                </Transition>
             </Container>
         );
     }
