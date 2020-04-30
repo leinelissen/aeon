@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import Button, { GhostButton } from 'app/components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCloudUpload, IconDefinition, faChevronRight } from '@fortawesome/pro-light-svg-icons';
-import { H2 } from 'app/components/Typography';
+import { faArrowLeft, faCloudUpload, IconDefinition, faChevronRight, faCassetteTape, faClock, faEye, faHashtag } from '@fortawesome/pro-light-svg-icons';
+import { H2, H3, H5 } from 'app/components/Typography';
 import theme from 'app/styles/theme';
 import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
 import DataType from 'app/utilities/DataType';
@@ -15,6 +15,7 @@ import MenuBar from 'app/components/MenuBar';
 import { slideProps, SlideDirection } from 'app/components/SlideIn';
 import { Transition } from 'react-spring/renderprops';
 import { RouteComponentProps } from 'react-router';
+import Providers from 'app/utilities/Providers';
 
 type GroupedData =  { [key: string]: ProviderDatum<string, unknown>[] };
 
@@ -39,9 +40,10 @@ const RightSideOverlay = styled.div`
     z-index: 2;
     grid-column: 3 / 4;
     grid-row: 2 / 3;
+    font-size: 14px;
     width: 100%;
     height: 100%;
-    padding: 32px 16px 16px 16px;
+    padding-top: 16px;
     box-shadow: -1px 0 1px rgba(0,0,0,0.01), 
               -2px 0 2px rgba(0,0,0,0.01), 
               -4px 0 4px rgba(0,0,0,0.01), 
@@ -113,8 +115,22 @@ const ListButton = styled.button<{ active?: boolean }>`
 
 const CloseButton = styled(GhostButton)`
     position: absolute;
-    left: 8px;
+    left: 16px;
     top: 8px;
+`;
+
+const Section = styled.div`
+    border-bottom: 1px solid #eee;
+    padding: 16px 32px;
+`;
+
+const DetailListItem = styled.div`
+    opacity: 0.5;
+    display: flex;
+
+    & > *:first-child {
+        margin-right: 8px;
+    }
 `;
 
 interface ClickableCategoryProps {
@@ -258,17 +274,72 @@ class NewCommit extends Component<RouteComponentProps, State> {
                     {providedDatum => providedDatum && 
                         (props =>
                             <RightSideOverlay style={props}>
-                                <CloseButton onClick={this.closeOverlay}>
-                                    <FontAwesomeIcon icon={faChevronRight} />
-                                </CloseButton>
-                                <p><strong>{DataType.toString(providedDatum)}</strong></p>
-                                <p>{providedDatum.timestamp?.toLocaleString()}</p>
-                                <Button fullWidth backgroundColor={theme.colors.red}>
-                                    Delete this data point
-                                </Button>
-                                <Button fullWidth backgroundColor={theme.colors.yellow}>
-                                    Modify this data point
-                                </Button>
+                                <Section>
+                                    <CloseButton onClick={this.closeOverlay}>
+                                        <FontAwesomeIcon icon={faChevronRight} />
+                                    </CloseButton>
+                                    <H5>DETAILS</H5>
+                                    <H2>
+                                        <FontAwesomeIcon
+                                            icon={DataType.getIcon(providedDatum.type as ProvidedDataTypes)}
+                                            style={{ marginRight: 8 }}
+                                        />
+                                        {DataType.toString(providedDatum)}
+                                    </H2>
+                                </Section>
+                                <Section>
+                                    <DetailListItem>
+                                        <span>
+                                            <FontAwesomeIcon
+                                                icon={Providers.getIcon(providedDatum.provider)}
+                                                fixedWidth
+                                            />
+                                        </span>
+                                        <span style={{ textTransform: 'capitalize' }}>
+                                            {providedDatum.provider}
+                                        </span>
+                                    </DetailListItem>
+                                    <DetailListItem>
+                                        <span>
+                                            <FontAwesomeIcon icon={faCassetteTape} fixedWidth />
+                                        </span>
+                                        <span style={{ textTransform: 'uppercase' }}>
+                                            {providedDatum.type}
+                                        </span>
+                                    </DetailListItem>
+                                    <DetailListItem>
+                                        <span>
+                                            <FontAwesomeIcon icon={faClock} fixedWidth />
+                                        </span>
+                                        <span>
+                                            {providedDatum.timestamp?.toLocaleString()}
+                                        </span>
+                                    </DetailListItem>
+                                    <DetailListItem>
+                                        <span>
+                                            <FontAwesomeIcon icon={faHashtag} fixedWidth />
+                                        </span>
+                                        <span>
+                                            2 other occurrences on other platforms
+                                        </span>
+                                    </DetailListItem>
+                                    <DetailListItem>
+                                        <span>
+                                            <FontAwesomeIcon icon={faEye} fixedWidth />
+                                        </span>
+                                        <span>
+                                            Data is visisble
+                                        </span>
+                                    </DetailListItem>
+                                </Section>
+                                <Section>
+                                    <Button fullWidth backgroundColor={theme.colors.red}>
+                                        Delete this data point
+                                    </Button>
+                                    <Button fullWidth backgroundColor={theme.colors.yellow}>
+                                        Modify this data point
+                                    </Button>
+                                </Section>
                             </RightSideOverlay>
                         )
                     }
