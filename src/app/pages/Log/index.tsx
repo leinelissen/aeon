@@ -107,6 +107,7 @@ class Log extends Component<{}, State> {
 
     render(): JSX.Element {
         const { log, selectedCommit, updating } = this.state;
+        const selectedTree = log.find(d => d.oid === selectedCommit);
 
         if (!log.length) {
             return <Loading />;
@@ -138,7 +139,7 @@ class Log extends Component<{}, State> {
                     ))}
                 </CommitContainer>
                 <Requests />
-                <Diff commit={selectedCommit} />
+                <Diff commit={selectedTree} />
             </Container>
         );
     }

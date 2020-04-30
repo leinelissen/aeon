@@ -12,8 +12,16 @@ export const H2 = styled.h2`
     color: #666;
 `;
 
-export const H3 = styled.h2`
+export const H3 = styled.h3`
     font-weight: 400;
     font-size: 16px;
     margin: 8px 0;
 `;
+
+export const H5 = styled.h5`
+    opacity: 0.25;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin: 8px 0;
+`

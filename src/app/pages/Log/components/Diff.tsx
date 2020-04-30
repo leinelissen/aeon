@@ -7,11 +7,13 @@ import theme from 'app/styles/theme';
 import Loading from 'app/components/Loading';
 import { ProviderDatum, ProvidedDataTypes } from 'main/providers/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { H3 } from 'app/components/Typography';
+import { H3, H5 } from 'app/components/Typography';
 import { Margin } from 'app/components/Utility';
+import { ReadCommitResult } from 'isomorphic-git';
+import { formatDistanceToNow } from 'date-fns';
 
 interface Props {
-    commit: string;
+    commit: ReadCommitResult;
 }
 
 interface State {
@@ -39,10 +41,8 @@ const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean 
     line-height: 2;
     white-space: pre-wrap;
     user-select: text;
-
-    & > span {
-        margin-left: 10px;
-    }
+    display: flex;
+    word-break: break-all;
 
     &.icon {
         height: 1em;
@@ -59,6 +59,17 @@ const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean 
     ${props => props.updated && css`
         background-color: ${theme.colors.yellow}22;
     `}
+`;
+
+const MarginLeft = styled.span`
+    margin-left: 10px;
+`;
+
+const PullRight = styled.span`
+    margin-left: auto;
+    opacity: 0.22;
+    text-transform: uppercase;
+    flex-shrink: 0;
 `;
 
 class Diff extends PureComponent<Props, State> {
@@ -78,7 +89,7 @@ class Diff extends PureComponent<Props, State> {
 
     fetchDiff = async (): Promise<void> => {
         this.setState({ diff: null });
-        const diff = await Repository.diff(this.props.commit);
+        const diff = await Repository.diff(this.props.commit.oid);
         this.setState({ diff });
     }
 
@@ -103,6 +114,7 @@ class Diff extends PureComponent<Props, State> {
 
     render(): JSX.Element {
         const { diff } = this.state;
+        const { commit } = this.props;
 
         if (!diff) {
             return (
@@ -117,24 +129,43 @@ class Diff extends PureComponent<Props, State> {
         return (
             <Container>
                 <Margin>
-                    <H3>Title</H3>
+                    <H3>{commit.commit.message}</H3>
+                    Committed {formatDistanceToNow(new Date(commit.commit.author.timestamp * 1000))} ago
                 </Margin>
+                {dataDiff.added.length ? (
+                    <Code added>
+                        <H5>DATA ADDED</H5>
+                    </Code>
+                ) : null}
                 {dataDiff.added.map((datum, index) => (
-                    <Code key={index} added={true}>
-                        <FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth />
-                        <span>{DataType.toString(datum)}</span>
+                    <Code key={index} added>
+                        <span><FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth /></span>
+                        <MarginLeft>{DataType.toString(datum)}</MarginLeft>
+                        <PullRight>{datum.type}</PullRight>
                     </Code>
                 ))}
+                {dataDiff.updated.length ? (
+                    <Code updated>
+                        <H5>DATA UPDATED</H5>
+                    </Code>
+                ) : null}
                 {dataDiff.updated.map((datum, index) => (
-                    <Code key={index} updated={true}>
-                        <FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth />
-                        <span>{DataType.toString(datum)}</span>
+                    <Code key={index} updated>
+                        <span><FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth /></span>
+                        <MarginLeft>{DataType.toString(datum)}</MarginLeft>
+                        <PullRight>{datum.type}</PullRight>
                     </Code>
                 ))}
+                {dataDiff.deleted.length ? (
+                    <Code removed>
+                        <H5>DATA REMOVED</H5>
+                    </Code>
+                ) : null}
                 {dataDiff.deleted.map((datum, index) => (
-                    <Code key={index} removed={true}>
-                        <FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth />
-                        <span>{DataType.toString(datum)}</span>
+                    <Code key={index} removed>
+                        <span><FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth /></span>
+                        <MarginLeft>{DataType.toString(datum)}</MarginLeft>
+                        <PullRight>{datum.type}</PullRight>
                     </Code>
                 ))}
             </Container>
