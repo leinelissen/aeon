@@ -3,11 +3,14 @@ import styled, { css } from 'styled-components'
 import React, { Component } from 'react';
 import theme from 'app/styles/theme';
 import { ReadCommitResult } from 'isomorphic-git';
+import { Badge } from 'app/components/Typography';
+import { PullRight } from 'app/components/Utility';
 
 interface Props {
     onClick: (hash: string) => void;
     entry: ReadCommitResult;
-    active: boolean;
+    active?: boolean;
+    latestCommit?: boolean;
 }
 
 export const StyledCommit = styled.button<{ active?: boolean }>`
@@ -65,13 +68,14 @@ class Commit extends Component<Props> {
     }
 
     render(): JSX.Element {
-        const { entry: { commit }, active } = this.props;
+        const { entry: { commit }, active, latestCommit } = this.props;
 
         return (
             <StyledCommit active={active} onClick={this.handleClick}>
                 <Timeline />
                 <Dot />
                 {commit.message}
+                {latestCommit && <PullRight><Badge>Current Identity</Badge></PullRight>}
             </StyledCommit>
         )
     }

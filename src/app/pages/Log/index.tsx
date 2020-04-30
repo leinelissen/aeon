@@ -134,8 +134,14 @@ class Log extends Component<{}, State> {
                     </Link>
                 </NewCommitContainer>
                 <CommitContainer>
-                    {log.map((entry: ReadCommitResult) => (
-                        <Commit key={entry.oid} entry={entry} onClick={this.handleClick} active={entry.oid === selectedCommit} />
+                    {log.map((entry: ReadCommitResult, i) => (
+                        <Commit
+                            key={entry.oid}
+                            entry={entry}
+                            onClick={this.handleClick}
+                            active={entry.oid === selectedCommit}
+                            latestCommit={i === 0}
+                        />
                     ))}
                 </CommitContainer>
                 <Requests />

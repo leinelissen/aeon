@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import theme from 'app/styles/theme';
 
 export const H1 = styled.h1`
     font-weight: 600;
@@ -25,3 +26,12 @@ export const H5 = styled.h5`
     font-weight: 400;
     margin: 8px 0;
 `
+
+export const Badge = styled.div`
+    background-color: ${theme.colors.blue.primary};
+    color: ${theme.colors.white};
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 12px;
+`;
