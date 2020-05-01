@@ -20,6 +20,7 @@ import {
     ClickableDataPoint
 } from './styles';
 import DatumOverlay from './components/DatumOverlay';
+import Modal from 'app/components/Modal';
 
 type GroupedData =  { [key: string]: ProviderDatum<string, unknown>[] };
 type DeletedData = { [key: string]: number[] };
@@ -33,6 +34,8 @@ interface State {
     selectedCategory?: ProvidedDataTypes;
     // The datum in a particular data category that has been selected
     selectedDatum?: number;
+    // Whether the modal for saving the identity has been opened
+    isModalOpen?: boolean;
 }
 
 class NewCommit extends Component<RouteComponentProps, State> {
@@ -90,7 +93,6 @@ class NewCommit extends Component<RouteComponentProps, State> {
         }
     }
 
-
     setCategory = (selectedCategory: ProvidedDataTypes): void => 
         this.setState({ selectedCategory, selectedDatum: null });
 
@@ -111,20 +113,24 @@ class NewCommit extends Component<RouteComponentProps, State> {
     }
 
     closeOverlay = (): void => this.setState({ selectedDatum: null });
+    closeModal = (): void => this.setState({ isModalOpen: false });
+    openModal = (): void => this.setState({ isModalOpen: true });
 
     render(): JSX.Element {
         const { 
             selectedCategory,
             groupedData,
             selectedDatum,
-            deletedData
+            deletedData,
+            isModalOpen
         } = this.state;
 
         if (!groupedData) {
             return <Loading />;
         }
 
-        console.log(this.state);
+        // Determine if there are any changes to the current identity
+        const hasChanges = !!Object.values(deletedData).find(c => c.length > 0);
 
         return (
             <Container>
@@ -135,7 +141,12 @@ class NewCommit extends Component<RouteComponentProps, State> {
                         </GhostButton>
                     </Link>
                     <H2>New Identity Update</H2>
-                    <Button icon={faCloudUpload} style={{ marginLeft: 'auto' }}>
+                    <Button 
+                        icon={faCloudUpload} 
+                        style={{ marginLeft: 'auto' }} 
+                        disabled={!hasChanges} 
+                        onClick={this.openModal}
+                    >
                         Save Identity
                     </Button>
                 </MenuBar>
@@ -170,6 +181,9 @@ class NewCommit extends Component<RouteComponentProps, State> {
                     onClose={this.closeOverlay}
                     onDelete={this.deleteDatum}
                 />
+                <Modal isOpen={isModalOpen} onRequestClose={this.closeModal}>
+                    TEXT
+                </Modal>
             </Container>
         );
     }

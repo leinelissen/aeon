@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Button, { GhostButton } from 'app/components/Button';
 import { ProviderDatum, ProvidedDataTypes } from 'main/providers/types';
 import styled from 'styled-components';
@@ -105,14 +105,16 @@ const DatumOverlay = (props: Props): JSX.Element => {
                                     {providedDatum.type}
                                 </span>
                             </DetailListItem>
-                            <DetailListItem>
-                                <span>
-                                    <FontAwesomeIcon icon={faClock} fixedWidth />
-                                </span>
-                                <span>
-                                    {providedDatum.timestamp?.toLocaleString()}
-                                </span>
-                            </DetailListItem>
+                            {providedDatum.timestamp &&                            
+                                <DetailListItem>
+                                    <span>
+                                        <FontAwesomeIcon icon={faClock} fixedWidth />
+                                    </span>
+                                    <span>
+                                        {providedDatum.timestamp?.toLocaleString()}
+                                    </span>
+                                </DetailListItem>
+                            }
                             <DetailListItem>
                                 <span>
                                     <FontAwesomeIcon icon={faHashtag} fixedWidth />
@@ -138,13 +140,13 @@ const DatumOverlay = (props: Props): JSX.Element => {
                             >
                                 Delete this data point
                             </Button>
-                            <Button
+                            {/* <Button
                                 fullWidth
                                 onClick={handleModify}
                                 backgroundColor={theme.colors.yellow}
                             >
                                 Modify this data point
-                            </Button>
+                            </Button> */}
                         </Section>
                     </Container>
                 )

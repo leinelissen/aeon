@@ -34,9 +34,9 @@ const StyledButton = styled.button<ButtonProps>`
     }
 
     &:disabled {
-        background-color: ${theme.colors.blue.dark};
+        background-color: #eee;
         cursor: not-allowed;
-        color: ${theme.colors.white}55;
+        color: ${theme.colors.black}22;
     }
 
     ${props => props.fullWidth && css`
