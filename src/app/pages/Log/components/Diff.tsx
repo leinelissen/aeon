@@ -11,6 +11,7 @@ import { H3, H5 } from 'app/components/Typography';
 import { Margin } from 'app/components/Utility';
 import { ReadCommitResult } from 'isomorphic-git';
 import { formatDistanceToNow } from 'date-fns';
+import Code from 'app/components/Code';
 
 interface Props {
     commit: ReadCommitResult;
@@ -31,34 +32,6 @@ const Container = styled.div`
     h3 {
         margin-left: 25px;
     }
-`;
-
-const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean }>`
-    font-family: 'IBM Plex Mono';
-    background-color: #f8f8f8;
-    padding: 5px 25px;
-    min-width: 100%;
-    line-height: 2;
-    white-space: pre-wrap;
-    user-select: text;
-    display: flex;
-    word-break: break-all;
-
-    &.icon {
-        height: 1em;
-    }
-
-    ${props => props.added && css`
-        background-color: ${theme.colors.green}22;
-    `}
-
-    ${props => props.removed && css`
-        background-color: ${theme.colors.red}22;
-    `}
-
-    ${props => props.updated && css`
-        background-color: ${theme.colors.yellow}22;
-    `}
 `;
 
 const MarginLeft = styled.span`

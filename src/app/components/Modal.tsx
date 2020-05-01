@@ -50,7 +50,7 @@ const CloseButton = styled(GhostButton)`
     position: absolute;
     top: 0;
     left: 0;
-    padding: 8px;
+    padding: 16px;
 `;
 
 class Modal extends Component<Props> {

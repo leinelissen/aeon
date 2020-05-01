@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Button, { GhostButton } from 'app/components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCloudUpload } from '@fortawesome/pro-light-svg-icons';
+import { faArrowLeft, faCloudUpload, faMinus } from '@fortawesome/pro-light-svg-icons';
 import { H2 } from 'app/components/Typography';
 import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
@@ -17,10 +17,13 @@ import {
     RowHeading,
     DataPointList,
     ClickableCategory,
-    ClickableDataPoint
+    ClickableDataPoint,
+    MarginLeft,
 } from './styles';
 import DatumOverlay from './components/DatumOverlay';
 import Modal from 'app/components/Modal';
+import DataType from 'app/utilities/DataType';
+import Code from 'app/components/Code';
 
 type GroupedData =  { [key: string]: ProviderDatum<string, unknown>[] };
 type DeletedData = { [key: string]: number[] };
@@ -182,7 +185,17 @@ class NewCommit extends Component<RouteComponentProps, State> {
                     onDelete={this.deleteDatum}
                 />
                 <Modal isOpen={isModalOpen} onRequestClose={this.closeModal}>
-                    TEXT
+                    <p style={{ padding: 16 }}>You are about to commit a new identity, with the following changes:</p>
+                    {Object.keys(deletedData).map(category =>
+                        deletedData[category].map(key =>
+                            <Code removed>
+                                <span><FontAwesomeIcon icon={faMinus} fixedWidth /></span>
+                                <MarginLeft><FontAwesomeIcon icon={DataType.getIcon(groupedData[category][key].type)} fixedWidth /></MarginLeft>
+                                <MarginLeft>{DataType.toString(groupedData[category][key])}</MarginLeft>
+                            </Code>
+                        )
+                    )}
+                    <Button style={{ margin: '32px auto 16px auto' }}>Save new Identity</Button>
                 </Modal>
             </Container>
         );

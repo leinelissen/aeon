@@ -102,6 +102,11 @@ const IconWrapper = styled.div`
     margin: 0 8px;
 `;
 
+export const MarginLeft = styled.span`
+    display: inline-block;
+    margin-left: 16px;
+`;
+
 const ListButton: FC<ListButtonProps> = ({ children, ...props }) => {
     return (
         <StyledListButton {...props}>
