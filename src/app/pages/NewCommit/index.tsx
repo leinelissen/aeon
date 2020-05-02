@@ -25,7 +25,7 @@ import Modal from 'app/components/Modal';
 import DataType from 'app/utilities/DataType';
 import Code from 'app/components/Code';
 
-type GroupedData =  { [key: string]: ProviderDatum<string, unknown>[] };
+type GroupedData =  { [key: string]: ProviderDatum<string, ProvidedDataTypes>[] };
 type DeletedData = { [key: string]: number[] };
 
 interface State {
