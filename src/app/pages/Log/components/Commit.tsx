@@ -51,6 +51,7 @@ const Dot = styled.div`
     margin-right: 16px; 
     background-color: ${theme.colors.grey.medium};
     z-index: 2;
+    flex-shrink: 0;
 `;
 
 const Timeline = styled.div`
