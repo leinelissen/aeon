@@ -11,6 +11,7 @@ const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean 
     user-select: text;
     display: flex;
     word-break: break-all;
+    font-size: 12px;
 
     &.icon {
         height: 1em;
@@ -18,17 +19,14 @@ const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean 
 
     ${props => props.added && css`
         background-color: ${theme.colors.green}22;
-        color: ${theme.colors.green};
     `}
 
     ${props => props.removed && css`
         background-color: ${theme.colors.red}22;
-        color: ${theme.colors.red};
     `}
 
     ${props => props.updated && css`
         background-color: ${theme.colors.yellow}22;
-        color: ${theme.colors.yellow};
     `}
 `;
 

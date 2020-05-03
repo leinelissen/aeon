@@ -70,19 +70,12 @@ class NewCommit extends Component<RouteComponentProps, State> {
         }, {});
 
         this.setState({ groupedData });
-        
-        // Also add a listener so we can handle keyboard events
-        document.addEventListener('keyup', this.handleKeyUp);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('keyup', this.handleKeyUp);
     }
 
     /**
      * Handle simple keystrokes in order to navigate through the datapoints
      */
-    handleKeyUp = (event: KeyboardEvent): void => {
+    handleKeyUp = (event: React.KeyboardEvent<HTMLButtonElement>): void => {
         if ((event.key === 'Left' && this.state.selectedDatum)) {
             this.setState({ selectedDatum: null });
         } else if (event.key === 'Escape') {
@@ -163,6 +156,7 @@ class NewCommit extends Component<RouteComponentProps, State> {
                             disabled={!(key in groupedData)}
                             onClick={this.setCategory}
                             deleted={deletedData[key].length > 0}
+                            onKeyUp={this.handleKeyUp}
                         />
                     ))}
                 </List>
@@ -176,6 +170,7 @@ class NewCommit extends Component<RouteComponentProps, State> {
                             key={`${datum.type}-${index}`} 
                             onClick={this.setDatum}
                             deleted={deletedData[selectedCategory].includes(index)}
+                            onKeyUp={this.handleKeyUp}
                         />
                     ))}
                 </DataPointList>

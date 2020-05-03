@@ -55,13 +55,12 @@ export const SubHeading = styled(RowHeading)`
     color: rgba(0, 0, 0, 0.4);
 `;
 
-interface ListButtonProps {
+interface ListButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
     active?: boolean;
     disabled?: boolean;
     deleted?: boolean;
     modified?: boolean;
     added?: boolean;
-    onClick: (event: any) => any;
 }
 
 export const StyledListButton = styled.button<ListButtonProps>`
@@ -122,7 +121,7 @@ const ListButton: FC<ListButtonProps> = ({ children, ...props }) => {
     )
 }
 
-interface ClickableCategoryProps extends ListButtonProps {
+interface ClickableCategoryProps extends Omit<ListButtonProps, 'onClick'> {
     type: ProvidedDataTypes;
     onClick: (activity: ProvidedDataTypes) => void;
 }
@@ -141,7 +140,7 @@ export const ClickableCategory = ({ type, onClick, ...props }: ClickableCategory
     );
 };
 
-interface ClickableDataPointProps extends ListButtonProps {
+interface ClickableDataPointProps extends Omit<ListButtonProps, 'onClick'> {
     datum: ProviderDatum<unknown, unknown>;
     onClick: (datum: number) => void;
     index: number;
