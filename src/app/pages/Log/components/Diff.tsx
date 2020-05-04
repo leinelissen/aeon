@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import { DiffResult, DiffType, ExtractedDataDiff, ObjectChange } from 'main/lib/repository/types';
 import Repository from 'app/utilities/Repository';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import DataType from 'app/utilities/DataType';
-import theme from 'app/styles/theme';
 import Loading from 'app/components/Loading';
-import { ProviderDatum, ProvidedDataTypes } from 'main/providers/types';
+import { ProviderDatum } from 'main/providers/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { H3, H5 } from 'app/components/Typography';
 import { Margin } from 'app/components/Utility';
@@ -18,7 +17,7 @@ interface Props {
 }
 
 interface State {
-    diff?: DiffResult<unknown>[];
+    diff?: ExtractedDataDiff;
 }
 
 const Container = styled.div`
@@ -28,10 +27,6 @@ const Container = styled.div`
     grid-row: span 2;
     grid-area: diff;
     overflow-y: scroll;
-
-    h3 {
-        margin-left: 25px;
-    }
 `;
 
 const MarginLeft = styled.span`
@@ -62,21 +57,18 @@ class Diff extends PureComponent<Props, State> {
 
     fetchDiff = async (): Promise<void> => {
         this.setState({ diff: null });
-        const diff = await Repository.diff(this.props.commit.oid);
-        this.setState({ diff });
+        const diff = await Repository.diff(this.props.commit.oid) as DiffResult<ExtractedDataDiff>[];
+        this.setState({ diff: this.filterAndSortExtractedData(diff) });
     }
 
-    filterAndSortExtractedData(): ExtractedDataDiff {
-        const { diff } = this.state;
-        const filteredDiff = diff.filter(file => file.type !== DiffType.EXTRACTED_DATA) as DiffResult<ExtractedDataDiff>[];
-
+    filterAndSortExtractedData(diff: DiffResult<ExtractedDataDiff>[]): ExtractedDataDiff {
         const sortingFunction = (a: ProviderDatum<unknown>, b: ProviderDatum<unknown>): number => {
             return a.type.localeCompare(b.type);
         };
 
-        const added = filteredDiff.flatMap((file) => file.diff.added || []).sort(sortingFunction);
-        const updated = filteredDiff.flatMap((file) => file.diff.updated || []).sort(sortingFunction);
-        const deleted = filteredDiff.flatMap((file) => file.diff.deleted || []).sort(sortingFunction);
+        const added = diff.flatMap((file) => file.diff.added || []).sort(sortingFunction);
+        const updated = diff.flatMap((file) => file.diff.updated || []).sort(sortingFunction);
+        const deleted = diff.flatMap((file) => file.diff.deleted || []).sort(sortingFunction);
 
         return {
             added,
@@ -97,44 +89,42 @@ class Diff extends PureComponent<Props, State> {
             );
         }
 
-        const dataDiff = this.filterAndSortExtractedData();
-
         return (
             <Container>
                 <Margin>
                     <H3>{commit.commit.message}</H3>
                     Committed {formatDistanceToNow(new Date(commit.commit.author.timestamp * 1000))} ago
                 </Margin>
-                {dataDiff.added.length ? (
+                {diff.added.length ? (
                     <Code added>
                         <H5>DATA ADDED</H5>
                     </Code>
                 ) : null}
-                {dataDiff.added.map((datum, index) => (
+                {diff.added.map((datum, index) => (
                     <Code key={index} added>
                         <span><FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth /></span>
                         <MarginLeft>{DataType.toString(datum)}</MarginLeft>
                         <PullRight>{datum.type}</PullRight>
                     </Code>
                 ))}
-                {dataDiff.updated.length ? (
+                {diff.updated.length ? (
                     <Code updated>
                         <H5>DATA UPDATED</H5>
                     </Code>
                 ) : null}
-                {dataDiff.updated.map((datum, index) => (
+                {diff.updated.map((datum, index) => (
                     <Code key={index} updated>
                         <span><FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth /></span>
                         <MarginLeft>{DataType.toString(datum)}</MarginLeft>
                         <PullRight>{datum.type}</PullRight>
                     </Code>
                 ))}
-                {dataDiff.deleted.length ? (
+                {diff.deleted.length ? (
                     <Code removed>
                         <H5>DATA REMOVED</H5>
                     </Code>
                 ) : null}
-                {dataDiff.deleted.map((datum, index) => (
+                {diff.deleted.map((datum, index) => (
                     <Code key={index} removed>
                         <span><FontAwesomeIcon icon={DataType.getIcon(datum.type)} fixedWidth /></span>
                         <MarginLeft>{DataType.toString(datum)}</MarginLeft>

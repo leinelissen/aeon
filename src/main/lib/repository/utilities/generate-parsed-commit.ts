@@ -14,6 +14,12 @@ async function generateParsedCommit(
     entries: Array<WalkerEntry>,
 ): Promise<ProviderDatum<unknown, unknown>[]> {
     const [ tree ] = entries;
+
+    // GUARD: The tree must exist
+    if (!tree) {
+        return;
+    }
+
     const data = await tree.content();
 
     // GUARD: We only work with parseable data

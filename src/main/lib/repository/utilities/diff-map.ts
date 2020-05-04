@@ -11,16 +11,12 @@ import { DiffResult } from '../types';
 const diffMapFunction = async function(filepath: string, entries: Array<WalkerEntry>): Promise<DiffResult<unknown>> {
     // Extract entries and file contents
     const [ refTree, comparedTree ] = entries;
-    const [ refTreeContents, comparedTreeContents ] = await Promise.all([
-        refTree?.content(),
-        comparedTree?.content(),
-    ]);
     
     // Calculate the diff
-    const diff = generateDiff(filepath, comparedTreeContents, refTreeContents);
+    const diff = await generateDiff(filepath, comparedTree, refTree);
 
     // Filter any instances where there are no changes
-    if (!diff.hasChanges) {
+    if (!diff || !diff.hasChanges) {
         return;
     }
 

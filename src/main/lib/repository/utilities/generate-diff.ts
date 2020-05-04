@@ -1,16 +1,95 @@
-import path from 'path';
-import { diffJson, diffLines, Change } from 'diff';
-import { detailedDiff } from 'deep-object-diff';
-import { DiffType, ObjectChange, ObjectDiff, TextDiff, ExtractedDataDiff, BlobDiff, DiffResult } from '../types';
-import parseSchema from './parse-schema';
-import { parsersByFile } from 'main/providers/parsers';
+import { DiffType, DiffResult } from '../types';
+import generateParsedCommit from './generate-parsed-commit';
+import { WalkerEntry } from 'isomorphic-git';
+import { ProviderDatum } from 'main/providers/types';
+import deepEqual from 'deep-equal';
 
-const utfDecoder = new TextDecoder('utf-8');
+interface DataArrayDiff {
+    added: ProviderDatum<unknown, unknown>[],
+    deleted: ProviderDatum<unknown, unknown>[],
+    updated: ProviderDatum<unknown, unknown>[],
+}
 
-const diffableExtensions = [
-    '.json',
-    '.md',
-];
+/**
+ * Check which elements from a are not present on elements from b. The right way
+ * to look at this is to see which elements were 'added' when going from array
+ * to array b.
+ * @param a 
+ * @param b 
+ */
+function diffDataArray(
+    before: ProviderDatum<unknown, unknown>[], 
+    after: ProviderDatum<unknown, unknown>[]
+): DataArrayDiff {
+    // GUARD: If any of the two diffs is empty, return the whole object as diff
+    if (!before.length) {
+        // There was nothing before, so everything remains after
+        return {
+            added: after,
+            deleted: [],
+            updated: [],
+        };
+    } else if (!after.length) {
+        // Everything existed before, and nothing remains
+        return {
+            added: [],
+            deleted: before,
+            updated: [],
+        }
+    }
+
+    // Initialise sorted arrays
+    const added: ProviderDatum<unknown, unknown>[] = [];
+    const deleted: ProviderDatum<unknown, unknown>[] = [];
+    const updated: ProviderDatum<unknown, unknown>[] = [];
+
+    // TODO: This block is ripe for optimisation. Currently, both arrays are
+    // fully looped. If saving matches from the first loop, we can skip the
+    // largest part of the second loop. This hould increase performance more
+    // than two-fold.
+
+    // Loop through the before array to see if any of its elements have been deleted
+    for (const dBefore of before) {
+        // Find any object on the after array that matches this datapoint
+        const match = after.find(dAfter => {
+            return typeof dAfter.data === 'object' && dAfter.data !== null
+                ? deepEqual(dBefore.data, dAfter.data)
+                : dBefore.data === dAfter.data
+        });
+
+        // If a match is found, we can exit the loop. No change has been made to
+        // the datapoint.
+        if (match) {
+            break;
+        }
+
+        deleted.push(dBefore);
+    }
+
+    // Now we'll sort through the after array and see if any elements have been added
+    for (const dAfter of after) {
+        // Find any object on the after array that matches this datapoint
+        const match = before.find(dBefore => {
+            return typeof dAfter.data === 'object' && dAfter.data !== null
+                ? deepEqual(dAfter.data, dBefore.data)
+                : dAfter.data === dBefore.data
+        });
+
+        // If a match is found, we can exit the loop. No change has been made to
+        // the datapoint.
+        if (match) {
+            break;
+        }
+
+        added.push(dAfter);
+    }
+
+    return {
+        added,
+        deleted,
+        updated,
+    };
+}
 
 /**
  * Generates a specific diff according to filetype
@@ -18,75 +97,32 @@ const diffableExtensions = [
  * @param ref The ref Buffer
  * @param compared The compared Buffer
  */
-function generateDiff(
+async function generateDiff(
     filepath: string, 
-    ref: Uint8Array | void, 
-    compared: Uint8Array | void
-): DiffResult<unknown> {
-    // GUARD: Check if the files are binary blobs
-    const extension = path.extname(filepath)
-    if (!diffableExtensions.includes(extension)) {
-        // If the file is a blob, we return the identifier <BINARY BLOB>
-        const diff = diffJson(ref ? '<BINARY BLOB>' : '', compared ? '<BINARY BLOB>' : '');
-        
-        return {
-            filepath,
-            diff,
-            type: DiffType.BINARY_BLOB,
-            hasChanges: !ref || !compared,
-        };
+    ref: WalkerEntry, 
+    compared: WalkerEntry
+): Promise<DiffResult<DataArrayDiff>> {
+    // Parse all the data from the files for both commits
+    const [ refData, comparedData ] = await Promise.all([
+        generateParsedCommit(filepath, [ref]),
+        generateParsedCommit(filepath, [compared]),
+    ]);
+
+    // GUARD: The parsed commit handler may reject any file under certain
+    // circumstances. If this is the case, we discard the file
+    if (refData === undefined && comparedData === undefined) {
+        return;
     }
 
-    // If not, we try to decode the given buffers
-    const refString = ref ? utfDecoder.decode(ref) : null;
-    const comparedString = compared ? utfDecoder.decode(compared) : null;
+    // Then diff the two datasets
+    const diff = diffDataArray(refData || [], comparedData || []);
 
-    // GUARD: Check if the file is a JSON file, since in that case we can diff
-    // the object rather than the file
-    try {
-        if (extension === '.json') {
-            // Parse the strings
-            const refObject = refString ? JSON.parse(refString) : {};
-            const comparedObject = comparedString ? JSON.parse(comparedString) : {};
-    
-            // Return the diff
-            const diff = detailedDiff(refObject, comparedObject) as ObjectChange;
-            console.log(filepath, diff, refObject, comparedObject);
-            
-            // Now that we've calculated the diff, we might as well try to
-            // extract the data from the files using JSON. This does depend on
-            // whether there is a parser available for the particular file.
-            // We'll start out by tring to find a parser for the current file
-            const parser = parsersByFile.get(filepath);
-            // And if the parser is there, we'll extract the data for the three keys
-            const extractedDiff = parser ? {
-                added: parseSchema(diff.added, parser),
-                deleted: parseSchema(diff.deleted, parser),
-                updated: parseSchema(diff.updated, parser),
-            } : undefined;
-
-            return {
-                filepath, 
-                // We return the extracted data if it exists
-                diff: extractedDiff || diff,
-                // And modify the DiffType accordingly
-                type: extractedDiff ? DiffType.OBJECT : DiffType.EXTRACTED_DATA,
-                hasChanges: Object.keys(diff.added).length > 0
-                    || Object.keys(diff.deleted).length > 0
-                    || Object.keys(diff.updated).length > 0
-            }
-        }
-    } catch {
-        //
-    }
-
-    // Else we just do a normal diff and return the results
-    const diff = diffLines(refString || '', comparedString || '');
     return {
-        filepath,
+        filepath, 
         diff,
-        type: DiffType.TEXT,
-        hasChanges: diff?.length === 1 && diff[0]?.count === 0
+        type: DiffType.EXTRACTED_DATA,
+        hasChanges: Object.keys(diff.added).length > 0
+            || Object.keys(diff.deleted).length > 0
     }
 }
 
