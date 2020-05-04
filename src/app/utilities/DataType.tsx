@@ -1,9 +1,13 @@
+import React from 'react';
 import {
     ProvidedDataTypes,
     ProviderDatum,
     Address,
     Photo,
-    PrivacySetting
+    PrivacySetting,
+    LoginInstance,
+    ProfilePicture,
+    Session
 } from 'main/providers/types';
 import {
     IconDefinition,
@@ -34,7 +38,10 @@ import {
     faEnvelope,
     faNetworkWired,
     faTablet,
-    faUserCircle
+    faUserCircle,
+    faUserFriends,
+    faShoePrints,
+    faBookAlt
 } from '@fortawesome/pro-light-svg-icons';
 
 class DataType {
@@ -105,9 +112,13 @@ class DataType {
             case ProvidedDataTypes.PROFILE_PICTURE:
                 return faUserCircle;
             case ProvidedDataTypes.FOLLOWER:
+                return faUserFriends;
             case ProvidedDataTypes.ACCOUNT_FOLLOWING:
+                return faShoePrints;
             case ProvidedDataTypes.USERNAME:
-            case ProvidedDataTypes.ACCOUNT_FOLLOWING:
+                return faIdBadge;
+            case ProvidedDataTypes.SESSION:
+                return faBookAlt;
             default:
                 return faSquare;
         }
@@ -131,6 +142,16 @@ class DataType {
             case ProvidedDataTypes.PRIVACY_SETTING:
                 const { data: setting } = datum as PrivacySetting;
                 return `${setting.key}: ${setting.value}`;
+            case ProvidedDataTypes.LOGIN_INSTANCE:
+                const { data: instance } = datum as LoginInstance;
+                return new Date(instance * 1000).toLocaleString();
+            case ProvidedDataTypes.PROFILE_PICTURE:
+                const { data: src } = datum as ProfilePicture;
+                return <img src={src} />;
+            case ProvidedDataTypes.SESSION:
+                const { data: session } = datum as Session;
+                console.log(session);
+                return `${session?.user_agent}, ${session?.ip_address} at ${session?.timestamp}`;
             case ProvidedDataTypes.EMAIL:
             case ProvidedDataTypes.FIRST_NAME:
             case ProvidedDataTypes.LAST_NAME:
@@ -151,7 +172,6 @@ class DataType {
             case ProvidedDataTypes.LIKE:
             case ProvidedDataTypes.MESSAGE:
             case ProvidedDataTypes.GENDER:
-            case ProvidedDataTypes.PROFILE_PICTURE:
             case ProvidedDataTypes.SEARCH_QUERY:
             case ProvidedDataTypes.POST_SEEN:
             default:

@@ -129,6 +129,8 @@ export enum ProvidedDataTypes {
     PRIVACY_SETTING = 'privacy_setting',
     // A telephone contact that has been uploaded by the user
     UPLOADED_CONTACT = 'uploaded_contact',
+    // A saved cookie with possibly extra information
+    SESSION = 'session',
 }
 
 export interface ProviderDatum<D, T = ProvidedDataTypes> {
@@ -168,7 +170,7 @@ export type PlaceOfResidence = ProviderDatum<string, ProvidedDataTypes.PLACE_OF_
 export type Address = ProviderDatum<{ street?: string; number?: number; state?: string; }, ProvidedDataTypes.ADDRESS>;
 export type Country = ProviderDatum<string, ProvidedDataTypes.COUNTRY>;
 export type Like = ProviderDatum<string, ProvidedDataTypes.LIKE>;
-export type LoginInstance = ProviderDatum<unknown, ProvidedDataTypes.LOGIN_INSTANCE>;
+export type LoginInstance = ProviderDatum<number, ProvidedDataTypes.LOGIN_INSTANCE>;
 export type LogOutInstance = ProviderDatum<unknown, ProvidedDataTypes.LOGOUT_INSTANCE>;
 export type Photo = ProviderDatum<{ url: string, description: string }, ProvidedDataTypes.PHOTO>;
 export type Message = ProviderDatum<string, ProvidedDataTypes.MESSAGE>;
@@ -180,6 +182,15 @@ export type SearchQuery = ProviderDatum<string, ProvidedDataTypes.SEARCH_QUERY>;
 export type PostSeen = ProviderDatum<string, ProvidedDataTypes.POST_SEEN>;
 export type PrivacySetting = ProviderDatum<{ key: string; value: any }, ProvidedDataTypes.PRIVACY_SETTING>;
 export type UploadedContact = ProviderDatum<unknown, ProvidedDataTypes.UPLOADED_CONTACT>;
+type SessionData = {
+    cookie_name: string;
+    ip_address: string;
+    language_code: string;
+    timestamp: string;
+    user_agent: string;
+    device_id: string;
+}
+export type Session = ProviderDatum<SessionData, ProvidedDataTypes.SESSION>;
 
 export interface ProviderParser {
     // The file from which the data has originated

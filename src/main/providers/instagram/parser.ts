@@ -16,16 +16,9 @@ const parsers: ProviderParser[] = [
         source: 'account_history.json',
         schemas: [
             {
-                key: 'ip_address',
-                type: ProvidedDataTypes.IP_ADDRESS,
-            },
-            {
-                key: 'language_code',
-                type: ProvidedDataTypes.USER_LANGUAGE,
-            },
-            {
-                key: 'user_agent',
-                type: ProvidedDataTypes.USER_AGENT,
+                type: ProvidedDataTypes.SESSION,
+                key: 'login_history',
+                transformer: (data: any[]) => data.map(d => ({ data: d })),
             },
         ],
     },
@@ -197,6 +190,15 @@ const parsers: ProviderParser[] = [
             }
         ]
     },
+    {
+        source: 'logins.json',
+        schemas: [
+            {
+                type: ProvidedDataTypes.LOGIN_INSTANCE,
+                key: 'timestamp',
+            }
+        ]
+    }
 ];
 
 export default parsers;
