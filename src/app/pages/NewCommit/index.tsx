@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Button, { GhostButton } from 'app/components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCloudUpload, faMinus } from '@fortawesome/pro-light-svg-icons';
+import { faArrowLeft, faCloudUpload, faMinus, faSave } from '@fortawesome/pro-light-svg-icons';
 import { H2 } from 'app/components/Typography';
 import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
@@ -24,6 +24,7 @@ import DatumOverlay from './components/DatumOverlay';
 import Modal from 'app/components/Modal';
 import DataType from 'app/utilities/DataType';
 import Code from 'app/components/Code';
+import TutorialOverlay from './components/TutorialOverlay';
 
 type GroupedData =  { [key: string]: ProviderDatum<string, ProvidedDataTypes>[] };
 type DeletedData = { [key: string]: number[] };
@@ -191,8 +192,10 @@ class NewCommit extends Component<RouteComponentProps, State> {
                             </Code>
                         )
                     )}
-                    <Button style={{ margin: '32px auto 16px auto' }}>Save new Identity</Button>
+                    <p style={{ padding: 16 }}><i>This action is not reversible. However, your data will remain saved locally in Aeon. As with data requests, it may take some time for this data to actually be deleted from the platforms.</i></p>
+                    <Button icon={faSave} style={{ margin: '16px auto' }}>Save new Identity</Button>
                 </Modal>
+                <TutorialOverlay />
             </Container>
         );
     }

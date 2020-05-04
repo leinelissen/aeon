@@ -13,7 +13,7 @@ function initialiseRoute(): JSX.Element {
     const store = Store.useStore();
 
     // If the user is onboarded already, we can redirect them to the log
-    if (store.get('isOnboarded')) {
+    if (store.get('onboardingComplete').initialisation) {
         return <Redirect to='/log' exact />;
     }
     

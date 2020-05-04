@@ -3,11 +3,23 @@ import persistStore, { retrievePersistedStore } from './persist';
 
 type State = {
     // Whether onboarding has been completed
-    isOnboarded: boolean;
+    onboardingComplete: {
+        initialisation: boolean;
+        log: boolean;
+        newCommit: boolean;
+    };
+    // The revision number for the data structure of the store. This helps track
+    // differing versions and helps adjust accordingly.
+    storeRevision: number;
 }
 
 const initialState: State = {
-    isOnboarded: false,
+    onboardingComplete: {
+        initialisation: false,
+        log: false,
+        newCommit: false,
+    },
+    storeRevision: 2,
 }
 
 export type StoreProps = {

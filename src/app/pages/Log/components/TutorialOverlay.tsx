@@ -5,20 +5,29 @@ import styled from 'styled-components';
 import Button from 'app/components/Button';
 import { faArrowDown, faEnvelope, faArrowRight, faCheck } from '@fortawesome/pro-light-svg-icons';
 import Providers from 'app/utilities/Providers';
+import Store, { StoreProps } from 'app/store';
+
+interface State {
+    page: number;
+    isLoading: boolean;
+}
 
 const Container = styled.div`
     margin: 32px 16px;
 `;
 
-class TutorialOverlay extends Component {
+class TutorialOverlay extends Component<StoreProps, State> {
     state = {
         page: 0,
-        isOpen: true,
         isLoading: false,
     };
 
     next = () => this.setState({ page: this.state.page + 1 });
-    done = () => this.setState({ isOpen: false });
+    done = () => this.props.store.set('onboardingComplete')({
+        ...this.props.store.get('onboardingComplete'),
+        log: true,
+    });
+
 
     updateAllProviders = async () => {
         this.setState({ isLoading: true });
@@ -28,9 +37,7 @@ class TutorialOverlay extends Component {
 
     sendAllDataRequests = async () => {
         this.setState({ isLoading: true });
-        console.log('DISPATCH!')
         const res = await Providers.dispatchDataRequestToAll();
-        console.log(res);
         this.setState({ isLoading: false, page: 2 });
     }
 
@@ -106,10 +113,10 @@ class TutorialOverlay extends Component {
     }
 
     render() {
-        const { page, isOpen } = this.state;
+        const { log: isCompleted } = this.props.store.get('onboardingComplete');
 
         return (
-            <Modal isOpen={isOpen} onRequestClose={this.done}>
+            <Modal isOpen={!isCompleted} onRequestClose={this.done}>
                 <Container>
                     {this.getContent()}
                 </Container>
@@ -118,4 +125,4 @@ class TutorialOverlay extends Component {
     }
 }
 
-export default TutorialOverlay;
+export default Store.withStore(TutorialOverlay);

@@ -86,7 +86,10 @@ class Onboarding extends Component<StoreProps, State> {
     handleClick = async (): Promise<void> => {
         const isInitialised = await Providers.initialise('instagram');
         this.setState({ isInitialised });
-        this.props.store.set('isOnboarded')(true);
+        this.props.store.set('onboardingComplete')({
+            ...this.props.store.get('onboardingComplete'),
+            initialisation: true,
+        });
     }
 
     render(): JSX.Element {
