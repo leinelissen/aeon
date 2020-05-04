@@ -28,7 +28,6 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow-y: scroll;
     padding: 10vh 0;
 `;
 
@@ -42,8 +41,11 @@ const StyledDialog = styled.div`
                 0 32px 64px rgba(0,0,0,0.07);
     background-color: white;
     min-width: 50vw;
-    min-height: 25vw;
+    min-height: 25h;
+    max-height: 80vh;
+    max-width: 80vw;
     padding-top: 32px;
+    overflow-y: scroll;
 `;
 
 const Dialog: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props) => {
@@ -62,7 +64,8 @@ const Dialog: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props) => {
 }
 
 const CloseButton = styled(GhostButton)`
-    position: absolute;
+    position: fixed;
+    background: white;
     top: 0;
     left: 0;
     padding: 16px;
@@ -107,7 +110,7 @@ class Modal extends Component<Props> {
                         <Container style={{ opacity: backgroundOpacity }}>
                             <Dialog 
                                 style={props}
-                                onBlur={this.handleBlur}
+                                // onBlur={this.handleBlur}
                             >
                                 {children}
                                 <CloseButton onClick={onRequestClose}>

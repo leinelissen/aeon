@@ -6,6 +6,7 @@ import { faInstagram, faFacebookF, faSpotify, faLinkedin } from '@fortawesome/fr
 import theme from 'app/styles/theme';
 import Providers from 'app/utilities/Providers';
 import Store, { StoreProps } from 'app/store';
+import Button from 'app/components/Button';
 
 interface State {
     isInitialised: boolean;
@@ -95,8 +96,9 @@ class Onboarding extends Component<StoreProps, State> {
             <Container>
                 <Center>
                     <div>
-                        <p>There is lots of data out there on you.  You don't always have power over what makes up your online identity, how you're perceived, how you're treated and so on. Aeon allows you to exercise your rights to manage your online identity by changing or deleting details, or even fully start over.</p>
-                        <p><strong>Connect to the platforms of your choice in order to reshape your online identity.</strong></p>
+                        <p>There is lots of data out there on you. Aeon makes it easier for you to get the picture of what that looks like. It hooks into your platforms of choice, and helps you get a grip.</p>
+                        <p>In order to manage this data, Aeon pulls the data from the platforms you use. You will need to enter your login credentials for this. Don't worry, your passwords are never stored, and the resulting data is stored using strong encryption.</p>
+                        <p><strong>Connect to the platforms of your choice to reshape your online identity.</strong></p>
                     </div>
                     <BrandContainer>
                         <Provider active={isInitialised} onClick={this.handleClick}>
@@ -116,7 +118,7 @@ class Onboarding extends Component<StoreProps, State> {
                     </BrandContainer>
                 </Center>
                 <Bottom>
-                    {isInitialised ? <Link to="/log">Continue</Link> : <br />}
+                    {isInitialised ? <Link to="/log"><Button>Continue</Button></Link> : <br />}
                 </Bottom>
             </Container>
         );

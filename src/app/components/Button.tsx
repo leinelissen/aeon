@@ -85,7 +85,7 @@ const Button = ({ children, loading, onClick, disabled, icon, ...props }: Props)
         <StyledButton onClick={onClick} disabled={loading || disabled} {...props}>
             {icon ? <FontAwesomeIcon icon={icon} style={{ marginRight: 5 }} fixedWidth /> : null}
             {children}
-            {loading ? (<><Margin /><Ball size={10} color={theme.colors.white} /></>) : null}
+            {loading ? (<><Margin /><Ball size={10} /></>) : null}
         </StyledButton>
     )
 }

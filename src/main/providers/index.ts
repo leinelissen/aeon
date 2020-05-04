@@ -118,6 +118,7 @@ class ProviderManager extends EventEmitter {
         // be saved to disk
         const files = await instance.update();
         const changedFiles = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`);
+        console.log('Completed update for ', key);
         Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`)
     }
 
@@ -181,6 +182,8 @@ class ProviderManager extends EventEmitter {
 
         // Then store the update time
         this.dispatchedDataRequests.set(key, { dispatched: new Date() });
+
+        console.log('Dispatched data request for ', key);
     }
 
     /**

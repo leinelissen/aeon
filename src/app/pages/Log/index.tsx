@@ -18,6 +18,7 @@ import Logo from 'app/assets/aeon-logo.svg';
 import theme from 'app/styles/theme';
 import { faSparkles } from '@fortawesome/pro-light-svg-icons';
 import { Margin } from 'app/components/Utility';
+import TutorialOverlay from './components/TutorialOverlay';
 
 interface State {
     log: ReadCommitResult[];
@@ -146,6 +147,7 @@ class Log extends Component<{}, State> {
                 </CommitContainer>
                 <Requests />
                 <Diff commit={selectedTree} />
+                <TutorialOverlay />
             </Container>
         );
     }
