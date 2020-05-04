@@ -65,7 +65,7 @@ export class HoverArea extends PureComponent<HoverAreaProps, State> {
     }
 }
 
-interface TooltipProps extends Omit<PopperProps, 'children'> {
+interface TooltipProps extends Omit<PopperProps<typeof modifiers>, 'children'> {
     active: boolean;
     children: JSX.Element;
 }
