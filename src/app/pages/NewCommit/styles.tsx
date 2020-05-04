@@ -121,12 +121,19 @@ const ListButton: FC<ListButtonProps> = ({ children, ...props }) => {
     )
 }
 
+const NumberOfItems = styled.span`
+    margin-left: 4px;
+    opacity: 0.25;
+    font-weight: 300;
+`;
+
 interface ClickableCategoryProps extends Omit<ListButtonProps, 'onClick'> {
     type: ProvidedDataTypes;
+    items?: number;
     onClick: (activity: ProvidedDataTypes) => void;
 }
 
-export const ClickableCategory = ({ type, onClick, ...props }: ClickableCategoryProps): JSX.Element => {
+export const ClickableCategory = ({ type, onClick, items, ...props }: ClickableCategoryProps): JSX.Element => {
     const handleClick = useCallback(() => {
         return onClick(type);
     }, [onClick, type]);
@@ -134,7 +141,7 @@ export const ClickableCategory = ({ type, onClick, ...props }: ClickableCategory
     return (
         <ListButton onClick={handleClick} {...props}>
             <FontAwesomeIcon icon={DataType.getIcon(type)} fixedWidth style={{ marginRight: 8 }} />
-            {type}
+            {type} <NumberOfItems>{items > 0 ? `(${items})` : null}</NumberOfItems>
             <FontAwesomeIcon icon={faChevronRight} style={{ marginLeft: 'auto', opacity: 0.5 }} />
         </ListButton>
     );

@@ -152,6 +152,7 @@ class NewCommit extends Component<RouteComponentProps, State> {
                         <ClickableCategory
                             key={key}
                             type={key}
+                            items={groupedData[key]?.length}
                             active={selectedCategory === key}
                             disabled={!(key in groupedData)}
                             onClick={this.setCategory}

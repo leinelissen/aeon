@@ -92,9 +92,6 @@ function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderPar
             ? (Array.isArray(extractedData) ? extractedData.map(transformer) : transformer(extractedData))
             : extractedData;
 
-        console.log(extractedData);
-        console.log(transformedData);
-
         // The next thing is a bit tricky because the transformed data
         // might be in one of three forms:
         // 1. The data is untransformed and is basically an array
@@ -109,9 +106,7 @@ function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderPar
         // everything in the correct format, which we should then just
         // append to the normal values.
         if (transformer) {
-            return transformedData.flatMap((data: Partial<ProviderDatum<unknown, unknown>> | Partial<ProviderDatum<unknown, unknown>>[]) => {
-                console.log(data);
-                
+            return transformedData.flatMap((data: Partial<ProviderDatum<unknown, unknown>> | Partial<ProviderDatum<unknown, unknown>>[]) => {                
                 // We also introduce another loop so that we can deal
                 // with the case where multiple items are returned per
                 // original item

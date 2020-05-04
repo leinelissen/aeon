@@ -150,7 +150,6 @@ class DataType {
                 return <img src={src} />;
             case ProvidedDataTypes.SESSION:
                 const { data: session } = datum as Session;
-                console.log(session);
                 return `${session?.user_agent}, ${session?.ip_address} at ${session?.timestamp}`;
             case ProvidedDataTypes.EMAIL:
             case ProvidedDataTypes.FIRST_NAME:
