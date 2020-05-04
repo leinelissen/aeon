@@ -45,6 +45,13 @@ function createSecureWindow(origin: string, options: Electron.BrowserWindowConst
         }
     });
 
+    // Hide the window when someone clicks the close button, rather than having
+    // it destroyed. We need this window to be available for background tasks.
+    window.on('close', (event) => {
+        event.preventDefault();
+        window.hide();
+    });
+
     return window;
 } 
 

@@ -60,6 +60,7 @@ export enum ProviderCommands {
 export enum ProviderEvents {
     CHECKING_DATA_REQUESTS,
     DATA_REQUEST_COMPLETED,
+    DATA_REQUEST_DISPATCHED,
 }
 
 export enum ProvidedDataTypes {

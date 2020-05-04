@@ -22,6 +22,7 @@ declare global {
             store: {
                 persist: (store: Object) => void;
                 retrieve: () => Object;
+                clear: () => void;
             }
         };
     }
@@ -64,6 +65,9 @@ contextBridge.exposeInMainWorld(
             retrieve: () => {
                 return store.get('app_store');
             },
+            clear: () => {
+                return store.clear();
+            }
         },
         sourceMapSupport: sourceMapSupport,
         git: {

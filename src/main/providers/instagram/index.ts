@@ -112,6 +112,13 @@ class Instagram extends DataRequestProvider implements WithWindow {
     async dispatchDataRequest(): Promise<void> {
         await this.verifyLoggedInStatus();
 
+        // GUARD: Check if a data request has already been completed. If so,
+        // we'll just pretend the request was submitted successfully, and have
+        // the normal scheduling pick up some time later.
+        if (await this.isDataRequestComplete()) {
+            return;
+        }
+
         // Load the dispatched window
         this.window.hide();
         await new Promise((resolve) => {

@@ -89,7 +89,7 @@ class ProviderManager extends EventEmitter {
             // Save the key to the array
             this.initialisedProviders = [...this.initialisedProviders, key];
             // And also save the array to the store
-            store.set('dispatched-data-requests', JSON.stringify(this.initialisedProviders));
+            store.set('initialised-providers', JSON.stringify(this.initialisedProviders));
         }
 
         return success;
@@ -183,6 +183,7 @@ class ProviderManager extends EventEmitter {
         // Then store the update time
         this.dispatchedDataRequests.set(key, { dispatched: new Date() });
 
+        ProviderBridge.send(ProviderEvents.DATA_REQUEST_DISPATCHED);
         console.log('Dispatched data request for ', key);
     }
 

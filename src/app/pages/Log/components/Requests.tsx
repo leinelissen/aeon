@@ -107,6 +107,8 @@ class Requests extends Component<{}, State> {
             this.setState({ checking: false });
         } else if (type === ProviderEvents.CHECKING_DATA_REQUESTS) {
             this.setState({ checking: true });
+        } else if (type === ProviderEvents.DATA_REQUEST_DISPATCHED) {
+            this.retriveDataRequests();
         }
     }
 
@@ -135,7 +137,13 @@ class Requests extends Component<{}, State> {
     }
 
     handleRequestForRequest = (key: string): void => {
-        Providers.dispatchDataRequest(key);
+        const status = this.state.dataRequests.get(key);
+        
+        if (!status) {
+            Providers.dispatchDataRequest(key);
+        } else if (status?.dispatched) {
+            this.handleRefresh();
+        } 
     }
 
     updateRegularRequests = (): void => {
