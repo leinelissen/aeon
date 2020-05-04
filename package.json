@@ -1,7 +1,7 @@
 {
     "name": "aeon",
     "productName": "Aeon",
-    "version": "0.0.1-alpha",
+    "version": "0.1-alpha4",
     "description": "Online identity versioning for the masses",
     "main": ".webpack/main",
     "scripts": {
