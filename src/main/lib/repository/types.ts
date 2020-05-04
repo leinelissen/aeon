@@ -1,4 +1,3 @@
-import { Change } from 'diff';
 import { ProviderDatum } from 'main/providers/types';
 
 export enum DiffType {
@@ -36,8 +35,8 @@ export interface DiffResult<D> {
 
 export type ObjectDiff = ObjectChange<unknown>;
 export type ExtractedDataDiff = ObjectChange<ProviderDatum<unknown>[]>
-export type BlobDiff = Change[];
-export type TextDiff = Change[];
+// export type BlobDiff = Change[];
+// export type TextDiff = Change[];
 
 type Status = 'ignored' | 'unmodified' | '*modified' | '*deleted' | '*added' | 'absent' | 'modified' | 'deleted' | 'added' | '*unmodified' | '*absent' | '*undeleted' | '*undeletemodified';
 

@@ -1,12 +1,10 @@
 import path from 'path';
-import { Change } from 'diff';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
-import git, { Errors, ReadCommitResult, TREE, WalkerEntry, Walker, StatusRow } from 'isomorphic-git';
+import git, { Errors, ReadCommitResult, TREE, Walker, StatusRow } from 'isomorphic-git';
 import { DiffResult, RepositoryEvents } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
-import Notifications from '../notifications';
 import diffMapFunction from './utilities/diff-map';
 import generateParsedCommit from './utilities/generate-parsed-commit';
 import { ProviderDatum } from 'main/providers/types';
