@@ -86,7 +86,6 @@ class Requests extends Component<{}, State> {
     componentDidMount(): void {
         // Subscribe to the providers' events
         Providers.subscribe(this.handleEvent);
-        window.api.on('providers', this.handleEvent);
 
         // And also retrieve the status of any data requests
         this.retriveDataRequests();
