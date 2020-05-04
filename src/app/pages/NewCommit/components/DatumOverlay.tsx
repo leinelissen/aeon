@@ -138,6 +138,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
                                 fullWidth
                                 onClick={handleDelete}
                                 backgroundColor={theme.colors.red}
+                                data-telemetry-id="datum-overlay-delete-datapoint"
                             >
                                 Delete this data point
                             </Button>

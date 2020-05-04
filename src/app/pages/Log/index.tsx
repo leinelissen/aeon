@@ -124,7 +124,7 @@ class Log extends Component<{}, State> {
                     <Margin>
                         <H3>You have no changes</H3>
                     </Margin>
-                    <Link to={`/commit/new?transition=${TransitionDirection.right}`}>
+                    <Link to={`/commit/new?transition=${TransitionDirection.right}`} data-telemetry-id="create-new-commit">
                         <Button
                             icon={faSparkles}
                             color={theme.colors.blue.primary}
@@ -142,6 +142,7 @@ class Log extends Component<{}, State> {
                             onClick={this.handleClick}
                             active={entry.oid === selectedCommit}
                             latestCommit={i === 0}
+                            data-telemetry-id="timeline-view-commit"
                         />
                     ))}
                 </CommitContainer>

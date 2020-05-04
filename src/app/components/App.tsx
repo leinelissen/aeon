@@ -2,10 +2,11 @@ import { hot } from 'react-hot-loader';
 import React, { Component } from 'react';
 import 'app/styles';
 import Notifications from './Notifications';
-import MenuBar from './MenuBar';
 import Pages from 'app/pages';
 import styled, { StyleSheetManager } from 'styled-components';
 import Store from 'app/store';
+import { HashRouter } from 'react-router-dom';
+import Telemetry from 'app/utilities/Telemetry';
 
 const Main = styled.main`
     /* padding-top: 40px; */
@@ -20,17 +21,19 @@ class App extends Component {
 
     render(): JSX.Element {
         return (
-            <StyleSheetManager disableVendorPrefixes>
-                <Store.Container>
-                    <div>
-                        <Notifications />
-                        {/* <MenuBar /> */}
-                        <Main>
-                            <Pages />
-                        </Main>
-                    </div>
-                </Store.Container>
-            </StyleSheetManager>
+            <HashRouter>
+                <StyleSheetManager disableVendorPrefixes>
+                    <Store.Container>
+                        <div>
+                            <Notifications />
+                            <Main>
+                                <Pages />
+                            </Main>
+                            <Telemetry />
+                        </div>
+                    </Store.Container>
+                </StyleSheetManager>
+            </HashRouter>
         );
     }
 }

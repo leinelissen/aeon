@@ -59,7 +59,7 @@ const LastCheck = styled.div<{ readonly isLoading: boolean }>`
     `}
 `;
 
-interface ClickableRequestProps {
+interface ClickableRequestProps extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'onClick'> {
     provider?: string;
     onClick: (provider?: string) => void;
 }
@@ -166,7 +166,7 @@ class Requests extends Component<{}, State> {
                             {({ handleChange, isHovered }) => (
                                 <>
                                     <HoverArea onChange={handleChange}>
-                                        <ClickableRequest provider={key} onClick={this.handleRequestForRequest}>
+                                        <ClickableRequest provider={key} onClick={this.handleRequestForRequest} data-telemetry-id="dispatch-provider">
                                             <Request color={this.getColor(status)}>
                                                 <FontAwesomeIcon icon={Repository.getIcon(key)} />
                                             </Request>
@@ -193,7 +193,7 @@ class Requests extends Component<{}, State> {
                     {checking ? (
                         <Ball size={10} />
                     ) : lastChecked && (
-                        <LinkButton onClick={this.handleRefresh}>
+                        <LinkButton onClick={this.handleRefresh} data-telemetry-id="refresh-requests">
                             Last check: {formatDistanceToNow(lastChecked)} ago
                         </LinkButton>
                     )}

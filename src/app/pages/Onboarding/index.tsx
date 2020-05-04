@@ -104,7 +104,7 @@ class Onboarding extends Component<StoreProps, State> {
                         <p><strong>Connect to the platforms of your choice to reshape your online identity.</strong></p>
                     </div>
                     <BrandContainer>
-                        <Provider active={isInitialised} onClick={this.handleClick}>
+                        <Provider active={isInitialised} onClick={this.handleClick} data-telemetry-id="initialise-instagram">
                             <FontAwesomeIcon icon={faInstagram} size="3x" />
                         </Provider>
                         <div style={{ display: 'flex' }}>
@@ -121,7 +121,7 @@ class Onboarding extends Component<StoreProps, State> {
                     </BrandContainer>
                 </Center>
                 <Bottom>
-                    {isInitialised ? <Link to="/log"><Button>Continue</Button></Link> : <br />}
+                    {isInitialised ? <Link to="/log" data-telemetry-id="proceed-from-onboarding"><Button>Continue</Button></Link> : <br />}
                 </Bottom>
             </Container>
         );

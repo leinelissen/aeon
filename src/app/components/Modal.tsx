@@ -113,7 +113,7 @@ class Modal extends Component<Props> {
                                 // onBlur={this.handleBlur}
                             >
                                 {children}
-                                <CloseButton onClick={onRequestClose}>
+                                <CloseButton onClick={onRequestClose} data-telemetry-id="modal-close">
                                     <FontAwesomeIcon icon={faArrowUp} fixedWidth />
                                 </CloseButton>
                             </Dialog>

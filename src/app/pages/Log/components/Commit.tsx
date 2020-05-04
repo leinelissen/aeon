@@ -6,7 +6,7 @@ import { ReadCommitResult } from 'isomorphic-git';
 import { Badge } from 'app/components/Typography';
 import { PullRight } from 'app/components/Utility';
 
-interface Props {
+interface Props extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'onClick'> {
     onClick: (hash: string) => void;
     entry: ReadCommitResult;
     active?: boolean;

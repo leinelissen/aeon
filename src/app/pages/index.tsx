@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { HashRouter, Route, Redirect } from 'react-router-dom';
 import Onboarding from './Onboarding';
 import Log from './Log';
 import NewCommit from './NewCommit';
@@ -23,14 +23,12 @@ function initialiseRoute(): JSX.Element {
 
 function Router(): JSX.Element {
     return (
-        <HashRouter >
-            <AnimatedSwitch>
-                <Route path='/log' component={Log} />
-                <Route path='/onboarding' exact component={Onboarding} />
-                <Route path="/commit/new" component={NewCommit} />
-                <Route path="/" component={initialiseRoute} />
-            </AnimatedSwitch>
-        </HashRouter>
+        <AnimatedSwitch>
+            <Route path='/log' component={Log} />
+            <Route path='/onboarding' exact component={Onboarding} />
+            <Route path="/commit/new" component={NewCommit} />
+            <Route path="/" component={initialiseRoute} />
+        </AnimatedSwitch>
     );
 }
 

@@ -132,7 +132,7 @@ class NewCommit extends Component<RouteComponentProps, State> {
         return (
             <Container>
                 <MenuBar>
-                    <Link to={`/log?transition=${TransitionDirection.left}`}>
+                    <Link to={`/log?transition=${TransitionDirection.left}`} data-telemetry-id="new-commit-back">
                         <GhostButton>
                             <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: 5 }} /> Back
                         </GhostButton>
@@ -143,6 +143,7 @@ class NewCommit extends Component<RouteComponentProps, State> {
                         style={{ marginLeft: 'auto' }} 
                         disabled={!hasChanges} 
                         onClick={this.openModal}
+                        data-telemetry-id="save-identity"
                     >
                         Save Identity
                     </Button>
@@ -159,6 +160,7 @@ class NewCommit extends Component<RouteComponentProps, State> {
                             onClick={this.setCategory}
                             deleted={deletedData[key].length > 0}
                             onKeyUp={this.handleKeyUp}
+                            data-telemetry-id={`new-commit-select-category-${key}`}
                         />
                     ))}
                 </List>
@@ -173,6 +175,7 @@ class NewCommit extends Component<RouteComponentProps, State> {
                             onClick={this.setDatum}
                             deleted={deletedData[selectedCategory].includes(index)}
                             onKeyUp={this.handleKeyUp}
+                            data-telemetry-id={`new-commit-select-data-point-${index}`}
                         />
                     ))}
                 </DataPointList>
@@ -193,7 +196,13 @@ class NewCommit extends Component<RouteComponentProps, State> {
                         )
                     )}
                     <p style={{ padding: 16 }}><i>This action is not reversible. However, your data will remain saved locally in Aeon. As with data requests, it may take some time for this data to actually be deleted from the platforms.</i></p>
-                    <Button icon={faSave} style={{ margin: '16px auto' }}>Save new Identity</Button>
+                    <Button
+                        icon={faSave}
+                        style={{ margin: '16px auto' }}
+                        data-telemetry-id="confirm-save-new-identity"
+                    >
+                        Save new Identity
+                    </Button>
                 </Modal>
                 <TutorialOverlay />
             </Container>

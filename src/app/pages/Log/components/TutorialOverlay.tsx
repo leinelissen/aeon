@@ -55,6 +55,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                             icon={faArrowDown}
                             loading={isLoading} 
                             onClick={this.updateAllProviders}
+                            data-telemetry-id="log-tutorial-page-1"
                             fullWidth
                         >
                             Retrieve my data
@@ -72,6 +73,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                             icon={faEnvelope}
                             loading={isLoading} 
                             onClick={this.sendAllDataRequests}
+                            data-telemetry-id="log-tutorial-page-2"
                             fullWidth
                         >
                             Request all the additional data!
@@ -87,6 +89,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                         <Button
                             icon={faArrowRight}
                             onClick={this.next}
+                            data-telemetry-id="log-tutorial-page-3"
                             fullWidth
                         >
                             Great! Now what?
@@ -103,6 +106,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                         <Button
                             icon={faCheck}
                             onClick={this.done}
+                            data-telemetry-id="log-tutorial-page-4"
                             fullWidth
                         >
                             Got it!

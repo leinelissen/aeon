@@ -8,6 +8,8 @@ type State = {
         log: boolean;
         newCommit: boolean;
     };
+    // A collection of events used for gauging usage of the application
+    telemetry: any[];
     // The revision number for the data structure of the store. This helps track
     // differing versions and helps adjust accordingly.
     storeRevision: number;
@@ -19,7 +21,8 @@ const initialState: State = {
         log: false,
         newCommit: false,
     },
-    storeRevision: 2,
+    telemetry: [],
+    storeRevision: 3,
 }
 
 export type StoreProps = {

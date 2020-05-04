@@ -37,6 +37,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                         <Button
                             icon={faSunglasses}
                             onClick={this.next}
+                            data-telemetry-id="new-commit-tutorial-page-1"
                             fullWidth
                         >
                             Cool!
@@ -52,6 +53,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                         <Button
                             icon={faBoxingGlove}
                             onClick={this.done}
+                            data-telemetry-id="new-commit-tutorial-page-2"
                             fullWidth
                         >
                             Let's get to it

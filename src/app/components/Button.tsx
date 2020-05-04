@@ -5,7 +5,7 @@ import theme from 'app/styles/theme';
 import { Ball } from './Loading';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
-interface ButtonProps {
+interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
     backgroundColor?: string;
     fullWidth?: boolean;
     color?: string;
