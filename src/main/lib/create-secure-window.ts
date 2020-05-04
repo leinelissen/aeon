@@ -23,12 +23,14 @@ function createSecureWindow(origin: string, options: Electron.BrowserWindowConst
         show: false, 
         webPreferences: {
             enableRemoteModule: false,
-            offscreen: true,
             sandbox: true,
             contextIsolation: true,
         },
         ...options,
     });
+
+    // Disable menu bar in windows and linux
+    window.setMenu(null);
 
     // Deny any request for extra permissions in this handler
     window.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => callback(false));

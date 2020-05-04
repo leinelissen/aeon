@@ -1,3 +1,4 @@
+import 'v8-compile-cache';
 require('source-map-support').install();
 
 import './lib/map-map';
@@ -27,6 +28,11 @@ const createWindow = (): void => {
             preload: path.join(__dirname, 'preload.js'),
         }
     });
+
+    // Hide menu bar on windows
+    if (process.env.NODE_ENV !== 'production') {
+        mainWindow.setMenu(null);
+    }
     
     // and load the index.html of the app.
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);

@@ -59,6 +59,7 @@ export const GhostButton = styled(LinkButton)`
     opacity: 0.3;
     font-size: 14px;
     padding: 8px 16px;
+    background-color: transparant;
 
     &:hover {
         opacity: 0.5;

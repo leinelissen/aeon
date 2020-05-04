@@ -9,16 +9,11 @@
             "request": "launch",
             "name": "Electron Main",
             "runtimeExecutable": "${workspaceFolder}/.vscode/debug-launcher.sh",
-            // runtimeArgs will be passed directly to your Electron application
-            "runtimeArgs": [
-              //
-            ],
             "cwd": "${workspaceFolder}",
-            // "program": "${workspaceFolder}/src/main/index.ts",
-            // "outFiles": [
-            //   "${workspaceFolder}/.webpack/main/index.js"
-            // ],
-            "sourceMaps": true
+            "sourceMaps": true,
+            "windows": {
+              "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-forge-vscode-win.cmd"
+            },
           }
     ]
 }

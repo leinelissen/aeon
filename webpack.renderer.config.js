@@ -1,6 +1,7 @@
 const path = require('path');
 const rules = require('./webpack.rules')('tsconfig.renderer.json');
 const plugins = require('./webpack.plugins');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 rules.push({
     test: /\.(woff|woff2|svg)$/,
@@ -16,11 +17,7 @@ rules.push({
 
 rules.push({
     test: /\.css$/,
-    use: [{ 
-        loader: 'style-loader', 
-    }, { 
-        loader: 'css-loader',
-    }],
+    use: [MiniCssExtractPlugin.loader, 'css-loader'],
 });
 
 module.exports = {
@@ -30,7 +27,10 @@ module.exports = {
     node: { 
         global: true, 
     },
-    plugins: plugins,
+    plugins: [
+        ...plugins,
+        new MiniCssExtractPlugin()
+    ],
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
         alias: {

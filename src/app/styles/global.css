@@ -7,9 +7,8 @@ body {
 }
 
 body {
-    /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif; */
-    font-family: 'IBM Plex Sans';
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
     font-size: 16px;
