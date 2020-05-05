@@ -21,7 +21,7 @@
         "forge": {
             "packagerConfig": {
                 "icon": "./src/icon",
-                "executableName": "Aeon"
+                "executableName": "aeon"
             },
             "makers": [
                 {
