@@ -34,4 +34,6 @@ export const Badge = styled.div`
     border-radius: 4px;
     text-transform: uppercase;
     font-size: 12px;
+    flex-shrink: 0;
+    white-space: nowrap;
 `;

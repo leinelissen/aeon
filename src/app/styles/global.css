@@ -13,7 +13,10 @@ body {
     padding: 0;
     font-size: 16px;
     background-color: white;
+    color: #444;
     line-height: 2;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
 }
 
 body * {
