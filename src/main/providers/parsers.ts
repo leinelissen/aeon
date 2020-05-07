@@ -20,7 +20,7 @@ export const parsersByFile: Map<string, ProviderParser> = new Map(
             return [
                 // Also scope the path to the provider, as the data will be
                 // stored relatively to the parser as well
-                path.join(key, parser.source),
+                `${key}/${parser.source}`,
                 parser,
             ];
         });

@@ -129,7 +129,7 @@ class ProviderManager extends EventEmitter {
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
             // Prepend the supplied path with the key from the spcific service
-            const location = path.join(key, file.filepath);
+            const location = `${key}/${file.filepath}`;
 
             // Save the files to disk, and add the files
             await this.repository.save(location, file.data);
@@ -137,6 +137,7 @@ class ProviderManager extends EventEmitter {
         }));
 
         // Check if any files have been added
+        // TODO: Make the isomorphic-git status call Windows-aware
         const status = await this.repository.status();
         const amountOfFilesChanged = status.filter(
             ([, , WorkdirStatus, StageStatus]) => WorkdirStatus !== 1 && StageStatus > 1

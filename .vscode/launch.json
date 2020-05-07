@@ -12,7 +12,9 @@
             "cwd": "${workspaceFolder}",
             "sourceMaps": true,
             "windows": {
-              "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-forge-vscode-win.cmd"
+              "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-forge-vscode-win.cmd",
+              "console": "internalConsole", 
+              "outputCapture": "std",
             },
           }
     ]
