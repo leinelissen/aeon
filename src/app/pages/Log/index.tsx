@@ -48,7 +48,7 @@ const CommitContainer = styled.div`
     top: 0;
     flex-shrink: 0;
     border-right: 1px solid #eee;
-    overflow-y: scroll;
+    overflow-y: auto;
 `;
 
 const NewCommitContainer = styled.div`

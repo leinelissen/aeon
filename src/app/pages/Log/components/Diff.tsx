@@ -27,7 +27,7 @@ const Container = styled.div`
     font-size: 12px;
     grid-row: span 2;
     grid-area: diff;
-    overflow-y: scroll;
+    overflow-y: auto;
 `;
 
 const MarginLeft = styled.span`

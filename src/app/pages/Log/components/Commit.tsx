@@ -24,6 +24,7 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     align-items: center;
     position: relative;
     color: #666;
+    background-color: white;
 
     &:hover {
         cursor: pointer;

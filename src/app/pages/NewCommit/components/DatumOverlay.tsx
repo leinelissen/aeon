@@ -28,7 +28,7 @@ const Container = styled.div`
     width: 100%;
     height: 100%;
     padding-top: 16px;
-    overflow-y: scroll;
+    overflow-y: auto;
     box-shadow: -1px 0 1px rgba(0,0,0,0.01), 
               -2px 0 2px rgba(0,0,0,0.01), 
               -4px 0 4px rgba(0,0,0,0.01), 

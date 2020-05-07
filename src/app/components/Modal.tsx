@@ -45,7 +45,7 @@ const StyledDialog = styled.div`
     max-height: 80vh;
     max-width: 80vw;
     padding-top: 32px;
-    overflow-y: scroll;
+    overflow-y: auto;
 `;
 
 const Dialog: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props) => {

@@ -21,7 +21,7 @@ export const List = styled.div`
     flex-direction: column;
     border-right: 1px solid ${theme.colors.border};
     flex-grow: 1;
-    overflow-y: scroll;
+    overflow-y: auto;
     position: relative;
 `;
 
