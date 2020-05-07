@@ -14,6 +14,7 @@ import Code from 'app/components/Code';
 
 interface Props {
     commit: ReadCommitResult;
+    diff?: ExtractedDataDiff;
 }
 
 interface State {
@@ -78,7 +79,7 @@ class Diff extends PureComponent<Props, State> {
     }
 
     render(): JSX.Element {
-        const { diff } = this.state;
+        const diff = this.props.diff || this.state.diff;
         const { commit } = this.props;
 
         if (!diff) {
@@ -88,6 +89,8 @@ class Diff extends PureComponent<Props, State> {
                 </Container>
             );
         }
+
+        console.log(diff);
 
         return (
             <Container>

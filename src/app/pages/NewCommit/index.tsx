@@ -25,6 +25,10 @@ import Modal from 'app/components/Modal';
 import DataType from 'app/utilities/DataType';
 import Code from 'app/components/Code';
 import TutorialOverlay from './components/TutorialOverlay';
+import { TextInput, Label } from 'app/components/Input';
+import { CommitObject, ReadCommitResult } from 'isomorphic-git';
+import Store, { StoreProps } from 'app/store';
+import { ExtractedDataDiff } from 'main/lib/repository/types';
 
 type GroupedData =  { [key: string]: ProviderDatum<string, ProvidedDataTypes>[] };
 type DeletedData = { [key: string]: number[] };
@@ -40,9 +44,11 @@ interface State {
     selectedDatum?: number;
     // Whether the modal for saving the identity has been opened
     isModalOpen?: boolean;
+    // The message for the new commit that is being created
+    newCommitMessage?: string;
 }
 
-class NewCommit extends Component<RouteComponentProps, State> {
+class NewCommit extends Component<RouteComponentProps & StoreProps, State> {
     state: State = {
         selectedCategory: null,
         groupedData: null,
@@ -50,6 +56,7 @@ class NewCommit extends Component<RouteComponentProps, State> {
             obj[key] = [];
             return obj;
         }, {}),
+        newCommitMessage: "",
     }
 
     async componentDidMount(): Promise<void> {
@@ -109,9 +116,50 @@ class NewCommit extends Component<RouteComponentProps, State> {
         })
     }
 
+    saveIdentity = (): void => {
+        const { groupedData, deletedData, newCommitMessage } = this.state;
+
+        // First, we'll retrieve all individual datapoints that have been deleted
+        const deleted = Object.keys(deletedData).flatMap((key) => 
+            deletedData[key].map((i) => groupedData[key][i])
+        );
+
+        // Then we'll construct a commit object that can be easily displayed in the log screen
+        const commit: ReadCommitResult & { diff: ExtractedDataDiff } = { 
+            oid: 'new-commit',
+            commit: {
+                message: newCommitMessage,
+                author: {
+                    timestamp: Math.floor(new Date().getTime() / 1000),
+                    name: undefined,
+                    email: undefined,
+                    timezoneOffset: undefined,
+                },
+                tree: null,
+                committer: null,
+                parent: null,
+            },
+            payload: null,
+            diff: { 
+                deleted,
+                updated: [],
+                added: [],
+            },
+        };
+
+        // Then, we'll store this commit in the store
+        this.props.store.set('newCommit')(commit);
+
+        // Lastly, we'll navigate back to the log
+        this.props.history.push(`/log?transition=${TransitionDirection.left}&newCommit=true`);
+    }
+
     closeOverlay = (): void => this.setState({ selectedDatum: null });
     closeModal = (): void => this.setState({ isModalOpen: false });
     openModal = (): void => this.setState({ isModalOpen: true });
+    handleChangeCommitMessage = (event: React.ChangeEvent<HTMLInputElement>): void => this.setState({
+        newCommitMessage: event.target.value,
+    });
 
     render(): JSX.Element {
         const { 
@@ -119,7 +167,8 @@ class NewCommit extends Component<RouteComponentProps, State> {
             groupedData,
             selectedDatum,
             deletedData,
-            isModalOpen
+            isModalOpen,
+            newCommitMessage,
         } = this.state;
 
         if (!groupedData) {
@@ -185,21 +234,33 @@ class NewCommit extends Component<RouteComponentProps, State> {
                     onDelete={this.deleteDatum}
                 />
                 <Modal isOpen={isModalOpen} onRequestClose={this.closeModal}>
-                    <p style={{ padding: 16 }}>You are about to commit a new identity, with the following changes:</p>
+                    <p style={{ padding: "0 16px" }}>You are about to commit a new identity, with the following changes. As with data requests, it may take some time for this data to actually be deleted from the platforms.</p>
+                    <p style={{ padding: "0 16px" }}><i>This action is not reversible. However, your data will remain saved locally in Aeon.</i></p>
                     {Object.keys(deletedData).map(category =>
                         deletedData[category].map(key =>
-                            <Code removed>
+                            <Code removed key={`preview-changes-${category}-${key}`}>
                                 <span><FontAwesomeIcon icon={faMinus} fixedWidth /></span>
                                 <MarginLeft><FontAwesomeIcon icon={DataType.getIcon(groupedData[category][key].type)} fixedWidth /></MarginLeft>
                                 <MarginLeft>{DataType.toString(groupedData[category][key])}</MarginLeft>
                             </Code>
                         )
                     )}
-                    <p style={{ padding: 16 }}><i>This action is not reversible. However, your data will remain saved locally in Aeon. As with data requests, it may take some time for this data to actually be deleted from the platforms.</i></p>
+                    <Label style={{ padding: 16 }}>
+                        Identity Change Description 
+                        <TextInput
+                            placeholder={hasChanges
+                                ? `Delete ${Object.keys(deletedData).find(d => d.length)} from identity...`
+                                : "Delete part of identity..."}
+                            onChange={this.handleChangeCommitMessage}
+                            value={newCommitMessage}
+                        />
+                    </Label>
                     <Button
                         icon={faSave}
                         style={{ margin: '16px auto' }}
+                        onClick={this.saveIdentity}
                         data-telemetry-id="confirm-save-new-identity"
+                        disabled={!newCommitMessage}
                     >
                         Save new Identity
                     </Button>
@@ -210,4 +271,4 @@ class NewCommit extends Component<RouteComponentProps, State> {
     }
 }
 
-export default NewCommit;
+export default Store.withStore(NewCommit);

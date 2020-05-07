@@ -27,10 +27,15 @@ const StyledButton = styled.button<ButtonProps>`
     margin: 5px 0;
     border: 0;
     padding: 0 16px;
+    transition: transform 0.3s ease;
 
     &:hover&:not(:disabled) {
         cursor: pointer;
         opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.09), 
+                0 2px 4px rgba(0,0,0,0.09), 
+                0 4px 8px rgba(0,0,0,0.09), 
     }
 
     &:disabled {
@@ -83,8 +88,8 @@ interface Props extends ButtonProps {
 const Button = ({ children, loading, onClick, disabled, icon, ...props }: Props): JSX.Element => {
     return (
         <StyledButton onClick={onClick} disabled={loading || disabled} {...props}>
-            {icon ? <FontAwesomeIcon icon={icon} style={{ marginRight: 5 }} fixedWidth /> : null}
             {children}
+            {icon && !loading ? <FontAwesomeIcon icon={icon} style={{ marginLeft: 5 }} fixedWidth /> : null}
             {loading ? (<><Margin /><Ball size={10} /></>) : null}
         </StyledButton>
     )

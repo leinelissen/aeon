@@ -1,5 +1,7 @@
+import { ReadCommitResult } from 'isomorphic-git';
 import { createConnectedStore, Store, Effects } from 'undux'
 import persistStore, { retrievePersistedStore } from './persist';
+import { ExtractedDataDiff } from 'main/lib/repository/types';
 
 type State = {
     // Whether onboarding has been completed
@@ -10,6 +12,10 @@ type State = {
     };
     // A collection of events used for gauging usage of the application
     telemetry: any[];
+    //
+    newCommit?: ReadCommitResult & {
+        diff: ExtractedDataDiff
+    };
     // The revision number for the data structure of the store. This helps track
     // differing versions and helps adjust accordingly.
     storeRevision: number;
@@ -22,7 +28,8 @@ const initialState: State = {
         newCommit: false,
     },
     telemetry: [],
-    storeRevision: 3,
+    newCommit: null,
+    storeRevision: 4,
 }
 
 export type StoreProps = {

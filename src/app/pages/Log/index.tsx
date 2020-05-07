@@ -19,6 +19,7 @@ import theme from 'app/styles/theme';
 import { faSparkles } from '@fortawesome/pro-light-svg-icons';
 import { Margin } from 'app/components/Utility';
 import TutorialOverlay from './components/TutorialOverlay';
+import Store, { StoreProps } from 'app/store';
 
 interface State {
     log: ReadCommitResult[];
@@ -58,7 +59,7 @@ const NewCommitContainer = styled.div`
     color: ${theme.colors.white};
 `;
 
-class Log extends Component<{}, State> {
+class Log extends Component<StoreProps, State> {
     state: State = {
         log: [],
         selectedCommit: null,
@@ -108,7 +109,10 @@ class Log extends Component<{}, State> {
 
     render(): JSX.Element {
         const { log, selectedCommit, updating } = this.state;
-        const selectedTree = log.find(d => d.oid === selectedCommit);
+        const newCommit = this.props.store.get('newCommit');
+        const selectedTree = selectedCommit === 'new-commit'
+            ? newCommit
+            : log.find(d => d.oid === selectedCommit);
 
         if (!log.length) {
             return <Loading />;
@@ -135,6 +139,13 @@ class Log extends Component<{}, State> {
                     </Link>
                 </NewCommitContainer>
                 <CommitContainer>
+                    {newCommit ? 
+                        <Commit
+                            entry={newCommit}
+                            active={'new-commit' === selectedCommit}
+                            onClick={this.handleClick}
+                        />
+                    : null}
                     {log.map((entry: ReadCommitResult, i) => (
                         <Commit
                             key={entry.oid}
@@ -147,11 +158,11 @@ class Log extends Component<{}, State> {
                     ))}
                 </CommitContainer>
                 <Requests />
-                <Diff commit={selectedTree} />
+                <Diff commit={selectedTree} diff={newCommit && selectedCommit === 'new-commit' && newCommit.diff} />
                 <TutorialOverlay />
             </Container>
         );
     }
 }
 
-export default Log;
+export default Store.withStore(Log);
