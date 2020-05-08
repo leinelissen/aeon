@@ -32,7 +32,7 @@ const createWindow = (): void => {
     });
 
     // Hide menu bar on windows
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV === 'production') {
         mainWindow.setMenu(null);
     }
     
