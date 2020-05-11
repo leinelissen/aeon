@@ -1,7 +1,7 @@
 {
   "extends": [
-    "config:base"
-     "schedule:weekly",
+    "config:base",
+    "schedule:weekly"
   ],
   "ignoreDeps": [
     "@fortawesome/fontawesome-pro",
