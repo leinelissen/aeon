@@ -1,6 +1,7 @@
 {
   "extends": [
     "config:base"
+     "schedule:weekly",
   ],
   "ignoreDeps": [
     "@fortawesome/fontawesome-pro",
@@ -10,5 +11,20 @@
     "@fortawesome/pro-light-svg-icons",
     "@fortawesome/pro-regular-svg-icons",
     "@fortawesome/react-fontawesome"
-  ]
+  ],
+  "groupName": "all dependencies",
+  "separateMajorMinor": true,
+  "groupSlug": "all",
+  "packageRules": [
+    {
+      "packagePatterns": [
+        "*"
+      ],
+      "groupName": "all dependencies",
+      "groupSlug": "all"
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": true
+  }
 }
