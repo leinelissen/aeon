@@ -15,6 +15,7 @@
   "groupName": "all dependencies",
   "separateMajorMinor": true,
   "groupSlug": "all",
+  "npmrc": "@fortawesome:registry=https://npm.fontawesome.com/"
   "packageRules": [
     {
       "packagePatterns": [
