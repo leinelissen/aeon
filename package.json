@@ -16,7 +16,11 @@
         "name": "Lei Nelissen",
         "email": "lei@codified.nl"
     },
-    "license": "MIT",
+    "license": "",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/leinelissen/aeon"
+    },
     "config": {
         "forge": {
             "packagerConfig": {
@@ -76,7 +80,6 @@
         "@electron-forge/plugin-webpack": "6.0.0-beta.51",
         "@marshallofsound/webpack-asset-relocator-loader": "0.5.0",
         "@types/adm-zip": "0.4.33",
-        "@types/date-fns": "2.6.0",
         "@types/react": "16.9.34",
         "@types/react-dom": "16.9.7",
         "@typescript-eslint/eslint-plugin": "2.31.0",
