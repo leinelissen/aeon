@@ -62,7 +62,6 @@ class Instagram extends DataRequestProvider {
                         }
 
                         // We can then return the cookies and clean up the window
-                        window.destroy();
                         resolve(cookies);
                     } else if (!window.isVisible()) {
                         // If not, we'll check if we need to open the window for the
@@ -147,7 +146,6 @@ class Instagram extends DataRequestProvider {
 
                     if (details.url === 'https://www.instagram.com/download/request_download_data_ajax/'
                         && details.statusCode === 200) {
-                        window.destroy();
                         resolve();
                     }
                 });
@@ -222,7 +220,6 @@ class Instagram extends DataRequestProvider {
                     // Save the item to the data folder temporarily
                     item.setSavePath(filePath);
                     item.once('done', resolve);
-                    window.destroy();
                 });
 
                 // And then trigger the button click
