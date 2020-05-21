@@ -72,11 +72,9 @@ class ProviderManager extends EventEmitter {
      */
     updateAll = async (): Promise<void> => {
         // Loop through all registered providers and execute their updates
-        await Promise.all(this.instances.map((provider, key) => 
+        await Promise.allSettled(this.instances.map((provider, key) => 
             this.update(key)
         ));
-
-        // TODO: We can create a commit now!
     }
 
     initialise = async (key: string): Promise<boolean> => {
@@ -110,7 +108,6 @@ class ProviderManager extends EventEmitter {
 
         // GUARD: Check if the provider is already initialised
         if (!this.initialisedProviders.includes(key)) {
-            return;
             throw new Error('ProviderWasNotInitialised');
         }
 
@@ -192,9 +189,8 @@ class ProviderManager extends EventEmitter {
      * Dispatch data requests for all instances that support it
      */
     dispatchDataRequestToAll = async (): Promise<void> => {
-        await Promise.all(this.instances.map((instance, key) =>
+        await Promise.allSettled(this.instances.map((instance, key) =>
             this.dispatchDataRequest(key)
-                .catch(() => null)
         ));
     }
 
@@ -213,15 +209,18 @@ class ProviderManager extends EventEmitter {
                 // However, we will check if we need to purge it from the map if
                 // it has been completed for x days
                 const ProviderClass: typeof DataRequestProvider = Object.getPrototypeOf(instance).constructor;
-                if (differenceInDays(status.completed, new Date()) > ProviderClass.dataRequestIntervalDays) {
+                console.log(differenceInDays(new Date(), status.completed), ProviderClass.dataRequestIntervalDays);
+                if (differenceInDays(new Date(), status.completed) > ProviderClass.dataRequestIntervalDays) {
+                    console.log(`Data request for ${key} was completed long enough to be purged`);
                     this.dispatchedDataRequests.delete(key);
-                }
-
+                    console.log(Array.from(this.dispatchedDataRequests.entries()));
+                } 
+                    
                 return;
             }
 
             // If it is uncompleted, we need to check upon it
-            if (await instance.isDataRequestComplete()) {
+            if (await instance.isDataRequestComplete().catch(() => false)) {
                 console.log('A data request has completed! Starting to parse...')
 
                 // If it is complete now, we'll fetch the data and parse it
@@ -243,7 +242,7 @@ class ProviderManager extends EventEmitter {
         }));
 
         // Also dispatch regular update requests
-        await(Promise.all([dataRequests, await this.updateAll()]));
+        await(Promise.allSettled([dataRequests, await this.updateAll()]));
 
         ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
         this.lastDataRequestCheck = new Date();

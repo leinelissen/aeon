@@ -1,6 +1,12 @@
 import { BrowserWindow } from 'electron';
 import { URL } from 'url';
 
+interface Params {
+    key: string;
+    origin: string;
+    options?: Electron.BrowserWindowConstructorOptions;
+}
+
 /**
  * This function will create a secure BrowserWindow that implements Electron
  * best practices for loading remote content. See https://www.electronjs.org/docs/tutorial/security
@@ -9,7 +15,9 @@ import { URL } from 'url';
  * @param options An optional options object that should be passed to the
  * BrowserWindow constructor. This may not contain webPreferences
  */
-function createSecureWindow(origin: string, options: Electron.BrowserWindowConstructorOptions = {}) {
+function createSecureWindow(params: Params) {
+    const { key, origin, options = {} } = params;
+
     // GUARD: webPreferences are off-limits
     if (Object.prototype.hasOwnProperty.call(options, 'webPreferences')) {
         throw new Error('InvalidBrowserWindowConfiguration');
@@ -25,6 +33,7 @@ function createSecureWindow(origin: string, options: Electron.BrowserWindowConst
             enableRemoteModule: false,
             sandbox: true,
             contextIsolation: true,
+            partition: `persist:${key}`,
         },
         ...options,
     });
@@ -44,15 +53,38 @@ function createSecureWindow(origin: string, options: Electron.BrowserWindowConst
             event.preventDefault();
         }
     });
-
-    // Hide the window when someone clicks the close button, rather than having
-    // it destroyed. We need this window to be available for background tasks.
-    window.on('close', (event) => {
-        event.preventDefault();
-        window.hide();
-    });
-
+    
     return window;
 } 
+
+/**
+ * This is a HOC wrapper function that transparently makes available a window
+ * function, while accepting a return Promise. It adds another check to see if
+ * the Window is closed by the user, so that the aborted function can be
+ * transparently passed back to the caller.
+ * @param fn The function that needs the window object
+ */
+export function withSecureWindow<U>(
+        params: Params,
+        fn: (window: BrowserWindow) => Promise<U>,
+    ): Promise<U> {
+    // Create new Window with the given parameters
+    const window = createSecureWindow(params);
+
+    // Create a Promise that inspects the window 'close' event, and rejects if
+    // it is ever called.
+    const closePromise = new Promise((resolve, reject) => {
+        window.on('close', () => reject(new Error('UserAbort')));
+    });
+
+    // Race the function against the closePromise, so that the whole function is
+    // reject if the window is ever closed.
+    return (Promise.race([fn(window), closePromise]) as Promise<U>)
+        .then((values): U => {
+            // Also destroy the window when the function has been successfully completed.
+            window.destroy();
+            return values;
+        });
+}
 
 export default createSecureWindow;

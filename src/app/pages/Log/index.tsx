@@ -95,14 +95,14 @@ class Log extends Component<StoreProps, State> {
 
     handleRefresh = async (): Promise<void> => {
         this.setState({ updating: true });
-        await Providers.refresh();
+        await Providers.refresh().catch(null);
         this.setState({ updating: false });
         this.fetchLog();
     }
 
     handleDispatch = async (): Promise<void> => {
         this.setState({ updating: true });
-        await Providers.dispatchDataRequest('instagram');
+        await Providers.dispatchDataRequest('instagram').catch(null);
         this.setState({ updating: false });
         this.fetchLog();
     }

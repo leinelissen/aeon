@@ -36,11 +36,6 @@ export abstract class DataRequestProvider extends Provider {
     public static dataRequestIntervalDays: number;
 }
 
-export interface WithWindow {
-    window: BrowserWindow;
-    constructor: Function;
-}
-
 export interface DataRequestStatus {
     dispatched: Date;
     completed?: Date;

@@ -139,7 +139,7 @@ class Requests extends Component<{}, State> {
         const status = this.state.dataRequests.get(key);
         
         if (!status) {
-            Providers.dispatchDataRequest(key);
+            Providers.dispatchDataRequest(key).catch(null);
         } else if (status?.dispatched) {
             this.handleRefresh();
         } 
