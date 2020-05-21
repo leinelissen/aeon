@@ -209,7 +209,6 @@ class ProviderManager extends EventEmitter {
                 // However, we will check if we need to purge it from the map if
                 // it has been completed for x days
                 const ProviderClass: typeof DataRequestProvider = Object.getPrototypeOf(instance).constructor;
-                console.log(differenceInDays(new Date(), status.completed), ProviderClass.dataRequestIntervalDays);
                 if (differenceInDays(new Date(), status.completed) > ProviderClass.dataRequestIntervalDays) {
                     console.log(`Data request for ${key} was completed long enough to be purged`);
                     this.dispatchedDataRequests.delete(key);

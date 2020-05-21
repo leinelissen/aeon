@@ -114,7 +114,6 @@ const parsers: ProviderParser[] = [
                 key: 'profile',
                 type: ProvidedDataTypes.PROFILE_PICTURE,
                 transformer: (obj: { caption: string; taken_at: string; path: string }[]): Partial<Photo>[] => {
-                    console.log(obj);
                     return obj.map((photo): Partial<Photo> => ({
                         data: {
                             url: 'file://' + path.join(REPOSITORY_PATH, Instagram.key, photo.path),
@@ -128,7 +127,6 @@ const parsers: ProviderParser[] = [
                 key: 'photos',
                 type: ProvidedDataTypes.PHOTO,
                 transformer: (obj: { caption: string; taken_at: string; path: string }[]): Partial<Photo>[] => {
-                    console.log(obj);
                     return obj.map((photo): Partial<Photo> => ({
                         data: {
                             url: 'file://' + path.join(REPOSITORY_PATH, Instagram.key, photo.path),
