@@ -134,7 +134,7 @@ class Log extends Component<StoreProps, State> {
                             color={theme.colors.blue.primary}
                             backgroundColor={theme.colors.white}
                         >
-                            Create a new commit
+                            Create a new identity
                         </Button>
                     </Link>
                 </NewCommitContainer>
