@@ -132,7 +132,7 @@ class DataType {
         switch (datum.type) {
             case ProvidedDataTypes.PHOTO:
                 const { data: photo } = datum as Photo;   
-                return photo.description;
+                return <img src={photo.url} />;
             case ProvidedDataTypes.ADDRESS:
                 const { data: address } = datum as Address;   
                 return `${address.street} ${address.number} ${address.state && address.state + '\n'}`;

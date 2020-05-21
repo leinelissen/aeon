@@ -46,6 +46,12 @@ export const CloseButton = styled(GhostButton)`
 export const Section = styled.div`
     border-bottom: 1px solid #eee;
     padding: 16px 32px;
+
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+    }
 `;
 
 export const DetailListItem = styled.div`

@@ -74,6 +74,12 @@ export const StyledListButton = styled.button<ListButtonProps>`
     padding: 14px 24px 14px 0;
     font-weight: 400;
 
+    img {
+        max-height: 100px;
+        width: auto;
+        border-radius: 5px;
+    }
+
     ${props => props.active ? css`
         background: #eee;
         opacity: 0.9;

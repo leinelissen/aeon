@@ -1,6 +1,9 @@
 import { ProvidedDataTypes, ProviderParser, Follower, AccountFollowing, Photo, JoinDate, PrivacySetting, PostSeen } from '../types';
 import { parseISO } from 'date-fns';
 import { objectToKeyValueTransformer } from 'main/lib/map-object-to-key-value';
+import { REPOSITORY_PATH } from 'main/lib/repository';
+import path from 'path';
+import Instagram from '.';
 
 /**
  * This specifies an input object in which the data is structured in an object,
@@ -109,11 +112,26 @@ const parsers: ProviderParser[] = [
         schemas: [
             {
                 key: 'profile',
-                type: ProvidedDataTypes.PHOTO,
+                type: ProvidedDataTypes.PROFILE_PICTURE,
                 transformer: (obj: { caption: string; taken_at: string; path: string }[]): Partial<Photo>[] => {
+                    console.log(obj);
                     return obj.map((photo): Partial<Photo> => ({
                         data: {
-                            url: photo.path,
+                            url: 'file://' + path.join(REPOSITORY_PATH, Instagram.key, photo.path),
+                            description: photo.caption
+                        },
+                        timestamp: parseISO(photo.taken_at)
+                    }))
+                }
+            },
+            {
+                key: 'photos',
+                type: ProvidedDataTypes.PHOTO,
+                transformer: (obj: { caption: string; taken_at: string; path: string }[]): Partial<Photo>[] => {
+                    console.log(obj);
+                    return obj.map((photo): Partial<Photo> => ({
+                        data: {
+                            url: 'file://' + path.join(REPOSITORY_PATH, Instagram.key, photo.path),
                             description: photo.caption
                         },
                         timestamp: parseISO(photo.taken_at)
