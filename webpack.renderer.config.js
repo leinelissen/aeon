@@ -4,20 +4,32 @@ const plugins = require('./webpack.plugins');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 rules.push({
-    test: /\.(woff|woff2|svg)$/,
+    test: /\.(woff|woff2)$/,
     use: [{
         loader: 'file-loader',
         options: {
-            outputPath: 'static',
-            name: '[name].[hash].[ext]',
-            publicPath: 'static',
+            outputPath: 'assets',
+        }
+    }],
+}, {
+    test: /\.(svg)$/,
+    use: [{
+        loader: 'file-loader',
+        options: {
+            outputPath: 'assets',
+            publicPath: '../assets',
         }
     }],
 });
 
 rules.push({
     test: /\.css$/,
-    use: [MiniCssExtractPlugin.loader, 'css-loader'],
+    use: [{
+        loader: MiniCssExtractPlugin.loader,
+        options: {
+            publicPath: "..",
+        }
+    }, 'css-loader'],
 });
 
 module.exports = {
@@ -29,7 +41,9 @@ module.exports = {
     },
     plugins: [
         ...plugins,
-        new MiniCssExtractPlugin()
+        new MiniCssExtractPlugin({
+            filename: "assets/[name].css",
+        })
     ],
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
