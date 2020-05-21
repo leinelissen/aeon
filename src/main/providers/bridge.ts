@@ -58,7 +58,7 @@ class ProviderBridge {
      */
     public static send(event: ProviderEvents): void {
         const window = WindowStore.getInstance().window;
-        window.webContents.send(channelName, event);
+        window?.webContents.send(channelName, event);
     }
 }
 

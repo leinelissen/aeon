@@ -69,7 +69,7 @@ class RepositoryBridge {
      */
     public static send(event: RepositoryEvents): void {
         const window = WindowStore.getInstance().window;
-        window.webContents.send(channelName, event);
+        window?.webContents.send(channelName, event);
     }
 }
 

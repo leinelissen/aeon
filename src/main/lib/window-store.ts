@@ -12,6 +12,10 @@ class WindowStore {
         return WindowStore.instance;
     }
 
+    static getWindow(): BrowserWindow {
+        return this.getInstance().window;
+    }
+
     set window(window: BrowserWindow) {
         this._window = window;
     }

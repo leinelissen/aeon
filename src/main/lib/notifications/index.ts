@@ -7,27 +7,27 @@ const channelName = 'notifications';
 class Notifications {
     public static success(message: string): void {
         const window = WindowStore.getInstance().window;
-        window.webContents.send(channelName, NotificationTypes.SUCCESS, message);
+        window?.webContents.send(channelName, NotificationTypes.SUCCESS, message);
     }
     
     public static info(message: string): void {
         const window = WindowStore.getInstance().window;
-        window.webContents.send(channelName, NotificationTypes.INFO, message);
+        window?.webContents.send(channelName, NotificationTypes.INFO, message);
     }
 
     public static loading(message: string): void {
         const window = WindowStore.getInstance().window;
-        window.webContents.send(channelName, NotificationTypes.LOADING, message);
+        window?.webContents.send(channelName, NotificationTypes.LOADING, message);
     }
 
     public static warn(message: string): void {
         const window = WindowStore.getInstance().window;
-        window.webContents.send(channelName, NotificationTypes.WARN, message);
+        window?.webContents.send(channelName, NotificationTypes.WARN, message);
     }
 
     public static error(message: string): void {
         const window = WindowStore.getInstance().window;
-        window.webContents.send(channelName, NotificationTypes.ERROR, message);
+        window?.webContents.send(channelName, NotificationTypes.ERROR, message);
     }
 }
 
