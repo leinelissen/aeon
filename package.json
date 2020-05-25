@@ -98,7 +98,7 @@
         "node-loader": "0.6.0",
         "react-hot-loader": "4.12.21",
         "style-loader": "1.2.1",
-        "ts-loader": "7.0.4",
+        "ts-loader": "7.0.5",
         "typescript": "3.9.3"
     },
     "dependencies": {
