@@ -99,7 +99,7 @@
         "react-hot-loader": "4.12.21",
         "style-loader": "1.2.1",
         "ts-loader": "7.0.4",
-        "typescript": "3.9.2"
+        "typescript": "3.9.3"
     },
     "dependencies": {
         "@fortawesome/fontawesome-pro": "^5.13.0",
