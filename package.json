@@ -137,7 +137,7 @@
         "react-router": "^5.1.2",
         "react-router-dom": "^5.2.0",
         "react-spring": "^8.0.27",
-        "styled-components": "^5.1.0",
+        "styled-components": "^5.1.1",
         "undux": "^5.2.0",
         "v8-compile-cache": "^2.1.0"
     }
