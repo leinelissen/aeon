@@ -114,7 +114,7 @@
         "@openfonts/ibm-plex-sans_all": "^1.44.1",
         "@popperjs/core": "^2.4.0",
         "@types/deep-equal": "^1.0.1",
-        "@types/lodash": "^4.14.152",
+        "@types/lodash": "^4.14.153",
         "@types/node": "^13.13.4",
         "@types/node-fetch": "^2.5.7",
         "@types/react-router": "^5.1.7",
