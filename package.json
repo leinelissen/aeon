@@ -115,7 +115,7 @@
         "@popperjs/core": "^2.4.0",
         "@types/deep-equal": "^1.0.1",
         "@types/lodash": "^4.14.154",
-        "@types/node": "^13.13.4",
+        "@types/node": "^14.0.10",
         "@types/node-fetch": "^2.5.7",
         "@types/react-router": "^5.1.7",
         "@types/react-router-dom": "^5.1.5",
