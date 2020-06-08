@@ -131,7 +131,7 @@
         "electron-squirrel-startup": "^1.0.0",
         "electron-store": "^5.1.1",
         "hex-to-rgba": "^2.0.1",
-        "isomorphic-git": "^1.4.0",
+        "isomorphic-git": "^1.4.4",
         "lodash": "^4.17.15",
         "node-fetch": "^2.6.0",
         "react": "^16.13.1",
