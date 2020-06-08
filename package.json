@@ -103,7 +103,7 @@
         "spectron": "^11.0.0",
         "style-loader": "1.2.1",
         "ts-loader": "7.0.5",
-        "typescript": "3.9.3"
+        "typescript": "3.9.5"
     },
     "dependencies": {
         "@fortawesome/fontawesome-pro": "^5.13.0",
