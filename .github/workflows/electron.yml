@@ -32,6 +32,7 @@ jobs:
         run: |
           npm run make
       - name: Test
+        if: runner.os == 'Windows' || runner.os == 'macOS'
         run: |
           npm test
       - name: Upload artifacts
