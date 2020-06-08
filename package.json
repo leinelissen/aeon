@@ -129,7 +129,7 @@
         "date-fns": "^2.14.0",
         "deep-equal": "^2.0.3",
         "electron-squirrel-startup": "^1.0.0",
-        "electron-store": "^5.1.1",
+        "electron-store": "^5.2.0",
         "hex-to-rgba": "^2.0.1",
         "isomorphic-git": "^1.4.0",
         "lodash": "^4.17.15",
