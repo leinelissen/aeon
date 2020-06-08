@@ -29,7 +29,7 @@ class App extends Component {
                             <Main>
                                 <Pages />
                             </Main>
-                            <Telemetry />
+                            {/* <Telemetry /> */}
                         </div>
                     </Store.Container>
                 </StyleSheetManager>
