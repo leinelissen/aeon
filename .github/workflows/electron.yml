@@ -31,6 +31,9 @@ jobs:
       - name: Compile
         run: |
           npm run make
+      - name: Test
+        run: |
+          npm test
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
