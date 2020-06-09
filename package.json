@@ -115,7 +115,7 @@
         "@fortawesome/react-fontawesome": "^0.1.10",
         "@openfonts/ibm-plex-mono_all": "^1.44.1",
         "@openfonts/ibm-plex-sans_all": "^1.44.1",
-        "@popperjs/core": "^2.4.0",
+        "@popperjs/core": "^2.4.1",
         "@types/deep-equal": "^1.0.1",
         "@types/lodash": "^4.14.155",
         "@types/node": "^13.13.4",
