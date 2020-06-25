@@ -81,7 +81,7 @@
         "@electron-forge/plugin-webpack": "6.0.0-beta.51",
         "@marshallofsound/webpack-asset-relocator-loader": "0.5.0",
         "@types/adm-zip": "0.4.33",
-        "@types/react": "16.9.35",
+        "@types/react": "16.9.41",
         "@types/react-dom": "16.9.8",
         "@typescript-eslint/eslint-plugin": "^3.1.0",
         "@typescript-eslint/parser": "^3.1.0",
