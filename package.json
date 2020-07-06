@@ -98,7 +98,7 @@
         "mini-css-extract-plugin": "0.9.0",
         "mocha": "^7.2.0",
         "node-abi": "^2.18.0",
-        "node-loader": "0.6.0",
+        "node-loader": "1.0.0",
         "react-hot-loader": "4.12.21",
         "spectron": "^11.0.0",
         "style-loader": "1.2.1",
