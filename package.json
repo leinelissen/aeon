@@ -88,7 +88,7 @@
         "csp-html-webpack-plugin": "4.0.0",
         "css-loader": "3.6.0",
         "dotenv-webpack": "1.8.0",
-        "electron": "9.0.5",
+        "electron": "9.1.0",
         "eslint": "7.4.0",
         "eslint-import-resolver-typescript": "2.0.0",
         "eslint-plugin-import": "2.22.0",
