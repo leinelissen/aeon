@@ -6,6 +6,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import initialise from './initialise';
 import WindowStore from './lib/window-store';
+import { unmountFS } from './lib/crypto-fs/mount-fs';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
@@ -50,9 +51,9 @@ const createWindow = (): void => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', (): void =>  { 
+app.on('ready', async (): Promise<void> =>  { 
+    await initialise();
     createWindow();
-    initialise();
 });
 
 // Quit when all windows are closed.
@@ -70,4 +71,10 @@ app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
+});
+
+app.on('will-quit', () => {
+    // Just before the application window is closed, we want to attempt to
+    // unmount the encrypted filesystem, so we can start using it a bit more quickly.
+    unmountFS();
 });

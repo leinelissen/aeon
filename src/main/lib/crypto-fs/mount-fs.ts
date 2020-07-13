@@ -1,0 +1,138 @@
+import { spawn } from 'child_process';
+import path from 'path';
+import fs from 'fs';
+
+const PASSWORD = 'password123';
+const ENCRYPTED_FILESYSTEM_PATH = path.join('data', 'encrypted_repository');
+const MOUNTED_FILESYSTEM_PATH = path.join('data', 'repository');
+
+// Adapted from https://github.com/rfjakob/gocryptfs/blob/master/Documentation/MANPAGE.md
+const ERROR_CODES = {
+    0: 'success',
+    6: 'CIPHERDIR is not an empty directory (on "-init")',
+    10: 'MOUNTPOINT is not an empty directory',
+    12: 'password incorrect',
+    22: 'password is empty (on "-init")',
+    23: 'could not read gocryptfs.conf',
+    24: 'could not write gocryptfs.conf (on "-init" or "-password")',
+    26: 'fsck found errors',
+}
+
+/**
+ * Unmount the encryped filesystem for Linux and macOS. The current
+ * implementation suppresses any errors.
+ */
+export function unmountFS(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        // Spawn umount process
+        const ls = spawn('umount', [MOUNTED_FILESYSTEM_PATH]);
+
+        // Reject the promise if any errors occur
+        // ls.stderr.on('data', (err) => reject(err.toString()));
+        // ls.on('error', (err) => reject(err.toString()));
+
+        // Reject or resolve the promise based on the error code
+        ls.on('close', () => resolve());
+        // ls.on('close', code => code === 0 ? resolve() : reject(code));
+    });
+}
+
+/**
+ * Check if the filesystem is intact, with gocryptfs rejecting if the filesystem
+ * is damaged or missing.
+ */
+export function validateFilesystem(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const ls = spawn('gocryptfs', ['-info', ENCRYPTED_FILESYSTEM_PATH]);
+
+        // Reject any errors directly
+        ls.on('error', (err) => reject(err.toString()));
+        ls.stdout.on('data', (data) => console.log(data.toString()));
+
+        // Reject or resolve the promise based on the error code
+        ls.on('close', code => code === 0 ? resolve() : reject(code));
+    });
+}
+
+/**
+ * Initialise a new encrypted filesystem at the correct repository, creating the
+ * correct directories and initialising the gocryptfs filesystem.
+ */
+export async function initialiseFilesystem(): Promise<void> {
+    console.log('Initialising encrypted filesystem...');
+
+    // Create the correct directory if they don't exist yet
+    if (!fs.existsSync(ENCRYPTED_FILESYSTEM_PATH)) {
+        await fs.promises.mkdir(ENCRYPTED_FILESYSTEM_PATH);
+    }
+
+    if (!fs.existsSync(MOUNTED_FILESYSTEM_PATH)) {
+        await fs.promises.mkdir(MOUNTED_FILESYSTEM_PATH);
+    }
+
+    return new Promise((resolve, reject) => {
+        const ls = spawn('gocryptfs', ['-init', ENCRYPTED_FILESYSTEM_PATH]);
+
+        // Bind the handler for data that we can check some input events
+        ls.stdout.on('data', data => {
+            // Parse incoming messages as string
+            const message = data.toString() as string;
+            console.log(message);
+
+            // Switch based on several commands
+            if (message.includes('Reading Password from stdin')) {
+                ls.stdin.write(`${PASSWORD}\n`);
+            }
+        });
+
+        // Reject the promise when any errors appear
+        ls.stderr.on('data', (err) => reject(err.toString()));
+        ls.on('error', (err) => reject(err.toString()));
+
+        // Reject or resolve the promise based on the error code
+        ls.on('close', code => code === 0 ? resolve() : reject(code));
+    });
+}
+
+/**
+ * Mount the encrypted filesysted for Linux and macOS
+ */
+export default function mountCryptoFS(): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+        // Do a cursory unmount of the filesystem in case any remnants remain
+        await unmountFS();
+
+        try {
+            await validateFilesystem();
+        } catch (err) {
+            console.log('Encrypted filesystem is not initialised...');
+            await initialiseFilesystem();
+        }
+
+        // Spawn the filesystem
+        const ls = spawn('gocryptfs', ['-fg', ENCRYPTED_FILESYSTEM_PATH, MOUNTED_FILESYSTEM_PATH]);
+
+        // Bind the handler for data that we can check some input events
+        ls.stdout.on('data', data => {
+            // Parse incoming messages as string
+            const message = data.toString() as string;
+
+            // Switch based on several commands
+            if (message.includes('Reading Password from stdin')) {
+                ls.stdin.write(`${PASSWORD}\n`);
+            } else if (message.includes('Filesystem mounted and ready')) {
+                console.log('Encrypted filesystem was successfully mounted.')
+                resolve();
+            }
+        });
+
+        // Bind error handlers
+        ls.stderr.on('data', (err) => reject(err.toString()));
+        ls.on('error', (err) => reject(err.toString()));
+
+        // Bind the close handler
+        ls.on('close', code => {
+            console.log(`gocryptfs child process exited with code ${code}`);
+        });     
+    });
+}

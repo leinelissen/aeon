@@ -4,8 +4,12 @@ import ProviderManager from './providers';
 import ProviderBridge from './providers/bridge';
 import { BrowserWindow } from 'electron';
 import Notifications from './lib/notifications';
+import mountCryptoFS from './lib/crypto-fs/mount-fs';
 
-function initialise(): void {
+async function initialise(): Promise<void> {
+    // Wait for the encrypted filesystem to be mounted
+    await mountCryptoFS();
+
     // Initialise the Git repository handler
     const repository = new Repository();
     // Inject the repository handler into the bridge for communication with the rendered
