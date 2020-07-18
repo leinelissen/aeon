@@ -26,12 +26,15 @@ jobs:
       - name: Install gocryptfs for macOS
         if: runner.os == 'macOS'
         run: |
-          brew cask install osxfuse
           brew install gocryptfs
       - name: Install gocryptfs for Linux
-        if: runner.os == 'Ubuntu'
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get install gocryptfs
+      - name: Install gocryptfs for Windows
+        if: runner.os == 'Windows'
+        run: |
+          choco install dokany
       - name: Install dependencies
         run: |
           npm config set '@fortawesome:registry=https://npm.fontawesome.com/'
