@@ -1,10 +1,10 @@
 module.exports = function(configFile = 'tsconfig.json') {
     return [
         // Add support for native node modules
-        {
-            test: /\.node$/,
-            use: 'node-loader',
-        },
+        // {
+        //     test: /\.node$/,
+        //     use: 'node-loader',
+        // },
         {
             test: /\.(m?js|node)$/,
             parser: { amd: false },

@@ -3,8 +3,7 @@ import { app } from 'electron';
 import { EventEmitter } from 'events';
 import git, { Errors, ReadCommitResult, TREE, Walker, StatusRow } from 'isomorphic-git';
 import { DiffResult, RepositoryEvents } from './types';
-import CryptoFs from '../crypto-fs';
-import nonCryptoFs from 'fs';
+import fs from 'fs';
 import diffMapFunction from './utilities/diff-map';
 import generateParsedCommit from './utilities/generate-parsed-commit';
 import { ProviderDatum } from 'main/providers/types';
@@ -17,7 +16,6 @@ export const REPOSITORY_PATH = path.resolve(APP_DATA_PATH, 'data', 'repository')
 export const EMPTY_REPO_HASH = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 
 const ENABLE_ENCRYPTION = process.env.ENABLE_ENCRYPTION !== 'false';
-const fs = ENABLE_ENCRYPTION ? new CryptoFs('password').init() : nonCryptoFs;
 
 class Repository extends EventEmitter {
     /**

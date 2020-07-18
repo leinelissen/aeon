@@ -6,7 +6,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import initialise from './initialise';
 import WindowStore from './lib/window-store';
-import { unmountFS } from './lib/crypto-fs/mount-fs';
+import { unmountFS } from './lib/crypto-fs';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
@@ -75,6 +75,7 @@ app.on('activate', () => {
 
 app.on('will-quit', () => {
     // Just before the application window is closed, we want to attempt to
-    // unmount the encrypted filesystem, so we can start using it a bit more quickly.
+    // unmount the encrypted filesystem, so we can start using it a bit more
+    // quickly when the application starts again.
     unmountFS();
 });
