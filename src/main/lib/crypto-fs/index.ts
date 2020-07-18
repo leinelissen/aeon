@@ -67,11 +67,11 @@ export async function initialiseFilesystem(): Promise<void> {
 
     // GUARD: Create the correct directory if they don't exist yet
     if (!fs.existsSync(ENCRYPTED_FILESYSTEM_PATH)) {
-        await fs.promises.mkdir(ENCRYPTED_FILESYSTEM_PATH);
+        await fs.promises.mkdir(ENCRYPTED_FILESYSTEM_PATH, { recursive: true });
     }
 
     if (!fs.existsSync(REPOSITORY_PATH)) {
-        await fs.promises.mkdir(REPOSITORY_PATH);
+        await fs.promises.mkdir(REPOSITORY_PATH, { recursive: true });
     }
 
     // Generate a random password and store it in the OS's native keychain

@@ -4,55 +4,50 @@ const electronPath = require('electron') // Require Electron from the binaries i
 const path = require('path')
 
 describe('Application launch', function () {
-    this.timeout(20000)
+    this.timeout(60000)
     
     beforeEach(async function () {
         this.app = new Application({
             // Your electron path can be any binary
             // i.e for OSX an example path could be '/Applications/MyApp.app/Contents/MacOS/MyApp'
             // But for the sake of the example we fetch it from our node_modules.
-            path: electronPath,
-            requireName: 'electronRequire',
-            
-            // Assuming you have the following directory structure
-            
-            //  |__ my project
-            //     |__ ...
-            //     |__ main.js
-            //     |__ package.json
-            //     |__ index.html
-            //     |__ ...
-            //     |__ test
-            //        |__ spec.js  <- You are here! ~ Well you should be.
+            path: path.join(__dirname, '..', 'out', 'Aeon-darwin-x64', 'Aeon.app', 'Contents', 'MacOS', 'aeon'),
+            // requireName: 'electronRequire',
             
             // The following line tells spectron to look and use the main.js file
             // and the package.json located 1 level above.
-            args: [path.join(__dirname, '..', '.webpack', 'main', 'index.js')],
-            env: { NODE_ENV: 'test' },
+            // args: [path.join(__dirname, '..', '.webpack', 'main', 'index.js')],
+            env: { NODE_ENV: 'test', ENABLE_ENCRYPTION: false },
+            startTimeout: 10000,
+            waitTimeout: 10e3,
+            // connectionRetryTimeout: 5000,
+            chromeDriverLogPath: './chromedriver.log',
+            webdriverLogPath: './webdriver.log'
         });
         await this.app.start();
         await this.app.client.pause(1000);
     });
     
-    afterEach(function () {
+    afterEach(async function () {
         if (this.app && this.app.isRunning()) {
             return this.app.stop();
         }
     });
     
     it('load the initial window', async function () {
-        const windowCount = await this.app.client.getWindowCount();
-        assert.equal(windowCount, 1);
-        
-        const logs = await this.app.client.getRenderProcessLogs();
+        await Promise.all([
+            this.app.client.getRenderProcessLogs(),
+            this.app.client.getMainProcessLogs()
+        ]).then(([ render, main ]) => {
+            render.forEach(function (log) {
+                assert.notEqual(log.level, 'SEVERE', 'FATAL ERROR: ' + JSON.stringify(log));
+                console.log('[RENDER]', log.message)
+            });
+            main.forEach((message) => console.log('[MAIN] ', message));
+        });
 
-        logs.forEach(function (log) {
-            assert.notEqual(log.level, 'SEVERE', 'FATAL ERROR: ' + JSON.stringify(log));
-            console.log(log.message)
-            console.log(log.source)
-            console.log(log.level)
+        const windowCount = await this.app.client.getWindowCount().then(() => {
+            assert.equal(windowCount, 1);
         });
     });
-
-
 });

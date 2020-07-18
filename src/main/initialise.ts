@@ -2,8 +2,6 @@ import Repository from './lib/repository';
 import RepositoryBridge from './lib/repository/bridge';
 import ProviderManager from './providers';
 import ProviderBridge from './providers/bridge';
-import { BrowserWindow } from 'electron';
-import Notifications from './lib/notifications';
 import mountCryptoFS from './lib/crypto-fs';
 
 async function initialise(): Promise<void> {
