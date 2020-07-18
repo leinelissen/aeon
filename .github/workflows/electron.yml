@@ -26,6 +26,7 @@ jobs:
       - name: Install gocryptfs for macOS
         if: runner.os == 'macOS'
         run: |
+          brew cask install osxfuse
           brew install gocryptfs
       - name: Install gocryptfs for Linux
         if: runner.os == 'Linux'
