@@ -10,7 +10,7 @@ const getAppPath = () => {
         case 'linux':
             return path.join(__dirname, '..', 'out', 'Aeon-linux-x64', 'aeon');
         case 'win32':
-            return path.join(__dirname, '..', 'out');
+            return path.join(__dirname, '..', 'out', 'Aeon-win32-x64', 'aeon.exe');
     }
 }
 
