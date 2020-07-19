@@ -8,8 +8,9 @@ const getAppPath = () => {
         case 'darwin':
             return path.join(__dirname, '..', 'out', 'Aeon-darwin-x64', 'Aeon.app', 'Contents', 'MacOS', 'aeon');
         case 'linux':
+            return path.join(__dirname, '..', 'out', 'Aeon-linux-x64', 'aeon');
         case 'win32':
-            return path.join(__dirname)
+            return path.join(__dirname, '..', 'out');
     }
 }
 
