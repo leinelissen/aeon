@@ -26,12 +26,16 @@ const createWindow = (): void => {
         minHeight: 600,
         // titleBarStyle: 'hiddenInset',
         webPreferences: {
-            nodeIntegration: false,
+            nodeIntegration: process.env.IS_TEST === 'true',
             contextIsolation: true,
             preload: path.join(__dirname, 'preload.js'),
             webSecurity: process.env.NODE_ENV === 'production',
         }
     });
+
+    if (process.env.IS_TEST === 'true') {
+        console.log('Setting extra handlers for testing...');
+    }
 
     // Hide menu bar on windows
     if (process.env.NODE_ENV === 'production') {
@@ -60,7 +64,7 @@ app.on('ready', async (): Promise<void> =>  {
 app.on('window-all-closed', () => {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
+    if (process.platform !== 'darwin' || process.env.NODE_ENV === 'test') {
         app.quit();
     }
 });
