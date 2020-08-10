@@ -6,6 +6,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import initialise from './initialise';
 import WindowStore from './lib/window-store';
+import { unmountFS } from './lib/crypto-fs';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
@@ -25,12 +26,16 @@ const createWindow = (): void => {
         minHeight: 600,
         // titleBarStyle: 'hiddenInset',
         webPreferences: {
-            nodeIntegration: false,
+            nodeIntegration: process.env.IS_TEST === 'true',
             contextIsolation: true,
             preload: path.join(__dirname, 'preload.js'),
             webSecurity: process.env.NODE_ENV === 'production',
         }
     });
+
+    if (process.env.IS_TEST === 'true') {
+        console.log('Setting extra handlers for testing...');
+    }
 
     // Hide menu bar on windows
     if (process.env.NODE_ENV === 'production') {
@@ -50,16 +55,16 @@ const createWindow = (): void => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', (): void =>  { 
+app.on('ready', async (): Promise<void> =>  { 
+    await initialise();
     createWindow();
-    initialise();
 });
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
+    if (process.platform !== 'darwin' || process.env.NODE_ENV === 'test') {
         app.quit();
     }
 });
@@ -70,4 +75,11 @@ app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
+});
+
+app.on('will-quit', () => {
+    // Just before the application window is closed, we want to attempt to
+    // unmount the encrypted filesystem, so we can start using it a bit more
+    // quickly when the application starts again.
+    unmountFS();
 });

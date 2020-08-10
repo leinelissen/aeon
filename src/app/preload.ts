@@ -76,4 +76,8 @@ contextBridge.exposeInMainWorld(
             STAGE: STAGE,
         },
     },
-    );
+);
+
+if (process.env.IS_TEST === 'true') {
+    window.electronRequire = require
+}

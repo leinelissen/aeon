@@ -86,3 +86,7 @@ jspm_packages/
 out/
 
 data/
+tmp/
+
+bin/*
+!bin/.gitkeep

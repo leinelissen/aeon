@@ -30,7 +30,8 @@ function createSecureWindow(params: Params) {
         alwaysOnTop: true, 
         show: false, 
         webPreferences: {
-            enableRemoteModule: false,
+            nodeIntegration: process.env.IS_TEST === 'true',
+            // enableRemoteModule: false,
             sandbox: true,
             contextIsolation: true,
             partition: `persist:${key}`,
