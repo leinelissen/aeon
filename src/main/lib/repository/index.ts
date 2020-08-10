@@ -15,8 +15,6 @@ export const APP_DATA_PATH = process.env.NODE_ENV === 'production' ? app.getPath
 export const REPOSITORY_PATH = path.resolve(APP_DATA_PATH, 'data', 'repository');
 export const EMPTY_REPO_HASH = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 
-const ENABLE_ENCRYPTION = process.env.ENABLE_ENCRYPTION !== 'false';
-
 class Repository extends EventEmitter {
     /**
      * The default config arguments for isomorphic-git

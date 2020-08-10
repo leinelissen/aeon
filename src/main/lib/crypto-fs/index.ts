@@ -143,7 +143,7 @@ export async function initialiseFilesystem(): Promise<void> {
  */
 export default function mountCryptoFS(): Promise<void> {
     // GUARD: Skip mounting the encrypted filesystem if encryption is disabled
-    if (process.env.ENABLE_ENCRYPTION === 'false') {
+    if (process.env.ENABLE_ENCRYPTION === 'false' || os.platform() === 'win32') {
         return Promise.resolve();
     }
 
