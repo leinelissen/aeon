@@ -1,14 +1,26 @@
 import { spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import keytar from 'keytar';
 import crypto from 'crypto';
 import { app } from 'electron';
 
+// The location to the application data storage path
 const APP_DATA_PATH = process.env.NODE_ENV === 'production' ? app.getPath('userData') : app.getAppPath();
+
+// The path where the application reads the repository
 const REPOSITORY_PATH = path.resolve(APP_DATA_PATH, 'data', 'repository');
+
+// The path where the encrypted filesystem is stored
 const ENCRYPTED_FILESYSTEM_PATH = path.join(APP_DATA_PATH, 'data', 'encrypted_repository');
+
+// The service name for the key that is stored in the local keychain
 const SERVICE_NAME = 'aeon_encrypted_fs';
+
+const GOCRYPT_BINARY = os.platform() === 'win32'
+    ? path.join(app.getAppPath(), 'bin', 'cppcryptfs.exe')
+    : path.join(app.getAppPath(), 'bin', 'gocryptfs');
 
 // Adapted from https://github.com/rfjakob/gocryptfs/blob/master/Documentation/MANPAGE.md
 const ERROR_CODES = {
@@ -28,6 +40,12 @@ const ERROR_CODES = {
  */
 export function unmountFS(): Promise<void> {
     return new Promise((resolve, reject) => {
+        // GUARD: Unmounting the filesystem on Windows is unneccessary as the
+        // process is kept active in the background.
+        if (os.platform() === 'win32') {
+            return resolve();
+        }
+
         // Spawn umount process
         const ls = spawn('umount', [REPOSITORY_PATH]);
 
@@ -47,7 +65,16 @@ export function unmountFS(): Promise<void> {
  */
 export function validateFilesystem(): Promise<void> {
     return new Promise((resolve, reject) => {
-        const ls = spawn('gocryptfs', ['-info', ENCRYPTED_FILESYSTEM_PATH]);
+        // GUARD: Filesystems cannot be validated on Windows, so we take a
+        // best-of-luck approach and try to mount it anyway
+        if (os.platform() === 'win32') {
+            if (!fs.existsSync(ENCRYPTED_FILESYSTEM_PATH)) {
+                throw new Error('Encrypted directory does not exist')
+            }
+            return resolve();
+        }
+
+        const ls = spawn(GOCRYPT_BINARY, ['-info', ENCRYPTED_FILESYSTEM_PATH]);
 
         // Reject any errors directly
         ls.on('error', (err) => reject(err.toString()));
@@ -89,7 +116,7 @@ export async function initialiseFilesystem(): Promise<void> {
     await keytar.setPassword(SERVICE_NAME, 'encryption_key', password);
 
     return new Promise((resolve, reject) => {
-        const ls = spawn('gocryptfs', ['-init', ENCRYPTED_FILESYSTEM_PATH]);
+        const ls = spawn(GOCRYPT_BINARY, ['-init', ENCRYPTED_FILESYSTEM_PATH]);
 
         // Bind the handler for data that we can check some input events
         ls.stdout.on('data', data => {
@@ -120,6 +147,15 @@ export default function mountCryptoFS(): Promise<void> {
         return Promise.resolve();
     }
 
+    // GUARD: Throw an error when encryption is enabled on windows. cppcryptfs
+    // is downloaded as binary in the project and should be feature-compatible
+    // with gocryptfs. Yet, its CLI does not support initialising a filesystem.
+    // As soon as support is added for this, filesystem encryption can be
+    // supported on Windows as well. See https://github.com/bailey27/cppcryptfs/issues/108
+    if (os.platform() === 'win32') {
+        throw new Error('Encryption is not supported on win32');
+    }
+
     return new Promise(async (resolve, reject) => {
         // Do a cursory unmount of the filesystem in case any remnants remain
         await unmountFS();
@@ -135,7 +171,7 @@ export default function mountCryptoFS(): Promise<void> {
         const password = await keytar.findPassword(SERVICE_NAME);
 
         // Spawn the filesystem
-        const ls = spawn('gocryptfs', ['-fg', ENCRYPTED_FILESYSTEM_PATH, REPOSITORY_PATH]);
+        const ls = spawn(GOCRYPT_BINARY, ['-fg', ENCRYPTED_FILESYSTEM_PATH, REPOSITORY_PATH]);
 
         // Bind the handler for data that we can check some input events
         ls.stdout.on('data', data => {
