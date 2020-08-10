@@ -74,6 +74,16 @@ export async function initialiseFilesystem(): Promise<void> {
         await fs.promises.mkdir(REPOSITORY_PATH, { recursive: true });
     }
 
+    // GUARD: Check if REPOSITORY_PATH is empty, since it needs to be for the
+    // filesystem to be mounted. This may be a leftover issue if the repository
+    // is at some point converted to an encrypted version
+    const isDirEmpty = await fs.promises.readdir(REPOSITORY_PATH)
+        .then(files => files.length === 0);
+
+    if (!isDirEmpty) {
+        throw new Error('The repository path is not empty. Your encryption flag may be set incorrectly, or switching between an encrypted an unencrypted repository may have failed.');
+    }
+
     // Generate a random password and store it in the OS's native keychain
     const password = await crypto.randomBytes(64).toString('hex');
     await keytar.setPassword(SERVICE_NAME, 'encryption_key', password);
