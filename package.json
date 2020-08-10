@@ -10,7 +10,8 @@
         "make": "electron-forge make",
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts .",
-        "test": "mocha --exit --bail"
+        "test": "mocha --exit --bail",
+        "postinstall": "node ./.npm/install-binaries.js"
     },
     "keywords": [],
     "author": {
@@ -142,6 +143,7 @@
         "react-router-dom": "^5.2.0",
         "react-spring": "^8.0.27",
         "styled-components": "^5.1.1",
+        "tar-fs": "^2.1.0",
         "undux": "^5.2.0",
         "v8-compile-cache": "^2.1.1"
     }

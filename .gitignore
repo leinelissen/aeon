@@ -87,3 +87,6 @@ out/
 
 data/
 tmp/
+
+bin/*
+!bin/.gitkeep
