@@ -10,7 +10,7 @@
         "make": "electron-forge make",
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts .",
-        "test": "mocha"
+        "test": "mocha --exit --bail"
     },
     "keywords": [],
     "author": {
