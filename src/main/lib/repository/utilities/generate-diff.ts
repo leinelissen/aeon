@@ -1,8 +1,8 @@
 import { DiffType, DiffResult } from '../types';
 import generateParsedCommit from './generate-parsed-commit';
-import { WalkerEntry } from 'isomorphic-git';
 import { ProviderDatum } from 'main/providers/types';
 import deepEqual from 'deep-equal';
+import { TreeEntry } from 'nodegit';
 
 interface DataArrayDiff {
     added: ProviderDatum<unknown, unknown>[],
@@ -99,13 +99,13 @@ function diffDataArray(
  */
 async function generateDiff(
     filepath: string, 
-    ref: WalkerEntry, 
-    compared: WalkerEntry
+    ref: TreeEntry, 
+    compared: TreeEntry
 ): Promise<DiffResult<DataArrayDiff>> {
     // Parse all the data from the files for both commits
     const [ refData, comparedData ] = await Promise.all([
-        generateParsedCommit(filepath, [ref]),
-        generateParsedCommit(filepath, [compared]),
+        generateParsedCommit(filepath, ref),
+        generateParsedCommit(filepath, compared),
     ]);
 
     // GUARD: The parsed commit handler may reject any file under certain

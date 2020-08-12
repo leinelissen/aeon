@@ -65,7 +65,7 @@ export enum RepositoryEvents {
 
 export interface Commit {
     oid: string;
-    parents: NodeGit.Oid[];
+    parents: string[];
     message: string;
     author: {
         email: string;

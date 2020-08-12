@@ -1,6 +1,6 @@
 import generateDiff from './generate-diff';
-import { WalkerEntry } from 'isomorphic-git';
 import { DiffResult } from '../types';
+import { TreeEntry } from 'nodegit';
 
 
 /**
@@ -8,7 +8,7 @@ import { DiffResult } from '../types';
  * @param filepath The filepath for the currently handled file
  * @param entries The references to the walker functions for the individual trees
  */
-const diffMapFunction = async function(filepath: string, entries: Array<WalkerEntry>): Promise<DiffResult<unknown>> {
+const diffMapFunction = async function(filepath: string, entries: Array<TreeEntry>): Promise<DiffResult<unknown>> {
     // Extract entries and file contents
     const [ refTree, comparedTree ] = entries;
     

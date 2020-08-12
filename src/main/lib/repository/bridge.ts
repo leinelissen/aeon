@@ -47,7 +47,7 @@ class RepositoryBridge {
         
         switch(command) {
             case RepositoryCommands.LOG:
-                return this.repository.log(...args);
+                return this.repository.log();
             case RepositoryCommands.DIFF:
                 return this.repository.diff(...replaceArgs(args));
             case RepositoryCommands.STATUS:

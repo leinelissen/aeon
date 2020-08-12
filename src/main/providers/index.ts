@@ -122,7 +122,7 @@ class ProviderManager extends EventEmitter {
     /**
      * Save a bunch of files and auto-commit the result
      */
-    saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<number> => {
+    saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<void> => {
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
             // Prepend the supplied path with the key from the spcific service
@@ -133,18 +133,9 @@ class ProviderManager extends EventEmitter {
             await this.repository.add(location);
         }));
 
-        // Check if any files have been added
-        // TODO: Make the isomorphic-git status call Windows-aware
-        const status = await this.repository.status();
-        const amountOfFilesChanged = status.filter(
-            ([, , WorkdirStatus, StageStatus]) => WorkdirStatus !== 1 && StageStatus > 1
-        ).length;
+        await this.repository.commit(message);
 
-        if (amountOfFilesChanged) {
-            await this.repository.commit(message);
-        }
-
-        return amountOfFilesChanged;
+        // return amountOfFilesChanged;
     }
 
     /**
@@ -212,7 +203,6 @@ class ProviderManager extends EventEmitter {
                 if (differenceInDays(new Date(), status.completed) > ProviderClass.dataRequestIntervalDays) {
                     console.log(`Data request for ${key} was completed long enough to be purged`);
                     this.dispatchedDataRequests.delete(key);
-                    console.log(Array.from(this.dispatchedDataRequests.entries()));
                 } 
                     
                 return;
