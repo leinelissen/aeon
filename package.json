@@ -10,7 +10,8 @@
         "make": "electron-forge make",
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts .",
-        "test": "mocha --exit --bail"
+        "test": "mocha --exit --bail",
+        "rebuild": "electron-rebuild && node scripts/prepareNodeGit.js"
     },
     "keywords": [],
     "author": {
@@ -124,6 +125,8 @@
         "@openfonts/ibm-plex-mono_all": "^1.44.1",
         "@openfonts/ibm-plex-sans_all": "^1.44.1",
         "@popperjs/core": "^2.4.4",
+        "@types/nodegit": "^0.26.7",
+        "@zeit/webpack-asset-relocator-loader": "^0.7.2",
         "adm-zip": "^0.4.16",
         "cogo-toast": "^4.2.3",
         "date-fns": "^2.15.0",
@@ -135,6 +138,7 @@
         "keytar": "^6.0.1",
         "lodash": "^4.17.19",
         "node-fetch": "^2.6.0",
+        "nodegit": "^0.27.0",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "react-popper": "^2.2.3",
