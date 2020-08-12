@@ -1,8 +1,7 @@
 import path from 'path';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
-import git, { TREE, Walker, StatusRow } from 'isomorphic-git';
-import NodeGit from 'nodegit';
+import NodeGit, { TreeEntry } from 'nodegit';
 import { DiffResult, RepositoryEvents, Commit } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
@@ -177,17 +176,63 @@ class Repository extends EventEmitter {
     /**
      * Generate a fully parsed tree
      */
-    public async getParsedCommit(tree = TREE({ ref: 'HEAD' })): Promise<ProviderDatum<unknown, unknown>[]> {
-        // const data = await git.walk({ 
-        //     ...this.config,
-        //     trees: [tree],
-        //     map: generateParsedCommit,
-        // }) as ProviderDatum<unknown, unknown>[][];
+    public async getParsedCommit(ref = 'HEAD'): Promise<ProviderDatum<unknown, unknown>[]> {
+        // Retrieve the commit based on either a supplied OID or otherwise HEAD
+        const refCommit = ref === 'HEAD' 
+            ? await this.repository.getHeadCommit()
+            : await this.repository.getCommit(ref);
+        // Then retrieve the tree for the the retrieved commit
+        const refTree = await refCommit.getTree();
 
-        // return data.flat().sort((a: ProviderDatum<unknown>, b: ProviderDatum<unknown>): number => {
-        //     return a.type.localeCompare(b.type);
-        // });
-        return [];
+        // Then parse all entries through the generateParsedCommit function
+        return new Promise((resolve, reject) => {
+            // Set up a collector for all entries
+            // var data: ProviderDatum<unknown, unknown>[] = [];
+            let promises: Promise<ProviderDatum<unknown, unknown>[]>[] = [];
+
+            // Then create a nodegit walker object
+            const walker = refTree.walk();
+    
+            // Whenever we're done, we sort the data and pass it back
+            walker.on('end', async (entries: TreeEntry[]) => {
+                const data = await Promise.all(
+                    entries.map(async (entry) => {
+                        // GUARD: Only process files, as opposed to directories
+                        if (!entry.isFile()) {
+                            return;
+                        }
+            
+                        const parsedCommit = await generateParsedCommit(
+                            entry.path(),
+                            entry
+                        );
+        
+                        // GUARD: Only push data if the file is successfully parsed
+                        if (parsedCommit?.length) {
+                            return parsedCommit;
+                        }
+                    })
+                );
+
+                // Flatten array and filter any undefined values
+                const filteredData = data.flat().filter(d => !!d);
+
+                // Sort data by type, so that we can render it more easily in
+                // the UI
+                const sortedData = filteredData.sort((a: ProviderDatum<unknown>, b: ProviderDatum<unknown>): number => {
+                    return a.type.localeCompare(b.type);
+                });
+
+                // Then return it!
+                resolve(sortedData);
+            });
+    
+            // Also catch any errors
+            walker.on('error', reject);
+
+            // And fire off the walker!
+            walker.start();
+        });
     }
 
     /** 
