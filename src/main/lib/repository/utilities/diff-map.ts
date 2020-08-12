@@ -11,7 +11,7 @@ import { TreeEntry } from 'nodegit';
 const diffMapFunction = async function(filepath: string, entries: Array<TreeEntry>): Promise<DiffResult<unknown>> {
     // Extract entries and file contents
     const [ refTree, comparedTree ] = entries;
-    
+
     // Calculate the diff
     const diff = await generateDiff(filepath, comparedTree, refTree);
 

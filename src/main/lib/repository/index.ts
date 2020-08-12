@@ -104,34 +104,42 @@ class Repository extends EventEmitter {
      */
     public async diff(
         ref: string = 'HEAD', 
-        // comparedTree: string | Walker = '',
+        compared: string = null,
         options: { showUnchangedFiles?: boolean } = {}
     ): Promise<DiffResult<unknown>[]> {
+        // Retrieve the commit based on either a supplied OID or otherwise HEAD
         const refCommit = await (ref === 'HEAD' 
             ? this.repository.getHeadCommit()
             : this.repository.getCommit(ref));
+        // Then retrieve the tree for the the retrieved commit
         const refTree = await refCommit.getTree();
-        const comparedCommit = await refCommit.parent(1)
-            .catch(() => {});
-        const comparedTree = comparedCommit
-            ? await comparedCommit.getTree()
-            : await this.repository.getTree('4b825dc642cb6eb9a060e54bf8d69288fbee4904')
 
+        // Then retrieve either a supplied commit or alternatively the parent
+        // for the refCommit
+        const comparedCommit = compared
+            ? await this.repository.getCommit(compared)
+            : await refCommit.parent(0);
+        // We then retrieve the tree for said commit
+        const comparedTree = await comparedCommit.getTree();
 
-        // Calculate diff
-        // const diff: DiffResult<unknown>[] = await git.walk({ ...this.config, trees, map: diffMapFunction });
-
+        // First off, we have to retrieve the diff object for the compared tree
         const diff = await refTree.diff(comparedTree);
+        // Then, we'll retrieve the patch to signify the diff between the two
         const patches = await diff.patches();
+        // Lastly, we'll map over all the individual patches (files) for this diff
         const diffs = (await Promise.all(
             patches.map(async (patch) => {
+                // Retrieve the filepaths for both versions of the tree
                 const oldFile = patch.oldFile().path();
                 const newFile = patch.newFile().path();
+                
+                // Then retrieve the actual files
                 const [oldEntry, newEntry] = await Promise.all([
                     await comparedTree.getEntry(oldFile).catch(e => undefined),
-                    await comparedTree.getEntry(newFile).catch(e => undefined)
+                    await refTree.getEntry(newFile).catch(e => undefined)
                 ])
-                return diffMapFunction(newFile, [oldEntry, newEntry]);
+
+                return diffMapFunction(newFile, [newEntry, oldEntry]);
             })
         )).flat();
 
@@ -140,8 +148,6 @@ class Repository extends EventEmitter {
             // Loop through all files one-by-one
             return diffs.filter(file => file && file.hasChanges);
         }
-
-        console.log(diffs);
 
         // Lastly, remove any of the diffs that are empty
         return diffs.filter(file => !!file);

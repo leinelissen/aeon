@@ -117,8 +117,6 @@ class Log extends Component<StoreProps, State> {
             return <Loading />;
         }
 
-        console.log(log);
-
         return (
             <Container>
                 <MenuBar>

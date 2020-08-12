@@ -4,6 +4,8 @@ import parseSchema from './parse-schema';
 import { ProviderDatum } from 'main/providers/types';
 import { TreeEntry } from 'nodegit';
 
+const utfDecoder = new TextDecoder('utf-8');
+
 /**
  * A walker function that parses files from a single tree
  */
@@ -21,8 +23,11 @@ async function generateParsedCommit(
         return;
     }
 
+    // Retrieve the data from the tree
+    const data = await tree.getBlob();
+
     // We then parse the content and get the relevant parser
-    const object = JSON.parse(tree.toString());
+    const object = JSON.parse(utfDecoder.decode(data.content()));
     const parser = parsersByFile.get(filepath);
 
     // GUARD: If there's not parser for the file, there's nothing we can do
