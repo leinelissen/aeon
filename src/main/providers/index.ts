@@ -133,9 +133,17 @@ class ProviderManager extends EventEmitter {
             await this.repository.add(location);
         }));
 
-        await this.repository.commit(message);
+        // Retrieve repository status and check if any files have actually changed
+        const status = await this.repository.status();
+        const hasChangedFiles = status.length;
+        
+        // GUARD: If no files have changed, it is no longer neccessary to create
+        // a new commit.
+        if (!hasChangedFiles) {
+            return;
+        }
 
-        // return amountOfFilesChanged;
+        await this.repository.commit(message);
     }
 
     /**
