@@ -108,9 +108,9 @@ class Repository extends EventEmitter {
         options: { showUnchangedFiles?: boolean } = {}
     ): Promise<DiffResult<unknown>[]> {
         // Retrieve the commit based on either a supplied OID or otherwise HEAD
-        const refCommit = await (ref === 'HEAD' 
-            ? this.repository.getHeadCommit()
-            : this.repository.getCommit(ref));
+        const refCommit = ref === 'HEAD' 
+            ? await this.repository.getHeadCommit()
+            : await this.repository.getCommit(ref);
         // Then retrieve the tree for the the retrieved commit
         const refTree = await refCommit.getTree();
 
@@ -118,9 +118,11 @@ class Repository extends EventEmitter {
         // for the refCommit
         const comparedCommit = compared
             ? await this.repository.getCommit(compared)
-            : await refCommit.parent(0);
+            : await refCommit.parent(0).catch(() => {});
         // We then retrieve the tree for said commit
-        const comparedTree = await comparedCommit.getTree();
+        const comparedTree = comparedCommit
+            ? await comparedCommit.getTree()
+            : await this.repository.getTree(EMPTY_REPO_HASH);
 
         // First off, we have to retrieve the diff object for the compared tree
         const diff = await refTree.diff(comparedTree);
@@ -240,7 +242,9 @@ class Repository extends EventEmitter {
         RepositoryBridge.send(RepositoryEvents.NEW_COMMIT);
     }
 
-    public status = (args: { [key: string]: any } = {}): Promise<StatusRow[]> => git.statusMatrix({ ...this.config, ...args });
+    public status(args: { [key: string]: any } = {}): Promise<NodeGit.StatusFile[]> {
+        return this.repository.getStatus();
+    }
     
     public readFile = (filePath: string): Promise<Buffer> => fs.promises.readFile(filePath);
 }
