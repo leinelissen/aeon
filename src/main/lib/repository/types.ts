@@ -1,4 +1,5 @@
 import { ProviderDatum } from 'main/providers/types';
+import type NodeGit from 'nodegit';
 
 export enum DiffType {
     // An object DiffType is the diff of an regular object
@@ -60,4 +61,15 @@ export enum RepositoryArguments {
 
 export enum RepositoryEvents {
     NEW_COMMIT,
+}
+
+export interface Commit {
+    oid: string;
+    parents: NodeGit.Oid[];
+    message: string;
+    author: {
+        email: string;
+        name: string;
+        when: number;
+    };
 }

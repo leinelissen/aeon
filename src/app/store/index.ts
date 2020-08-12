@@ -1,7 +1,6 @@
-import { ReadCommitResult } from 'isomorphic-git';
 import { createConnectedStore, Store, Effects } from 'undux'
 import persistStore, { retrievePersistedStore } from './persist';
-import { ExtractedDataDiff } from 'main/lib/repository/types';
+import { ExtractedDataDiff, Commit } from 'main/lib/repository/types';
 
 type State = {
     // Whether onboarding has been completed
@@ -13,7 +12,7 @@ type State = {
     // A collection of events used for gauging usage of the application
     telemetry: any[];
     //
-    newCommit?: ReadCommitResult & {
+    newCommit?: Commit & {
         diff: ExtractedDataDiff
     };
     // The revision number for the data structure of the store. This helps track

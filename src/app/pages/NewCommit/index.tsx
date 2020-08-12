@@ -26,9 +26,8 @@ import DataType from 'app/utilities/DataType';
 import Code from 'app/components/Code';
 import TutorialOverlay from './components/TutorialOverlay';
 import { TextInput, Label } from 'app/components/Input';
-import { CommitObject, ReadCommitResult } from 'isomorphic-git';
 import Store, { StoreProps } from 'app/store';
-import { ExtractedDataDiff } from 'main/lib/repository/types';
+import { ExtractedDataDiff, Commit } from 'main/lib/repository/types';
 
 type GroupedData =  { [key: string]: ProviderDatum<string, ProvidedDataTypes>[] };
 type DeletedData = { [key: string]: number[] };
@@ -125,21 +124,15 @@ class NewCommit extends Component<RouteComponentProps & StoreProps, State> {
         );
 
         // Then we'll construct a commit object that can be easily displayed in the log screen
-        const commit: ReadCommitResult & { diff: ExtractedDataDiff } = { 
+        const commit: Commit & { diff: ExtractedDataDiff } = { 
             oid: 'new-commit',
-            commit: {
-                message: newCommitMessage,
-                author: {
-                    timestamp: Math.floor(new Date().getTime() / 1000),
-                    name: undefined,
-                    email: undefined,
-                    timezoneOffset: undefined,
-                },
-                tree: null,
-                committer: null,
-                parent: null,
+            parents: [],
+            message: newCommitMessage,
+            author: {
+                when: Math.floor(new Date().getTime() / 1000),
+                name: undefined,
+                email: undefined,
             },
-            payload: null,
             diff: { 
                 deleted,
                 updated: [],

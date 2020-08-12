@@ -1,8 +1,9 @@
 import path from 'path';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
-import git, { Errors, ReadCommitResult, TREE, Walker, StatusRow } from 'isomorphic-git';
-import { DiffResult, RepositoryEvents } from './types';
+import git, { TREE, Walker, StatusRow } from 'isomorphic-git';
+import NodeGit from 'nodegit';
+import { DiffResult, RepositoryEvents, Commit } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
 import diffMapFunction from './utilities/diff-map';
@@ -25,7 +26,7 @@ class Repository extends EventEmitter {
      */
     config = {
         fs: fs,
-        dir: REPOSITORY_PATH,
+        dir: path.join(REPOSITORY_PATH, '.git'),
     }
 
     /**
@@ -36,30 +37,29 @@ class Repository extends EventEmitter {
     /**
      * The default author for all commits made
      */
-    author = {
-        name: 'Aeon',
-        email: 'aeon@codified.nl',
-    }
+    author = NodeGit.Signature.now(
+        'Aeon',
+        'aeon@codified.nl',
+    );
+
+    /**
+     * A reference to an instance of Nodegit's repository class
+     */
+    repository: NodeGit.Repository = null;
 
     constructor() {
         super();
 
-        // Attempt to log the repository commits
-        git.log(this.config)
-            .then((data) => { console.log('Successfully initiated existing repository at ', REPOSITORY_PATH); return data })
+        NodeGit.Repository.open(this.config.dir)
             .catch(e => {
-                // Catch errors
-                if (e instanceof Errors.NotFoundError) {
-                    // If the error is a HEAD not found error, the repository is
-                    // empty and thus we need to initialise it.
-                    return this.initialiseRepository();
-                } else {
-                    console.error('Unknown error!', e.constructor.name)
-                }
+                return this.initialiseRepository();
             })
-            .then(() => this.isInitialised = true)
-            .then(() => this.emit('ready'))
-            .then(console.log)
+            .then((repository) => {
+                this.repository = repository;
+                this.isInitialised= true;
+                this.emit('ready');
+                console.log('Repository was succesfully initiated at ', REPOSITORY_PATH);
+            })
             .catch(console.error);
     }
 
@@ -67,24 +67,31 @@ class Repository extends EventEmitter {
      * Initialise a repository if one doesn't exist already. Also add a base
      * files and commit, so that we can work from there.
      */
-    private async initialiseRepository(): Promise<ReadCommitResult | ReadCommitResult[]> {
+    private async initialiseRepository(): Promise<NodeGit.Repository> {
         console.log('Repository was not found, creating a new one');
 
         // First we'll initiate the repository
-        await git.init(this.config)
+        // await git.init(this.config)
+        const repository = await NodeGit.Repository.init(this.config.dir, 0);
 
         // Then we'll write a file to disk so that the repository is populated
         const readmePath = 'README.md';
         await fs.promises.writeFile(path.resolve(REPOSITORY_PATH, readmePath), Buffer.from('# Aeon Repository', 'utf8'));
 
         // And create a first commit with the file
-        await git.add({ ...this.config, filepath: readmePath });
-        await git.commit({ ...this.config, author: this.author, message: 'Initial commit' })
+        // await git.add({ ...this.config, filepath: readmePath });
+        // await git.commit({ ...this.config, author: this.author, message:
+        // 'Initial commit' })
+        const index = await repository.refreshIndex();
+        await index.addByPath(readmePath);
+        await index.write();
+        const oid = await index.writeTree();
+        await repository.createCommit('HEAD', this.author, this.author, 'Initial Commit', oid, []);
         
         console.log('Initiated new repository at ', REPOSITORY_PATH);
 
         // Then we return the commit log
-        return git.log(this.config);
+        return repository;
     }
 
     /**
@@ -179,14 +186,48 @@ class Repository extends EventEmitter {
     /** 
      * Expose a number of Git functions directly
     */
-    public add = (filepath: string, args: { [key: string]: any } = {}): Promise<void> => git.add({ ...this.config, filepath, ...args });
+    public async add(filepath: string): Promise<void> {
+        const index = await this.repository.refreshIndex();
+        await index.addByPath(filepath);
+    }
     
-    public log = (args: { [key: string]: any } = {}): Promise<ReadCommitResult[]> => git.log({ ...this.config, ...args });
+    public async log(): Promise<Commit[]> {
+        // Create new revwalk to gather all commits
+        const walker = NodeGit.Revwalk.create(this.repository);
+
+        // Start from HEAD and retrieve all commits
+        walker.pushHead();
+        const commits = await walker.getCommitsUntil(() => true) as NodeGit.Commit[];
+
+        return Promise.all(
+            commits.map(async (commit) => {
+                const author = commit.author();
+
+                return {
+                    oid: commit.sha(),
+                    message: commit.message(),
+                    author: {
+                        email: author.email(),
+                        name: author.name(),
+                        when: commit.time(),
+                    },
+                    parents: commit.parents(),
+                };
+            })
+        );
+    }
     
-    public commit = async (message: string, args: { [key: string]: any } = {}): Promise<string> => {
-        const result = await git.commit({ ...this.config, author: this.author, message, ...args });
+    public async commit(message: string): Promise<void> {
+        // Retrieve and write new index
+        const index = await this.repository.refreshIndex();
+        await index.write();
+        const oid = await index.writeTree();
+
+        // Create commit using new index
+        await this.repository.createCommit('HEAD', this.author, this.author, message, oid, []);
+
+        // Notify app of new commit
         RepositoryBridge.send(RepositoryEvents.NEW_COMMIT);
-        return result;
     }
 
     public status = (args: { [key: string]: any } = {}): Promise<StatusRow[]> => git.statusMatrix({ ...this.config, ...args });
