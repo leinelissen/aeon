@@ -21,12 +21,9 @@ const fs = ENABLE_ENCRYPTION ? new CryptoFs('password').init() : nonCryptoFs;
 
 class Repository extends EventEmitter {
     /**
-     * The default config arguments for isomorphic-git
+     * The repository path for nodegit
      */
-    config = {
-        fs: fs,
-        dir: path.join(REPOSITORY_PATH, '.git'),
-    }
+    dir = path.join(REPOSITORY_PATH, '.git');
 
     /**
      * Whether the git repository is ready for querying
@@ -50,7 +47,7 @@ class Repository extends EventEmitter {
     constructor() {
         super();
 
-        NodeGit.Repository.open(this.config.dir)
+        NodeGit.Repository.open(this.dir)
             .catch(e => {
                 return this.initialiseRepository();
             })
@@ -73,7 +70,7 @@ class Repository extends EventEmitter {
 
         // First we'll initiate the repository
         // await git.init(this.config)
-        const repository = await NodeGit.Repository.init(this.config.dir, 0);
+        const repository = await NodeGit.Repository.init(this.dir, 0);
 
         // Then we'll write a file to disk so that the repository is populated
         const readmePath = 'README.md';

@@ -3,7 +3,6 @@ import {
     ipcRenderer
 } from 'electron';
 import sourceMapSupport from 'source-map-support';
-import { WORKDIR, STAGE, TREE } from 'isomorphic-git';
 import store from 'main/store';
 
 declare global {
@@ -70,10 +69,5 @@ contextBridge.exposeInMainWorld(
             }
         },
         sourceMapSupport: sourceMapSupport,
-        git: {
-            TREE: TREE,
-            WORKDIR: WORKDIR,
-            STAGE: STAGE,
-        },
     },
-    );
+);
