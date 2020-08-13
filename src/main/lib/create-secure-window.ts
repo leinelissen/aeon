@@ -15,7 +15,7 @@ interface Params {
  * @param options An optional options object that should be passed to the
  * BrowserWindow constructor. This may not contain webPreferences
  */
-function createSecureWindow(params: Params) {
+function createSecureWindow(params: Params): BrowserWindow {
     const { key, origin, options = {} } = params;
 
     // GUARD: webPreferences are off-limits
@@ -65,9 +65,9 @@ function createSecureWindow(params: Params) {
  * @param fn The function that needs the window object
  */
 export function withSecureWindow<U>(
-        params: Params,
-        fn: (window: BrowserWindow) => Promise<U>,
-    ): Promise<U> {
+    params: Params,
+    fn: (window: BrowserWindow) => Promise<U>,
+): Promise<U> {
     // Create new Window with the given parameters
     const window = createSecureWindow(params);
 

@@ -128,29 +128,36 @@ class DataType {
      * Convert the datum provided by a data extraction diff into a string
      * @param datum ProviderDatum
      */
-    static toString(datum: ProviderDatum<unknown, unknown>) {
+    static toString(datum: ProviderDatum<unknown, unknown>): JSX.Element | string {
         switch (datum.type) {
-            case ProvidedDataTypes.PHOTO:
+            case ProvidedDataTypes.PHOTO: {
                 const { data: photo } = datum as Photo;   
                 return <img src={photo.url} />;
-            case ProvidedDataTypes.ADDRESS:
+            }
+            case ProvidedDataTypes.ADDRESS: {
                 const { data: address } = datum as Address;   
                 return `${address.street} ${address.number} ${address.state && address.state + '\n'}`;
-            case ProvidedDataTypes.JOIN_DATE:
+            }
+            case ProvidedDataTypes.JOIN_DATE: {
                 const { timestamp } = datum as ProviderDatum<Date, unknown>;
                 return timestamp.toLocaleString();
-            case ProvidedDataTypes.PRIVACY_SETTING:
+            }
+            case ProvidedDataTypes.PRIVACY_SETTING: {
                 const { data: setting } = datum as PrivacySetting;
                 return `${setting.key}: ${setting.value}`;
-            case ProvidedDataTypes.LOGIN_INSTANCE:
+            }
+            case ProvidedDataTypes.LOGIN_INSTANCE: {
                 const { data: instance } = datum as LoginInstance;
                 return new Date(instance * 1000).toLocaleString();
-            case ProvidedDataTypes.PROFILE_PICTURE:
+            }
+            case ProvidedDataTypes.PROFILE_PICTURE: {
                 const { data: src } = datum as ProfilePicture;
                 return <img src={src} />;
-            case ProvidedDataTypes.SESSION:
+            }
+            case ProvidedDataTypes.SESSION: {
                 const { data: session } = datum as Session;
                 return `${session?.user_agent}, ${session?.ip_address} at ${session?.timestamp}`;
+            }
             case ProvidedDataTypes.EMAIL:
             case ProvidedDataTypes.FIRST_NAME:
             case ProvidedDataTypes.LAST_NAME:
@@ -174,7 +181,7 @@ class DataType {
             case ProvidedDataTypes.SEARCH_QUERY:
             case ProvidedDataTypes.POST_SEEN:
             default:
-                return datum.data;
+                return datum.data as string;
         }
     }
 }

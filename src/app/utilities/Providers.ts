@@ -1,4 +1,4 @@
-import { ProviderCommands, DataRequestStatus, Provider, ProviderEvents } from 'main/providers/types';
+import { ProviderCommands, DataRequestStatus, ProviderEvents } from 'main/providers/types';
 import { faInstagram, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faSquare } from '@fortawesome/pro-light-svg-icons';
 import { IpcRendererEvent } from 'electron';

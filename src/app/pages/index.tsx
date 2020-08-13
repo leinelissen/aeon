@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Route, Redirect } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import Onboarding from './Onboarding';
 import Log from './Log';
 import NewCommit from './NewCommit';

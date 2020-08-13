@@ -60,7 +60,7 @@ class NewCommit extends Component<RouteComponentProps & StoreProps, State> {
 
     async componentDidMount(): Promise<void> {
         // Retrieved all data for this commit from the repository
-        const data = await Repository.parsedCommit() as ProviderDatum<string, any>[];
+        const data = await Repository.parsedCommit() as ProviderDatum<string, ProvidedDataTypes>[];
         
         // Then sort the data into their respective categories
         const groupedData = data.reduce((accumulator: GroupedData, datum): GroupedData => {

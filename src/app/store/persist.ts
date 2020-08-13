@@ -1,4 +1,5 @@
-import { StoreDefinition, Store, Effects } from 'undux';
+import { StoreDefinition, Effects } from 'undux';
+import { State } from '.';
 
 /**
  * Persists and updates to the store via ElectronStore and reads persisted data
@@ -6,7 +7,7 @@ import { StoreDefinition, Store, Effects } from 'undux';
  * renderer process cannot access the filesystem
  */
 
-function persistStore<State extends Object>() {
+function persistStore(): Effects<State> {
     const withStore: Effects<State> = (store): StoreDefinition<State> => {
         store.onAll().subscribe(() => {
             window.api.store.persist(store.getState());
@@ -21,8 +22,8 @@ function persistStore<State extends Object>() {
 /**
  * Reads the persisted data from the store
  */
-export function retrievePersistedStore<State>(initialState: State): State {
-    return (window.api.store.retrieve() as State) || initialState;
+export function retrievePersistedStore(initialState: State): State {
+    return window.api.store.retrieve() || initialState;
 }
 
 export default persistStore;

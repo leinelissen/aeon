@@ -37,7 +37,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
 
     sendAllDataRequests = async () => {
         this.setState({ isLoading: true });
-        const res = await Providers.dispatchDataRequestToAll();
+        await Providers.dispatchDataRequestToAll();
         this.setState({ isLoading: false, page: 2 });
     }
 
@@ -49,8 +49,8 @@ class TutorialOverlay extends Component<StoreProps, State> {
                 return (
                     <>
                         <H2>How does this thing work?</H2>
-                        <p>First of all, thank you for using Aeon! Now that your account is setup, we'll guide you through what to expect. </p>
-                        <p>Aeon will gather data from the service you have provided your credentials for. Let's get your first batch of data.</p>
+                        <p>First of all, thank you for using Aeon! Now that your account is setup, we&apos;ll guide you through what to expect. </p>
+                        <p>Aeon will gather data from the service you have provided your credentials for. Let&apos;s get your first batch of data.</p>
                         <Button
                             icon={faArrowDown}
                             loading={isLoading} 
@@ -67,7 +67,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                     <>
                         <H2>✅ First pieces of data</H2>
                         <p>All right! You retrieved your first pieces of data. This process will happen in the background from now on. This means that occasionally, you may get a pop-up to enter your credentials. This is to check for updates to your data. If you want to know any update status, find the bar on the bottom.</p>
-                        <p>Before we dive in, there's another type of data we need to tell you about. We just retrieved all the data you can normally access. However, services may save additional data to which you have no direct access (such as IP addresses). We can access this data through starting a <i>data request</i>.</p>
+                        <p>Before we dive in, there&apos;s another type of data we need to tell you about. We just retrieved all the data you can normally access. However, services may save additional data to which you have no direct access (such as IP addresses). We can access this data through starting a <i>data request</i>.</p>
                         <p>Note: you may receive an email about this. This is normal.</p>
                         <Button
                             icon={faEnvelope}
@@ -84,7 +84,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                 return (
                     <>
                         <H2>✅ Your first data request!</H2>
-                        <p>Great! First data request on the way. Do note that since this request needs to be processed on your platforms' side, it may take some time to complete. While you sit and relax, Aeon will check on it in the background and let you know when it is completed.</p>
+                        <p>Great! First data request on the way. Do note that since this request needs to be processed on your platforms&apos; side, it may take some time to complete. While you sit and relax, Aeon will check on it in the background and let you know when it is completed.</p>
                         <p></p>
                         <Button
                             icon={faArrowRight}
@@ -99,10 +99,10 @@ class TutorialOverlay extends Component<StoreProps, State> {
             case 3:
                 return (
                     <>
-                        <H2>🕵️‍♂️ Let's have a look at your data!</H2>
-                        <p>This is how all your data gets here in the first place. Now that we've gathered it all (with some coming later), let's have a look.</p>
-                        <p>On the left, you'll find a timeline of updates. Clicking through them shows what's changed over time. The right side shows you the specifics of what was added and removed.</p>
-                        <p>When you're done checking out your data, find the "Create a new Identity" button and click it to see how Aeon helps you change your identity.</p>
+                        <H2>🕵️‍♂️ Let&apos;s have a look at your data!</H2>
+                        <p>This is how all your data gets here in the first place. Now that we&apos;ve gathered it all (with some coming later), let&apos;s have a look.</p>
+                        <p>On the left, you&apos;ll find a timeline of updates. Clicking through them shows what&apos;s changed over time. The right side shows you the specifics of what was added and removed.</p>
+                        <p>When you&apos;re done checking out your data, find the &lsquo;Create a new Identity&rsquo; button and click it to see how Aeon helps you change your identity.</p>
                         <Button
                             icon={faCheck}
                             onClick={this.done}

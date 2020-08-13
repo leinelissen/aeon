@@ -14,7 +14,7 @@ class PersistedMap<K, V> extends Map<K, V> {
         this.isInitialised = true;
     }
 
-    set(key: K, value: V) {
+    set(key: K, value: V): this {
         const ret = super.set(key, value);
 
         if (this.isInitialised) {
@@ -24,7 +24,7 @@ class PersistedMap<K, V> extends Map<K, V> {
         return ret;
     }
 
-    toString() {
+    toString(): string {
         const obj = Array.from(this.keys()).map((key) => {
             return { key, value: this.get(key) };
         });

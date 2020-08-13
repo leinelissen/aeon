@@ -39,14 +39,15 @@ jobs:
           npm ci
           node scripts/prepareNodeGit.js
 
+      - name: Lint
+        run: npm run lint
+
       - name: Compile
-        run: |
-          npm run make
+        run: npm run make
 
       - name: Test
         if: runner.os == 'Windows' || runner.os == 'macOS'
-        run: |
-          npm test
+        run: npm test
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v1

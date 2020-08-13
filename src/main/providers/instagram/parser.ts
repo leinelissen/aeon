@@ -1,4 +1,12 @@
-import { ProvidedDataTypes, ProviderParser, Follower, AccountFollowing, Photo, JoinDate, PrivacySetting, PostSeen } from '../types';
+import {
+    ProvidedDataTypes,
+    ProviderParser,
+    Follower,
+    AccountFollowing,
+    Photo,
+    PrivacySetting,
+    PostSeen
+} from '../types';
 import { parseISO } from 'date-fns';
 import { objectToKeyValueTransformer } from 'main/lib/map-object-to-key-value';
 import { REPOSITORY_PATH } from 'main/lib/repository';
@@ -21,7 +29,8 @@ const parsers: ProviderParser[] = [
             {
                 type: ProvidedDataTypes.SESSION,
                 key: 'login_history',
-                transformer: (data: any[]) => data.map(d => ({ data: d })),
+                // eslint-disable-next-line
+                transformer: (data: any[]): (Array<{ data: any }>) => data.map(d => ({ data: d })),
             },
         ],
     },
@@ -144,7 +153,8 @@ const parsers: ProviderParser[] = [
             {
                 key: 'date_joined',
                 type: ProvidedDataTypes.JOIN_DATE,
-                transformer: (date: string) => ({ timestamp: parseISO(date) }),
+                // eslint-disable-next-line
+                transformer: (date: string): any => ({ timestamp: parseISO(date) }),
             }, 
             {
                 key: 'email',

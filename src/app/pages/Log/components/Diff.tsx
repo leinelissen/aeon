@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { DiffResult, DiffType, ExtractedDataDiff, ObjectChange, Commit } from 'main/lib/repository/types';
+import { DiffResult, ExtractedDataDiff, Commit } from 'main/lib/repository/types';
 import Repository from 'app/utilities/Repository';
 import styled from 'styled-components';
 import DataType from 'app/utilities/DataType';

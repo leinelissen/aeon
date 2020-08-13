@@ -17,6 +17,7 @@ class ProviderBridge {
         ipcMain.handle(channelName, this.handleMessage);
     }
 
+    // eslint-disable-next-line
     private handleMessage = async (event: IpcMainInvokeEvent, command: number, ...args: any[]): Promise<any> => {
         // GUARD: Check if the repository is initialised. If not, defer to the
         // messagecache, so that it can be injected later.

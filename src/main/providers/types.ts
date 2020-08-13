@@ -1,5 +1,3 @@
-import { BrowserWindow } from 'electron';
-
 export interface ProviderFile {
     filepath: string;
     data: Buffer | string;
@@ -176,6 +174,7 @@ export type DateOfBirth = ProviderDatum<Date, ProvidedDataTypes.DATE_OF_BIRTH>;
 export type JoinDate = ProviderDatum<Date, ProvidedDataTypes.JOIN_DATE>;
 export type SearchQuery = ProviderDatum<string, ProvidedDataTypes.SEARCH_QUERY>;
 export type PostSeen = ProviderDatum<string, ProvidedDataTypes.POST_SEEN>;
+// eslint-disable-next-line
 export type PrivacySetting = ProviderDatum<{ key: string; value: any }, ProvidedDataTypes.PRIVACY_SETTING>;
 export type UploadedContact = ProviderDatum<unknown, ProvidedDataTypes.UPLOADED_CONTACT>;
 type SessionData = {
@@ -202,6 +201,7 @@ export interface ProviderParser {
         type: ProvidedDataTypes
         // An optional transformer that is used to translate complex objects
         // into the required shape
+        // eslint-disable-next-line
         transformer?(object: unknown): Partial<ProviderDatum<any, any>> | Partial<ProviderDatum<any, any>>[];
         // transformer?: (obj: any) => any | any[];
     }[]

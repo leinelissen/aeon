@@ -1,5 +1,4 @@
 import { ProviderDatum } from 'main/providers/types';
-import type NodeGit from 'nodegit';
 
 export enum DiffType {
     // An object DiffType is the diff of an regular object
@@ -15,7 +14,7 @@ export enum DiffType {
     TEXT,
 }
 
-export interface ObjectChange<O = object> {
+export interface ObjectChange<O = Record<string, unknown>> {
     added: O;
     deleted: O;
     updated: O;

@@ -1,4 +1,3 @@
-import path from 'path';
 import Instagram from './instagram/parser';
 import { ProviderParser } from './types';
 

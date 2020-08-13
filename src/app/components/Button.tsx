@@ -1,11 +1,11 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import theme from 'app/styles/theme';
 import { Ball } from './Loading';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
-interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
     backgroundColor?: string;
     fullWidth?: boolean;
     color?: string;

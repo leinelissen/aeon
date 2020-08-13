@@ -5,6 +5,7 @@ import { ProviderDatum } from 'main/providers/types';
  * as { key: key, value: value }[].
  * @param obj 
  */
+// eslint-disable-next-line
 function mapObjectToKeyValue(obj: { [key: string]: any }): { key: any, value: any }[] {
     return Object.keys(obj).map(key => ({
         key,
@@ -17,6 +18,7 @@ function mapObjectToKeyValue(obj: { [key: string]: any }): { key: any, value: an
  * object to array with key and value keys.
  * @param obj 
  */
+// eslint-disable-next-line
 export function objectToKeyValueTransformer(obj: { [key: string]: any }): Partial<ProviderDatum<{ key: any, value: any}, any>>[] {
     return mapObjectToKeyValue(obj)
         .map((data) => ({

@@ -1,3 +1,3 @@
-// import 'main/lib/map-map';
+/* eslint-disable */
 // @ts-ignore
 global = globalThis;

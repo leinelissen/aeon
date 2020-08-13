@@ -1,4 +1,4 @@
-import React, { useCallback, FC, ReactNode } from 'react';
+import React, { useCallback, HTMLAttributes, PropsWithChildren } from 'react';
 import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
 import styled, { css } from 'styled-components';
 import theme from 'app/styles/theme';
@@ -55,7 +55,7 @@ export const SubHeading = styled(RowHeading)`
     color: rgba(0, 0, 0, 0.4);
 `;
 
-interface ListButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface ListButtonProps extends HTMLAttributes<HTMLButtonElement> {
     active?: boolean;
     disabled?: boolean;
     deleted?: boolean;
@@ -112,14 +112,14 @@ export const MarginLeft = styled.span`
     margin-left: 16px;
 `;
 
-const ListButton: FC<ListButtonProps> = ({ children, ...props }) => {
+function ListButton({ children, ...props }: PropsWithChildren<ListButtonProps>) {
     return (
         <StyledListButton {...props}>
             <>
                 <IconWrapper>
                     {props.deleted ? 
                         <FontAwesomeIcon icon={faMinus} fixedWidth style={{ color: theme.colors.red }} />
-                    : <EmptyIcon />}
+                        : <EmptyIcon />}
                 </IconWrapper>
                 {children}
             </>

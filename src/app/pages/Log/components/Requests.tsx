@@ -1,6 +1,6 @@
-import React, { Component, FunctionComponent, useCallback } from 'react';
+import React, { Component, useCallback, PropsWithChildren } from 'react';
 import Loading, { Ball } from 'app/components/Loading';
-import { DataRequestStatus, ProviderEvents, Provider } from 'main/providers/types';
+import { DataRequestStatus, ProviderEvents } from 'main/providers/types';
 import Providers from 'app/utilities/Providers';
 import styled, { css } from 'styled-components';
 import theme from 'app/styles/theme';
@@ -64,7 +64,7 @@ interface ClickableRequestProps extends Omit<React.HTMLAttributes<HTMLButtonElem
     onClick: (provider?: string) => void;
 }
 
-const ClickableRequest: FunctionComponent<ClickableRequestProps> = (props): JSX.Element => {
+function ClickableRequest(props: PropsWithChildren<ClickableRequestProps>): JSX.Element {
     const handleClick = useCallback(() => {
         return props.onClick(props.provider);
     }, [props.onClick, props.provider]);
@@ -76,7 +76,7 @@ const ClickableRequest: FunctionComponent<ClickableRequestProps> = (props): JSX.
     );
 }
 
-class Requests extends Component<{}, State> {
+class Requests extends Component<unknown, State> {
     state: State = {
         dataRequests: null,
         checking: false,
@@ -173,16 +173,16 @@ class Requests extends Component<{}, State> {
                                         </ClickableRequest>
                                     </HoverArea>
                                     <Tooltip placement="top" active={isHovered}>
-                                    <>
-                                        {status?.dispatched
-                                            ? `A datarequest for ${key} was sent out ${formatDistanceToNow(status.dispatched)} ago.`
-                                            : undefined
-                                        }
-                                        {status?.completed
-                                            ? `It was completed ${formatDistanceToNow(status.completed)} ago.`
-                                            : undefined
-                                        }
-                                    </>
+                                        <>
+                                            {status?.dispatched
+                                                ? `A datarequest for ${key} was sent out ${formatDistanceToNow(status.dispatched)} ago.`
+                                                : undefined
+                                            }
+                                            {status?.completed
+                                                ? `It was completed ${formatDistanceToNow(status.completed)} ago.`
+                                                : undefined
+                                            }
+                                        </>
                                     </Tooltip>
                                 </>
                             )}

@@ -1,4 +1,5 @@
 interface Map<K, V> {
+    // eslint-disable-next-line
     map(callback: (value: V, key: K, index: number) => any): any
 }
 

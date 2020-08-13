@@ -1,4 +1,3 @@
-import path from 'path';
 import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns';
 import Instagram from './instagram';

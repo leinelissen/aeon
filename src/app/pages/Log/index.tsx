@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Repository from 'app/utilities/Repository';
 import styled from 'styled-components';
-import Commit, { StyledCommit } from './components/Commit';
+import Commit from './components/Commit';
 import Diff from './components/Diff';
 import Loading from 'app/components/Loading';
 import Button from 'app/components/Button';
@@ -107,7 +107,7 @@ class Log extends Component<StoreProps, State> {
     }
 
     render(): JSX.Element {
-        const { log, selectedCommit, updating } = this.state;
+        const { log, selectedCommit } = this.state;
         const newCommit = this.props.store.get('newCommit');
         const selectedTree = selectedCommit === 'new-commit'
             ? newCommit
@@ -144,7 +144,7 @@ class Log extends Component<StoreProps, State> {
                             active={'new-commit' === selectedCommit}
                             onClick={this.handleClick}
                         />
-                    : null}
+                        : null}
                     {log.map((entry, i) => (
                         <Commit
                             key={entry.oid}

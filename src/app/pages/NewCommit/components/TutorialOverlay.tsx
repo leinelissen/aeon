@@ -49,14 +49,14 @@ class TutorialOverlay extends Component<StoreProps, State> {
                     <>
                         <H2>Putting the I in Identity</H2>
                         <p>The thing with your identity, is that it is yours to change. The same goes for your data.</p>
-                        <p>If you wish to remove data from these platforms, click the delete button when inspecting a single data point. This change is then queued. If you wish to make the change permanent, click the "Save Identity" button in the top right.</p>
+                        <p>If you wish to remove data from these platforms, click the delete button when inspecting a single data point. This change is then queued. If you wish to make the change permanent, click the &quot;Save Identity&quot; button in the top right.</p>
                         <Button
                             icon={faBoxingGlove}
                             onClick={this.done}
                             data-telemetry-id="new-commit-tutorial-page-2"
                             fullWidth
                         >
-                            Let's get to it
+                            Let&apos;s get to it
                         </Button>
                     </>
                 )

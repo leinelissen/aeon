@@ -6,7 +6,6 @@ import Pages from 'app/pages';
 import styled, { StyleSheetManager } from 'styled-components';
 import Store from 'app/store';
 import { HashRouter } from 'react-router-dom';
-import Telemetry from 'app/utilities/Telemetry';
 
 const Main = styled.main`
     /* padding-top: 40px; */

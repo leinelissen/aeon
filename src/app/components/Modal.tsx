@@ -1,5 +1,5 @@
-import React, { Component, useRef, useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component, useRef, useEffect, PropsWithChildren, HTMLAttributes } from 'react';
+import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { Transition, config } from 'react-spring/renderprops';
 import { GhostButton } from './Button';
@@ -48,7 +48,11 @@ const StyledDialog = styled.div`
     overflow-y: auto;
 `;
 
-const Dialog: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props) => {
+type DialogProps = PropsWithChildren<
+    HTMLAttributes<HTMLDivElement>
+>;
+
+function Dialog(props: DialogProps): JSX.Element {
     const { children, ...rest } = props;
     const ref = useRef<HTMLDivElement>();
 
@@ -58,7 +62,7 @@ const Dialog: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props) => {
 
     return (
         <StyledDialog  {...rest} ref={ref} tabIndex={0}>
-            {props.children}
+            {children}
         </StyledDialog>
     );
 }
@@ -74,26 +78,26 @@ const CloseButton = styled(GhostButton)`
 class Modal extends Component<Props> {
     element = document.getElementById('modal');
 
-    handleBlur = () => this.props.onRequestClose();
+    handleBlur = (): void => this.props.onRequestClose();
 
-    componentDidMount() {
+    componentDidMount(): void {
         document.addEventListener('keydown', this.handleKeyDown);
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         document.removeEventListener('keydown', this.handleKeyDown);
     }
 
-    handleKeyDown = (event: KeyboardEvent) => {
+    handleKeyDown = (event: KeyboardEvent): void => {
         if (event.key === 'Escape') {
             this.props.onRequestClose();
         }
     }
 
-    render() {
+    render(): JSX.Element {
         const { isOpen, onRequestClose, children } = this.props;
 
-        return ReactDOM.createPortal((
+        return createPortal((
             <Transition
                 items={isOpen}
                 from={{ transform: 'translate3d(0,-40px,0)', opacity: 0, backgroundOpacity: 0 }}

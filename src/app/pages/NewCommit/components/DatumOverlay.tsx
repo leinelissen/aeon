@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import Button, { GhostButton } from 'app/components/Button';
 import { ProviderDatum, ProvidedDataTypes } from 'main/providers/types';
 import styled from 'styled-components';
@@ -66,7 +66,6 @@ export const DetailListItem = styled.div`
 const DatumOverlay = (props: Props): JSX.Element => {
     const { 
         onClose: handleClose,
-        onModify: handleModify,
         onDelete: handleDelete,
         datum 
     } = props;

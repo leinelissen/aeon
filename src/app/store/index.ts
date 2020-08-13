@@ -1,8 +1,9 @@
 import { createConnectedStore, Store, Effects } from 'undux'
 import persistStore, { retrievePersistedStore } from './persist';
 import { ExtractedDataDiff, Commit } from 'main/lib/repository/types';
+import { Event } from 'app/utilities/Telemetry';
 
-type State = {
+export type State = {
     // Whether onboarding has been completed
     onboardingComplete: {
         initialisation: boolean;
@@ -10,7 +11,7 @@ type State = {
         newCommit: boolean;
     };
     // A collection of events used for gauging usage of the application
-    telemetry: any[];
+    telemetry: Event[];
     //
     newCommit?: Commit & {
         diff: ExtractedDataDiff
@@ -39,6 +40,6 @@ export type StoreEffects = Effects<State>;
 
 // Assign an explicit name to the component so that we can easily import it
 // later through Intellisense
-const Store = createConnectedStore(retrievePersistedStore(initialState), persistStore<State>());
+const Store = createConnectedStore(retrievePersistedStore(initialState), persistStore());
 
 export default Store;

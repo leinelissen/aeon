@@ -24,7 +24,7 @@ class CryptoFs {
         }
     }
 
-    public writeFile = (filepath: string, data: Uint8Array, opts?: {}): Promise<void> => {
+    public writeFile = (filepath: string, data: Uint8Array): Promise<void> => {
         return new Promise((resolve, reject) => {
             // Initialise the stream
             const stream = fs.createWriteStream(filepath);

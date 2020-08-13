@@ -2,11 +2,11 @@ import { ProviderFile, DataRequestProvider } from '../types';
 import crypto from 'crypto';
 import path from 'path';
 import fetch from 'node-fetch';
-import { BrowserWindow, app } from 'electron';
+import { app } from 'electron';
 import scrapingUrls from './urls.json';
 import AdmZip from 'adm-zip';
 import fs from 'fs';
-import createSecureWindow, { withSecureWindow } from 'main/lib/create-secure-window';
+import { withSecureWindow } from 'main/lib/create-secure-window';
 
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
@@ -185,7 +185,7 @@ class Instagram extends DataRequestProvider {
                 window.loadURL('https://www.instagram.com/download/request/');
             });
 
-            await new Promise(async (resolve) => {
+            await new Promise((resolve) => {
                 // Now we defer to the user to enter their credentials
                 window.webContents.once('did-navigate', resolve); 
                 window.webContents.executeJavaScript(`

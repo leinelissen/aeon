@@ -1,7 +1,16 @@
 import path from 'path';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
-import NodeGit, { TreeEntry } from 'nodegit';
+import {
+    TreeEntry,
+    Repository as NodeGitRepository,
+    Signature,
+    Index,
+    Revwalk,
+    Commit as NodeGitCommit,
+    Reference,
+    StatusFile
+} from 'nodegit';
 import { DiffResult, RepositoryEvents, Commit } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
@@ -33,7 +42,7 @@ class Repository extends EventEmitter {
     /**
      * The default author for all commits made
      */
-    author = NodeGit.Signature.now(
+    author = Signature.now(
         'Aeon',
         'aeon@codified.nl',
     );
@@ -41,14 +50,14 @@ class Repository extends EventEmitter {
     /**
      * A reference to an instance of Nodegit's repository class
      */
-    repository: NodeGit.Repository = null;
-    index: NodeGit.Index = null;
+    repository: NodeGitRepository = null;
+    index: Index = null;
 
     constructor() {
         super();
 
-        NodeGit.Repository.open(this.dir)
-            .catch(e => {
+        NodeGitRepository.open(this.dir)
+            .catch(() => {
                 return this.initialiseRepository();
             })
             .then(async (repository) => {
@@ -65,12 +74,12 @@ class Repository extends EventEmitter {
      * Initialise a repository if one doesn't exist already. Also add a base
      * files and commit, so that we can work from there.
      */
-    private async initialiseRepository(): Promise<NodeGit.Repository> {
+    private async initialiseRepository(): Promise<NodeGitRepository> {
         console.log('Repository was not found, creating a new one');
 
         // First we'll initiate the repository
         // await git.init(this.config)
-        const repository = await NodeGit.Repository.init(this.dir, 0);
+        const repository = await NodeGitRepository.init(this.dir, 0);
 
         // Then we'll write a file to disk so that the repository is populated
         const readmePath = 'README.md';
@@ -99,7 +108,7 @@ class Repository extends EventEmitter {
      * the previous commit.
      */
     public async diff(
-        ref: string = 'HEAD', 
+        ref = 'HEAD', 
         compared: string = null,
         options: { showUnchangedFiles?: boolean } = {}
     ): Promise<DiffResult<unknown>[]> {
@@ -114,7 +123,7 @@ class Repository extends EventEmitter {
         // for the refCommit
         const comparedCommit = compared
             ? await this.repository.getCommit(compared)
-            : await refCommit.parent(0).catch(() => {});
+            : await refCommit.parent(0).catch(() => null);
         // We then retrieve the tree for said commit
         const comparedTree = comparedCommit
             ? await comparedCommit.getTree()
@@ -133,8 +142,8 @@ class Repository extends EventEmitter {
                 
                 // Then retrieve the actual files
                 const [oldEntry, newEntry] = await Promise.all([
-                    await comparedTree.getEntry(oldFile).catch(e => undefined),
-                    await refTree.getEntry(newFile).catch(e => undefined)
+                    await comparedTree.getEntry(oldFile).catch((): null => null),
+                    await refTree.getEntry(newFile).catch((): null => null)
                 ])
 
                 return diffMapFunction(newFile, [newEntry, oldEntry]);
@@ -183,11 +192,7 @@ class Repository extends EventEmitter {
 
         // Then parse all entries through the generateParsedCommit function
         return new Promise((resolve, reject) => {
-            // Set up a collector for all entries
-            // var data: ProviderDatum<unknown, unknown>[] = [];
-            let promises: Promise<ProviderDatum<unknown, unknown>[]>[] = [];
-
-            // Then create a nodegit walker object
+            // Create a nodegit walker object
             const walker = refTree.walk();
     
             // Whenever we're done, we sort the data and pass it back
@@ -241,11 +246,11 @@ class Repository extends EventEmitter {
     
     public async log(): Promise<Commit[]> {
         // Create new revwalk to gather all commits
-        const walker = NodeGit.Revwalk.create(this.repository);
+        const walker = Revwalk.create(this.repository);
 
         // Start from HEAD and retrieve all commits
         walker.pushHead();
-        const commits = await walker.getCommitsUntil(() => true) as NodeGit.Commit[];
+        const commits = await walker.getCommitsUntil(() => true) as NodeGitCommit[];
 
         return Promise.all(
             commits.map(async (commit) => {
@@ -271,11 +276,11 @@ class Repository extends EventEmitter {
         const oid = await this.index.writeTree();
 
         // Retrieve the commit that is to serve as the parent commit
-        const head = await NodeGit.Reference.nameToId(this.repository, 'HEAD');
+        const head = await Reference.nameToId(this.repository, 'HEAD');
         const parent = await this.repository.getCommit(head);
 
         // Create commit using new index
-        const commit = await this.repository.createCommit('HEAD', this.author, this.author, message, oid, [parent]);
+        await this.repository.createCommit('HEAD', this.author, this.author, message, oid, [parent]);
 
         // Refresh index, just in case
         this.index = await this.repository.refreshIndex();
@@ -284,7 +289,7 @@ class Repository extends EventEmitter {
         RepositoryBridge.send(RepositoryEvents.NEW_COMMIT);
     }
 
-    public status(args: { [key: string]: any } = {}): Promise<NodeGit.StatusFile[]> {
+    public status(): Promise<StatusFile[]> {
         return this.repository.getStatus();
     }
     

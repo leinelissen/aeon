@@ -1,4 +1,3 @@
-import { ipcMain, BrowserWindow, Notification } from 'electron';
 import { NotificationTypes } from './types';
 import WindowStore from 'main/lib/window-store';
 

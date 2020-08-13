@@ -19,7 +19,7 @@ export class TooltipContainer extends PureComponent<TooltipContainerProps, State
         isHovered: false
     }
 
-    handleChange = (isHovered: boolean) => this.setState({ isHovered });
+    handleChange = (isHovered: boolean): void => this.setState({ isHovered });
 
     render(): ReactNode {
         return (
@@ -47,7 +47,7 @@ export class HoverArea extends PureComponent<HoverAreaProps, State> {
         this.props.onChange(true);
     }
 
-    handleMouseLeave = () => {
+    handleMouseLeave = (): void => {
         this.setState({ isHovered: false });
         this.props.onChange(false);
     }
@@ -174,7 +174,7 @@ export class Tooltip extends PureComponent<TooltipProps> {
                 leave={{ opacity: 0, top: -20 }}
                 config={config.stiff}
             >
-                {(show) => show && (({ opacity, top }) => (
+                {(show) => show && (({ opacity }) => (
                     <Popper {...props} modifiers={modifiers}>
                         {({ ref, style: popperStyles, placement, arrowProps }) => (
                             <Container 
@@ -187,7 +187,7 @@ export class Tooltip extends PureComponent<TooltipProps> {
                                     `,
                                 }}
                             >
-                                <>{this.props.children}</>
+                                <>{children}</>
                                 <Arrow ref={arrowProps.ref} style={arrowProps.style} data-placement={placement} />
                             </Container>
                         )}

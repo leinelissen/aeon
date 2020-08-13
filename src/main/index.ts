@@ -1,4 +1,5 @@
 import 'v8-compile-cache';
+// eslint-disable-next-line
 require('source-map-support').install();
 
 import './lib/map-map';

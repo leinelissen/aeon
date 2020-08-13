@@ -1,7 +1,4 @@
-import path from 'path';
-import Repository, { REPOSITORY_PATH } from 'main/lib/repository';
 import { ProviderDatum, ProviderParser } from 'main/providers/types';
-import parsers from 'main/providers/parsers';
 
 const decoder = new TextDecoder('utf-8');
 
@@ -12,7 +9,9 @@ const decoder = new TextDecoder('utf-8');
  * @param haystack The data which we need to sort through
  * @param needle The key we're looking for
  */
+// eslint-disable-next-line
 function recursivelyExtractData(haystack: {[key: string]: any}, needle: string): any[] {
+    // eslint-disable-next-line
     let data = [];
 
     // GUARD: If an array does happen to enter the function, we need to send the
@@ -70,6 +69,7 @@ function recursivelyExtractData(haystack: {[key: string]: any}, needle: string):
  * @param provider The provider for this specific set of schemas
  * @param schema A ProviderParser that gives the rules
  */
+// eslint-disable-next-line
 function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderParser): ProviderDatum<any, any>[] {
     const { source, provider } = parser;
 
@@ -84,7 +84,7 @@ function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderPar
     }
 
     // Now we can start parsing the file
-    return parser.schemas.map((schema): ProviderDatum<any, any> => {
+    return parser.schemas.map((schema): ProviderDatum<unknown, unknown> => {
         const { type, transformer, key } = schema;
         // We then recursively extract and possibly transform the data
         const extractedData = key ? recursivelyExtractData(object, key) : object;

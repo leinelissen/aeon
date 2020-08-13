@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import Store, { StoreProps } from 'app/store';
 import { withRouter, RouteComponentProps } from 'react-router';
 import Modal from 'app/components/Modal';
@@ -22,12 +22,17 @@ interface State {
     isOpen: boolean;
 }
 
+export interface Event {
+    event: string;
+    element: string;
+}
+
 class Telemetry extends Component<StoreProps & RouteComponentProps, State> {
     state = {
         isOpen: false,
     }
 
-    ref = React.createRef<HTMLTextAreaElement>();
+    ref = createRef<HTMLTextAreaElement>();
 
     componentDidMount() {
         document.addEventListener('click', this.handleClick);
@@ -39,7 +44,7 @@ class Telemetry extends Component<StoreProps & RouteComponentProps, State> {
         document.removeEventListener('keydown', this.handleKeyDown);
     }
 
-    createEvent = (data: Object) => {
+    createEvent = (data: Event) => {
         const { store, history } = this.props;
 
         store.set('telemetry')([

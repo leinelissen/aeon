@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Switch, useLocation } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
 import styled from 'styled-components';
@@ -8,7 +8,7 @@ export enum TransitionDirection {
     right = 'RIGHT'
 }
 
-const Transitions: Map<TransitionDirection, {}> = new Map([
+const Transitions: Map<TransitionDirection, unknown> = new Map([
     [TransitionDirection.left, {
         transform: 'translate3d(-100%,0,0)'
     }],
@@ -26,7 +26,7 @@ const Animated = styled(animated.div)`
 /**
  * A function that allows for transitions between route changes
  */
-const AnimatedSwitch: React.SFC = ({ children }): JSX.Element => {
+function AnimatedSwitch({ children }: PropsWithChildren<unknown>): JSX.Element {
     const location = useLocation();
 
     const transitions = useTransition(location, location => location.pathname, {
