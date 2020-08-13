@@ -16,33 +16,45 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
+
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
           node-version: 13.x
+
       - name: Install Build dependencies
         if: runner.os == 'Linux'
-        run: sudo apt install build-essential libssl-dev libkrb5-dev libc++-dev
+        run: sudo apt install libkrb5-dev
+
       - name: Install dependencies
+        env:
+          JOBS: 'max'
         run: |
           npm config set '@fortawesome:registry=https://npm.fontawesome.com/'
           npm config set '//npm.fontawesome.com/:_authToken' "${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}"
-          npm ci
+          npm ci --ignore-scripts
+          npm run rebuild
+          node scripts/prepareNodeGit.js
+
       - name: Compile
         run: |
           npm run make
+
       - name: Test
         if: runner.os == 'Windows' || runner.os == 'macOS'
         run: |
           npm test
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
           name: ${{ matrix.os }}
           path: out/make
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
