@@ -9,7 +9,7 @@
         "package": "electron-forge package",
         "make": "electron-forge make",
         "publish": "electron-forge publish",
-        "lint": "eslint --ext .ts .",
+        "lint": "eslint --ext .ts,.tsx .",
         "test": "mocha --exit --bail",
         "rebuild": "electron-rebuild && node scripts/prepareNodeGit.js"
     },
