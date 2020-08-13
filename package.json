@@ -11,7 +11,7 @@
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts,.tsx .",
         "test": "mocha --exit --bail",
-        "rebuild": "electron-rebuild && node scripts/prepareNodeGit.js"
+        "postinstall": "node scripts/prepareNodeGit.js"
     },
     "keywords": [],
     "author": {
@@ -80,7 +80,6 @@
         "@electron-forge/maker-squirrel": "^6.0.0-beta.52",
         "@electron-forge/maker-zip": "^6.0.0-beta.52",
         "@electron-forge/plugin-webpack": "^6.0.0-beta.52",
-        "@marshallofsound/webpack-asset-relocator-loader": "0.5.0",
         "@types/adm-zip": "^0.4.33",
         "@types/deep-equal": "^1.0.1",
         "@types/lodash": "^4.14.159",
@@ -126,7 +125,6 @@
         "@openfonts/ibm-plex-sans_all": "^1.44.1",
         "@popperjs/core": "^2.4.4",
         "@types/nodegit": "^0.26.7",
-        "@zeit/webpack-asset-relocator-loader": "^0.7.2",
         "adm-zip": "^0.4.16",
         "cogo-toast": "^4.2.3",
         "date-fns": "^2.15.0",
