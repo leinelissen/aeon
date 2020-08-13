@@ -114,12 +114,9 @@
         "typescript": "^3.9.7"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-pro": "^5.14.0",
         "@fortawesome/fontawesome-svg-core": "^1.2.30",
         "@fortawesome/free-brands-svg-icons": "^5.14.0",
-        "@fortawesome/pro-duotone-svg-icons": "^5.14.0",
         "@fortawesome/pro-light-svg-icons": "^5.14.0",
-        "@fortawesome/pro-regular-svg-icons": "^5.14.0",
         "@fortawesome/react-fontawesome": "^0.1.11",
         "@openfonts/ibm-plex-mono_all": "^1.44.1",
         "@openfonts/ibm-plex-sans_all": "^1.44.1",
