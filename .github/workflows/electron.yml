@@ -6,6 +6,8 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
+    env:
+      NPM_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
 
     strategy:
       matrix:
@@ -33,7 +35,6 @@ jobs:
       - name: Install dependencies
         env:
           JOBS: 'max'
-          NPM_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
         run: |
           npm ci
           node scripts/prepareNodeGit.js
