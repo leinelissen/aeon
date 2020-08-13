@@ -23,6 +23,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 13.x
+      - name: Install Build dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get install libkrb5 libpcre libpcreposic libk5crypto libcom_err pcre-config krb5-config
       - name: Install dependencies
         run: |
           npm config set '@fortawesome:registry=https://npm.fontawesome.com/'
