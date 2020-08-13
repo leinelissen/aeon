@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { DiffResult, DiffType, ExtractedDataDiff, ObjectChange } from 'main/lib/repository/types';
+import { DiffResult, DiffType, ExtractedDataDiff, ObjectChange, Commit } from 'main/lib/repository/types';
 import Repository from 'app/utilities/Repository';
 import styled from 'styled-components';
 import DataType from 'app/utilities/DataType';
@@ -8,12 +8,11 @@ import { ProviderDatum } from 'main/providers/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { H3, H5 } from 'app/components/Typography';
 import { Margin } from 'app/components/Utility';
-import { ReadCommitResult } from 'isomorphic-git';
 import { formatDistanceToNow } from 'date-fns';
 import Code from 'app/components/Code';
 
 interface Props {
-    commit: ReadCommitResult;
+    commit: Commit;
     diff?: ExtractedDataDiff;
 }
 
@@ -93,8 +92,8 @@ class Diff extends PureComponent<Props, State> {
         return (
             <Container>
                 <Margin>
-                    <H3>{commit.commit.message}</H3>
-                    Committed {formatDistanceToNow(new Date(commit.commit.author.timestamp * 1000))} ago
+                    <H3>{commit.message}</H3>
+                    Committed {formatDistanceToNow(new Date(commit.author.when))} ago
                 </Margin>
                 {diff.added.length ? (
                     <Code added>

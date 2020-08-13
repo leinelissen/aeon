@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Repository from 'app/utilities/Repository';
-import { ReadCommitResult } from 'isomorphic-git';
 import styled from 'styled-components';
 import Commit, { StyledCommit } from './components/Commit';
 import Diff from './components/Diff';
@@ -10,7 +9,7 @@ import Providers from 'app/utilities/Providers';
 import Requests from './components/Requests';
 import { Link } from 'react-router-dom';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
-import { RepositoryEvents } from 'main/lib/repository/types';
+import { RepositoryEvents, Commit as CommitType } from 'main/lib/repository/types';
 import { IpcRendererEvent } from 'electron';
 import MenuBar from 'app/components/MenuBar';
 import { H2, H3 } from 'app/components/Typography';
@@ -22,7 +21,7 @@ import TutorialOverlay from './components/TutorialOverlay';
 import Store, { StoreProps } from 'app/store';
 
 interface State {
-    log: ReadCommitResult[];
+    log: CommitType[];
     selectedCommit?: string;
     updating: boolean;
 }
@@ -146,7 +145,7 @@ class Log extends Component<StoreProps, State> {
                             onClick={this.handleClick}
                         />
                     : null}
-                    {log.map((entry: ReadCommitResult, i) => (
+                    {log.map((entry, i) => (
                         <Commit
                             key={entry.oid}
                             entry={entry}

@@ -1,6 +1,6 @@
-import { DiffResult, RepositoryCommands, RepositoryArguments, RepositoryEvents } from 'main/lib/repository/types';
+import { DiffResult, RepositoryCommands, RepositoryArguments, RepositoryEvents, Commit } from 'main/lib/repository/types';
 import { ProviderDatum } from 'main/providers/types';
-import { ReadCommitResult, StatusRow } from 'isomorphic-git';
+import type { StatusFile } from 'nodegit';
 import { faInstagram, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faSquare } from '@fortawesome/pro-light-svg-icons';
 import { IpcRendererEvent } from 'electron';
@@ -26,11 +26,11 @@ class Repository {
         return window.api.invoke(channel, RepositoryCommands.PARSED_COMMIT, tree);
     }
 
-    static log(): Promise<ReadCommitResult[]> {
+    static log(): Promise<Commit[]> {
         return window.api.invoke(channel, RepositoryCommands.LOG);
     }
 
-    static status(): Promise<StatusRow[]> {
+    static status(): Promise<StatusFile[]> {
         return window.api.invoke(channel, RepositoryCommands.STATUS);
     }
 

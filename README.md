@@ -24,7 +24,7 @@ npm start
 ```
 
 ## The Technical Stuff
-Aeon is an [Electron](https://www.electronjs.org/)-based app, a mature platform for building JavaScript applications on the desktop. It is backed by a locally encrypted Git repository, made available through use of the excellent [isomorphic-git](https://isomorphic-git.org/) package.
+Aeon is an [Electron](https://www.electronjs.org/)-based app, a mature platform for building JavaScript applications on the desktop. It is backed by a locally encrypted Git repository, made available through use of the excellent [nodegit](https://www.nodegit.org/) package.
 
 A custom and modular back-end allows for tracking and retrieving data from multiple sources. This is done through retrieval from an API, asynchronous data requests or a combination of both. Parser logic then allows for extracting common data types from the resulting JSON. 
 

@@ -4,7 +4,7 @@ const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
 
 module.exports = [
     new Dotenv(),
-    new ForkTsCheckerWebpackPlugin(),
+    // new ForkTsCheckerWebpackPlugin(),
     new CspHtmlWebpackPlugin({
         'script-src': ["'self'", ...process.env.NODE_ENV !== 'production' ? ["'unsafe-eval'"] : [] ],
         'style-src': ["'self'", "'unsafe-inline'"],

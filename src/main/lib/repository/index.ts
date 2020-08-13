@@ -1,8 +1,8 @@
 import path from 'path';
 import { app } from 'electron';
 import { EventEmitter } from 'events';
-import git, { Errors, ReadCommitResult, TREE, Walker, StatusRow } from 'isomorphic-git';
-import { DiffResult, RepositoryEvents } from './types';
+import NodeGit, { TreeEntry } from 'nodegit';
+import { DiffResult, RepositoryEvents, Commit } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
 import diffMapFunction from './utilities/diff-map';
@@ -21,12 +21,9 @@ const fs = ENABLE_ENCRYPTION ? new CryptoFs('password').init() : nonCryptoFs;
 
 class Repository extends EventEmitter {
     /**
-     * The default config arguments for isomorphic-git
+     * The repository path for nodegit
      */
-    config = {
-        fs: fs,
-        dir: REPOSITORY_PATH,
-    }
+    dir = path.join(REPOSITORY_PATH, '.git');
 
     /**
      * Whether the git repository is ready for querying
@@ -36,30 +33,31 @@ class Repository extends EventEmitter {
     /**
      * The default author for all commits made
      */
-    author = {
-        name: 'Aeon',
-        email: 'aeon@codified.nl',
-    }
+    author = NodeGit.Signature.now(
+        'Aeon',
+        'aeon@codified.nl',
+    );
+
+    /**
+     * A reference to an instance of Nodegit's repository class
+     */
+    repository: NodeGit.Repository = null;
+    index: NodeGit.Index = null;
 
     constructor() {
         super();
 
-        // Attempt to log the repository commits
-        git.log(this.config)
-            .then((data) => { console.log('Successfully initiated existing repository at ', REPOSITORY_PATH); return data })
+        NodeGit.Repository.open(this.dir)
             .catch(e => {
-                // Catch errors
-                if (e instanceof Errors.NotFoundError) {
-                    // If the error is a HEAD not found error, the repository is
-                    // empty and thus we need to initialise it.
-                    return this.initialiseRepository();
-                } else {
-                    console.error('Unknown error!', e.constructor.name)
-                }
+                return this.initialiseRepository();
             })
-            .then(() => this.isInitialised = true)
-            .then(() => this.emit('ready'))
-            .then(console.log)
+            .then(async (repository) => {
+                this.repository = repository;
+                this.index = await repository.refreshIndex();
+                this.isInitialised= true;
+                this.emit('ready');
+                console.log('Repository was succesfully initiated at ', REPOSITORY_PATH);
+            })
             .catch(console.error);
     }
 
@@ -67,24 +65,31 @@ class Repository extends EventEmitter {
      * Initialise a repository if one doesn't exist already. Also add a base
      * files and commit, so that we can work from there.
      */
-    private async initialiseRepository(): Promise<ReadCommitResult | ReadCommitResult[]> {
+    private async initialiseRepository(): Promise<NodeGit.Repository> {
         console.log('Repository was not found, creating a new one');
 
         // First we'll initiate the repository
-        await git.init(this.config)
+        // await git.init(this.config)
+        const repository = await NodeGit.Repository.init(this.dir, 0);
 
         // Then we'll write a file to disk so that the repository is populated
         const readmePath = 'README.md';
         await fs.promises.writeFile(path.resolve(REPOSITORY_PATH, readmePath), Buffer.from('# Aeon Repository', 'utf8'));
 
         // And create a first commit with the file
-        await git.add({ ...this.config, filepath: readmePath });
-        await git.commit({ ...this.config, author: this.author, message: 'Initial commit' })
+        // await git.add({ ...this.config, filepath: readmePath });
+        // await git.commit({ ...this.config, author: this.author, message:
+        // 'Initial commit' })
+        const index = await repository.refreshIndex();
+        await index.addByPath(readmePath);
+        await index.write();
+        const oid = await index.writeTree();
+        await repository.createCommit('HEAD', this.author, this.author, 'Initial Commit', oid, []);
         
         console.log('Initiated new repository at ', REPOSITORY_PATH);
 
         // Then we return the commit log
-        return git.log(this.config);
+        return repository;
     }
 
     /**
@@ -94,52 +99,56 @@ class Repository extends EventEmitter {
      * the previous commit.
      */
     public async diff(
-        refTree: string | Walker = 'HEAD', 
-        comparedTree: string | Walker = '',
+        ref: string = 'HEAD', 
+        compared: string = null,
         options: { showUnchangedFiles?: boolean } = {}
     ): Promise<DiffResult<unknown>[]> {
-        let previousTree;
+        // Retrieve the commit based on either a supplied OID or otherwise HEAD
+        const refCommit = ref === 'HEAD' 
+            ? await this.repository.getHeadCommit()
+            : await this.repository.getCommit(ref);
+        // Then retrieve the tree for the the retrieved commit
+        const refTree = await refCommit.getTree();
 
-        // First we define the trees we want to traverse. The defaults are to
-        // look at HEAD, and compare it to the previous commit. Both defaults
-        // can be overwritten.
-        if (comparedTree === '') {
-            // Retrieve the Git log so that we can locate the r
-            const log = await git.log(this.config);
+        // Then retrieve either a supplied commit or alternatively the parent
+        // for the refCommit
+        const comparedCommit = compared
+            ? await this.repository.getCommit(compared)
+            : await refCommit.parent(0).catch(() => {});
+        // We then retrieve the tree for said commit
+        const comparedTree = comparedCommit
+            ? await comparedCommit.getTree()
+            : await this.repository.getTree(EMPTY_REPO_HASH);
 
-            if (refTree === 'HEAD') {
-                // If we're at HEAD, the previous commit is the last one
-                previousTree = typeof log[1] !== 'undefined' ? log[1].oid : EMPTY_REPO_HASH;
-            } else {
-                // If we're not, we need to find where the specified commit sits
-                // in the log.
-                const currentIndex = log.findIndex(obj => obj.oid === refTree);
+        // First off, we have to retrieve the diff object for the compared tree
+        const diff = await refTree.diff(comparedTree);
+        // Then, we'll retrieve the patch to signify the diff between the two
+        const patches = await diff.patches();
+        // Lastly, we'll map over all the individual patches (files) for this diff
+        const diffs = (await Promise.all(
+            patches.map(async (patch) => {
+                // Retrieve the filepaths for both versions of the tree
+                const oldFile = patch.oldFile().path();
+                const newFile = patch.newFile().path();
+                
+                // Then retrieve the actual files
+                const [oldEntry, newEntry] = await Promise.all([
+                    await comparedTree.getEntry(oldFile).catch(e => undefined),
+                    await refTree.getEntry(newFile).catch(e => undefined)
+                ])
 
-                // As soon as we know, we can find the previous commit by adding
-                // one to the index. If the index doesn't exist, we default to
-                // comparing to an empty repo.
-                previousTree = typeof log[currentIndex + 1] !== 'undefined' 
-                    ? log[currentIndex + 1].oid 
-                    : EMPTY_REPO_HASH;
-            }
-        }
-
-        // Now that all trees are setup, we pour it into the walk function
-        const trees = [
-            typeof refTree === 'string' ? TREE({ ref: refTree }) : refTree,
-            typeof comparedTree === 'string' ? TREE({ ref: comparedTree || previousTree }) : comparedTree
-        ];
-        
-        // Calculate diff
-        const diff: DiffResult<unknown>[] = await git.walk({ ...this.config, trees, map: diffMapFunction });
+                return diffMapFunction(newFile, [newEntry, oldEntry]);
+            })
+        )).flat();
 
         // Optionally remove all files from the diff without changes
         if (!options.showUnchangedFiles) {
             // Loop through all files one-by-one
-            return diff.filter(file => file.hasChanges);
+            return diffs.filter(file => file && file.hasChanges);
         }
 
-        return diff;
+        // Lastly, remove any of the diffs that are empty
+        return diffs.filter(file => !!file);
     }
 
     /**
@@ -164,32 +173,120 @@ class Repository extends EventEmitter {
     /**
      * Generate a fully parsed tree
      */
-    public async getParsedCommit(tree = TREE({ ref: 'HEAD' })): Promise<ProviderDatum<unknown, unknown>[]> {
-        const data = await git.walk({ 
-            ...this.config,
-            trees: [tree],
-            map: generateParsedCommit,
-        }) as ProviderDatum<unknown, unknown>[][];
+    public async getParsedCommit(ref = 'HEAD'): Promise<ProviderDatum<unknown, unknown>[]> {
+        // Retrieve the commit based on either a supplied OID or otherwise HEAD
+        const refCommit = ref === 'HEAD' 
+            ? await this.repository.getHeadCommit()
+            : await this.repository.getCommit(ref);
+        // Then retrieve the tree for the the retrieved commit
+        const refTree = await refCommit.getTree();
 
-        return data.flat().sort((a: ProviderDatum<unknown>, b: ProviderDatum<unknown>): number => {
-            return a.type.localeCompare(b.type);
+        // Then parse all entries through the generateParsedCommit function
+        return new Promise((resolve, reject) => {
+            // Set up a collector for all entries
+            // var data: ProviderDatum<unknown, unknown>[] = [];
+            let promises: Promise<ProviderDatum<unknown, unknown>[]>[] = [];
+
+            // Then create a nodegit walker object
+            const walker = refTree.walk();
+    
+            // Whenever we're done, we sort the data and pass it back
+            walker.on('end', async (entries: TreeEntry[]) => {
+                const data = await Promise.all(
+                    entries.map(async (entry) => {
+                        // GUARD: Only process files, as opposed to directories
+                        if (!entry.isFile()) {
+                            return;
+                        }
+            
+                        const parsedCommit = await generateParsedCommit(
+                            entry.path(),
+                            entry
+                        );
+        
+                        // GUARD: Only push data if the file is successfully parsed
+                        if (parsedCommit?.length) {
+                            return parsedCommit;
+                        }
+                    })
+                );
+
+                // Flatten array and filter any undefined values
+                const filteredData = data.flat().filter(d => !!d);
+
+                // Sort data by type, so that we can render it more easily in
+                // the UI
+                const sortedData = filteredData.sort((a: ProviderDatum<unknown>, b: ProviderDatum<unknown>): number => {
+                    return a.type.localeCompare(b.type);
+                });
+
+                // Then return it!
+                resolve(sortedData);
+            });
+    
+            // Also catch any errors
+            walker.on('error', reject);
+
+            // And fire off the walker!
+            walker.start();
         });
     }
 
     /** 
      * Expose a number of Git functions directly
     */
-    public add = (filepath: string, args: { [key: string]: any } = {}): Promise<void> => git.add({ ...this.config, filepath, ...args });
+    public async add(filepath: string): Promise<void> {
+        await this.index.addByPath(filepath);
+    }
     
-    public log = (args: { [key: string]: any } = {}): Promise<ReadCommitResult[]> => git.log({ ...this.config, ...args });
+    public async log(): Promise<Commit[]> {
+        // Create new revwalk to gather all commits
+        const walker = NodeGit.Revwalk.create(this.repository);
+
+        // Start from HEAD and retrieve all commits
+        walker.pushHead();
+        const commits = await walker.getCommitsUntil(() => true) as NodeGit.Commit[];
+
+        return Promise.all(
+            commits.map(async (commit) => {
+                const author = commit.author();
+
+                return {
+                    oid: commit.sha(),
+                    message: commit.message(),
+                    author: {
+                        email: author.email(),
+                        name: author.name(),
+                        when: commit.time() * 1000,
+                    },
+                    parents: commit.parents().map(oid => oid.tostrS()),
+                };
+            })
+        );
+    }
     
-    public commit = async (message: string, args: { [key: string]: any } = {}): Promise<string> => {
-        const result = await git.commit({ ...this.config, author: this.author, message, ...args });
+    public async commit(message: string): Promise<void> {
+        // Retrieve and write new index
+        await this.index.write();
+        const oid = await this.index.writeTree();
+
+        // Retrieve the commit that is to serve as the parent commit
+        const head = await NodeGit.Reference.nameToId(this.repository, 'HEAD');
+        const parent = await this.repository.getCommit(head);
+
+        // Create commit using new index
+        const commit = await this.repository.createCommit('HEAD', this.author, this.author, message, oid, [parent]);
+
+        // Refresh index, just in case
+        this.index = await this.repository.refreshIndex();
+
+        // Notify app of new commit
         RepositoryBridge.send(RepositoryEvents.NEW_COMMIT);
-        return result;
     }
 
-    public status = (args: { [key: string]: any } = {}): Promise<StatusRow[]> => git.statusMatrix({ ...this.config, ...args });
+    public status(args: { [key: string]: any } = {}): Promise<NodeGit.StatusFile[]> {
+        return this.repository.getStatus();
+    }
     
     public readFile = (filePath: string): Promise<Buffer> => fs.promises.readFile(filePath);
 }

@@ -2,13 +2,13 @@
 import styled, { css } from 'styled-components'
 import React, { Component } from 'react';
 import theme from 'app/styles/theme';
-import { ReadCommitResult } from 'isomorphic-git';
 import { Badge } from 'app/components/Typography';
 import { PullRight } from 'app/components/Utility';
+import { Commit as CommitType } from 'main/lib/repository/types';
 
 interface Props extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'onClick'> {
     onClick: (hash: string) => void;
-    entry: ReadCommitResult;
+    entry: CommitType;
     active?: boolean;
     latestCommit?: boolean;
 }
@@ -70,13 +70,13 @@ class Commit extends Component<Props> {
     }
 
     render(): JSX.Element {
-        const { entry: { commit }, active, latestCommit } = this.props;
+        const { entry, active, latestCommit } = this.props;
 
         return (
             <StyledCommit active={active} onClick={this.handleClick}>
                 <Timeline />
                 <Dot />
-                {commit.message}
+                {entry.message}
                 {latestCommit && <PullRight><Badge>Current Identity</Badge></PullRight>}
             </StyledCommit>
         )
