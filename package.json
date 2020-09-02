@@ -91,7 +91,7 @@
         "@types/react-router-dom": "^5.1.5",
         "@types/source-map-support": "^0.5.3",
         "@types/styled-components": "^5.1.2",
-        "@typescript-eslint/eslint-plugin": "^3.9.1",
+        "@typescript-eslint/eslint-plugin": "^4.0.1",
         "@typescript-eslint/parser": "^4.0.1",
         "csp-html-webpack-plugin": "4.0.0",
         "css-loader": "^4.2.1",
