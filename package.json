@@ -103,7 +103,7 @@
         "eslint-plugin-react": "^7.20.6",
         "file-loader": "^6.0.0",
         "fork-ts-checker-webpack-plugin": "^5.1.0",
-        "mini-css-extract-plugin": "^0.10.0",
+        "mini-css-extract-plugin": "^0.11.0",
         "mocha": "^8.1.1",
         "node-abi": "^2.19.0",
         "node-loader": "^1.0.1",
