@@ -1,6 +1,7 @@
 ![Aeon](https://raw.githubusercontent.com/leinelissen/aeon/master/src/app/assets/aeon-logo.svg)
 
-![Electron](https://github.com/leinelissen/aeon/workflows/Electron/badge.svg)
+![Build](https://github.com/leinelissen/aeon/workflows/Build/badge.svg)
+[![Depfu](https://badges.depfu.com/badges/ff7165e5aae595f0e17058ce40fdbe68/overview.svg)](https://depfu.com/github/leinelissen/aeon?project_id=13989)
 
 ## About Aeon
 Your online identity is formed by the data that defines you. With ground-breaking laws such as the EU GDPR and US CCPA, data rights are within reach for citizens. Aeon aims to bridge the gap between data rights and citizen control over data.
