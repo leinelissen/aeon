@@ -2,7 +2,7 @@ import { DiffResult, RepositoryCommands, RepositoryArguments, RepositoryEvents, 
 import { ProviderDatum } from 'main/providers/types';
 import type { StatusFile } from 'nodegit';
 import { faInstagram, IconDefinition } from '@fortawesome/free-brands-svg-icons';
-import { faSquare } from '@fortawesome/pro-light-svg-icons';
+import { faSquare } from 'app/assets/fa-light';
 import { IpcRendererEvent } from 'electron';
 
 const channel = 'repository';

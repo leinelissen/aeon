@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Transition } from 'react-spring/renderprops'
 import { slideProps, SlideDirection } from 'app/components/SlideIn';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight, faCassetteTape, faClock, faHashtag, faEye } from '@fortawesome/pro-light-svg-icons';
+import { faChevronRight, faCassetteTape, faClock, faHashtag, faEye } from 'app/assets/fa-light';
 import { H5, H2 } from 'app/components/Typography';
 import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';

@@ -42,7 +42,7 @@ import {
     faUserFriends,
     faShoePrints,
     faBookAlt
-} from '@fortawesome/pro-light-svg-icons';
+} from 'app/assets/fa-light';
 
 class DataType {
     /**

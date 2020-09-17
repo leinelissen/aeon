@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Button, { GhostButton } from 'app/components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCloudUpload, faMinus, faSave } from '@fortawesome/pro-light-svg-icons';
+import { faArrowLeft, faCloudUpload, faMinus, faSave } from 'app/assets/fa-light';
 import { H2 } from 'app/components/Typography';
 import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';

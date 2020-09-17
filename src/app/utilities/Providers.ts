@@ -1,6 +1,6 @@
 import { ProviderCommands, DataRequestStatus, ProviderEvents } from 'main/providers/types';
 import { faInstagram, IconDefinition } from '@fortawesome/free-brands-svg-icons';
-import { faSquare } from '@fortawesome/pro-light-svg-icons';
+import { faSquare } from 'app/assets/fa-light';
 import { IpcRendererEvent } from 'electron';
 
 const channel = 'providers';

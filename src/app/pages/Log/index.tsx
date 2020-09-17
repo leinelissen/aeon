@@ -15,7 +15,7 @@ import MenuBar from 'app/components/MenuBar';
 import { H2, H3 } from 'app/components/Typography';
 import Logo from 'app/assets/aeon-logo.svg';
 import theme from 'app/styles/theme';
-import { faSparkles } from '@fortawesome/pro-light-svg-icons';
+import { faSparkles } from 'app/assets/fa-light';
 import { Margin } from 'app/components/Utility';
 import TutorialOverlay from './components/TutorialOverlay';
 import Store, { StoreProps } from 'app/store';

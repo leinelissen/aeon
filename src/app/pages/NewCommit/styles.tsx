@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import theme from 'app/styles/theme';
 import DataType from 'app/utilities/DataType';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight, faMinus } from '@fortawesome/pro-light-svg-icons';
+import { faChevronRight, faMinus } from 'app/assets/fa-light';
 import { EmptyIcon } from 'app/components/Utility';
 
 export const Container = styled.div`

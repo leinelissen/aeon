@@ -3,7 +3,7 @@ import Modal from 'app/components/Modal';
 import { H2 } from 'app/components/Typography';
 import styled from 'styled-components';
 import Button from 'app/components/Button';
-import { faArrowDown, faEnvelope, faArrowRight, faCheck } from '@fortawesome/pro-light-svg-icons';
+import { faArrowDown, faEnvelope, faArrowRight, faCheck } from 'app/assets/fa-light';
 import Providers from 'app/utilities/Providers';
 import Store, { StoreProps } from 'app/store';
 
