@@ -22,9 +22,6 @@ class Instagram extends DataRequestProvider {
     public static key = 'instagram';
     public static dataRequestIntervalDays = 5;
 
-    // window: BrowserWindow;
-    // cookies: Electron.Cookie[] = [];
-
     async initialise(): Promise<boolean> {
         await this.verifyLoggedInStatus();
 
@@ -140,11 +137,11 @@ class Instagram extends DataRequestProvider {
             // password. We then listen for a succesfull AJAX call 
             return new Promise((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
-                    urls: [ 'https://*.instagram.com/*' ]
+                    urls: [ 'https://*.facebook.com/*' ]
                 }, (details: Electron.OnCompletedListenerDetails) => {
                     console.log('NEW REQUEST', details);
 
-                    if (details.url === 'https://www.instagram.com/download/request_download_data_ajax/'
+                    if (details.url === 'https://www.facebook.com/api/graphql/'
                         && details.statusCode === 200) {
                         resolve();
                     }

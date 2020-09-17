@@ -1,7 +1,7 @@
 import { DiffResult, RepositoryCommands, RepositoryArguments, RepositoryEvents, Commit } from 'main/lib/repository/types';
 import { ProviderDatum } from 'main/providers/types';
 import type { StatusFile } from 'nodegit';
-import { faInstagram, IconDefinition } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faInstagram, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faSquare } from 'app/assets/fa-light';
 import { IpcRendererEvent } from 'electron';
 
@@ -38,6 +38,8 @@ class Repository {
         switch(key) {
             case 'instagram':
                 return faInstagram;
+            case 'facebook':
+                return faFacebook
             default:
                 return faSquare;
         }

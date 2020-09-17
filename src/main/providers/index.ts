@@ -7,9 +7,11 @@ import Notifications from 'main/lib/notifications';
 import ProviderBridge from './bridge';
 import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
+import Facebook from './facebook';
 
 const providers: Array<typeof Provider | typeof DataRequestProvider> = [
     Instagram,
+    Facebook,
 ];
 
 class ProviderManager extends EventEmitter {
@@ -160,7 +162,8 @@ class ProviderManager extends EventEmitter {
 
         // GUARD: Check if the provider is already initialised
         if (!this.initialisedProviders.includes(key)) {
-            throw new Error('ProviderWasNotInitialised');
+            // throw new Error('ProviderWasNotInitialised');
+            await this.initialise(key);
         }
 
         // GUARD: Check if the instance supports data request dispatching

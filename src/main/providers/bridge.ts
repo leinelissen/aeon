@@ -40,6 +40,7 @@ class ProviderBridge {
             case ProviderCommands.REFRESH:
                 return this.repository.refresh();
             case ProviderCommands.GET_DISPATCHED_DATA_REQUESTS:
+                console.log(this.repository.instances.keys());
                 return {
                     dispatched: this.repository.dispatchedDataRequests, 
                     lastChecked: this.repository.lastDataRequestCheck,
