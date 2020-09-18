@@ -79,6 +79,17 @@ class Facebook extends DataRequestProvider {
                     }
                 });
 
+                // Ensure that the data request is in JSON format
+                window.webContents.executeJavaScript(`
+                    Array.from(document.querySelectorAll('label'))
+                        .find(e => e.textContent.startsWith('Format'))
+                        .querySelector('a')
+                        .click();
+                    Array.from(document.querySelectorAll('a[role="menuitemcheckbox"]'))
+                        .find(e => e.textContent === 'JSON')
+                        .click();
+                `);
+
                 window.webContents.executeJavaScript(`
                     Array.from(document.querySelectorAll('button'))
                         .find(el => el.textContent === 'Create File')
@@ -107,11 +118,11 @@ class Facebook extends DataRequestProvider {
         });
     }
 
-    async parseDataRequest(): Promise<ProviderFile[]> {
+    async parseDataRequest(extractionPath: string): Promise<ProviderFile[]> {
         return withSecureWindow<ProviderFile[]>(windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
-                window.webContents.once('did-finish-load', resolve)
+                window.webContents.once('dom-ready', resolve)
                 window.loadURL('https://www.facebook.com/dyi/?referrer=yfi_settings&tab=all_archives');
             });
 
@@ -127,7 +138,7 @@ class Facebook extends DataRequestProvider {
                 // And then trigger the button click
                 window.webContents.executeJavaScript(`
                     Array.from(document.querySelectorAll('button'))
-                        .find(el => el.textContent === 'Download')
+                        .find(el => el.textContent === 'Download' || el.textContent === 'Download Again')
                         .click();
                 `);
 
@@ -137,12 +148,16 @@ class Facebook extends DataRequestProvider {
             // We have the ZIP, all that's left to do is unpack it and pipe it to
             // the repository
             const zip = new AdmZip(filePath);
+            await new Promise((resolve) => 
+                zip.extractAllToAsync(extractionPath, true, resolve)
+            );
 
             // Translate this into a form that is readable for the ParserManager
             const files = zip.getEntries().map((entry): ProviderFile => {
                 return {
                     filepath: entry.entryName,
-                    data: entry.getData(),
+                    data: null,
+                    // data: entry.getData(),
                 };
             });
 

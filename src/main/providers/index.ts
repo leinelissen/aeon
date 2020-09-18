@@ -2,11 +2,12 @@ import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns';
 import Instagram from './instagram';
 import { Provider, ProviderFile, DataRequestProvider, DataRequestStatus, ProviderEvents } from './types';
-import Repository from '../lib/repository';
+import Repository, { REPOSITORY_PATH } from '../lib/repository';
 import Notifications from 'main/lib/notifications';
 import ProviderBridge from './bridge';
 import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
+import path from 'path';
 import Facebook from './facebook';
 
 const providers: Array<typeof Provider | typeof DataRequestProvider> = [
@@ -124,26 +125,33 @@ class ProviderManager extends EventEmitter {
      * Save a bunch of files and auto-commit the result
      */
     saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<void> => {
+        console.log(`Saving and committing files for ${key}...`);
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
             // Prepend the supplied path with the key from the spcific service
             const location = `${key}/${file.filepath}`;
 
             // Save the files to disk, and add the files
-            await this.repository.save(location, file.data);
+            if (file.data) {
+                await this.repository.save(location, file.data);
+            }
             await this.repository.add(location);
-        }));
+            console.log('Added ', location);
+        })).catch(console.error);
 
         // Retrieve repository status and check if any files have actually changed
         const status = await this.repository.status();
         const hasChangedFiles = status.length;
+        console.log('Files changed: ', hasChangedFiles);
         
         // GUARD: If no files have changed, it is no longer neccessary to create
         // a new commit.
         if (!hasChangedFiles) {
+            console.log('No files have changed since last data request, skipping commit.')
             return;
         }
 
+        console.log('Creating commit: ', message);
         await this.repository.commit(message);
     }
 
@@ -223,7 +231,8 @@ class ProviderManager extends EventEmitter {
                 console.log('A data request has completed! Starting to parse...')
 
                 // If it is complete now, we'll fetch the data and parse it
-                const files = await instance.parseDataRequest();
+                const dirPath = path.join(REPOSITORY_PATH, key);
+                const files = await instance.parseDataRequest(dirPath);
                 const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`);
                 Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
                 

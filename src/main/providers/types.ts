@@ -26,7 +26,7 @@ export interface DataRequestProvider extends Provider {
     isDataRequestComplete?(): Promise<boolean>;
     /** If the data request has been completed, download the resulting dump and
      * parse it, so that it can be processed and saved to the repository */
-    parseDataRequest?(): Promise<ProviderFile[]>;
+    parseDataRequest?(extractionPath?: string): Promise<ProviderFile[]>;
 }
 
 export abstract class DataRequestProvider extends Provider {
