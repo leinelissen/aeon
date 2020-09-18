@@ -190,7 +190,7 @@ class DataType {
             }
             case ProvidedDataTypes.EVENT_RESPONSE: {
                 const { data: { name, response } } = datum as EventResponse;
-                return name + response ? `(${response})` : '';
+                return `${name} ${response && `(${response})`}`;
             }
             case ProvidedDataTypes.VISITED_PAGE: {
                 const { data: { name } } = datum as VisitedPage;

@@ -34,7 +34,7 @@ const parsers: ProviderParser[] = [
                     return [{
                         data: {
                             job_title: data?.messenger?.autofill_information?.JOB_TITLE,
-                            company: data?.messenger?.autofill_information?.COMPANY,
+                            company: data?.messenger?.autofill_information?.COMPANY_NAME,
                         }
                     }];
                 }
@@ -51,19 +51,21 @@ const parsers: ProviderParser[] = [
         ]
     },
     {
-        source: path.join('about_you', 'visited_things'),
+        source: path.join('about_you', 'visited.json'),
         schemas: [
             {
                 key: 'entries',
                 type: ProvidedDataTypes.VISITED_PAGE,
                 transformer: (data: any): Partial<VisitedPage>[] => {
-                    return [{
-                        data: {
-                            name: data?.name,
-                            uri: data?.uri,
-                        },
-                        timestamp: data?.timestamp,
-                    }];
+                    return data.map((entry: any): Partial<VisitedPage> => {
+                        return {
+                            data: {
+                                name: entry?.data?.name,
+                                uri: entry?.data?.uri,
+                            },
+                            timestamp: entry.timestamp && new Date(entry.timestamp * 1000)
+                        };
+                    });
                 }
             }
         ]
@@ -88,10 +90,10 @@ const parsers: ProviderParser[] = [
                         return website.events.map((event: any): Partial<OffSiteActivity> => {
                             return {
                                 data: {
-                                    website: data.name,
-                                    type: data.type,
+                                    website: website.name,
+                                    type: event.type,
                                 },
-                                timestamp: event.timestamp
+                                timestamp: new Date(event.timestamp * 1000)
                             };
                         });
                     });
@@ -109,7 +111,7 @@ const parsers: ProviderParser[] = [
                     return data.map((event: any): Partial<EventResponse> => {
                         return {
                             data: {
-                                name: data.name,
+                                name: event.name,
                                 response: 'interested'
                             }
                         };
