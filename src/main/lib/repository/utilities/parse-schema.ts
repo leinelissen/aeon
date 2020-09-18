@@ -86,46 +86,59 @@ function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderPar
     // Now we can start parsing the file
     return parser.schemas.map((schema): ProviderDatum<unknown, unknown> => {
         const { type, transformer, key } = schema;
-        // We then recursively extract and possibly transform the data
-        const extractedData = key ? recursivelyExtractData(object, key) : object;
-        const transformedData = transformer 
-            ? (Array.isArray(extractedData) ? extractedData.map(transformer) : transformer(extractedData))
-            : extractedData;
 
-        // The next thing is a bit tricky because the transformed data
-        // might be in one of three forms:
-        // 1. The data is untransformed and is basically an array
-        //    containing all single values that were extracted from the
-        //    file
-        // 2. The data is transformed into an array of single items
-        // 3. The data is transformed and has yielded multiple items per
-        //   original item. It is now basically an array of arrays
+        try {
+            // We then recursively extract and possibly transform the data
+            const extractedData = key ? recursivelyExtractData(object, key) : object;
+            const transformedData = transformer 
+                ? (Array.isArray(extractedData) ? extractedData.map(transformer) : transformer(extractedData))
+                : extractedData;
 
-        // First we'll handle the cases where the data is transformed.
-        // In this case, we expect the transformer to already wrap
-        // everything in the correct format, which we should then just
-        // append to the normal values.
-        if (transformer) {
-            return transformedData.flatMap((data: Partial<ProviderDatum<unknown, unknown>> | Partial<ProviderDatum<unknown, unknown>>[]) => {                
-                // We also introduce another loop so that we can deal
-                // with the case where multiple items are returned per
-                // original item
-                return (Array.isArray(data) ? data : [data]).flatMap(item => ({
-                    type,
-                    provider,
-                    source,
-                    ...item,
-                }));
-            });
+            // The next thing is a bit tricky because the transformed data
+            // might be in one of three forms:
+            // 1. The data is untransformed and is basically an array
+            //    containing all single values that were extracted from the
+            //    file
+            // 2. The data is transformed into an array of single items
+            // 3. The data is transformed and has yielded multiple items per
+            //   original item. It is now basically an array of arrays
+
+            // First we'll handle the cases where the data is transformed.
+            // In this case, we expect the transformer to already wrap
+            // everything in the correct format, which we should then just
+            // append to the normal values.
+            if (transformer) {
+                // GUARD: Check if what is returned by the transformed is an
+                // array as expected.
+                if (!Array.isArray(transformedData)) {
+                    throw new Error(`A schema transformer must return an array of data (key: '${key}', type: '${type}', file: '${source}')`);
+                }
+
+                // eslint-disable-next-line
+                // @ts-ignore
+                return transformedData.flatMap((data: Partial<ProviderDatum<unknown, unknown>> | Partial<ProviderDatum<unknown, unknown>>[]) => {                
+                    // We also introduce another loop so that we can deal
+                    // with the case where multiple items are returned per
+                    // original item
+                    return (Array.isArray(data) ? data : [data]).flatMap(item => ({
+                        type,
+                        provider,
+                        source,
+                        ...item,
+                    }));
+                });
+            }
+            
+            // In case nothing is transformed, we just insert the data as-is
+            return transformedData.map((data: Partial<ProviderDatum<unknown, unknown>> | Partial<ProviderDatum<unknown, unknown>>[]) => ({
+                type,
+                provider,
+                source,
+                data,
+            }));
+        } catch (e) {
+            console.error(`An error occurred while trying to parse a schema (key: '${key}', type: '${type}', file: '${source})'`, e);
         }
-        
-        // In case nothing is transformed, we just insert the data as-is
-        return transformedData.map((data: Partial<ProviderDatum<unknown, unknown>> | Partial<ProviderDatum<unknown, unknown>>[]) => ({
-            type,
-            provider,
-            source,
-            data,
-        }));
     }).flat();
 }
 
