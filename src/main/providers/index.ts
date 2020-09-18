@@ -126,6 +126,7 @@ class ProviderManager extends EventEmitter {
      */
     saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<void> => {
         console.log(`Saving and committing files for ${key}...`);
+
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
             // Prepend the supplied path with the key from the spcific service
@@ -136,17 +137,19 @@ class ProviderManager extends EventEmitter {
                 await this.repository.save(location, file.data);
             }
             await this.repository.add(location);
-            console.log('Added ', location);
         })).catch(console.error);
 
         // Retrieve repository status and check if any files have actually changed
         const status = await this.repository.status();
-        const hasChangedFiles = status.length;
-        console.log('Files changed: ', hasChangedFiles);
-        
+
+        // GUARD: We must check if the changed files have been added to the
+        // index, as they will not be part of a commit when it is made.
+        const changedFiles = status.filter((file) => file.inIndex());
+        console.log('Files changed: ', changedFiles);
+
         // GUARD: If no files have changed, it is no longer neccessary to create
         // a new commit.
-        if (!hasChangedFiles) {
+        if (!changedFiles.length) {
             console.log('No files have changed since last data request, skipping commit.')
             return;
         }
