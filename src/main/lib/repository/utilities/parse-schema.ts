@@ -51,7 +51,7 @@ function recursivelyExtractData(haystack: {[key: string]: any}, needle: string):
 
             // Loop through options and extract optional data
             for (const nestedItem of iterable) {
-                const result = recursivelyExtractData(nestedItem, key);
+                const result = recursivelyExtractData(nestedItem, needle);
                 
                 if (result && result.length) {
                     data.push(...result);
@@ -87,12 +87,16 @@ function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderPar
     return parser.schemas.map((schema): ProviderDatum<unknown, unknown> => {
         const { type, transformer, key } = schema;
 
+        console.log('PARSE FOR', source, type);
+
         try {
             // We then recursively extract and possibly transform the data
             const extractedData = key ? recursivelyExtractData(object, key) : object;
             const transformedData = transformer 
                 ? (Array.isArray(extractedData) ? extractedData.map(transformer) : transformer(extractedData))
                 : extractedData;
+
+            console.log(source, type, extractedData, transformedData);
 
             // The next thing is a bit tricky because the transformed data
             // might be in one of three forms:
