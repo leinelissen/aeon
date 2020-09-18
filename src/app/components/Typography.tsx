@@ -11,6 +11,7 @@ export const H2 = styled.h2`
     font-size: 24px;
     margin: 8px 0;
     color: #666;
+    word-break: break-all;
 `;
 
 export const H3 = styled.h3`
