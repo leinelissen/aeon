@@ -7,7 +7,7 @@ import {
     PrivacySetting,
     LoginInstance,
     ProfilePicture,
-    Session, Employment, EventResponse, VisitedPage, OffSiteActivity
+    Session, Employment, EventResponse, VisitedPage, OffSiteActivity, EducationExperience, MobileDevice, RegistrationDate
 } from 'main/providers/types';
 import {
     IconDefinition,
@@ -199,6 +199,18 @@ class DataType {
             case ProvidedDataTypes.OFF_SITE_ACTIVITY: {
                 const { data: { website, type } } = datum as OffSiteActivity;
                 return `${type} at ${website}`;
+            }
+            case ProvidedDataTypes.EDUCATION_EXPERIENCE: {
+                const { data: { institution, type } } = datum as EducationExperience;
+                return `${type ? type + ' at ' : ''} ${institution}`;
+            }
+            case ProvidedDataTypes.MOBILE_DEVICE: {
+                const { data: { type, os } } = datum as MobileDevice;
+                return `${type} (${os})`;
+            }
+            case ProvidedDataTypes.REGISTRATION_DATE: {
+                const { data: registrationDate } = datum as RegistrationDate;
+                return registrationDate.toLocaleString();
             }
             case ProvidedDataTypes.EMAIL:
             case ProvidedDataTypes.FIRST_NAME:

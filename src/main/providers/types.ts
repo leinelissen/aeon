@@ -213,9 +213,9 @@ export type OffSiteActivity = ProviderDatum<{ type?: string; website: string; },
 export type EventResponse = ProviderDatum<{ name?: string; response?: string; }, ProvidedDataTypes.EVENT_RESPONSE>;
 export type Timezone = ProviderDatum<string, ProvidedDataTypes.TIMEZONE>;
 export type Currency = ProviderDatum<string, ProvidedDataTypes.CURRENCY>;
-export type EducationExperience = ProviderDatum<string, ProvidedDataTypes.EDUCATION_EXPERIENCE>;
-export type RegistrationDate = ProviderDatum<string, ProvidedDataTypes.REGISTRATION_DATE>;
-export type MobileDevice = ProviderDatum<string, ProvidedDataTypes.MOBILE_DEVICE>;
+export type EducationExperience = ProviderDatum<{ institution: string; graduated?: boolean; started_at?: Date; graduated_at?: Date, type?: string}, ProvidedDataTypes.EDUCATION_EXPERIENCE>;
+export type RegistrationDate = ProviderDatum<Date, ProvidedDataTypes.REGISTRATION_DATE>;
+export type MobileDevice = ProviderDatum<{ type: string; os?: string; advertiser_id?: string; device_locale?: string;}, ProvidedDataTypes.MOBILE_DEVICE>;
 
 export interface ProviderParser {
     // The file from which the data has originated
@@ -226,7 +226,7 @@ export interface ProviderParser {
     schemas: {
         // The key which is used to access the data. This key may be nested. If
         // the key is not set, the root object is assumed to be the key
-        key?: string;
+        key?: string | string[];
         // The type that is found at the particular key
         type: ProvidedDataTypes
         // An optional transformer that is used to translate complex objects
