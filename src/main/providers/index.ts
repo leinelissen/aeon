@@ -9,10 +9,12 @@ import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
 import path from 'path';
 import Facebook from './facebook';
+import LinkedIn from './linkedin';
 
 const providers: Array<typeof Provider | typeof DataRequestProvider> = [
     Instagram,
     Facebook,
+    LinkedIn,
 ];
 
 class ProviderManager extends EventEmitter {

@@ -168,7 +168,7 @@ class Requests extends Component<unknown, State> {
                                     <HoverArea onChange={handleChange}>
                                         <ClickableRequest provider={key} onClick={this.handleRequestForRequest} data-telemetry-id="dispatch-provider">
                                             <Request color={this.getColor(status)}>
-                                                <FontAwesomeIcon icon={Repository.getIcon(key)} />
+                                                <FontAwesomeIcon icon={Providers.getIcon(key)} />
                                             </Request>
                                         </ClickableRequest>
                                     </HoverArea>
