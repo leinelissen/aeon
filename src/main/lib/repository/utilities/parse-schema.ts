@@ -10,7 +10,7 @@ const decoder = new TextDecoder('utf-8');
  * @param needle The key we're looking for
  */
 // eslint-disable-next-line
-function recursivelyExtractData(haystack: {[key: string]: any}, needle: string): any[] {
+function recursivelyExtractData(haystack: {[key: string]: any}, needle: string | string[]): any[] {
     // eslint-disable-next-line
     let data = [];
 
@@ -36,7 +36,9 @@ function recursivelyExtractData(haystack: {[key: string]: any}, needle: string):
     // or possibly further iteration possibilities
     for (const [key, item] of Object.entries(haystack)) {
         // If the key matches, we just return the whole bunch of data
-        if (key === needle) {
+        if (Array.isArray(needle)
+            ? needle.includes(key)
+            : key === needle) {
             data.push(item);
             break;
         }
