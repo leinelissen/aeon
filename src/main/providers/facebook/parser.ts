@@ -193,11 +193,9 @@ const parsers: ProviderParser[] = [
                 key: ['current_city', 'hometown'],
                 type: ProvidedDataTypes.PLACE_OF_RESIDENCE,
                 transformer: (data: any) => {
-                    return data.map((city: any) => {
-                        return {
-                            data: city.name,
-                        }
-                    })
+                    return [{
+                        data: data.name,
+                    }];
                 }
             },
             {
