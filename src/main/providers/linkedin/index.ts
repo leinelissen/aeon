@@ -34,6 +34,20 @@ class LinkedIn extends DataRequestProvider {
                         // If so, we retrieve the cookies
                         const cookies = await window.webContents.session.cookies.get({});
                         
+                        // Do a check if the language is set to English, and if not,
+                        // change it to English
+                        const lang = cookies.find(cookie => cookie.name === 'lang');
+                        if (lang?.value !== 'v=2&lang=en-us') {
+                            await window.webContents.session.cookies.set({ 
+                                url: 'https://linkedin.com',
+                                name: 'lang',
+                                value: 'v=2&lang=en-us',
+                                domain: '.linkedin.com',
+                                secure: true,
+                                expirationDate: Math.pow(2, 31) - 1,
+                            });
+                        }
+
                         resolve(cookies);
                     } else if (!window.isVisible()) {
                         // If not, we'll check if we need to open the window for the
@@ -113,7 +127,7 @@ class LinkedIn extends DataRequestProvider {
             // Find a div that reads 'A copy of your information is
             // being created'
             return window.webContents.executeJavaScript(`
-                document.querySelector('button.download-btn').textContent !== 'Request pending'
+                document.querySelector('button.download-btn').textContent === 'Download archive'
             `);
         });
     }
