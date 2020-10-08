@@ -118,15 +118,27 @@ class ProviderManager extends EventEmitter {
         // Execute individual update, which should return a list of files to
         // be saved to disk
         const files = await instance.update();
+
+        // GUARD: If the functino returns false, the provider does not implement
+        // an update flow, and we end the function
+        if (files === false) {
+            return;
+        }
+
+        // Alternatively, we save the files and attempt to commit
         const changedFiles = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`);
-        console.log('Completed update for ', key);
-        Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`)
+        
+        // GUARD: Only log stuff if new data is found
+        if (changedFiles) {
+            console.log('Completed update for ', key);
+            Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`)
+        }
     }
 
     /**
      * Save a bunch of files and auto-commit the result
      */
-    saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<void> => {
+    saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<number> => {
         console.log(`Saving and committing files for ${key}...`);
 
         // Then store all files using the repositor save and add handler
@@ -158,6 +170,8 @@ class ProviderManager extends EventEmitter {
 
         console.log('Creating commit: ', message);
         await this.repository.commit(message);
+
+        return changedFiles.length;
     }
 
     /**

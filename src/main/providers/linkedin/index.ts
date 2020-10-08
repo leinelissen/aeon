@@ -69,9 +69,9 @@ class LinkedIn extends DataRequestProvider {
         });
     }
 
-    update = async (): Promise<ProviderFile[]> => {
+    update = async (): Promise<false> => {
         // NOTE: LinkedIn has not accessible Privacy APIs at this point.
-        return [];
+        return false;
     }
 
     dispatchDataRequest = async (): Promise<void> => {

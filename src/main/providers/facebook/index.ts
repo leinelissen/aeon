@@ -48,10 +48,10 @@ class Facebook extends DataRequestProvider {
         });
     }
 
-    update = async (): Promise<ProviderFile[]> => {
+    update = async (): Promise<false> => {
         // NOTE: Updating is not supported by Facebook since it's internal API
         // is a enormous clusterfuck and cannot be trusted.
-        return [];
+        return false;
     }
 
     dispatchDataRequest = async (): Promise<void> => {
