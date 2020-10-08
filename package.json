@@ -95,7 +95,7 @@
         "@typescript-eslint/parser": "^4.4.0",
         "csp-html-webpack-plugin": "4.0.0",
         "css-loader": "^4.3.0",
-        "dotenv-webpack": "2.0.0",
+        "dotenv-webpack": "3.0.0",
         "electron": "^9.3.2",
         "eslint": "^7.10.0",
         "eslint-import-resolver-typescript": "^2.3.0",
