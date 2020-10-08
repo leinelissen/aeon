@@ -4,6 +4,9 @@ import { DataRequestProvider, ProviderFile } from '../types';
 import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
+import getZipEntries from 'main/lib/get-zip-entries';
+import readCsvStream from 'main/lib/read-csv-stream';
+import extractCsvZip from 'main/lib/extract-csv-zip';
 
 const windowParams = {
     key: 'linkedin',
@@ -124,17 +127,57 @@ class LinkedIn extends DataRequestProvider {
                 window.loadURL('https://www.linkedin.com/psettings/member-data');
             });
 
-            // Find a div that reads 'A copy of your information is
-            // being created'
+            // Find the right button and check if it reads 'Download archive'
+            // Also, LinkedIn only allows for a single download every 24hrs,
+            // after which you'll need to wait. We account for this by checking
+            // if the button is disabled
             return window.webContents.executeJavaScript(`
-                document.querySelector('button.download-btn').textContent === 'Download archive'
+                var btn = document.querySelector('button.download-btn');
+                btn.textContent === 'Download archive'
+                    && !btn.disabled
             `);
         });
     }
 
-    async parseDataRequest(): Promise<ProviderFile[]> {
-        throw new Error('NotImplementedYet');
-        return [];
+    async parseDataRequest(extractionPath: string): Promise<ProviderFile[]> {
+        return withSecureWindow<ProviderFile[]>(windowParams, async (window) => {
+            // Load page URL
+            await new Promise((resolve) => {
+                window.webContents.once('did-finish-load', resolve)
+                window.loadURL('https://www.linkedin.com/psettings/member-data');
+            });
+
+            const filePath = path.join(requestSavePath, 'linkedin.zip');
+            await new Promise((resolve) => {
+                // Create a handler for any file saving actions
+                window.webContents.session.once('will-download', (event, item) => {
+                    // Save the item to the data folder temporarily
+                    item.setSavePath(filePath);
+                    item.once('done', resolve);
+                });
+
+                // And then trigger the button click
+                window.webContents.executeJavaScript(`
+                    document.querySelector('button.download-btn')?.click();
+                `);
+            });
+
+            // Firstly, we'll save all files in a JSON format
+            const entries = await extractCsvZip(filePath, extractionPath);
+
+            // Then, we'll structure the returned data
+            const files = entries.map((entry): ProviderFile => {
+                return {
+                    filepath: entry.fileName,
+                    data: null,
+                };
+            });
+
+            // And dont forget to remove the zip file after it's been processed
+            await fs.promises.unlink(filePath);
+
+            return files;
+        });
     }
 }
 
