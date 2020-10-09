@@ -162,6 +162,9 @@ class LinkedIn extends DataRequestProvider {
                 `);
             });
 
+            // Close window
+            window.hide();
+
             // Firstly, we'll save all files in a JSON format
             const entries = await extractCsvZip(filePath, extractionPath);
 

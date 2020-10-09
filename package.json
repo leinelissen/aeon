@@ -94,6 +94,7 @@
         "@types/styled-components": "^5.1.4",
         "@typescript-eslint/eslint-plugin": "^4.4.0",
         "@typescript-eslint/parser": "^4.4.0",
+        "@types/stream-json": "^1.5.1",
         "csp-html-webpack-plugin": "4.0.0",
         "css-loader": "^4.3.0",
         "dotenv-webpack": "2.0.0",
@@ -141,7 +142,9 @@
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
         "react-spring": "^8.0.27",
+        "stream-chain": "^2.2.3",
         "stream-csv-as-json": "^1.0.3",
+        "stream-json": "^1.7.1",
         "styled-components": "^5.2.0",
         "undux": "^5.2.0",
         "yauzl": "^2.10.0"
