@@ -3,7 +3,7 @@ import { withSecureWindow } from 'main/lib/create-secure-window';
 import { DataRequestProvider, ProviderFile } from '../types';
 import path from 'path';
 import fs from 'fs';
-import extractCsvZip from 'main/lib/extract-csv-zip';
+import AdmZip from 'adm-zip';
 
 const windowParams = {
     key: 'linkedin',
@@ -163,12 +163,15 @@ class LinkedIn extends DataRequestProvider {
             window.hide();
 
             // Firstly, we'll save all files in a JSON format
-            const entries = await extractCsvZip(filePath, extractionPath);
+            const zip = new AdmZip(filePath);
+            await new Promise((resolve) => 
+                zip.extractAllToAsync(extractionPath, true, resolve)
+            );
 
             // Then, we'll structure the returned data
-            const files = entries.map((entry): ProviderFile => {
+            const files = zip.getEntries().map((entry): ProviderFile => {
                 return {
-                    filepath: entry.fileName,
+                    filepath: entry.entryName,
                     data: null,
                 };
             });

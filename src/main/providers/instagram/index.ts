@@ -172,7 +172,7 @@ class Instagram extends DataRequestProvider {
         });
     }
 
-    async parseDataRequest(): Promise<ProviderFile[]> {
+    async parseDataRequest(extractionPath: string): Promise<ProviderFile[]> {
         return withSecureWindow<ProviderFile[]>(windowParams, async (window) => {
             console.log('Started parsing request');
 
@@ -230,12 +230,15 @@ class Instagram extends DataRequestProvider {
             // We have the ZIP, all that's left to do is unpack it and pipe it to
             // the repository
             const zip = new AdmZip(filePath);
+            await new Promise((resolve) => 
+                zip.extractAllToAsync(extractionPath, true, resolve)
+            );
 
             // Translate this into a form that is readable for the ParserManager
             const files = zip.getEntries().map((entry): ProviderFile => {
                 return {
                     filepath: entry.entryName,
-                    data: entry.getData(),
+                    data: null,
                 };
             });
 
