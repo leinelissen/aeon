@@ -3,9 +3,6 @@ import { withSecureWindow } from 'main/lib/create-secure-window';
 import { DataRequestProvider, ProviderFile } from '../types';
 import path from 'path';
 import fs from 'fs';
-import AdmZip from 'adm-zip';
-import getZipEntries from 'main/lib/get-zip-entries';
-import readCsvStream from 'main/lib/read-csv-stream';
 import extractCsvZip from 'main/lib/extract-csv-zip';
 
 const windowParams = {
