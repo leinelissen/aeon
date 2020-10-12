@@ -10,12 +10,14 @@ import store from 'main/store';
 import path from 'path';
 import Facebook from './facebook';
 import LinkedIn from './linkedin';
+import Spotify from './spotify';
 import EmailManager from 'main/email-client';
 
 const providers: Array<typeof Provider | typeof DataRequestProvider> = [
     Instagram,
     Facebook,
     LinkedIn,
+    Spotify,
 ];
 
 class ProviderManager extends EventEmitter {

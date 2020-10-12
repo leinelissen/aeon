@@ -1,5 +1,5 @@
 import { ProviderCommands, ProviderEvents, DataRequestStatus } from 'main/providers/types';
-import { faFacebookF, faInstagram, faLinkedinIn, IconDefinition } from '@fortawesome/free-brands-svg-icons';
+import { faFacebookF, faInstagram, faLinkedinIn, faSpotify, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faSquare } from 'app/assets/fa-light';
 import { IpcRendererEvent } from 'electron';
 
@@ -58,6 +58,8 @@ class Providers {
                 return faFacebookF;
             case 'linkedin':
                 return faLinkedinIn;
+            case 'spotify':
+                return faSpotify;
             default:
                 return faSquare;
         }
