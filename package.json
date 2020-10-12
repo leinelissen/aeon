@@ -94,7 +94,6 @@
         "@types/styled-components": "^5.1.4",
         "@typescript-eslint/eslint-plugin": "^4.4.0",
         "@typescript-eslint/parser": "^4.4.0",
-        "@types/stream-json": "^1.5.1",
         "csp-html-webpack-plugin": "4.0.0",
         "css-loader": "^4.3.0",
         "dotenv-webpack": "2.0.0",
@@ -124,8 +123,6 @@
         "@openfonts/ibm-plex-sans_all": "^1.44.2",
         "@popperjs/core": "^2.5.3",
         "@types/nodegit": "^0.26.10",
-        "@types/stream-csv-as-json": "^1.0.0",
-        "@types/yauzl": "^2.9.1",
         "adm-zip": "^0.4.16",
         "cogo-toast": "^4.2.3",
         "date-fns": "^2.16.1",
@@ -144,11 +141,8 @@
         "react-router-dom": "^5.2.0",
         "react-spring": "^8.0.27",
         "stream-chain": "^2.2.3",
-        "stream-csv-as-json": "^1.0.3",
-        "stream-json": "^1.7.1",
         "styled-components": "^5.2.0",
         "undux": "^5.2.0",
-        "yauzl": "^2.10.0"
         "v8-compile-cache": "^2.1.1"
     },
     "resolutions": {
