@@ -2,14 +2,19 @@ import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns';
 import Instagram from './instagram';
 import { Provider, ProviderFile, DataRequestProvider, DataRequestStatus, ProviderEvents } from './types';
-import Repository from '../lib/repository';
+import Repository, { REPOSITORY_PATH } from '../lib/repository';
 import Notifications from 'main/lib/notifications';
 import ProviderBridge from './bridge';
 import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
+import path from 'path';
+import Facebook from './facebook';
+import LinkedIn from './linkedin';
 
 const providers: Array<typeof Provider | typeof DataRequestProvider> = [
     Instagram,
+    Facebook,
+    LinkedIn,
 ];
 
 class ProviderManager extends EventEmitter {
@@ -45,14 +50,15 @@ class ProviderManager extends EventEmitter {
 
         // Construct the dispatchedDataRequests file so that we can save it to
         // disk whenever neccessary
-        const retrievedData = store.get('dispatched-data-requests', '[]');
+        const retrievedData = store.get('dispatched-data-requests', '[]') as string;
         const retrievedRequests = JSON.parse(retrievedData, (key, value) => Date.parse(value) ? new Date(value) : value);
         this.dispatchedDataRequests = new PersistedMap(retrievedRequests, (map) => {
             store.set('dispatched-data-requests', map.toString());
         });
 
         // Construct the initialised providers from the store
-        this.initialisedProviders = JSON.parse(store.get('initialised-providers', '[]'));
+        const retrievedProviders = store.get('initialised-providers', '[]') as string;
+        this.initialisedProviders = JSON.parse(retrievedProviders);
 
         // Then we create a timeout function that checks for completed data
         // requests every five minutes. Also immediately commence with queueing
@@ -113,36 +119,60 @@ class ProviderManager extends EventEmitter {
         // Execute individual update, which should return a list of files to
         // be saved to disk
         const files = await instance.update();
+
+        // GUARD: If the functino returns false, the provider does not implement
+        // an update flow, and we end the function
+        if (files === false) {
+            return;
+        }
+
+        // Alternatively, we save the files and attempt to commit
         const changedFiles = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`);
-        console.log('Completed update for ', key);
-        Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`)
+        
+        // GUARD: Only log stuff if new data is found
+        if (changedFiles) {
+            console.log('Completed update for ', key);
+            Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`)
+        }
     }
 
     /**
      * Save a bunch of files and auto-commit the result
      */
-    saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<void> => {
+    saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<number> => {
+        console.log(`Saving and committing files for ${key}...`);
+
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
             // Prepend the supplied path with the key from the spcific service
             const location = `${key}/${file.filepath}`;
 
             // Save the files to disk, and add the files
-            await this.repository.save(location, file.data);
+            if (file.data) {
+                await this.repository.save(location, file.data);
+            }
             await this.repository.add(location);
-        }));
+        })).catch(console.error);
 
         // Retrieve repository status and check if any files have actually changed
         const status = await this.repository.status();
-        const hasChangedFiles = status.length;
-        
+
+        // GUARD: We must check if the changed files have been added to the
+        // index, as they will not be part of a commit when it is made.
+        const changedFiles = status.filter((file) => file.inIndex());
+        console.log('Files changed: ', changedFiles);
+
         // GUARD: If no files have changed, it is no longer neccessary to create
         // a new commit.
-        if (!hasChangedFiles) {
+        if (!changedFiles.length) {
+            console.log('No files have changed since last data request, skipping commit.')
             return;
         }
 
+        console.log('Creating commit: ', message);
         await this.repository.commit(message);
+
+        return changedFiles.length;
     }
 
     /**
@@ -160,7 +190,8 @@ class ProviderManager extends EventEmitter {
 
         // GUARD: Check if the provider is already initialised
         if (!this.initialisedProviders.includes(key)) {
-            throw new Error('ProviderWasNotInitialised');
+            // throw new Error('ProviderWasNotInitialised');
+            await this.initialise(key);
         }
 
         // GUARD: Check if the instance supports data request dispatching
@@ -201,6 +232,12 @@ class ProviderManager extends EventEmitter {
         const dataRequests = Promise.all(this.dispatchedDataRequests.map(async (status, key): Promise<void> => {
             const instance = this.instances.get(key);
 
+            // GUARD: If we cannot find an instance for this provider type, we
+            // skip it
+            if (!instance) {
+                return;
+            }
+
             // GUARD: If a request has already been completed, we do not need to
             // check upon it further
             if (status.completed) {
@@ -220,7 +257,8 @@ class ProviderManager extends EventEmitter {
                 console.log('A data request has completed! Starting to parse...')
 
                 // If it is complete now, we'll fetch the data and parse it
-                const files = await instance.parseDataRequest();
+                const dirPath = path.join(REPOSITORY_PATH, key);
+                const files = await instance.parseDataRequest(dirPath);
                 const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`);
                 Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
                 

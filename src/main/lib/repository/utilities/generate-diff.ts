@@ -60,7 +60,7 @@ function diffDataArray(
         // If a match is found, we can exit the loop. No change has been made to
         // the datapoint.
         if (match) {
-            break;
+            continue;
         }
 
         deleted.push(dBefore);
@@ -78,7 +78,7 @@ function diffDataArray(
         // If a match is found, we can exit the loop. No change has been made to
         // the datapoint.
         if (match) {
-            break;
+            continue;
         }
 
         added.push(dAfter);

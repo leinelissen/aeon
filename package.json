@@ -115,6 +115,7 @@
         "typescript": "^4.0.3"
     },
     "dependencies": {
+        "@fast-csv/parse": "^4.3.2",
         "@fortawesome/fontawesome-svg-core": "^1.2.32",
         "@fortawesome/free-brands-svg-icons": "^5.15.1",
         "@fortawesome/react-fontawesome": "^0.1.11",
@@ -139,6 +140,7 @@
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
         "react-spring": "^8.0.27",
+        "stream-chain": "^2.2.3",
         "styled-components": "^5.2.0",
         "undux": "^5.2.0",
         "v8-compile-cache": "^2.1.1"

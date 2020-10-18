@@ -14,6 +14,7 @@ export const Container = styled.div`
     height: 100%;
     background: white;
     position: relative;
+    overflow: hidden;
 `;
 
 export const List = styled.div`

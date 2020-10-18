@@ -8,8 +8,9 @@ export abstract class Provider {
      * (no spaces, all-lowercase) */
     public static key: string;
     /** Update the data that is retrieved by this Provider. Should return an
-     * object with all new files, so they can be saved to disk. */
-    abstract update(): Promise<ProviderFile[]>;
+     * object with all new files, so they can be saved to disk. Alternatively,
+     * should return false to indicate that no update was carried out. */
+    abstract update(): Promise<ProviderFile[]> | Promise<false>;
     /** Initialise the provider. This function is called only when it is
      * initialised for the first time during onboarding. The return boolean
      * indicates whether the provider succeeded in initialising, ie. by logging
@@ -26,7 +27,7 @@ export interface DataRequestProvider extends Provider {
     isDataRequestComplete?(): Promise<boolean>;
     /** If the data request has been completed, download the resulting dump and
      * parse it, so that it can be processed and saved to the repository */
-    parseDataRequest?(): Promise<ProviderFile[]>;
+    parseDataRequest?(extractionPath?: string): Promise<ProviderFile[]>;
 }
 
 export abstract class DataRequestProvider extends Provider {
@@ -125,6 +126,26 @@ export enum ProvidedDataTypes {
     UPLOADED_CONTACT = 'uploaded_contact',
     // A saved cookie with possibly extra information
     SESSION = 'session',
+    // A categorisation of the peer group you belong to
+    PEER_GROUP = 'peer_group',
+    // A job held currently or in the past
+    EMPLOYMENT = 'employment',
+    // An in-site visited page
+    VISITED_PAGE = 'visited_page',
+    // Recorded activity outside of the platform website
+    OFF_SITE_ACTIVITY = 'off_site_activity',
+    // Response to an event invitation
+    EVENT_RESPONSE = 'event_response',
+    // Timezone associated with the user
+    TIMEZONE = 'timezone',
+    // Currency associated with the user
+    CURRENCY = 'currency',
+    // An education experience held currently or in the past
+    EDUCATION_EXPERIENCE = 'education_experience',
+    // Registration date for the platform
+    REGISTRATION_DATE = 'registration_date',
+    // A mobile device associated with the platform
+    MOBILE_DEVICE = 'mobile_device',
 }
 
 export interface ProviderDatum<D, T = ProvidedDataTypes> {
@@ -186,6 +207,16 @@ type SessionData = {
     device_id: string;
 }
 export type Session = ProviderDatum<SessionData, ProvidedDataTypes.SESSION>;
+export type PeerGroup = ProviderDatum<string, ProvidedDataTypes.PEER_GROUP>;
+export type Employment = ProviderDatum<{ job_title: string; company: string; }, ProvidedDataTypes.EMPLOYMENT>;
+export type VisitedPage = ProviderDatum<{ name: string; uri?: string }, ProvidedDataTypes.VISITED_PAGE>;
+export type OffSiteActivity = ProviderDatum<{ type?: string; website: string; }, ProvidedDataTypes.OFF_SITE_ACTIVITY>;
+export type EventResponse = ProviderDatum<{ name?: string; response?: string; }, ProvidedDataTypes.EVENT_RESPONSE>;
+export type Timezone = ProviderDatum<string, ProvidedDataTypes.TIMEZONE>;
+export type Currency = ProviderDatum<string, ProvidedDataTypes.CURRENCY>;
+export type EducationExperience = ProviderDatum<{ institution: string; graduated?: boolean; started_at?: Date; graduated_at?: Date, type?: string}, ProvidedDataTypes.EDUCATION_EXPERIENCE>;
+export type RegistrationDate = ProviderDatum<Date, ProvidedDataTypes.REGISTRATION_DATE>;
+export type MobileDevice = ProviderDatum<{ type: string; os?: string; advertiser_id?: string; device_locale?: string;}, ProvidedDataTypes.MOBILE_DEVICE>;
 
 export interface ProviderParser {
     // The file from which the data has originated
@@ -196,13 +227,13 @@ export interface ProviderParser {
     schemas: {
         // The key which is used to access the data. This key may be nested. If
         // the key is not set, the root object is assumed to be the key
-        key?: string;
+        key?: string | string[];
         // The type that is found at the particular key
         type: ProvidedDataTypes
         // An optional transformer that is used to translate complex objects
         // into the required shape
         // eslint-disable-next-line
-        transformer?(object: unknown): Partial<ProviderDatum<any, any>> | Partial<ProviderDatum<any, any>>[];
+        transformer?(object: unknown): Partial<ProviderDatum<unknown, unknown>>[];
         // transformer?: (obj: any) => any | any[];
     }[]
 }

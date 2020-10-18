@@ -7,7 +7,7 @@ import {
     PrivacySetting,
     LoginInstance,
     ProfilePicture,
-    Session
+    Session, Employment, EventResponse, VisitedPage, OffSiteActivity, EducationExperience, MobileDevice, RegistrationDate
 } from 'main/providers/types';
 import {
     IconDefinition,
@@ -41,8 +41,14 @@ import {
     faUserCircle,
     faUserFriends,
     faShoePrints,
-    faBookAlt
+    faBookAlt, faUsers, faBriefcase, faFile, faMoneyBillWaveAlt
 } from 'app/assets/fa-light';
+import { faListAlt } from 'app/assets/fa-light/faListAlt';
+import { faCheck } from 'app/assets/fa-light/faCheck';
+import { faClock } from 'app/assets/fa-light/faClock';
+import { faUniversity } from 'app/assets/fa-light/faUniversity';
+import { faUserPlus } from 'app/assets/fa-light/faUserPlus';
+import { faMobile } from 'app/assets/fa-light/faMobile';
 
 class DataType {
     /**
@@ -119,6 +125,26 @@ class DataType {
                 return faIdBadge;
             case ProvidedDataTypes.SESSION:
                 return faBookAlt;
+            case ProvidedDataTypes.PEER_GROUP:
+                return faUsers;
+            case ProvidedDataTypes.EMPLOYMENT:
+                return faBriefcase;
+            case ProvidedDataTypes.VISITED_PAGE:
+                return faFile;
+            case ProvidedDataTypes.OFF_SITE_ACTIVITY:
+                return faListAlt;
+            case ProvidedDataTypes.EVENT_RESPONSE:
+                return faCheck;
+            case ProvidedDataTypes.TIMEZONE:
+                return faClock;
+            case ProvidedDataTypes.CURRENCY:
+                return faMoneyBillWaveAlt;
+            case ProvidedDataTypes.EDUCATION_EXPERIENCE:
+                return faUniversity;
+            case ProvidedDataTypes.REGISTRATION_DATE:
+                return faUserPlus;
+            case ProvidedDataTypes.MOBILE_DEVICE:
+                return faMobile;
             default:
                 return faSquare;
         }
@@ -157,6 +183,34 @@ class DataType {
             case ProvidedDataTypes.SESSION: {
                 const { data: session } = datum as Session;
                 return `${session?.user_agent}, ${session?.ip_address} at ${session?.timestamp}`;
+            }
+            case ProvidedDataTypes.EMPLOYMENT: {
+                const { data: { job_title, company } } = datum as Employment;
+                return `${job_title} at ${company}`;
+            }
+            case ProvidedDataTypes.EVENT_RESPONSE: {
+                const { data: { name, response } } = datum as EventResponse;
+                return `${name} ${response && `(${response})`}`;
+            }
+            case ProvidedDataTypes.VISITED_PAGE: {
+                const { data: { name } } = datum as VisitedPage;
+                return name;
+            }
+            case ProvidedDataTypes.OFF_SITE_ACTIVITY: {
+                const { data: { website, type } } = datum as OffSiteActivity;
+                return `${type} at ${website}`;
+            }
+            case ProvidedDataTypes.EDUCATION_EXPERIENCE: {
+                const { data: { institution, type } } = datum as EducationExperience;
+                return `${type ? type + ' at ' : ''} ${institution}`;
+            }
+            case ProvidedDataTypes.MOBILE_DEVICE: {
+                const { data: { type, os } } = datum as MobileDevice;
+                return `${type} (${os})`;
+            }
+            case ProvidedDataTypes.REGISTRATION_DATE: {
+                const { data: registrationDate } = datum as RegistrationDate;
+                return registrationDate.toLocaleString();
             }
             case ProvidedDataTypes.EMAIL:
             case ProvidedDataTypes.FIRST_NAME:

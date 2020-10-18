@@ -5,10 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "type": "pwa-node",
             "request": "launch",
             "name": "Electron Main",
-            "runtimeExecutable": "${workspaceFolder}/.vscode/debug-launcher.sh",
+            "program": "${workspaceFolder}/node_modules/@electron-forge/cli/dist/electron-forge-start.js",
+            "args": [
+              "--vscode"
+            ],
             "cwd": "${workspaceFolder}",
             "sourceMaps": true,
             "windows": {
@@ -16,6 +19,10 @@
               "console": "internalConsole", 
               "outputCapture": "std",
             },
-          }
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ]
+        }
     ]
 }

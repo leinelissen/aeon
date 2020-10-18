@@ -1,8 +1,6 @@
 import { DiffResult, RepositoryCommands, RepositoryArguments, RepositoryEvents, Commit } from 'main/lib/repository/types';
 import { ProviderDatum } from 'main/providers/types';
 import type { StatusFile } from 'nodegit';
-import { faInstagram, IconDefinition } from '@fortawesome/free-brands-svg-icons';
-import { faSquare } from 'app/assets/fa-light';
 import { IpcRendererEvent } from 'electron';
 
 const channel = 'repository';
@@ -32,15 +30,6 @@ class Repository {
 
     static status(): Promise<StatusFile[]> {
         return window.api.invoke(channel, RepositoryCommands.STATUS);
-    }
-
-    static getIcon(key: string): IconDefinition {
-        switch(key) {
-            case 'instagram':
-                return faInstagram;
-            default:
-                return faSquare;
-        }
     }
 }
 
