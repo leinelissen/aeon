@@ -231,6 +231,12 @@ class ProviderManager extends EventEmitter {
         const dataRequests = Promise.all(this.dispatchedDataRequests.map(async (status, key): Promise<void> => {
             const instance = this.instances.get(key);
 
+            // GUARD: If we cannot find an instance for this provider type, we
+            // skip it
+            if (!instance) {
+                return;
+            }
+
             // GUARD: If a request has already been completed, we do not need to
             // check upon it further
             if (status.completed) {
