@@ -22,7 +22,6 @@ export default async function authenticateGmailUser(): Promise<TokenResponse> {
     const verifier = generateVerifier();
     const response = await retrieveAuthenticationCode(verifier);
     const tokens = await exchangeAccessCode(response, verifier);
-    console.log(tokens);
     return tokens;
 }
 
