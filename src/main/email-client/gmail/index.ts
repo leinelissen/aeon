@@ -20,21 +20,46 @@ interface MessageResponse {
 export default class GmailEmailClient implements EmailClient {
     tokens: TokenResponse | null;
     isInitialized: boolean;
+    emailAddress?: string;
 
-    constructor() {
-        const tokens = store.get('gmail_tokens', null) as TokenResponse | null;
-        this.tokens = tokens;
+    /**
+     * 
+     * @param emailAddress 
+     */
+    constructor(emailAddress: string = null) {
+        // GUARD: If an emailaddress has been specified, we should be able to
+        // retrieve the tokens from the store. This also means the address has
+        // already been initialised, as we know it.
+        if (emailAddress) {
+            const tokens = store.get(`gmail_${emailAddress}`, null) as TokenResponse | null;
+            
+            // GUARD: Double-check that whats coming back from the store is
+            // actually a token.
+            if (!tokens) {
+                throw new Error(`Emailaddress '${emailAddress}' was supposed to be initialised already with the Gmail Client, but no tokens could be retrieved from the store.`);
+            }
+
+            this.tokens = tokens;
+            this.emailAddress = emailAddress;
+        }
+
+        // Then we set the right initialisation flag
         this.isInitialized = !!this.tokens;
     }
 
-    async initialize(): Promise<void> {
+    async initialize(): Promise<string> {
         // Retrieve the tokens
         const tokens = await authenticateGmailUser();
+        this.tokens = tokens;
+
+        // Retrieve the email address
+        this.emailAddress = await this.getEmailAddress();
 
         // Save the tokens
-        this.tokens = tokens;
-        store.set('gmail_tokens', tokens);
+        store.set(`gmail_${this.emailAddress}`, tokens);
         this.isInitialized = true;
+
+        return this.emailAddress;
     }
 
     async refreshTokens(): Promise<void> {
@@ -48,7 +73,7 @@ export default class GmailEmailClient implements EmailClient {
 
         // Save the tokens
         this.tokens = tokens;
-        store.set('gmail_tokens', tokens);
+        store.set(`gmail_${this.emailAddress}`, tokens);
     }
 
     async findMessages(query: EmailQuery): Promise<Email[]> {
@@ -105,6 +130,14 @@ export default class GmailEmailClient implements EmailClient {
         };
 
         await this.get('https://gmail.googleapis.com/upload/gmail/v1/users/me/messages/send', params); 
+    }
+
+    /**
+     * Retrieve the email address for the current user
+     */
+    async getEmailAddress(): Promise<string> {
+        return this.get('https://gmail.googleapis.com/gmail/v1/users/me/profile')
+            .then((data: ({ emailAddress: string })) => data.emailAddress);
     }
 
     /**

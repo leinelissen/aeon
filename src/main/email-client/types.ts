@@ -10,26 +10,35 @@ export interface EmailQuery {
 
 export type Email = ParsedMail;
 
-export abstract class EmailClient {
+export interface EmailClient {
     /**
      * Whether the current client has been initialized or not
      */
     isInitialized: boolean;
 
     /**
+     * The emailaddress that this particular client resolves to. Should not be
+     * set if the client has not been initialised yet.
+     */
+    emailAddress?: string;
+
+    /**
      * Initialize the email client. Prepare it for use through either login
      * screens, consent, or whatever. Only called when first setting up the
-     * email client.
+     * email client. This function returns the emailaddress that has just been
+     * successfully initialised.
      */
-    abstract initialize(): Promise<void>
+    initialize(): Promise<string>
+    
     /**
      * Retrieve a set of messages using the query object
      * @param query EmailQuery
      */
-    abstract findMessages(query?: EmailQuery): Promise<Email[]>
+    findMessages(query?: EmailQuery): Promise<Email[]>
+
     /**
      * Send an email with the client, using the specified options
      * @param options Mail.Options
      */
-    abstract sendMessage(options: Options): Promise<void>;
+    sendMessage(options: Options): Promise<void>;
 }
