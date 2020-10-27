@@ -50,15 +50,14 @@ class ProviderManager extends EventEmitter {
 
         // Construct the dispatchedDataRequests file so that we can save it to
         // disk whenever neccessary
-        const retrievedData = store.get('dispatched-data-requests', '[]') as string;
-        const retrievedRequests = JSON.parse(retrievedData);
+        const retrievedRequests = store.get('dispatched-data-requests', []) as [string, DataRequestStatus][];
         this.dispatchedDataRequests = new PersistedMap(retrievedRequests, (map) => {
-            store.set('dispatched-data-requests', map.toString());
+            store.set('dispatched-data-requests', Array.from(map));
         });
 
         // Construct the initialised providers from the store
-        const retrievedProviders = store.get('initialised-providers', '[]') as string;
-        this.initialisedProviders = JSON.parse(retrievedProviders);
+        const retrievedProviders = store.get('initialised-providers', []) as string[];
+        this.initialisedProviders = retrievedProviders;
 
         // Then we create a timeout function that checks for completed data
         // requests every five minutes. Also immediately commence with queueing
@@ -92,7 +91,7 @@ class ProviderManager extends EventEmitter {
             // Save the key to the array
             this.initialisedProviders = [...this.initialisedProviders, key];
             // And also save the array to the store
-            store.set('initialised-providers', JSON.stringify(this.initialisedProviders));
+            store.set('initialised-providers', this.initialisedProviders);
         }
 
         return success;
