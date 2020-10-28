@@ -1,5 +1,5 @@
 const path = require('path');
-const rules = require('./webpack.rules')('tsconfig.renderer.json');
+const rules = require('./webpack.rules');
 const plugins = require('./webpack.plugins');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -45,6 +45,9 @@ module.exports = {
             filename: "assets/[name].css",
         })
     ],
+    optimization: {
+        usedExports: true,
+    },
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
         alias: {
@@ -52,5 +55,5 @@ module.exports = {
             main: path.resolve(__dirname, 'src', 'main'),
         }
     },
-    devtool: "inline-source-map",
+    devtool: 'source-map',
 };

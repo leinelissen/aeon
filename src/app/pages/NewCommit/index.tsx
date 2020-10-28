@@ -10,7 +10,7 @@ import Repository from 'app/utilities/Repository';
 import Loading from 'app/components/Loading';
 import MenuBar from 'app/components/MenuBar';
 import { RouteComponentProps } from 'react-router';
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import {
     Container,
     List,

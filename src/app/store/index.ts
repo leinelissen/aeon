@@ -1,4 +1,4 @@
-import { createConnectedStore, Store, Effects } from 'undux'
+import { createConnectedStore, Store as UnduxStore, Effects } from 'undux'
 import persistStore, { retrievePersistedStore } from './persist';
 import { ExtractedDataDiff, Commit } from 'main/lib/repository/types';
 import { Event } from 'app/utilities/Telemetry';
@@ -33,7 +33,7 @@ const initialState: State = {
 }
 
 export type StoreProps = {
-    store: Store<State>
+    store: UnduxStore<State>
 }
 
 export type StoreEffects = Effects<State>;

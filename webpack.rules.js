@@ -1,30 +1,12 @@
-module.exports = function(configFile = 'tsconfig.json') {
-    return [
-        // Add support for native node modules
-        {
-            test: /\.node$/,
-            use: 'node-loader',
-        },
-        // {
-        //     test: /\.(m?js|node)$/,
-        //     parser: { amd: false },
-        //     use: {
-        //         loader: '@zeit/webpack-asset-relocator-loader',
-        //         options: {
-        //             outputAssetBase: 'native_modules',
-        //         },
-        //     },
-        // },
-        {
-            test: /\.tsx?$/,
-            exclude: /(node_modules|\.webpack)/,
-            use: {
-                loader: 'ts-loader',
-                options: {
-                    transpileOnly: true,
-                    configFile
-                }
-            }
-        },
-    ];
-}
+module.exports = [
+    // Add support for native node modules
+    {
+        test: /\.node$/,
+        use: 'node-loader',
+    },
+    {
+        test: /\.tsx?$/,
+        exclude: /(node_modules|\.webpack)/,
+        use: 'babel-loader'
+    },
+];

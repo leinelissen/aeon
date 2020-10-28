@@ -1,10 +1,10 @@
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
-
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+ 
 module.exports = [
     new Dotenv(),
-    // new ForkTsCheckerWebpackPlugin(),
+    // new BundleAnalyzerPlugin(),
     new CspHtmlWebpackPlugin({
         'script-src': ["'self'", ...process.env.NODE_ENV !== 'production' ? ["'unsafe-eval'"] : [] ],
         'style-src': ["'self'", "'unsafe-inline'"],

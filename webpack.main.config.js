@@ -16,7 +16,10 @@ module.exports = {
     },
     // Put your normal webpack config below here
     module: {
-        rules: require('./webpack.rules')('tsconfig.main.json'),
+        rules: require('./webpack.rules'),
+    },
+    optimization: {
+        usedExports: true,
     },
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
@@ -28,4 +31,5 @@ module.exports = {
     plugins: [
         Dotenv,
     ],
+    devtool: 'source-map'
 };

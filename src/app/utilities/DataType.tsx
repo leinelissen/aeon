@@ -41,14 +41,18 @@ import {
     faUserCircle,
     faUserFriends,
     faShoePrints,
-    faBookAlt, faUsers, faBriefcase, faFile, faMoneyBillWaveAlt
+    faBookAlt, 
+    faUsers, 
+    faBriefcase, 
+    faFile, 
+    faMoneyBillWaveAlt,
+    faListAlt,
+    faCheck,
+    faClock,
+    faUniversity,
+    faUserPlus,
+    faMobile
 } from 'app/assets/fa-light';
-import { faListAlt } from 'app/assets/fa-light/faListAlt';
-import { faCheck } from 'app/assets/fa-light/faCheck';
-import { faClock } from 'app/assets/fa-light/faClock';
-import { faUniversity } from 'app/assets/fa-light/faUniversity';
-import { faUserPlus } from 'app/assets/fa-light/faUserPlus';
-import { faMobile } from 'app/assets/fa-light/faMobile';
 
 class DataType {
     /**
