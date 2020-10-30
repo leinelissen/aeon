@@ -5,7 +5,6 @@ import Providers from 'app/utilities/Providers';
 import styled, { css } from 'styled-components';
 import theme from 'app/styles/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Repository from 'app/utilities/Repository';
 import { HoverArea, Tooltip, TooltipContainer } from 'app/components/Tooltip';
 import { LinkButton } from 'app/components/Button';
 import { formatDistanceToNow } from 'date-fns';

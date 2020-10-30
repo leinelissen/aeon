@@ -1,4 +1,3 @@
-import theme from 'app/styles/theme';
 import React, { PropsWithChildren } from 'react';
 import { Switch, useLocation } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';

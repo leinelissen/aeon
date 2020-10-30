@@ -7,7 +7,6 @@ import Loading from 'app/components/Loading';
 import { ProviderDatum } from 'main/providers/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { H3, H5 } from 'app/components/Typography';
-import { Margin } from 'app/components/Utility';
 import { formatDistanceToNow } from 'date-fns';
 import Code from 'app/components/Code';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
@@ -20,15 +19,6 @@ interface Props {
 interface State {
     diff?: ExtractedDataDiff;
 }
-
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    font-size: 12px;
-    grid-row: span 2;
-    grid-area: diff;
-    overflow-y: auto;
-`;
 
 const MarginLeft = styled.span`
     margin-left: 10px;

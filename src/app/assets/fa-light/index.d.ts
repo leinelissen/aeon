@@ -1849,7 +1849,7 @@ export const faWrench: IconDefinition;
 export const faXRay: IconDefinition;
 export const faYenSign: IconDefinition;
 export const faYinYang: IconDefinition;
-import { IconDefinition, IconLookup, IconName, IconPrefix, IconPack } from '@fortawesome/fontawesome-common-types';
+import { IconDefinition, IconPrefix, IconPack } from '@fortawesome/fontawesome-common-types';
 export { IconDefinition, IconLookup, IconName, IconPrefix, IconPack } from '@fortawesome/fontawesome-common-types';
 export const prefix: IconPrefix;
 export const fal: IconPack;

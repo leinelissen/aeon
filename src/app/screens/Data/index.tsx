@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import Button, { GhostButton } from 'app/components/Button';
+import Button from 'app/components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCloudUpload, faMinus, faSave } from 'app/assets/fa-light';
-import { H2 } from 'app/components/Typography';
+import { faMinus, faSave } from 'app/assets/fa-light';
 import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 import Repository from 'app/utilities/Repository';
 import Loading from 'app/components/Loading';
-import MenuBar from 'app/components/MenuBar';
 import { RouteComponentProps } from 'react-router';
 import { uniq } from 'lodash-es';
 import {
