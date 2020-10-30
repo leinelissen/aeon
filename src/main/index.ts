@@ -24,7 +24,8 @@ const createWindow = (): void => {
         width: 800,
         minWidth: 600,
         minHeight: 600,
-        // titleBarStyle: 'hiddenInset',
+        titleBarStyle: 'hiddenInset',
+        vibrancy: 'medium-light',
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,

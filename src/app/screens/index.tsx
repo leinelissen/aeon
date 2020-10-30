@@ -1,10 +1,11 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import Onboarding from './Onboarding';
-import Log from './Log';
-import NewCommit from './NewCommit';
+import Timeline from './Timeline';
+import Data from './Data';
 import Store from 'app/store';
 import AnimatedSwitch from 'app/utilities/AnimatedSwitch';
+import Menu, { MenuContainer, TitleBar } from 'app/components/Menu';
 
 /**
  * A helper to determine what the starting screen should be for the application.
@@ -14,7 +15,7 @@ function initialiseRoute(): JSX.Element {
 
     // If the user is onboarded already, we can redirect them to the log
     if (store.get('onboardingComplete').initialisation) {
-        return <Redirect to='/log' exact />;
+        return <Redirect to='/timeline' exact />;
     }
     
     // If not, redirect to onboarding
@@ -23,12 +24,16 @@ function initialiseRoute(): JSX.Element {
 
 function Router(): JSX.Element {
     return (
-        <AnimatedSwitch>
-            <Route path='/log' component={Log} />
-            <Route path='/onboarding' exact component={Onboarding} />
-            <Route path="/commit/new" component={NewCommit} />
-            <Route path="/" component={initialiseRoute} />
-        </AnimatedSwitch>
+        <MenuContainer>
+            <TitleBar />
+            <Menu />
+            <AnimatedSwitch>
+                <Route path='/timeline' component={Timeline} />
+                <Route path='/onboarding' exact component={Onboarding} />
+                <Route path="/data" component={Data} />
+                <Route path="/" component={initialiseRoute} />
+            </AnimatedSwitch>
+        </MenuContainer>
     );
 }
 

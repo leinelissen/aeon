@@ -2,15 +2,13 @@ import { hot } from 'react-hot-loader';
 import React, { Component } from 'react';
 import 'app/styles';
 import Notifications from './Notifications';
-import Pages from 'app/pages';
+import Pages from 'app/screens';
 import styled, { StyleSheetManager } from 'styled-components';
 import Store from 'app/store';
 import { HashRouter } from 'react-router-dom';
 
 const Main = styled.main`
-    /* padding-top: 40px; */
     position: relative;
-    height: 100vh;
 `;
 
 class App extends Component {

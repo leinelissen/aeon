@@ -47,7 +47,7 @@ interface State {
     newCommitMessage?: string;
 }
 
-class NewCommit extends Component<RouteComponentProps & StoreProps, State> {
+class Data extends Component<RouteComponentProps & StoreProps, State> {
     state: State = {
         selectedCategory: null,
         groupedData: null,
@@ -91,7 +91,7 @@ class NewCommit extends Component<RouteComponentProps & StoreProps, State> {
             } else if (this.state.selectedCategory) {
                 this.setState({ selectedCategory: null });
             } else {
-                this.props.history.push(`/log?transition=${TransitionDirection.left}`);
+                this.props.history.push(`/timeline?transition=${TransitionDirection.left}`);
             }
         }
     }
@@ -144,7 +144,7 @@ class NewCommit extends Component<RouteComponentProps & StoreProps, State> {
         this.props.store.set('newCommit')(commit);
 
         // Lastly, we'll navigate back to the log
-        this.props.history.push(`/log?transition=${TransitionDirection.left}&newCommit=true`);
+        this.props.history.push(`/timeline?transition=${TransitionDirection.left}&newCommit=true`);
     }
 
     closeOverlay = (): void => this.setState({ selectedDatum: null });
@@ -173,23 +173,6 @@ class NewCommit extends Component<RouteComponentProps & StoreProps, State> {
 
         return (
             <Container>
-                <MenuBar>
-                    <Link to={`/log?transition=${TransitionDirection.left}`} data-telemetry-id="new-commit-back">
-                        <GhostButton>
-                            <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: 5 }} /> Back
-                        </GhostButton>
-                    </Link>
-                    <H2>New Identity Update</H2>
-                    <Button 
-                        icon={faCloudUpload} 
-                        style={{ marginLeft: 'auto' }} 
-                        disabled={!hasChanges} 
-                        onClick={this.openModal}
-                        data-telemetry-id="save-identity"
-                    >
-                        Save Identity
-                    </Button>
-                </MenuBar>
                 <List>
                     <RowHeading>CATEGORIES</RowHeading>
                     {Object.values(ProvidedDataTypes).map((key) => (
@@ -264,4 +247,4 @@ class NewCommit extends Component<RouteComponentProps & StoreProps, State> {
     }
 }
 
-export default Store.withStore(NewCommit);
+export default Store.withStore(Data);

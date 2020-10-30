@@ -23,7 +23,6 @@ const Container = styled.div`
     font-size: 12px;
     border-top: 1px solid #eee;
     border-right: 1px solid #eee;
-    background-color: white;
 `
 
 const Request = styled.div<{ color?: string; }>`
@@ -37,7 +36,6 @@ const Request = styled.div<{ color?: string; }>`
     margin-left: auto;
     border-right: 1px solid #eee;
     border-bottom: 5px solid ${props => props.color || 'transparent'};
-    opacity: 0.5;
 
     &:hover {
         background-color: #eee;

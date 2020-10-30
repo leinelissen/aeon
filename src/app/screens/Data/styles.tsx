@@ -10,9 +10,7 @@ import { EmptyIcon } from 'app/components/Utility';
 export const Container = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto 1fr;
     height: 100%;
-    background: white;
     position: relative;
     overflow: hidden;
 `;
@@ -39,21 +37,20 @@ export const ListItem = styled.div`
 export const RowHeading = styled(ListItem)`
     border-bottom: 1px solid ${theme.colors.border};
     text-transform: uppercase;
-    color: rgba(0, 0, 0, 0.5);
     font-weight: 400;
     font-size: 12px;
     letter-spacing: 0.5px;
     position: sticky;
     top: 0;
     align-self: flex-start;
-    background: white;
     z-index: 2;
     width: 100%;
+    background-color: ${theme.colors.grey.light};
 `;
 
 export const SubHeading = styled(RowHeading)`
     font-size: 10px;
-    color: rgba(0, 0, 0, 0.4);
+    color: ${theme.colors.grey.dark};
 `;
 
 interface ListButtonProps extends HTMLAttributes<HTMLButtonElement> {
@@ -70,10 +67,10 @@ export const StyledListButton = styled.button<ListButtonProps>`
     display: flex;
     align-items: center;
     font-size: 14px;
-    opacity: 0.7;
     margin: 0;
     padding: 14px 24px 14px 0;
     font-weight: 400;
+    color: ${theme.colors.black};
 
     img {
         max-height: 100px;
@@ -82,11 +79,10 @@ export const StyledListButton = styled.button<ListButtonProps>`
     }
 
     ${props => props.active ? css`
-        background: #eee;
-        opacity: 0.9;
+        background: ${theme.colors.grey.medium};
     ` : css`
         &:hover {
-            background-color: #f8f8f8;
+            background: ${theme.colors.grey.medium}BB;
             opacity: 0.8;
         }
     `}
@@ -102,6 +98,10 @@ export const StyledListButton = styled.button<ListButtonProps>`
     ${props => props.modified && css`
         background-color: ${theme.colors.yellow}${props.active ? 33 : 22};
     `}
+
+    &:disabled {
+        opacity: 0.25;
+    }
 `;
 
 const IconWrapper = styled.div`

@@ -1,22 +1,12 @@
 import React, { Component } from 'react';
 import Repository from 'app/utilities/Repository';
 import styled from 'styled-components';
-import Commit from './components/Commit';
+import Commit, { TimelineLine } from './components/Commit';
 import Diff from './components/Diff';
 import Loading from 'app/components/Loading';
-import Button from 'app/components/Button';
 import Providers from 'app/utilities/Providers';
-import Requests from './components/Requests';
-import { Link } from 'react-router-dom';
-import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 import { RepositoryEvents, Commit as CommitType } from 'main/lib/repository/types';
 import { IpcRendererEvent } from 'electron';
-import MenuBar from 'app/components/MenuBar';
-import { H2, H3 } from 'app/components/Typography';
-import Logo from 'app/assets/aeon-logo.svg';
-import theme from 'app/styles/theme';
-import { faSparkles } from 'app/assets/fa-light';
-import { Margin } from 'app/components/Utility';
 import TutorialOverlay from './components/TutorialOverlay';
 import Store, { StoreProps } from 'app/store';
 
@@ -28,37 +18,24 @@ interface State {
 
 const Container = styled.div`
     display: grid;
-    background: white;
     height: 100%;
-    grid-template-rows: auto auto 1fr 50px;
     grid-template-columns: 50% 50%;
     grid-template-areas: 
-        "head head" 
-        "new new"
-        "commits diff" 
-        "requests diff";
+        "commits diff";
 `;
 
 const CommitContainer = styled.div`
     display: flex;
     grid-area: "commits";
     flex-direction: column;
-    position: sticky;
+    position: relative;
     top: 0;
     flex-shrink: 0;
     border-right: 1px solid #eee;
     overflow-y: auto;
 `;
 
-const NewCommitContainer = styled.div`
-    background-color: ${theme.colors.blue.primary};
-    grid-area: "new";
-    grid-column: -1 / 1;
-    padding: 32px;
-    color: ${theme.colors.white};
-`;
-
-class Log extends Component<StoreProps, State> {
+class Timeline extends Component<StoreProps, State> {
     state: State = {
         log: [],
         selectedCommit: null,
@@ -119,25 +96,8 @@ class Log extends Component<StoreProps, State> {
 
         return (
             <Container>
-                <MenuBar>
-                    <H2>Identities</H2>
-                    <img src={Logo} style={{ height: 16, marginLeft: 'auto' }} />
-                </MenuBar>
-                <NewCommitContainer>
-                    <Margin>
-                        <H3>You have no changes</H3>
-                    </Margin>
-                    <Link to={`/commit/new?transition=${TransitionDirection.right}`} data-telemetry-id="create-new-commit">
-                        <Button
-                            icon={faSparkles}
-                            color={theme.colors.blue.primary}
-                            backgroundColor={theme.colors.white}
-                        >
-                            Create a new identity
-                        </Button>
-                    </Link>
-                </NewCommitContainer>
                 <CommitContainer>
+                    <TimelineLine />
                     {newCommit ? 
                         <Commit
                             entry={newCommit}
@@ -156,7 +116,6 @@ class Log extends Component<StoreProps, State> {
                         />
                     ))}
                 </CommitContainer>
-                <Requests />
                 <Diff commit={selectedTree} diff={newCommit && selectedCommit === 'new-commit' && newCommit.diff} />
                 <TutorialOverlay />
             </Container>
@@ -164,4 +123,4 @@ class Log extends Component<StoreProps, State> {
     }
 }
 
-export default Store.withStore(Log);
+export default Store.withStore(Timeline);

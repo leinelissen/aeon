@@ -14,17 +14,20 @@ interface Props extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'onClick'>
 }
 
 export const StyledCommit = styled.button<{ active?: boolean }>`
-    padding: 25px;
+    position: relative;
+    z-index: 3;
+    padding: 35px 25px;
+    margin: 5px;
     text-align: left;
     border: 0;
-    font-size: 16px;
+    font-size: 14pt;
     font-weight: 400;
-    width: 100%;
+    max-width: 100%;
     display: flex;
     align-items: center;
     position: relative;
-    color: #666;
-    background-color: white;
+    color: ${theme.colors.black};
+    background-color: transparent;
 
     &:hover {
         cursor: pointer;
@@ -40,27 +43,41 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     }
 
     ${(props) => props.active && css`
-        background-color: #eee !important;
+        background-color: ${theme.colors.white} !important;
+        border-radius: 16px;
         color: inherit;
     `}
 `
 
-const Dot = styled.div`
-    width: 24px;
-    height: 24px;
-    border-radius: 24px;
+const Dot = styled.div<{ active?: boolean }>`
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+    margin-left: -9px;
     margin-right: 16px; 
-    background-color: ${theme.colors.grey.medium};
+    background-color: ${theme.colors.white};
     z-index: 2;
     flex-shrink: 0;
+    border: 4px solid #fcfcfc;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 
+                0 2px 4px rgba(0,0,0,0.04), 
+                0 4px 8px rgba(0,0,0,0.04), 
+                0 8px 16px rgba(0,0,0,0.04),
+                0 16px 32px rgba(0,0,0,0.04);
+
+    ${(props) => props.active && css`
+        background-color: ${theme.colors.blue.primary};
+        border: 4px solid ${theme.colors.blue.veryLight};
+        color: inherit;
+    `}
 `;
 
-const Timeline = styled.div`
-    position: absolute;
-    left: 36px;
-    width: 2px;
+export const TimelineLine = styled.div`
+    position: fixed;
+    left: 32px;
+    width: 10px;
     height: 100%;
-    background-color: #ddd;
+    background-color: ${theme.colors.grey.light};
     z-index: 0;
 `;
 
@@ -74,8 +91,7 @@ class Commit extends Component<Props> {
 
         return (
             <StyledCommit active={active} onClick={this.handleClick}>
-                <Timeline />
-                <Dot />
+                <Dot active={active} />
                 {entry.message}
                 {latestCommit && <PullRight><Badge>Current Identity</Badge></PullRight>}
             </StyledCommit>

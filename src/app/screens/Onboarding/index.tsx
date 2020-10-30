@@ -121,7 +121,7 @@ class Onboarding extends Component<StoreProps, State> {
                     </BrandContainer>
                 </Center>
                 <Bottom>
-                    {isInitialised ? <Link to="/log" data-telemetry-id="proceed-from-onboarding"><Button>Continue</Button></Link> : <br />}
+                    {isInitialised ? <Link to="/timeline" data-telemetry-id="proceed-from-onboarding"><Button>Continue</Button></Link> : <br />}
                 </Bottom>
             </Container>
         );
