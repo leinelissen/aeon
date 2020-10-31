@@ -8,14 +8,13 @@ import { faChevronRight } from 'app/assets/fa-light';
 
 export interface RightSideOverlayProps {
     children: JSX.Element;
-    onClose: () => void;
+    onClose?: () => void;
 }
 
 const Container = styled.div`
     position: absolute;
     background-color: white;
     z-index: 2;
-    font-size: 14px;
     width: 33vw;
     max-height: calc(100% - 20px);
     right: 10px;
@@ -23,12 +22,12 @@ const Container = styled.div`
     border-radius: 16px;
     padding-top: 16px;
     overflow-y: auto;
-    box-shadow: -1px 0 1px rgba(0,0,0,0.01), 
-              -2px 0 2px rgba(0,0,0,0.01), 
-              -4px 0 4px rgba(0,0,0,0.01), 
-              -8px 0 8px rgba(0,0,0,0.01), 
-              -16px 0 16px rgba(0,0,0,0.01), 
-              -32px 0 32px rgba(0,0,0,0.01);
+    box-shadow: 0 -1px 1px rgba(0,0,0,0.01), 
+              0 -2px 2px rgba(0,0,0,0.01), 
+              0 -4px 4px rgba(0,0,0,0.01), 
+              0 -8px 8px rgba(0,0,0,0.01), 
+              0 -16px 16px rgba(0,0,0,0.01), 
+              0 -32px 32px rgba(0,0,0,0.01);
 `;
 
 export const CloseButton = styled(GhostButton)`
@@ -37,9 +36,9 @@ export const CloseButton = styled(GhostButton)`
     top: 8px;
 `;
 
-export const Section = styled.div`
+export const Section = styled.div<{ smallPadding?: boolean}>`
     border-bottom: 1px solid #eee;
-    padding: 16px;
+    padding: ${props => props.smallPadding ? 15: 25}px;
 
     img {
         max-width: 100%;
@@ -70,9 +69,11 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
             {children => children && 
                 (props =>
                     <Container style={props}>
-                        <CloseButton onClick={handleClose}>
-                            <FontAwesomeIcon icon={faChevronRight} />
-                        </CloseButton>
+                        {handleClose ? 
+                            <CloseButton onClick={handleClose}>
+                                <FontAwesomeIcon icon={faChevronRight} />
+                            </CloseButton>
+                            : null}
                         {children}
                     </Container>
                 )

@@ -36,7 +36,7 @@ const Link = styled(NavLink)`
     background: none;
     border: 0;
     font-family: 'IBM Plex Sans';
-    font-size: 12px;
+    font-size: 15px;
     text-align: left;
     margin: 5px 10px;
     height: 40px;

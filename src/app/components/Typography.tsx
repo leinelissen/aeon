@@ -6,9 +6,10 @@ export const H1 = styled.h1`
 `;
 
 export const H2 = styled.h2`
-    font-weight: 300;
+    font-weight: 400;
     font-size: 24px;
     margin: 8px 0;
+    line-height: 1.3;
     word-break: break-all;
 `;
 

@@ -108,11 +108,6 @@ const IconWrapper = styled.div`
     margin: 0 8px;
 `;
 
-export const MarginLeft = styled.span`
-    display: inline-block;
-    margin-left: 16px;
-`;
-
 function ListButton({ children, ...props }: PropsWithChildren<ListButtonProps>) {
     return (
         <StyledListButton {...props}>

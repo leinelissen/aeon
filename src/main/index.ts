@@ -21,7 +21,7 @@ const createWindow = (): void => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
         height: 800,
-        width: 800,
+        width: 1000,
         minWidth: 600,
         minHeight: 600,
         titleBarStyle: 'hiddenInset',
