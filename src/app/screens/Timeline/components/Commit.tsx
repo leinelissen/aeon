@@ -20,7 +20,7 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     margin: 5px;
     text-align: left;
     border: 0;
-    font-size: 14pt;
+    font-size: 12pt;
     font-weight: 400;
     max-width: 100%;
     display: flex;
@@ -50,15 +50,16 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
 `
 
 const Dot = styled.div<{ active?: boolean }>`
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     border-radius: 32px;
-    margin-left: -9px;
+    margin-left: -5px;
     margin-right: 16px; 
     background-color: ${theme.colors.white};
     z-index: 2;
     flex-shrink: 0;
     border: 4px solid #fcfcfc;
+    transition: transform 0.3s ease;
     box-shadow: 0 1px 2px rgba(0,0,0,0.04), 
                 0 2px 4px rgba(0,0,0,0.04), 
                 0 4px 8px rgba(0,0,0,0.04), 
@@ -69,6 +70,7 @@ const Dot = styled.div<{ active?: boolean }>`
         background-color: ${theme.colors.blue.primary};
         border: 4px solid ${theme.colors.blue.veryLight};
         color: inherit;
+        transform: scale(1.25);
     `}
 `;
 

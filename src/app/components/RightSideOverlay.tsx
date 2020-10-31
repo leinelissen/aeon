@@ -39,7 +39,7 @@ export const CloseButton = styled(GhostButton)`
 
 export const Section = styled.div`
     border-bottom: 1px solid #eee;
-    padding: 16px 32px;
+    padding: 16px;
 
     img {
         max-width: 100%;
