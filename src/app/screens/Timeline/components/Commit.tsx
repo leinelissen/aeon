@@ -75,10 +75,12 @@ const Dot = styled.div<{ active?: boolean }>`
 `;
 
 export const TimelineLine = styled.div`
-    position: fixed;
+    position: absolute;
+    top: 0;
+    bottom: 0;
     left: 32px;
     width: 10px;
-    height: 100%;
+    min-height: 100%;
     background-color: ${theme.colors.grey.light};
     z-index: 0;
 `;

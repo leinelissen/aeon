@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Button from 'app/components/Button';
 import { ProviderDatum, ProvidedDataTypes } from 'main/providers/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,20 +8,27 @@ import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';
 import theme from 'app/styles/theme';
 import RightSideOverlay, { DetailListItem, Section } from 'app/components/RightSideOverlay';
+import { useHistory, useParams } from 'react-router-dom';
+import { RouteProps } from 'app/screens/types';
 
 interface Props {
     datum: ProviderDatum<unknown, unknown>;
-    onClose: () => void;
     onDelete?: () => void;
     onModify?: () => void;
 }
 
 const DatumOverlay = (props: Props): JSX.Element => {
     const { 
-        onClose: handleClose,
         onDelete: handleDelete,
         datum 
     } = props;
+
+    // Create handler that redirects the page if the overlay is closed
+    const { category } = useParams<RouteProps['data']>();
+    const history = useHistory();
+    const handleClose = useCallback(() => {
+        history.push(`/data/${category}`);
+    }, [history, category]);
 
     return (
         <RightSideOverlay onClose={handleClose}>

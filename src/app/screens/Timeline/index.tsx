@@ -9,11 +9,18 @@ import { RepositoryEvents, Commit as CommitType } from 'main/lib/repository/type
 import { IpcRendererEvent } from 'electron';
 import TutorialOverlay from './components/TutorialOverlay';
 import Store, { StoreProps } from 'app/store';
+import { useHistory, useParams } from 'react-router-dom';
+import { RouteProps } from '../types';
+import { History } from 'history';
 
 interface State {
     log: CommitType[];
-    selectedCommit?: string;
     updating: boolean;
+}
+
+interface Props {
+    params: RouteProps['timeline'];
+    history: History;
 }
 
 const Container = styled.div`
@@ -35,10 +42,9 @@ const CommitContainer = styled.div`
     overflow-y: auto;
 `;
 
-class Timeline extends Component<StoreProps, State> {
+class Timeline extends Component<StoreProps & Props, State> {
     state: State = {
         log: [],
-        selectedCommit: null,
         updating: false,
     };
 
@@ -59,14 +65,20 @@ class Timeline extends Component<StoreProps, State> {
 
     fetchLog = (): Promise<void> => {
         return Repository.log()
-            .then(log => this.setState({ 
-                log, 
-                selectedCommit: this.state.selectedCommit || log[0].oid 
-            }));
+            .then(log => {
+                // Save log to state
+                this.setState({ log });
+
+                // Redirect to most recent commit if none is set
+                if (!this.props.params.commitHash) {
+                    this.props.history.push('/timeline/' + log[0].oid);
+                }
+            });
     }
 
     handleClick = (hash: string): void => {
-        this.setState({ selectedCommit: hash });
+        this.props.history.push('/timeline/' + hash);
+        // this.setState({ selectedCommit: hash });
     }
 
     handleRefresh = async (): Promise<void> => {
@@ -84,24 +96,25 @@ class Timeline extends Component<StoreProps, State> {
     }
 
     render(): JSX.Element {
-        const { log, selectedCommit } = this.state;
+        const { log } = this.state;
+        const { params: { commitHash } } = this.props;
         const newCommit = this.props.store.get('newCommit');
-        const selectedTree = selectedCommit === 'new-commit'
+        const selectedTree = commitHash === 'new-commit'
             ? newCommit
-            : log.find(d => d.oid === selectedCommit);
+            : log.find(d => d.oid === commitHash);
 
         if (!log.length) {
             return <Loading />;
         }
 
         return (
-            <Container>
+            <Container> 
+                <TimelineLine />
                 <CommitContainer>
-                    <TimelineLine />
                     {newCommit ? 
                         <Commit
                             entry={newCommit}
-                            active={'new-commit' === selectedCommit}
+                            active={'new-commit' === commitHash}
                             onClick={this.handleClick}
                         />
                         : null}
@@ -110,17 +123,24 @@ class Timeline extends Component<StoreProps, State> {
                             key={entry.oid}
                             entry={entry}
                             onClick={this.handleClick}
-                            active={entry.oid === selectedCommit}
+                            active={entry.oid === commitHash}
                             latestCommit={i === 0}
                             data-telemetry-id="timeline-view-commit"
                         />
                     ))}
                 </CommitContainer>
-                <Diff commit={selectedTree} diff={newCommit && selectedCommit === 'new-commit' && newCommit.diff} />
+                <Diff commit={selectedTree} diff={newCommit && commitHash === 'new-commit' && newCommit.diff} />
                 <TutorialOverlay />
             </Container>
         );
     }
 }
 
-export default Store.withStore(Timeline);
+const RouterWrapper = (props: unknown[]): JSX.Element => {
+    const params = useParams();
+    const history = useHistory();
+    console.log(params);
+    return <Timeline params={params} history={history} {...props} />
+}
+
+export default Store.withStore(RouterWrapper);

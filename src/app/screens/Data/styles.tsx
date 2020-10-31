@@ -6,6 +6,7 @@ import DataType from 'app/utilities/DataType';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faMinus } from 'app/assets/fa-light';
 import { EmptyIcon } from 'app/components/Utility';
+import { useHistory } from 'react-router-dom';
 
 export const Container = styled.div`
     display: grid;
@@ -132,13 +133,13 @@ const NumberOfItems = styled.span`
 interface ClickableCategoryProps extends Omit<ListButtonProps, 'onClick'> {
     type: ProvidedDataTypes;
     items?: number;
-    onClick: (activity: ProvidedDataTypes) => void;
 }
 
-export const ClickableCategory = ({ type, onClick, items, ...props }: ClickableCategoryProps): JSX.Element => {
+export const ClickableCategory = ({ type, items, ...props }: ClickableCategoryProps): JSX.Element => {
+    const history = useHistory();
     const handleClick = useCallback(() => {
-        return onClick(type);
-    }, [onClick, type]);
+        return history.push('/data/' + type);
+    }, [type]);
     
     return (
         <ListButton onClick={handleClick} {...props}>
@@ -151,14 +152,15 @@ export const ClickableCategory = ({ type, onClick, items, ...props }: ClickableC
 
 interface ClickableDataPointProps extends Omit<ListButtonProps, 'onClick'> {
     datum: ProviderDatum<unknown, unknown>;
-    onClick: (datum: number) => void;
     index: number;
+    type: ProvidedDataTypes;
 }
 
-export const ClickableDataPoint = ({ datum, onClick, index, ...props }: ClickableDataPointProps): JSX.Element => {
+export const ClickableDataPoint = ({ datum, type, index, ...props }: ClickableDataPointProps): JSX.Element => {
+    const history = useHistory();
     const handleClick = useCallback(() => {
-        return onClick(index);
-    }, [onClick, datum]);
+        return history.push(`/data/${type}/${index}`);
+    }, [type, index]);
 
     return (
         <ListButton onClick={handleClick} {...props}>

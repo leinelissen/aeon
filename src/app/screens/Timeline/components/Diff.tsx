@@ -92,8 +92,6 @@ class Diff extends PureComponent<Props, State> {
             );
         }
 
-        console.log(diff);
-
         return (
             <RightSideOverlay>
                 <>

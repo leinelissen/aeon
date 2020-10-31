@@ -1,25 +1,27 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, useHistory, Switch } from 'react-router-dom';
 import Onboarding from './Onboarding';
 import Timeline from './Timeline';
 import Data from './Data';
 import Store from 'app/store';
-import AnimatedSwitch from 'app/utilities/AnimatedSwitch';
-import Menu, { MenuContainer, TitleBar } from 'app/components/Menu';
+import Menu, { ContentContainer, MenuContainer, TitleBar } from 'app/components/Menu';
 
 /**
  * A helper to determine what the starting screen should be for the application.
  */
-function initialiseRoute(): JSX.Element {
+function InitialiseRoute(): JSX.Element {
     const store = Store.useStore();
+    const history = useHistory();
 
     // If the user is onboarded already, we can redirect them to the log
     if (store.get('onboardingComplete').initialisation) {
-        return <Redirect to='/timeline' exact />;
+        history.push('/timeline');
     }
     
     // If not, redirect to onboarding
-    return <Redirect to='/onboarding' exact />;
+    history.push('/onboarding');
+
+    return null;
 }
 
 function Router(): JSX.Element {
@@ -27,12 +29,22 @@ function Router(): JSX.Element {
         <MenuContainer>
             <TitleBar />
             <Menu />
-            <AnimatedSwitch>
-                <Route path='/timeline' component={Timeline} />
-                <Route path='/onboarding' exact component={Onboarding} />
-                <Route path="/data" component={Data} />
-                <Route path="/" component={initialiseRoute} />
-            </AnimatedSwitch>
+            <ContentContainer>
+                <Switch>
+                    <Route path='/timeline/:commitHash?'>
+                        <Timeline />
+                    </Route>
+                    <Route path='/onboarding'>
+                        <Onboarding />
+                    </Route>
+                    <Route path="/data/:category?/:datumId?">
+                        <Data />
+                    </Route>
+                    <Route exact path="/">
+                        <InitialiseRoute />
+                    </Route>
+                </Switch>
+            </ContentContainer>
         </MenuContainer>
     );
 }

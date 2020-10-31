@@ -25,6 +25,14 @@ export const TitleBar = styled.div`
     -webkit-app-region: drag;
 `;
 
+export const ContentContainer = styled.div`
+    grid-area: content;
+    background-color: #FBFBFB;
+    grid-area: content;
+    overflow: auto;
+    position: relative;
+`;
+
 const Container = styled.div`
     grid-area: menu;
     display: flex;
