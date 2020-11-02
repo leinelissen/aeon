@@ -27,9 +27,9 @@ function InitialiseRoute(): JSX.Element {
 function Router(): JSX.Element {
     return (
         <MenuContainer>
-            <TitleBar />
             <Menu />
             <ContentContainer>
+                <TitleBar />
                 <Switch>
                     <Route path='/timeline/:commitHash?'>
                         <Timeline />

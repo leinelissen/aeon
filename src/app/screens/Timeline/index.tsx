@@ -31,6 +31,11 @@ const Container = styled.div`
         "commits diff";
 `;
 
+const DiffContainer = styled.div`
+    position: relative;
+    margin-top: 40px;
+`;
+
 const CommitContainer = styled.div`
     display: flex;
     grid-area: "commits";
@@ -40,6 +45,7 @@ const CommitContainer = styled.div`
     flex-shrink: 0;
     border-right: 1px solid #eee;
     overflow-y: auto;
+    padding-top: 40px;
 `;
 
 class Timeline extends Component<StoreProps & Props, State> {
@@ -129,17 +135,18 @@ class Timeline extends Component<StoreProps & Props, State> {
                         />
                     ))}
                 </CommitContainer>
-                <Diff commit={selectedTree} diff={newCommit && commitHash === 'new-commit' && newCommit.diff} />
+                <DiffContainer>
+                    <Diff commit={selectedTree} diff={newCommit && commitHash === 'new-commit' && newCommit.diff} />
+                </DiffContainer>
                 <TutorialOverlay />
             </Container>
         );
     }
 }
 
-const RouterWrapper = (props: unknown[]): JSX.Element => {
+const RouterWrapper = (props: StoreProps): JSX.Element => {
     const params = useParams();
     const history = useHistory();
-    console.log(params);
     return <Timeline params={params} history={history} {...props} />
 }
 

@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 export const Container = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 40px;
     height: 100%;
     position: relative;
     overflow: hidden;
