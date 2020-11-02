@@ -258,7 +258,8 @@ class Repository extends EventEmitter {
 
                 return {
                     oid: commit.sha(),
-                    message: commit.message(),
+                    // Only show the first line of a commit
+                    message: commit.message().split('\n')[0],
                     author: {
                         email: author.email(),
                         name: author.name(),

@@ -46,6 +46,17 @@ function ProviderOverlay({ selectedProvider, status }: Props): JSX.Element {
                                 fixedWidth
                             />
                             Last check: <i>{status?.lastCheck ? formatDistanceToNow(status.lastCheck) + ' ago' : 'never'}</i>
+                            {status?.completed && 
+                                <>
+                                    <br />
+                                    <FontAwesomeIcon
+                                        icon={faCheck}
+                                        style={{ marginRight: 8 }}
+                                        fixedWidth
+                                    />
+                                    Completed: <i>{formatDistanceToNow(status?.completed)} ago</i>
+                                </>
+                            }
                         </span>
                     </Section>
                     {status?.dispatched ? 

@@ -127,7 +127,7 @@ class ProviderManager extends EventEmitter {
         }
 
         // Alternatively, we save the files and attempt to commit
-        const changedFiles = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`);
+        const changedFiles = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`, ProviderUpdateType.UPDATE);
         
         // GUARD: Only log stuff if new data is found
         if (changedFiles) {
@@ -276,7 +276,7 @@ class ProviderManager extends EventEmitter {
                 // If it is complete now, we'll fetch the data and parse it
                 const dirPath = path.join(REPOSITORY_PATH, key);
                 const files = await instance.parseDataRequest(dirPath);
-                const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`);
+                const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
                 Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
                 
                 // Set the flag for completion
