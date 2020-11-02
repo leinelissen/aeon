@@ -125,10 +125,10 @@ export default function Menu(): JSX.Element {
                 <span className="icon"><FontAwesomeIcon icon={faClock} fixedWidth /></span>
                 <span>Timeline</span>
             </Link>
-            {/* <Link to="/requests" activeClassName="active">
+            <Link to="/requests" activeClassName="active">
                 <span className="icon"><FontAwesomeIcon icon={faSync} fixedWidth /></span>
                 <span>Requests</span>
-            </Link> */}
+            </Link>
             <Link to="/data" activeClassName="active">
                 <span className="icon"><FontAwesomeIcon icon={faTable} fixedWidth /></span>
                 <span>Data</span>

@@ -5,6 +5,7 @@ import Timeline from './Timeline';
 import Data from './Data';
 import Store from 'app/store';
 import Menu, { ContentContainer, MenuContainer, TitleBar } from 'app/components/Menu';
+import Requests from './Requests';
 
 /**
  * A helper to determine what the starting screen should be for the application.
@@ -36,6 +37,9 @@ function Router(): JSX.Element {
                     </Route>
                     <Route path='/onboarding'>
                         <Onboarding />
+                    </Route>
+                    <Route path="/requests/:provider?">
+                        <Requests />
                     </Route>
                     <Route path="/data/:category?/:datumId?">
                         <Data />

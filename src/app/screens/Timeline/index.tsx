@@ -12,6 +12,7 @@ import Store, { StoreProps } from 'app/store';
 import { useHistory, useParams } from 'react-router-dom';
 import { RouteProps } from '../types';
 import { History } from 'history';
+import { List, PanelGrid } from 'app/components/PanelGrid';
 
 interface State {
     log: CommitType[];
@@ -22,14 +23,6 @@ interface Props {
     params: RouteProps['timeline'];
     history: History;
 }
-
-const Container = styled.div`
-    display: grid;
-    height: 100%;
-    grid-template-columns: 50% 50%;
-    grid-template-areas: 
-        "commits diff";
-`;
 
 const CommitContainer = styled.div`
     display: flex;
@@ -109,30 +102,34 @@ class Timeline extends Component<StoreProps & Props, State> {
         }
 
         return (
-            <Container> 
-                <TimelineLine />
-                <CommitContainer>
-                    {newCommit ? 
-                        <Commit
-                            entry={newCommit}
-                            active={'new-commit' === commitHash}
-                            onClick={this.handleClick}
-                        />
-                        : null}
-                    {log.map((entry, i) => (
-                        <Commit
-                            key={entry.oid}
-                            entry={entry}
-                            onClick={this.handleClick}
-                            active={entry.oid === commitHash}
-                            latestCommit={i === 0}
-                            data-telemetry-id="timeline-view-commit"
-                        />
-                    ))}
-                </CommitContainer>
-                <Diff commit={selectedTree} diff={newCommit && commitHash === 'new-commit' && newCommit.diff} />
+            <PanelGrid columns={2} noTopPadding> 
+                <List>
+                    <TimelineLine />
+                    <CommitContainer>
+                        {newCommit ? 
+                            <Commit
+                                entry={newCommit}
+                                active={'new-commit' === commitHash}
+                                onClick={this.handleClick}
+                            />
+                            : null}
+                        {log.map((entry, i) => (
+                            <Commit
+                                key={entry.oid}
+                                entry={entry}
+                                onClick={this.handleClick}
+                                active={entry.oid === commitHash}
+                                latestCommit={i === 0}
+                                data-telemetry-id="timeline-view-commit"
+                            />
+                        ))}
+                    </CommitContainer>
+                </List>
+                <List topMargin>
+                    <Diff commit={selectedTree} diff={newCommit && commitHash === 'new-commit' && newCommit.diff} />
+                </List>
                 <TutorialOverlay />
-            </Container>
+            </PanelGrid>
         );
     }
 }

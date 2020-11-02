@@ -125,7 +125,7 @@ class Data extends Component<Props, State> {
         return (
             <PanelGrid>
                 <List>
-                    <RowHeading>CATEGORIES</RowHeading>
+                    <RowHeading>Categories</RowHeading>
                     {Object.values(ProvidedDataTypes).map((key) => (
                         <ClickableCategory
                             key={key}
@@ -140,7 +140,7 @@ class Data extends Component<Props, State> {
                     ))}
                 </List>
                 <List>
-                    <RowHeading>DATA POINTS</RowHeading>
+                    <RowHeading>Data Points</RowHeading>
                     {category && groupedData[category].map((datum, index) => (
                         <ClickableDataPoint
                             type={category as ProvidedDataTypes}
@@ -154,10 +154,12 @@ class Data extends Component<Props, State> {
                         />
                     ))}
                 </List>
-                <DatumOverlay
-                    datum={groupedData[category]?.[parsedDatumId]}
-                    onDelete={this.deleteDatum}
-                />
+                <List>
+                    <DatumOverlay
+                        datum={groupedData[category]?.[parsedDatumId]}
+                        onDelete={this.deleteDatum}
+                    />
+                </List>
                 <CreateNewCommit isModalOpen={false} groupedData={groupedData} deletedData={deletedData} />
                 <TutorialOverlay />
             </PanelGrid>

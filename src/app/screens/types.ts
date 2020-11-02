@@ -5,5 +5,8 @@ export interface RouteProps {
     data: {
         category?: string;
         datumId?: string;
+    },
+    requests: {
+        provider?: string;
     }
 }
