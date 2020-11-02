@@ -5,7 +5,7 @@ import { IpcRendererEvent } from 'electron';
 
 const channel = 'providers';
 
-interface DataRequestReturnType {
+export interface DataRequestReturnType {
     dispatched: Map<string, DataRequestStatus>;
     lastChecked: Date;
     providers: string[];

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns';
 import Instagram from './instagram';
-import { Provider, ProviderFile, DataRequestProvider, DataRequestStatus, ProviderEvents } from './types';
+import { Provider, ProviderFile, DataRequestProvider, DataRequestStatus, ProviderEvents, ProviderUpdateType } from './types';
 import Repository, { REPOSITORY_PATH } from '../lib/repository';
 import Notifications from 'main/lib/notifications';
 import ProviderBridge from './bridge';
@@ -127,7 +127,7 @@ class ProviderManager extends EventEmitter {
         }
 
         // Alternatively, we save the files and attempt to commit
-        const changedFiles = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`);
+        const changedFiles = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`, ProviderUpdateType.UPDATE);
         
         // GUARD: Only log stuff if new data is found
         if (changedFiles) {
@@ -139,7 +139,12 @@ class ProviderManager extends EventEmitter {
     /**
      * Save a bunch of files and auto-commit the result
      */
-    saveFilesAndCommit = async (files: ProviderFile[], key: string, message: string): Promise<number> => {
+    saveFilesAndCommit = async (
+        files: ProviderFile[],
+        key: string, 
+        message: string,
+        updateType: ProviderUpdateType
+    ): Promise<number> => {
         console.log(`Saving and committing files for ${key}...`);
 
         // Then store all files using the repositor save and add handler
@@ -169,8 +174,20 @@ class ProviderManager extends EventEmitter {
             return;
         }
 
+        // Gather the set of data that is to be appended to the commit
+        const messageData: Record<string, string> = {
+            'Aeon-Provider': key,
+            'Aeon-Update-Type': updateType,
+        }
+
+        // Parse the object as a series of "key: value \n" statements
+        const augmentedMessage = Object.keys(messageData).reduce((sum, key) => {
+            return `${sum}\n${key}: ${messageData[key]}`
+        }, message);
+
+        // Acutally create the commit
         console.log('Creating commit: ', message);
-        await this.repository.commit(message);
+        await this.repository.commit(augmentedMessage);
 
         return changedFiles.length;
     }
@@ -259,7 +276,7 @@ class ProviderManager extends EventEmitter {
                 // If it is complete now, we'll fetch the data and parse it
                 const dirPath = path.join(REPOSITORY_PATH, key);
                 const files = await instance.parseDataRequest(dirPath);
-                const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`);
+                const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
                 Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
                 
                 // Set the flag for completion

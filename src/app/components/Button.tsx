@@ -60,7 +60,7 @@ export const LinkButton = styled.button`
     padding: 0;
 `;
 
-export const GhostButton = styled(LinkButton)`
+export const GhostButton = styled<Pick>(LinkButton)`
     color: black;
     opacity: 0.3;
     font-size: 14px;

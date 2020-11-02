@@ -9,17 +9,16 @@ import { faChevronRight } from 'app/assets/fa-light';
 export interface RightSideOverlayProps {
     children: JSX.Element;
     onClose?: () => void;
-    columnPosition: number;
 }
 
-const Container = styled.div<Pick<RightSideOverlayProps, 'columnPosition'>>`
+const Container = styled.div`
     position: absolute;
     z-index: 2;
     height: 100%;
-    width: ${props => 100 / props.columnPosition}%;
+    width: 100%;
+    max-width: 500px;
     right: 0;
     top: 0;
-    padding-top: 40px;
 `;
 
 const InnerContainer = styled.div`
@@ -30,12 +29,12 @@ const InnerContainer = styled.div`
     overflow-y: auto;
     max-height: calc(100% - 20px);
     background-color: white;
-    box-shadow: 0 -1px 1px rgba(0,0,0,0.01), 
-              0 -2px 2px rgba(0,0,0,0.01), 
-              0 -4px 4px rgba(0,0,0,0.01), 
-              0 -8px 8px rgba(0,0,0,0.01), 
-              0 -16px 16px rgba(0,0,0,0.01), 
-              0 -32px 32px rgba(0,0,0,0.01);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.01), 
+              0 2px 2px rgba(0,0,0,0.01), 
+              0 4px 4px rgba(0,0,0,0.01), 
+              0 8px 8px rgba(0,0,0,0.01), 
+              0 16px 16px rgba(0,0,0,0.01), 
+              0 32px 32px rgba(0,0,0,0.01);
 `;
 
 export const CloseButton = styled(GhostButton)`
@@ -47,6 +46,10 @@ export const CloseButton = styled(GhostButton)`
 export const Section = styled.div<{ smallPadding?: boolean}>`
     border-bottom: 1px solid #eee;
     padding: ${props => props.smallPadding ? 15: 25}px;
+
+    p:first-child {
+        margin-top: 0;
+    }
 
     img {
         max-width: 100%;
@@ -67,7 +70,6 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
     const { 
         onClose: handleClose,
         children,
-        columnPosition
     } = props;
 
     return (
@@ -77,7 +79,7 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
         >
             {children => children && 
                 (props =>
-                    <Container style={props} columnPosition={columnPosition}>
+                    <Container style={props}>
                         <InnerContainer>
                             {handleClose ? 
                                 <CloseButton onClick={handleClose}>
