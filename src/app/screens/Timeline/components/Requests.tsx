@@ -5,7 +5,6 @@ import Providers from 'app/utilities/Providers';
 import styled, { css } from 'styled-components';
 import theme from 'app/styles/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Repository from 'app/utilities/Repository';
 import { HoverArea, Tooltip, TooltipContainer } from 'app/components/Tooltip';
 import { LinkButton } from 'app/components/Button';
 import { formatDistanceToNow } from 'date-fns';
@@ -23,7 +22,6 @@ const Container = styled.div`
     font-size: 12px;
     border-top: 1px solid #eee;
     border-right: 1px solid #eee;
-    background-color: white;
 `
 
 const Request = styled.div<{ color?: string; }>`
@@ -37,7 +35,6 @@ const Request = styled.div<{ color?: string; }>`
     margin-left: auto;
     border-right: 1px solid #eee;
     border-bottom: 5px solid ${props => props.color || 'transparent'};
-    opacity: 0.5;
 
     &:hover {
         background-color: #eee;

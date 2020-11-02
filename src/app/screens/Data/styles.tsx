@@ -6,55 +6,8 @@ import DataType from 'app/utilities/DataType';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faMinus } from 'app/assets/fa-light';
 import { EmptyIcon } from 'app/components/Utility';
+import { useHistory } from 'react-router-dom';
 
-export const Container = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto 1fr;
-    height: 100%;
-    background: white;
-    position: relative;
-    overflow: hidden;
-`;
-
-export const List = styled.div`
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid ${theme.colors.border};
-    flex-grow: 1;
-    overflow-y: auto;
-    position: relative;
-`;
-
-export const DataPointList = styled(List)`
-    grid-column: 2 / 4;
-`;
-
-export const ListItem = styled.div`
-    padding: 8px 32px;
-    flex-grow: 0;
-    flex-shrink: 0;
-`;
-
-export const RowHeading = styled(ListItem)`
-    border-bottom: 1px solid ${theme.colors.border};
-    text-transform: uppercase;
-    color: rgba(0, 0, 0, 0.5);
-    font-weight: 400;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    position: sticky;
-    top: 0;
-    align-self: flex-start;
-    background: white;
-    z-index: 2;
-    width: 100%;
-`;
-
-export const SubHeading = styled(RowHeading)`
-    font-size: 10px;
-    color: rgba(0, 0, 0, 0.4);
-`;
 
 interface ListButtonProps extends HTMLAttributes<HTMLButtonElement> {
     active?: boolean;
@@ -70,10 +23,10 @@ export const StyledListButton = styled.button<ListButtonProps>`
     display: flex;
     align-items: center;
     font-size: 14px;
-    opacity: 0.7;
     margin: 0;
     padding: 14px 24px 14px 0;
     font-weight: 400;
+    color: ${theme.colors.black};
 
     img {
         max-height: 100px;
@@ -82,11 +35,10 @@ export const StyledListButton = styled.button<ListButtonProps>`
     }
 
     ${props => props.active ? css`
-        background: #eee;
-        opacity: 0.9;
+        background: ${theme.colors.grey.medium};
     ` : css`
         &:hover {
-            background-color: #f8f8f8;
+            background: ${theme.colors.grey.medium}BB;
             opacity: 0.8;
         }
     `}
@@ -102,15 +54,14 @@ export const StyledListButton = styled.button<ListButtonProps>`
     ${props => props.modified && css`
         background-color: ${theme.colors.yellow}${props.active ? 33 : 22};
     `}
+
+    &:disabled {
+        opacity: 0.25;
+    }
 `;
 
 const IconWrapper = styled.div`
     margin: 0 8px;
-`;
-
-export const MarginLeft = styled.span`
-    display: inline-block;
-    margin-left: 16px;
 `;
 
 function ListButton({ children, ...props }: PropsWithChildren<ListButtonProps>) {
@@ -137,13 +88,13 @@ const NumberOfItems = styled.span`
 interface ClickableCategoryProps extends Omit<ListButtonProps, 'onClick'> {
     type: ProvidedDataTypes;
     items?: number;
-    onClick: (activity: ProvidedDataTypes) => void;
 }
 
-export const ClickableCategory = ({ type, onClick, items, ...props }: ClickableCategoryProps): JSX.Element => {
+export const ClickableCategory = ({ type, items, ...props }: ClickableCategoryProps): JSX.Element => {
+    const history = useHistory();
     const handleClick = useCallback(() => {
-        return onClick(type);
-    }, [onClick, type]);
+        return history.push('/data/' + type);
+    }, [type]);
     
     return (
         <ListButton onClick={handleClick} {...props}>
@@ -156,14 +107,15 @@ export const ClickableCategory = ({ type, onClick, items, ...props }: ClickableC
 
 interface ClickableDataPointProps extends Omit<ListButtonProps, 'onClick'> {
     datum: ProviderDatum<unknown, unknown>;
-    onClick: (datum: number) => void;
     index: number;
+    type: ProvidedDataTypes;
 }
 
-export const ClickableDataPoint = ({ datum, onClick, index, ...props }: ClickableDataPointProps): JSX.Element => {
+export const ClickableDataPoint = ({ datum, type, index, ...props }: ClickableDataPointProps): JSX.Element => {
+    const history = useHistory();
     const handleClick = useCallback(() => {
-        return onClick(index);
-    }, [onClick, datum]);
+        return history.push(`/data/${type}/${index}`);
+    }, [type, index]);
 
     return (
         <ListButton onClick={handleClick} {...props}>

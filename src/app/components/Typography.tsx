@@ -3,14 +3,13 @@ import theme from 'app/styles/theme';
 
 export const H1 = styled.h1`
     font-weight: 600;
-    color: #333;
 `;
 
 export const H2 = styled.h2`
-    font-weight: 300;
+    font-weight: 400;
     font-size: 24px;
     margin: 8px 0;
-    color: #666;
+    line-height: 1.3;
     word-break: break-all;
 `;
 
@@ -21,7 +20,7 @@ export const H3 = styled.h3`
 `;
 
 export const H5 = styled.h5`
-    opacity: 0.25;
+    opacity: 0.5;
     font-size: 12px;
     text-transform: uppercase;
     font-weight: 400;

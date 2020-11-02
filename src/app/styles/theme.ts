@@ -7,9 +7,11 @@ const theme = {
             dark: '#00186E',
         },
         grey: {
-            medium: '#bbb',
+            light: '#f7f7f7',
+            medium: '#EEEEEE',
+            dark: '#777777'
         },
-        black: '#071021',
+        black: '#000000',
         white: '#FFFFFF',
         green: '#89CC0C',
         red: '#FF6142',

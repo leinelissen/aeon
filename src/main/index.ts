@@ -21,10 +21,11 @@ const createWindow = (): void => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
         height: 800,
-        width: 800,
+        width: 1000,
         minWidth: 600,
         minHeight: 600,
-        // titleBarStyle: 'hiddenInset',
+        titleBarStyle: 'hiddenInset',
+        vibrancy: 'medium-light',
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
