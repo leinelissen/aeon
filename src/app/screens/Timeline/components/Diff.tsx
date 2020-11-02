@@ -86,14 +86,14 @@ class Diff extends PureComponent<Props, State> {
 
         if (!diff) {
             return (
-                <RightSideOverlay>
+                <RightSideOverlay columnPosition={2}>
                     <Loading />
                 </RightSideOverlay>
             );
         }
 
         return (
-            <RightSideOverlay>
+            <RightSideOverlay columnPosition={2}>
                 <>
                     <Section>
                         <H2>

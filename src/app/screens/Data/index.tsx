@@ -5,10 +5,6 @@ import Repository from 'app/utilities/Repository';
 import Loading from 'app/components/Loading';
 import { uniq } from 'lodash-es';
 import {
-    Container,
-    List,
-    RowHeading,
-    DataPointList,
     ClickableCategory,
     ClickableDataPoint,
 } from './styles';
@@ -19,6 +15,7 @@ import CreateNewCommit from './components/CreateNewCommit';
 import { RouteProps } from '../types';
 import { useHistory, useParams } from 'react-router-dom';
 import type { History} from 'history';
+import { List, PanelGrid, RowHeading } from 'app/components/PanelGrid';
 
 interface State {
     // The data that is extracted from the commit
@@ -102,7 +99,7 @@ class Data extends Component<Props, State> {
                 ...deletedData,
                 [category]: uniq([
                     ...deletedData[category],
-                    datumId,
+                    Number.parseInt(datumId),
                 ]),
             }
         })
@@ -126,7 +123,7 @@ class Data extends Component<Props, State> {
         }
 
         return (
-            <Container>
+            <PanelGrid>
                 <List>
                     <RowHeading>CATEGORIES</RowHeading>
                     {Object.values(ProvidedDataTypes).map((key) => (
@@ -142,7 +139,7 @@ class Data extends Component<Props, State> {
                         />
                     ))}
                 </List>
-                <DataPointList>
+                <List>
                     <RowHeading>DATA POINTS</RowHeading>
                     {category && groupedData[category].map((datum, index) => (
                         <ClickableDataPoint
@@ -156,14 +153,14 @@ class Data extends Component<Props, State> {
                             data-telemetry-id={`new-commit-select-data-point-${index}`}
                         />
                     ))}
-                </DataPointList>
+                </List>
                 <DatumOverlay
                     datum={groupedData[category]?.[parsedDatumId]}
                     onDelete={this.deleteDatum}
                 />
                 <CreateNewCommit isModalOpen={false} groupedData={groupedData} deletedData={deletedData} />
                 <TutorialOverlay />
-            </Container>
+            </PanelGrid>
         );
     }
 }

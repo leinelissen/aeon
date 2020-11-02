@@ -31,11 +31,6 @@ const Container = styled.div`
         "commits diff";
 `;
 
-const DiffContainer = styled.div`
-    position: relative;
-    margin-top: 40px;
-`;
-
 const CommitContainer = styled.div`
     display: flex;
     grid-area: "commits";
@@ -135,9 +130,7 @@ class Timeline extends Component<StoreProps & Props, State> {
                         />
                     ))}
                 </CommitContainer>
-                <DiffContainer>
-                    <Diff commit={selectedTree} diff={newCommit && commitHash === 'new-commit' && newCommit.diff} />
-                </DiffContainer>
+                <Diff commit={selectedTree} diff={newCommit && commitHash === 'new-commit' && newCommit.diff} />
                 <TutorialOverlay />
             </Container>
         );

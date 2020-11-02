@@ -31,7 +31,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
     }, [history, category]);
 
     return (
-        <RightSideOverlay onClose={handleClose}>
+        <RightSideOverlay onClose={handleClose} columnPosition={3}>
             {datum && (
                 <>
                     <Section>

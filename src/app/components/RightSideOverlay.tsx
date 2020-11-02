@@ -9,19 +9,27 @@ import { faChevronRight } from 'app/assets/fa-light';
 export interface RightSideOverlayProps {
     children: JSX.Element;
     onClose?: () => void;
+    columnPosition: number;
 }
 
-const Container = styled.div`
+const Container = styled.div<Pick<RightSideOverlayProps, 'columnPosition'>>`
     position: absolute;
-    background-color: white;
     z-index: 2;
-    width: 33vw;
-    max-height: calc(100% - 20px);
-    right: 10px;
+    height: 100%;
+    width: ${props => 100 / props.columnPosition}%;
+    right: 0;
+    top: 0;
+    padding-top: 40px;
+`;
+
+const InnerContainer = styled.div`
+    position: relative;
     margin: 10px;
     border-radius: 16px;
     padding-top: 16px;
     overflow-y: auto;
+    max-height: calc(100% - 20px);
+    background-color: white;
     box-shadow: 0 -1px 1px rgba(0,0,0,0.01), 
               0 -2px 2px rgba(0,0,0,0.01), 
               0 -4px 4px rgba(0,0,0,0.01), 
@@ -58,7 +66,8 @@ export const DetailListItem = styled.div`
 const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
     const { 
         onClose: handleClose,
-        children
+        children,
+        columnPosition
     } = props;
 
     return (
@@ -68,13 +77,15 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
         >
             {children => children && 
                 (props =>
-                    <Container style={props}>
-                        {handleClose ? 
-                            <CloseButton onClick={handleClose}>
-                                <FontAwesomeIcon icon={faChevronRight} />
-                            </CloseButton>
-                            : null}
-                        {children}
+                    <Container style={props} columnPosition={columnPosition}>
+                        <InnerContainer>
+                            {handleClose ? 
+                                <CloseButton onClick={handleClose}>
+                                    <FontAwesomeIcon icon={faChevronRight} />
+                                </CloseButton>
+                                : null}
+                            {children}
+                        </InnerContainer>
                     </Container>
                 )
             }
