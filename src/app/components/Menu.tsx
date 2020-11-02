@@ -8,7 +8,7 @@ import theme from 'app/styles/theme';
 
 export const MenuContainer = styled.div`
     display: grid;
-    grid-template-columns: 150px 1fr;
+    grid-template-columns: 225px 1fr;
     gap: 0px 0px;
     grid-template-areas:
         "menu content";
@@ -70,27 +70,29 @@ const Link = styled(NavLink)`
     font-family: 'IBM Plex Sans';
     font-size: 15px;
     text-align: left;
-    margin: 5px 10px;
-    height: 40px;
-    line-height: 40px;
-    border-radius: 4px;
-    padding: 0 10px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
     font-weight: 400;
     color: ${theme.colors.black};
     -webkit-app-region: no-drag;
 
-    span {
-        margin-left: 5px;
+    span:not(.icon) {
+        margin-left: 10px;
+        font-size: 18px;
+    }
+
+    span.icon {
+        font-size: 22px;
     }
 
     &.active {
-        background-color: white;
-        border: 1px solid ${theme.colors.grey.light};
-        font-weight: 600;
+        background-color: ${theme.colors.black}14;
     }
 
     &:hover:not(.active) {
-        background-color: #ffffffbb;
+        background-color: ${theme.colors.black}08;
     }
 `;
 
@@ -120,19 +122,19 @@ export default function Menu(): JSX.Element {
     return (
         <Container>
             <Link to="/timeline" activeClassName="active">
-                <FontAwesomeIcon icon={faClock} fixedWidth />
+                <span className="icon"><FontAwesomeIcon icon={faClock} fixedWidth /></span>
                 <span>Timeline</span>
             </Link>
             {/* <Link to="/requests" activeClassName="active">
-                <FontAwesomeIcon icon={faSync} fixedWidth />
+                <span className="icon"><FontAwesomeIcon icon={faSync} fixedWidth /></span>
                 <span>Requests</span>
             </Link> */}
             <Link to="/data" activeClassName="active">
-                <FontAwesomeIcon icon={faTable} fixedWidth />
+                <span className="icon"><FontAwesomeIcon icon={faTable} fixedWidth /></span>
                 <span>Data</span>
             </Link>
             {/* <Link to="/settings" activeClassName="active">
-                <FontAwesomeIcon icon={faCog} fixedWidth />
+                <span className="icon"><FontAwesomeIcon icon={faCog} fixedWidth /></span>
                 <span>Settings</span>
             </Link> */}
             <AeonLogo><img src={Emblem} /></AeonLogo>
