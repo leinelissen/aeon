@@ -237,3 +237,8 @@ export interface ProviderParser {
         // transformer?: (obj: any) => any | any[];
     }[]
 }
+
+export enum ProviderUpdateType {
+    UPDATE = 'update',
+    DATA_REQUEST = 'data_request'
+}
