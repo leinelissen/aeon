@@ -9,10 +9,11 @@ import { MarginLeft } from 'app/components/Utility';
 import DataType from 'app/utilities/DataType';
 import { DeletedData, GroupedData } from '../types';
 import { useHistory, useLocation } from 'react-router-dom';
-import Store from 'app/store';
+import { useAppDispatch } from 'app/store';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 import { Commit, ExtractedDataDiff } from 'main/lib/repository/types';
 import { RouteProps } from 'app/screens/types';
+import { addNewCommit } from 'app/store/new-commits/actions';
 
 interface Props {
     isModalOpen: boolean;
@@ -24,7 +25,7 @@ function CreateNewCommit({ isModalOpen, deletedData, groupedData }: Props): JSX.
     // Setup dependencies
     const history = useHistory();
     const location = useLocation<RouteProps['data']>();
-    const store = Store.useStore();
+    const dispatch = useAppDispatch();
 
     // Create handlers for setting a commit message
     const [ commitMessage, setCommitMessage ] = useState('');
@@ -62,7 +63,7 @@ function CreateNewCommit({ isModalOpen, deletedData, groupedData }: Props): JSX.
         };
 
         // Then, we'll store this commit in the store
-        store.set('newCommit')(commit);
+        dispatch(addNewCommit(commit));
 
         // Lastly, we'll navigate back to the log
         history.push(`/timeline?transition=${TransitionDirection.left}&newCommit=true`);

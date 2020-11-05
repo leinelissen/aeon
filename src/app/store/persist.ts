@@ -1,29 +1,17 @@
-import { StoreDefinition, Effects } from 'undux';
-import { State } from '.';
+import { Storage } from 'redux-persist';
 
-/**
- * Persists and updates to the store via ElectronStore and reads persisted data
- * upon application launch. This actual saving is done on the back-end as the
- * renderer process cannot access the filesystem
- */
-
-function persistStore(): Effects<State> {
-    const withStore: Effects<State> = (store): StoreDefinition<State> => {
-        store.onAll().subscribe(() => {
-            window.api.store.persist(store.getState());
-        });
-
-        return store;
-    }
-
-    return withStore;
+export default function ElectronStorage(): Storage {
+    return {
+        getItem: (...props) => {
+            console.log('GETITEM', props, window.api.store.retrieve());
+            return Promise.resolve(window.api.store.retrieve());
+        },
+        setItem: (key: string, item: string) => {
+            console.log('SETITEM', key, item);
+            return Promise.resolve(window.api.store.persist(item));
+        },
+        removeItem: () => {
+            return Promise.resolve(window.api.store.clear());
+        }
+    };
 }
-
-/**
- * Reads the persisted data from the store
- */
-export function retrievePersistedStore(initialState: State): State {
-    return window.api.store.retrieve() || initialState;
-}
-
-export default persistStore;

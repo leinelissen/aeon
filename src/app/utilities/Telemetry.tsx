@@ -1,8 +1,11 @@
 import React, { Component, createRef } from 'react';
-import Store, { StoreProps } from 'app/store';
-import { withRouter, RouteComponentProps } from 'react-router';
+import { addTelemetryLog } from 'app/store/telemetry/actions';
+import { State as AppState } from 'app/store';
+import { RouteComponentProps } from 'react-router';
 import Modal from 'app/components/Modal';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { Event } from 'app/store/telemetry';
 
 const TextArea = styled.textarea`
     border: 1px solid #eee;
@@ -22,12 +25,12 @@ interface State {
     isOpen: boolean;
 }
 
-export interface Event {
-    event: string;
-    element: string;
+interface Props {
+    telemetry: AppState['telemetry'];
+    addTelemetryLog: (payload: Parameters<typeof addTelemetryLog>[0]) => void;
 }
 
-class Telemetry extends Component<StoreProps & RouteComponentProps, State> {
+class Telemetry extends Component<Props & RouteComponentProps, State> {
     state = {
         isOpen: false,
     }
@@ -44,18 +47,14 @@ class Telemetry extends Component<StoreProps & RouteComponentProps, State> {
         document.removeEventListener('keydown', this.handleKeyDown);
     }
 
-    createEvent = (data: Event) => {
-        const { store, history } = this.props;
+    createEvent = (data: Pick<Event, 'event' | 'element'>) => {
+        const { history, addTelemetryLog } = this.props;
 
-        store.set('telemetry')([
-            ...store.get('telemetry'),
-            {
-                ...data,
-                timestamp: new Date().toLocaleString('en-GB'),
-                route: history.location,
-                store: store.get('onboardingComplete'),
-            }
-        ])
+        addTelemetryLog({
+            ...data,
+            timestamp: new Date().toLocaleString('en-GB'),
+            route: history.location.pathname,
+        });
     }
 
     handleClick = (event: MouseEvent) => {
@@ -84,7 +83,7 @@ class Telemetry extends Component<StoreProps & RouteComponentProps, State> {
         
     render(): JSX.Element {
         const { isOpen } = this.state;
-        const telemetry = this.props.store.get('telemetry');
+        const { telemetry } = this.props;
 
         return (
             <Modal isOpen={isOpen} onRequestClose={this.handleRequestClose}>
@@ -96,4 +95,14 @@ class Telemetry extends Component<StoreProps & RouteComponentProps, State> {
     }
 }
 
-export default withRouter(Store.withStore(Telemetry));
+const mapStateToProps = (state: AppState) => {
+    return {
+        telemetry: state.telemetry
+    };
+}
+
+const mapDispatchToProps = {
+    addTelemetryLog
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Telemetry);

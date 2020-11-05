@@ -8,11 +8,12 @@ import Providers from 'app/utilities/Providers';
 import { RepositoryEvents, Commit as CommitType } from 'main/lib/repository/types';
 import { IpcRendererEvent } from 'electron';
 import TutorialOverlay from './components/TutorialOverlay';
-import Store, { StoreProps } from 'app/store';
+import { State as AppState } from 'app/store';
 import { useHistory, useParams } from 'react-router-dom';
 import { RouteProps } from '../types';
 import { History } from 'history';
 import { List, PanelGrid } from 'app/components/PanelGrid';
+import { connect } from 'react-redux';
 
 interface State {
     log: CommitType[];
@@ -22,6 +23,7 @@ interface State {
 interface Props {
     params: RouteProps['timeline'];
     history: History;
+    newCommits: AppState['newCommits'];
 }
 
 const CommitContainer = styled.div`
@@ -36,7 +38,7 @@ const CommitContainer = styled.div`
     padding-top: 40px;
 `;
 
-class Timeline extends Component<StoreProps & Props, State> {
+class Timeline extends Component<Props, State> {
     state: State = {
         log: [],
         updating: false,
@@ -91,10 +93,9 @@ class Timeline extends Component<StoreProps & Props, State> {
 
     render(): JSX.Element {
         const { log } = this.state;
-        const { params: { commitHash } } = this.props;
-        const newCommit = this.props.store.get('newCommit');
+        const { params: { commitHash }, newCommits } = this.props;
         const selectedTree = commitHash === 'new-commit'
-            ? newCommit
+            ? newCommits[0]
             : log.find(d => d.oid === commitHash);
 
         if (!log.length) {
@@ -106,9 +107,9 @@ class Timeline extends Component<StoreProps & Props, State> {
                 <List>
                     <TimelineLine />
                     <CommitContainer>
-                        {newCommit ? 
+                        {newCommits.length ? 
                             <Commit
-                                entry={newCommit}
+                                entry={newCommits[0]}
                                 active={'new-commit' === commitHash}
                                 onClick={this.handleClick}
                             />
@@ -126,7 +127,7 @@ class Timeline extends Component<StoreProps & Props, State> {
                     </CommitContainer>
                 </List>
                 <List topMargin>
-                    <Diff commit={selectedTree} diff={newCommit && commitHash === 'new-commit' && newCommit.diff} />
+                    <Diff commit={selectedTree} diff={newCommits.length && commitHash === 'new-commit' && newCommits[0].diff} />
                 </List>
                 <TutorialOverlay />
             </PanelGrid>
@@ -134,10 +135,16 @@ class Timeline extends Component<StoreProps & Props, State> {
     }
 }
 
-const RouterWrapper = (props: StoreProps): JSX.Element => {
+const RouterWrapper = (props: Pick<Props, 'newCommits'>): JSX.Element => {
     const params = useParams();
     const history = useHistory();
     return <Timeline params={params} history={history} {...props} />
 }
 
-export default Store.withStore(RouterWrapper);
+const mapStateToProps = (state: AppState) => {
+    return {
+        newCommits: state.newCommits
+    };
+}
+
+export default connect(mapStateToProps)(RouterWrapper);

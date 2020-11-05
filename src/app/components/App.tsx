@@ -1,11 +1,15 @@
 import { hot } from 'react-hot-loader';
 import React, { Component } from 'react';
-import 'app/styles';
-import Notifications from './Notifications';
-import Pages from 'app/screens';
 import styled, { StyleSheetManager } from 'styled-components';
-import Store from 'app/store';
 import { HashRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+
+import 'app/styles';
+import Pages from 'app/screens';
+import Notifications from './Notifications';
+import store, { persistor } from 'app/store';
+import Loading from './Loading';
 
 const Main = styled.main`
     position: relative;
@@ -20,15 +24,17 @@ class App extends Component {
         return (
             <HashRouter>
                 <StyleSheetManager disableVendorPrefixes>
-                    <Store.Container>
-                        <div>
-                            <Notifications />
-                            <Main>
-                                <Pages />
-                            </Main>
-                            {/* <Telemetry /> */}
-                        </div>
-                    </Store.Container>
+                    <Provider store={store}>
+                        <PersistGate loading={<Loading />} persistor={persistor}>
+                            <div>
+                                <Notifications />
+                                <Main>
+                                    <Pages />
+                                </Main>
+                                {/* <Telemetry /> */}
+                            </div>
+                        </PersistGate>
+                    </Provider>
                 </StyleSheetManager>
             </HashRouter>
         );

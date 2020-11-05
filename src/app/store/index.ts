@@ -1,45 +1,53 @@
-import { createConnectedStore, Store as UnduxStore, Effects } from 'undux'
-import persistStore, { retrievePersistedStore } from './persist';
-import { ExtractedDataDiff, Commit } from 'main/lib/repository/types';
-import { Event } from 'app/utilities/Telemetry';
+import { configureStore, MiddlewareArray } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux';
+import { useDispatch } from 'react-redux';
+import ElectronStorage from './persist';
 
-export type State = {
-    // Whether onboarding has been completed
-    onboardingComplete: {
-        initialisation: boolean;
-        log: boolean;
-        newCommit: boolean;
-    };
-    // A collection of events used for gauging usage of the application
-    telemetry: Event[];
-    //
-    newCommit?: Commit & {
-        diff: ExtractedDataDiff
-    };
-    // The revision number for the data structure of the store. This helps track
-    // differing versions and helps adjust accordingly.
-    storeRevision: number;
+import newCommits from './new-commits';
+import onboarding from './onboarding';
+import telemetry from './telemetry';
+import { createMigrate, PersistConfig, persistReducer, persistStore } from 'redux-persist';
+import migrations from './migrations';
+
+// The root reducer contains all the individual reducers that make up the store
+const rootReducer = combineReducers({
+    newCommits,
+    onboarding,
+    telemetry
+});
+
+// Export types for later inclusion
+export type State = ReturnType<typeof rootReducer>;
+
+// Using this config, the store will be persisted using electron-store
+const persistConfig: PersistConfig<State> = {
+    key: 'app_store',
+    storage: ElectronStorage(),
+    version: 5,
+    migrate: createMigrate(migrations),
+    serialize: false,
+    deserialize: false,
 }
 
-const initialState: State = {
-    onboardingComplete: {
-        initialisation: false,
-        log: false,
-        newCommit: false,
-    },
-    telemetry: [],
-    newCommit: null,
-    storeRevision: 4,
-}
+// Create a persisted reducer
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export type StoreProps = {
-    store: UnduxStore<State>
-}
 
-export type StoreEffects = Effects<State>;
+// Create a store from the persisted root reducer, optionally applying middleware
+const store = configureStore({
+    reducer: persistedReducer,
+    middleware: new MiddlewareArray().concat(
 
-// Assign an explicit name to the component so that we can easily import it
-// later through Intellisense
-const Store = createConnectedStore(retrievePersistedStore(initialState), persistStore());
+    ),
+});
 
-export default Store;
+// Create a persisted store
+export const persistor = persistStore(store);
+
+export type AppDispatch = typeof store.dispatch;
+
+// Export hooks with injected store types for ease-of-use
+export const useAppDispatch = (): ReturnType<typeof useDispatch> => useDispatch<AppDispatch>();
+
+// Export the store
+export default store;

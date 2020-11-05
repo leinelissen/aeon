@@ -3,19 +3,20 @@ import { Route, useHistory, Switch } from 'react-router-dom';
 import Onboarding from './Onboarding';
 import Timeline from './Timeline';
 import Data from './Data';
-import Store from 'app/store';
+import { State } from 'app/store';
 import Menu, { ContentContainer, MenuContainer, TitleBar } from 'app/components/Menu';
 import Requests from './Requests';
+import { useSelector } from 'react-redux';
 
 /**
  * A helper to determine what the starting screen should be for the application.
  */
 function InitialiseRoute(): JSX.Element {
-    const store = Store.useStore();
+    const initialisationComplete = useSelector((state: State) => state.onboarding.initialisation);
     const history = useHistory();
 
     // If the user is onboarded already, we can redirect them to the log
-    if (store.get('onboardingComplete').initialisation) {
+    if (initialisationComplete) {
         history.push('/timeline');
     }
     

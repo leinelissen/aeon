@@ -1,16 +1,13 @@
-import React, { Component } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faFacebookF, faSpotify, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import theme from 'app/styles/theme';
 import Providers from 'app/utilities/Providers';
-import Store, { StoreProps } from 'app/store';
+import { useAppDispatch } from 'app/store';
 import Button from 'app/components/Button';
-
-interface State {
-    isInitialised: boolean;
-}
+import { completeOnboarding } from 'app/store/onboarding/actions';
 
 const Container = styled.div`
     width: 100%;
@@ -78,54 +75,49 @@ const Provider = styled.button<ProviderProps>`
     }
 `;
 
-class Onboarding extends Component<StoreProps, State> {
-    state = {
-        isInitialised: false
-    };
+function Onboarding(): JSX.Element {
+    const [isInitialised, setIsInitialised] = useState(false);
+    const dispatch = useAppDispatch();
 
-    handleClick = async (): Promise<void> => {
+    const handleClick = useCallback(async (): Promise<void> => {
+        // Initialise the provider on the back-end
         const isInitialised = await Providers.initialise('instagram');
-        this.setState({ isInitialised });
-        this.props.store.set('onboardingComplete')({
-            ...this.props.store.get('onboardingComplete'),
-            initialisation: true,
-        });
-    }
 
-    render(): JSX.Element {
-        const { isInitialised } = this.state;
+        // Then store it locally and in the store
+        setIsInitialised(isInitialised);
+        dispatch(completeOnboarding('initialisation'));
+    }, []);
 
-        return (
-            <Container>
-                <Center>
-                    <div>
-                        <p>There is lots of data out there on you. Aeon makes it easier for you to get the picture of what that looks like. It hooks into your platforms of choice, and helps you get a grip.</p>
-                        <p>In order to manage this data, Aeon pulls the data from the platforms you use. You will need to enter your login credentials for this. Don&apos;t worry, your passwords are never stored, and the resulting data is stored using strong encryption.</p>
-                        <p><strong>Connect to the platforms of your choice to reshape your online identity.</strong></p>
-                    </div>
-                    <BrandContainer>
-                        <Provider active={isInitialised} onClick={this.handleClick} data-telemetry-id="initialise-instagram">
-                            <FontAwesomeIcon icon={faInstagram} size="3x" />
-                        </Provider>
-                        <div style={{ display: 'flex' }}>
-                            <Provider disabled>
-                                <FontAwesomeIcon icon={faFacebookF} size="3x" />
-                            </Provider>
-                            <Provider disabled>
-                                <FontAwesomeIcon icon={faSpotify} size="3x" />
-                            </Provider>
-                        </div>
+    return (
+        <Container>
+            <Center>
+                <div>
+                    <p>There is lots of data out there on you. Aeon makes it easier for you to get the picture of what that looks like. It hooks into your platforms of choice, and helps you get a grip.</p>
+                    <p>In order to manage this data, Aeon pulls the data from the platforms you use. You will need to enter your login credentials for this. Don&apos;t worry, your passwords are never stored, and the resulting data is stored using strong encryption.</p>
+                    <p><strong>Connect to the platforms of your choice to reshape your online identity.</strong></p>
+                </div>
+                <BrandContainer>
+                    <Provider active={isInitialised} onClick={handleClick} data-telemetry-id="initialise-instagram">
+                        <FontAwesomeIcon icon={faInstagram} size="3x" />
+                    </Provider>
+                    <div style={{ display: 'flex' }}>
                         <Provider disabled>
-                            <FontAwesomeIcon icon={faLinkedin} size="3x" />
+                            <FontAwesomeIcon icon={faFacebookF} size="3x" />
                         </Provider>
-                    </BrandContainer>
-                </Center>
-                <Bottom>
-                    {isInitialised ? <Link to="/timeline" data-telemetry-id="proceed-from-onboarding"><Button>Continue</Button></Link> : <br />}
-                </Bottom>
-            </Container>
-        );
-    }
+                        <Provider disabled>
+                            <FontAwesomeIcon icon={faSpotify} size="3x" />
+                        </Provider>
+                    </div>
+                    <Provider disabled>
+                        <FontAwesomeIcon icon={faLinkedin} size="3x" />
+                    </Provider>
+                </BrandContainer>
+            </Center>
+            <Bottom>
+                {isInitialised ? <Link to="/timeline" data-telemetry-id="proceed-from-onboarding"><Button>Continue</Button></Link> : <br />}
+            </Bottom>
+        </Container>
+    );
 }
 
-export default Store.withStore(Onboarding);
+export default Onboarding;

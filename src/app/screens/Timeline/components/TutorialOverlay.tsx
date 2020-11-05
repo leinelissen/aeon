@@ -1,49 +1,44 @@
-import React, { Component } from 'react';
+import React, { useCallback, useState } from 'react';
 import Modal from 'app/components/Modal';
 import { H2 } from 'app/components/Typography';
 import styled from 'styled-components';
 import Button from 'app/components/Button';
 import { faArrowDown, faEnvelope, faArrowRight, faCheck } from 'app/assets/fa-light';
 import Providers from 'app/utilities/Providers';
-import Store, { StoreProps } from 'app/store';
-
-interface State {
-    page: number;
-    isLoading: boolean;
-}
+import { State, useAppDispatch } from 'app/store';
+import { completeOnboarding } from 'app/store/onboarding/actions';
+import { useSelector } from 'react-redux';
 
 const Container = styled.div`
     margin: 32px 16px;
 `;
 
-class TutorialOverlay extends Component<StoreProps, State> {
-    state = {
-        page: 0,
-        isLoading: false,
-    };
+function TutorialOverlay(): JSX.Element {
+    const [page, setPage] = useState(0);
+    const [isLoading, setLoading] = useState(false);
+    const isCompleted = useSelector((state: State) => state.onboarding.log);
+    const dispatch = useAppDispatch();
 
-    next = () => this.setState({ page: this.state.page + 1 });
-    done = () => this.props.store.set('onboardingComplete')({
-        ...this.props.store.get('onboardingComplete'),
-        log: true,
-    });
+    const next = useCallback(() => setPage(page + 1), [page, setPage]);
+    const done = useCallback(() => {
+        dispatch(completeOnboarding('log'));
+    }, [dispatch]);
 
-
-    updateAllProviders = async () => {
-        this.setState({ isLoading: true });
+    const updateAllProviders = useCallback(async () => {
+        setLoading(true);
         await Providers.updateAll();
-        this.setState({ isLoading: false, page: 1 });
-    }
+        setLoading(false);
+        setPage(1);
+    }, [])
 
-    sendAllDataRequests = async () => {
-        this.setState({ isLoading: true });
+    const sendAllDataRequests = useCallback(async () => {
+        setLoading(true);
         await Providers.dispatchDataRequestToAll();
-        this.setState({ isLoading: false, page: 2 });
-    }
+        setLoading(false);
+        setPage(2);
+    }, [])
 
-    getContent() {
-        const { page, isLoading } = this.state;
-
+    const getContent = useCallback(() => {
         switch(page) {
             case 0:
                 return (
@@ -54,7 +49,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                         <Button
                             icon={faArrowDown}
                             loading={isLoading} 
-                            onClick={this.updateAllProviders}
+                            onClick={updateAllProviders}
                             data-telemetry-id="log-tutorial-page-1"
                             fullWidth
                         >
@@ -72,7 +67,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                         <Button
                             icon={faEnvelope}
                             loading={isLoading} 
-                            onClick={this.sendAllDataRequests}
+                            onClick={sendAllDataRequests}
                             data-telemetry-id="log-tutorial-page-2"
                             fullWidth
                         >
@@ -88,7 +83,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                         <p></p>
                         <Button
                             icon={faArrowRight}
-                            onClick={this.next}
+                            onClick={next}
                             data-telemetry-id="log-tutorial-page-3"
                             fullWidth
                         >
@@ -105,7 +100,7 @@ class TutorialOverlay extends Component<StoreProps, State> {
                         <p>When you&apos;re done checking out your data, find the &lsquo;Create a new Identity&rsquo; button and click it to see how Aeon helps you change your identity.</p>
                         <Button
                             icon={faCheck}
-                            onClick={this.done}
+                            onClick={done}
                             data-telemetry-id="log-tutorial-page-4"
                             fullWidth
                         >
@@ -114,19 +109,14 @@ class TutorialOverlay extends Component<StoreProps, State> {
                     </>
                 )
         }
-    }
-
-    render() {
-        const { log: isCompleted } = this.props.store.get('onboardingComplete');
-
-        return (
-            <Modal isOpen={!isCompleted} onRequestClose={this.done}>
-                <Container>
-                    {this.getContent()}
-                </Container>
-            </Modal>
-        );
-    }
+    }, [done, next, isLoading, updateAllProviders, sendAllDataRequests]);
+    return (
+        <Modal isOpen={!isCompleted} onRequestClose={done}>
+            <Container>
+                {getContent()}
+            </Container>
+        </Modal>
+    );
 }
 
-export default Store.withStore(TutorialOverlay);
+export default TutorialOverlay;

@@ -16,7 +16,7 @@ declare global {
             removeListener: typeof ipcRenderer.removeListener;
             sourceMapSupport: typeof sourceMapSupport;
             store: {
-                persist: (store: State) => void;
+                persist: (store: unknown) => void;
                 retrieve: () => State;
                 clear: () => void;
             }
@@ -58,7 +58,6 @@ contextBridge.exposeInMainWorld(
         store: {
             persist: (state: State) => {
                 return store.set('app_store', state);
-                
             },
             retrieve: () => {
                 return store.get('app_store');
