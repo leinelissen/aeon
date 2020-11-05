@@ -106,14 +106,20 @@ class Facebook extends DataRequestProvider {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('did-finish-load', resolve)
-                window.loadURL('https://www.facebook.com/dyi/?referrer=yfi_settings&tab=new_archive');
+                window.loadURL('https://www.facebook.com/dyi/?referrer=yfi_settings&tab=all_archives');
             });
 
             // Find a div that reads 'A copy of your information is
             // being created'
+            // 1. Retrieve all iframes in the website, as the right view is
+            //    embedded in it
+            // 2. Check if there is a span with "pending" in it
             return window.webContents.executeJavaScript(`
-                !Array.from(document.querySelectorAll('div'))
-                    .find(el => el.textContent === 'A copy of your information is being created.')
+                !Array.from(document.querySelectorAll('iframe')).reduce((sum, iframe) => {
+                    const spans = Array.from(iframe.contentWindow.document.body.querySelectorAll('span'));
+                    const pending = spans.find(span => span.textContent === 'Pending');
+                    return pending ? true : sum;
+                }, false);
             `);
         });
     }
@@ -137,9 +143,11 @@ class Facebook extends DataRequestProvider {
 
                 // And then trigger the button click
                 window.webContents.executeJavaScript(`
-                    Array.from(document.querySelectorAll('button'))
-                        .find(el => el.textContent === 'Download' || el.textContent === 'Download Again')
-                        .click();
+                    Array.from(document.querySelectorAll('iframe')).reduce((sum, iframe) => {
+                        const buttons = Array.from(iframe.contentWindow.document.body.querySelectorAll('button'));
+                        const button = buttons.find(button => button.textContent === 'Download' || button.textContent === 'Download Again');
+                        return button || sum;
+                    }, null)?.click();
                 `);
 
                 window.show();
