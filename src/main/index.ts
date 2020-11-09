@@ -4,6 +4,7 @@ require('source-map-support').install();
 
 import './lib/map-map';
 import { app, BrowserWindow } from 'electron';
+import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer';
 import path from 'path';
 import initialise from './initialise';
 import WindowStore from './lib/window-store';
@@ -41,6 +42,13 @@ const createWindow = (): void => {
     // Hide menu bar on windows
     if (process.env.NODE_ENV === 'production') {
         mainWindow.setMenu(null);
+    } else {
+        // Install devtools when in development mode
+        app.whenReady()
+            .then(() => Promise.all([
+                installExtension(REDUX_DEVTOOLS),
+                installExtension(REACT_DEVELOPER_TOOLS),
+            ]));
     }
     
     // and load the index.html of the app.
