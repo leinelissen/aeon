@@ -142,6 +142,7 @@
         "deep-equal": "^2.0.4",
         "electron-squirrel-startup": "^1.0.0",
         "electron-store": "^6.0.1",
+        "eventemitter2": "^6.4.3",
         "hex-to-rgba": "^2.0.1",
         "history": "^5.0.0",
         "keytar": "^7.0.0",

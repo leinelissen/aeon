@@ -24,7 +24,7 @@ declare global {
     }
 }
 
-const channelWhitelist = ['repository', 'providers', 'notifications' ];
+const channelWhitelist = ['repository', 'providers', 'notifications', 'email' ];
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object

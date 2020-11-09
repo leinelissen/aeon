@@ -13,7 +13,7 @@ interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
 }
 
 const StyledButtonStyles = css<ButtonProps>`
-background-color: ${props => props.backgroundColor || theme.colors.blue.primary};
+    background-color: ${props => props.backgroundColor || theme.colors.blue.primary};
     display: flex;
     align-items: center;
     justify-content: center;

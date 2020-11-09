@@ -1,13 +1,14 @@
+import { EventEmitter2 } from 'eventemitter2';
 import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
 import GmailEmailClient from './gmail';
-import { EmailClient } from './types';
+import { EmailClient, EmailEvents } from './types';
 
 const clients = new Map([
     ['gmail', GmailEmailClient]
 ]);
 
-export default class EmailManager {
+export default class EmailManager extends EventEmitter2 {
     // A set of email addresses that maps to the client that is handling the
     // particular email addresses
     initialisedEmailAddress: PersistedMap<string, string>;
@@ -17,10 +18,12 @@ export default class EmailManager {
     emailClients: Map<string, EmailClient> = new Map();
 
     constructor() {
+        super();
+
         // Retrieve the initialised emailaddresses that have been stored in the store
-        const addresses = store.get('dispatched-data-requests', []) as [string, string][];
+        const addresses = store.get('initialised-email-addresses', []) as [string, string][];
         this.initialisedEmailAddress = new PersistedMap(addresses, (map) => {
-            store.set('dispatched-data-requests', Array.from(map));
+            store.set('initialised-email-addresses', Array.from(map));
         });
 
         // Then start up all the clients again with the right emailaddresses
@@ -35,6 +38,8 @@ export default class EmailManager {
      * assigned to an emailadress entered as part of its initialisation logic.
      */
     async initialiseNewAddress(clientKey: string): Promise<string> {
+        console.log('Initialising new email client: ', clientKey);
+        
         // Retrieve the correct client
         const Client = clients.get(clientKey);
 
@@ -49,7 +54,23 @@ export default class EmailManager {
         this.initialisedEmailAddress.set(clientKey, emailAddress);
         this.emailClients.set(emailAddress, client);
 
+        // Send out event
+        this.emit(EmailEvents.NEW_ACCOUNT);
+
         // Return the emailaddress
         return emailAddress;
+    }
+
+    deleteAccount(address: string): void {
+        // GUARD: Check if the address actually exists
+        if (this.emailClients.has(address)) {
+            throw new Error('Email account now found')
+        }
+
+        // Delete the account
+        this.emailClients.get(address).delete();
+
+        // Send out event
+        this.emit(EmailEvents.ACCOUNT_DELETED);
     }
 }

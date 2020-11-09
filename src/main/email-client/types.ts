@@ -29,6 +29,11 @@ export interface EmailClient {
      * successfully initialised.
      */
     initialize(): Promise<string>
+
+    /**
+     * Remove a previously registered and initialized account completely.
+     */
+    delete(): Promise<void> | void
     
     /**
      * Retrieve a set of messages using the query object
@@ -41,4 +46,16 @@ export interface EmailClient {
      * @param options Mail.Options
      */
     sendMessage(options: Options): Promise<void>;
+}
+
+export enum EmailCommands {
+    ADD_ACCOUNT,
+    DELETE_ACCOUNT,
+    GET_ACCOUNTS,
+    GET_CLIENTS
+}
+
+export enum EmailEvents {
+    NEW_ACCOUNT = 'new-account',
+    ACCOUNT_DELETED = 'account-deleted',
 }

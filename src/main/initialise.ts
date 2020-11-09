@@ -1,4 +1,5 @@
 import EmailManager from './email-client';
+import EmailBridge from './email-client/bridge';
 import Repository from './lib/repository';
 import RepositoryBridge from './lib/repository/bridge';
 import ProviderManager from './providers';
@@ -19,8 +20,9 @@ function initialise(): void {
         new ProviderBridge(providerManager);
     });
 
-    // Also set up the email manager
+    // Also set up the email manager and bridge
     const emailManager = new EmailManager();
+    new EmailBridge(emailManager);
 }
 
 export default initialise;

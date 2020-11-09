@@ -8,5 +8,9 @@ export interface RouteProps {
     },
     requests: {
         provider?: string;
+    },
+    settings: {
+        category?: string;
+        settingId?: string;
     }
 }

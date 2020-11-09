@@ -33,6 +33,11 @@ export const PullDown = styled.div`
     margin-top: auto;
 `;
 
+export const PullCenter = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
 export const EmptyIcon = styled.span`
     display: inline-block;
     width: 1.25em;

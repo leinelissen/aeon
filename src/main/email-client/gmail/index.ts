@@ -62,6 +62,11 @@ export default class GmailEmailClient implements EmailClient {
         return this.emailAddress;
     }
 
+    delete(): void {
+        // Remove the tokens that are stored in the store
+        store.delete(`gmail_${this.emailAddress}`);
+    }
+
     async refreshTokens(): Promise<void> {
         // GUARD: Check if a token has already been retrieved
         if (!this.tokens) {

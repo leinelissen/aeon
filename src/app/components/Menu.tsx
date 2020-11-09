@@ -133,10 +133,10 @@ export default function Menu(): JSX.Element {
                 <span className="icon"><FontAwesomeIcon icon={faTable} fixedWidth /></span>
                 <span>Data</span>
             </Link>
-            {/* <Link to="/settings" activeClassName="active">
+            <Link to="/settings" activeClassName="active">
                 <span className="icon"><FontAwesomeIcon icon={faCog} fixedWidth /></span>
                 <span>Settings</span>
-            </Link> */}
+            </Link>
             <AeonLogo><img src={Emblem} /></AeonLogo>
         </Container>
     );

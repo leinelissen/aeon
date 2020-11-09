@@ -2,7 +2,7 @@ import React, { Component, useRef, useEffect, PropsWithChildren, HTMLAttributes 
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { Transition, config } from 'react-spring/renderprops';
-import { GhostButton } from './Button';
+import { GhostButton } from '../Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp } from 'app/assets/fa-light';
 
@@ -29,6 +29,8 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     padding: 10vh 0;
+    z-index: 5000;
+    backdrop-filter: blur(50px);
 `;
 
 const StyledDialog = styled.div`
@@ -94,6 +96,14 @@ class Modal extends Component<Props> {
         }
     }
 
+    handleContainerClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+        // GUARD: Check if the currenttarget is the parent where the events
+        // orginate from.
+        if (event.currentTarget === event.target) {
+            this.props.onRequestClose();
+        }   
+    }
+
     render(): JSX.Element {
         const { isOpen, onRequestClose, children } = this.props;
 
@@ -111,7 +121,7 @@ class Modal extends Component<Props> {
             >
                 {isOpen => isOpen &&
                     (({ backgroundOpacity, ...props }: SpringProps) => 
-                        <Container style={{ opacity: backgroundOpacity }}>
+                        <Container style={{ opacity: backgroundOpacity }} onClick={this.handleContainerClick}>
                             <Dialog 
                                 style={props}
                                 // onBlur={this.handleBlur}

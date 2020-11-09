@@ -1,5 +1,5 @@
 import Repository from '.';
-import { ProviderCommands, ProviderEvents, DataRequestStatus } from './types';
+import { ProviderCommands, ProviderEvents } from './types';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import WindowStore from 'main/lib/window-store';
 
