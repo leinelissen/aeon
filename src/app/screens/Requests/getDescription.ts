@@ -6,11 +6,11 @@ import { DataRequestStatus } from 'main/providers/types';
  */
 export default function getDescription(status?: DataRequestStatus): string {
     if (status?.completed) {
-        return `Received data ${formatDistanceToNow(status.completed)} ago`;
+        return `Received data ${formatDistanceToNow(new Date(status.completed))} ago`;
     }
 
     if (status?.dispatched) {
-        return `Requested data ${formatDistanceToNow(status.dispatched)} ago`;
+        return `Requested data ${formatDistanceToNow(new Date(status.dispatched))} ago`;
     }
 
     return 'No data requested yet';

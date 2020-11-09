@@ -1,12 +1,24 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Margin = styled.div`
     padding: 16px;
 `;
 
-export const PullContainer = styled.div`
+interface PullContainerProps {
+    vertical?: boolean;
+    verticalAlign?: boolean;
+}
+
+export const PullContainer = styled.div<PullContainerProps>`
     display: flex;
-    align-items: center;
+
+    ${props => props.vertical && css`
+        flex-direction: column;
+    `}
+
+    ${props => props.verticalAlign && css`
+        align-items: center;
+    `}
 `;
 
 export const PullLeft = styled.div`
@@ -15,6 +27,10 @@ export const PullLeft = styled.div`
 
 export const PullRight = styled.div`
     margin-left: auto;
+`;
+
+export const PullDown = styled.div`
+    margin-top: auto;
 `;
 
 export const EmptyIcon = styled.span`

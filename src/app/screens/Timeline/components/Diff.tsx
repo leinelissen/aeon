@@ -97,14 +97,14 @@ class Diff extends PureComponent<Props, State> {
                 <>
                     <Section>
                         <H2>
-                            <PullContainer>
+                            <PullContainer verticalAlign>
                                 <FontAwesomeIcon icon={faCodeCommit} fixedWidth />
                                 <MarginLeft>{commit.message}</MarginLeft>
                             </PullContainer>
                         </H2>
                     </Section>
                     <Section>
-                        <PullContainer>
+                        <PullContainer verticalAlign>
                             <FontAwesomeIcon icon={faPlus} />
                             <MarginLeft>Committed {formatDistanceToNow(new Date(commit.author.when))} ago</MarginLeft>
                         </PullContainer>

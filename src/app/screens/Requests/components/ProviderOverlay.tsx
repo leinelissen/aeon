@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faClock, faPlus, faQuestion, faSync } from 'app/assets/fa-light';
+import { faCheck, faClock, faPlus, faQuestion } from 'app/assets/fa-light';
 import Button from 'app/components/Button';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
 import { H2 } from 'app/components/Typography';
@@ -38,14 +38,14 @@ function ProviderOverlay({ selectedProvider, status }: Props): JSX.Element {
                                 style={{ marginRight: 8 }}
                                 fixedWidth
                             />
-                            Data requested: <i>{status?.dispatched ? formatDistanceToNow(status.dispatched) + ' ago' : 'never'}</i>
+                            Data requested: <i>{status?.dispatched ? formatDistanceToNow(new Date(status.dispatched)) + ' ago' : 'never'}</i>
                             <br />
                             <FontAwesomeIcon
                                 icon={faClock}
                                 style={{ marginRight: 8 }}
                                 fixedWidth
                             />
-                            Last check: <i>{status?.lastCheck ? formatDistanceToNow(status.lastCheck) + ' ago' : 'never'}</i>
+                            Last check: <i>{status?.lastCheck ? formatDistanceToNow(new Date(status.lastCheck)) + ' ago' : 'never'}</i>
                             {status?.completed && 
                                 <>
                                     <br />
@@ -54,7 +54,7 @@ function ProviderOverlay({ selectedProvider, status }: Props): JSX.Element {
                                         style={{ marginRight: 8 }}
                                         fixedWidth
                                     />
-                                    Completed: <i>{formatDistanceToNow(status?.completed)} ago</i>
+                                    Completed: <i>{formatDistanceToNow(new Date(status?.completed))} ago</i>
                                 </>
                             }
                         </span>

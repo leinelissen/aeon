@@ -1,5 +1,5 @@
 import Repository from '.';
-import { ProviderCommands, ProviderEvents } from './types';
+import { ProviderCommands, ProviderEvents, DataRequestStatus } from './types';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import WindowStore from 'main/lib/window-store';
 
@@ -41,8 +41,8 @@ class ProviderBridge {
                 return this.repository.refresh();
             case ProviderCommands.GET_DISPATCHED_DATA_REQUESTS:
                 return {
-                    dispatched: this.repository.dispatchedDataRequests, 
-                    lastChecked: this.repository.lastDataRequestCheck,
+                    dispatched: Object.fromEntries(this.repository.dispatchedDataRequests), 
+                    lastChecked: this.repository.lastDataRequestCheck.toString(),
                     providers: Array.from(this.repository.instances.keys()),
                 };
         }

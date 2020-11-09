@@ -36,9 +36,9 @@ export abstract class DataRequestProvider extends Provider {
 }
 
 export interface DataRequestStatus {
-    dispatched: Date;
-    completed?: Date;
-    lastCheck?: Date;
+    dispatched: string;
+    completed?: string;
+    lastCheck?: string;
 }
 
 export enum ProviderCommands {

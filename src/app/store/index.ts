@@ -1,19 +1,32 @@
-import { configureStore, MiddlewareArray } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
+import { 
+    createMigrate, 
+    PersistConfig, 
+    persistReducer, 
+    persistStore,
+    FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER
+} from 'redux-persist';
 import { useDispatch } from 'react-redux';
 import ElectronStorage from './persist';
 
 import newCommits from './new-commits';
 import onboarding from './onboarding';
 import telemetry from './telemetry';
-import { createMigrate, PersistConfig, persistReducer, persistStore } from 'redux-persist';
 import migrations from './migrations';
+import requests from './requests';
 
 // The root reducer contains all the individual reducers that make up the store
 const rootReducer = combineReducers({
     newCommits,
     onboarding,
-    telemetry
+    telemetry,
+    requests
 });
 
 // Export types for later inclusion
@@ -36,9 +49,12 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 // Create a store from the persisted root reducer, optionally applying middleware
 const store = configureStore({
     reducer: persistedReducer,
-    middleware: new MiddlewareArray().concat(
-
-    ),
+    middleware: getDefaultMiddleware({
+        // We need to ignore all redux-persist actions
+        serializableCheck: {
+            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+        }
+    })
 });
 
 // Create a persisted store
@@ -47,7 +63,7 @@ export const persistor = persistStore(store);
 export type AppDispatch = typeof store.dispatch;
 
 // Export hooks with injected store types for ease-of-use
-export const useAppDispatch = (): ReturnType<typeof useDispatch> => useDispatch<AppDispatch>();
+export const useAppDispatch = (): typeof store.dispatch => useDispatch<AppDispatch>();
 
 // Export the store
 export default store;

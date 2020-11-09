@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import theme from 'app/styles/theme';
 import { Ball } from './Loading';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { Link } from 'react-router-dom';
 
 interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
     backgroundColor?: string;
@@ -11,8 +12,8 @@ interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
     color?: string;
 }
 
-const StyledButton = styled.button<ButtonProps>`
-    background-color: ${props => props.backgroundColor || theme.colors.blue.primary};
+const StyledButtonStyles = css<ButtonProps>`
+background-color: ${props => props.backgroundColor || theme.colors.blue.primary};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -27,12 +28,10 @@ const StyledButton = styled.button<ButtonProps>`
     margin: 5px 0;
     border: 0;
     padding: 0 16px;
-    transition: transform 0.3s ease;
 
     &:hover&:not(:disabled) {
         cursor: pointer;
         opacity: 0.9;
-        transform: translateY(-1px);
         box-shadow: 0 1px 2px rgba(0,0,0,0.09), 
                 0 2px 4px rgba(0,0,0,0.09), 
                 0 4px 8px rgba(0,0,0,0.09), 
@@ -50,17 +49,25 @@ const StyledButton = styled.button<ButtonProps>`
     `}
 `;
 
+const StyledButton = styled.button<ButtonProps>`
+    ${StyledButtonStyles}
+`;
+
 const Margin = styled.div`
     width: 10px;
 `;
 
-export const LinkButton = styled.button`
+export const LinkButton = styled(Link)`
+    ${StyledButtonStyles};
+`;
+
+export const SimpleButton = styled.button`
     border: 0;
     margin: 0;
     padding: 0;
 `;
 
-export const GhostButton = styled<Pick>(LinkButton)`
+export const GhostButton = styled(SimpleButton)`
     color: black;
     opacity: 0.3;
     font-size: 14px;

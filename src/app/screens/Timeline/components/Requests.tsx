@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import theme from 'app/styles/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HoverArea, Tooltip, TooltipContainer } from 'app/components/Tooltip';
-import { LinkButton } from 'app/components/Button';
+import { SimpleButton } from 'app/components/Button';
 import { formatDistanceToNow } from 'date-fns';
 
 interface State {
@@ -67,9 +67,9 @@ function ClickableRequest(props: PropsWithChildren<ClickableRequestProps>): JSX.
     }, [props.onClick, props.provider]);
 
     return (
-        <LinkButton onClick={handleClick}>
+        <SimpleButton onClick={handleClick}>
             {props.children}
-        </LinkButton>
+        </SimpleButton>
     );
 }
 
@@ -190,9 +190,9 @@ class Requests extends Component<unknown, State> {
                     {checking ? (
                         <Ball size={10} />
                     ) : lastChecked && (
-                        <LinkButton onClick={this.handleRefresh} data-telemetry-id="refresh-requests">
+                        <SimpleButton onClick={this.handleRefresh} data-telemetry-id="refresh-requests">
                             Last check: {formatDistanceToNow(lastChecked)} ago
-                        </LinkButton>
+                        </SimpleButton>
                     )}
                 </LastCheck>
             </Container>

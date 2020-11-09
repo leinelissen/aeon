@@ -1,4 +1,4 @@
-import { Storage } from 'redux-persist';
+import {  Storage } from 'redux-persist';
 
 export default function ElectronStorage(): Storage {
     return {

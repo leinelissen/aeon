@@ -10,6 +10,7 @@ import Pages from 'app/screens';
 import Notifications from './Notifications';
 import store, { persistor } from 'app/store';
 import Loading from './Loading';
+import { ProviderSubscription } from 'app/store/requests/selectors';
 
 const Main = styled.main`
     position: relative;
@@ -26,13 +27,14 @@ class App extends Component {
                 <StyleSheetManager disableVendorPrefixes>
                     <Provider store={store}>
                         <PersistGate loading={<Loading />} persistor={persistor}>
-                            <div>
-                                <Notifications />
-                                <Main>
-                                    <Pages />
-                                </Main>
-                                {/* <Telemetry /> */}
-                            </div>
+                            {/** Presentational components */}
+                            <Main>
+                                <Pages />
+                            </Main>
+                            <Notifications />
+                            {/** Subscription managers */}
+                            <ProviderSubscription />
+                            {/* <Telemetry /> */}
                         </PersistGate>
                     </Provider>
                 </StyleSheetManager>

@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import theme from 'app/styles/theme';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { faChevronRight } from 'app/assets/fa-light';
 import { PullRight } from './Utility';
@@ -55,20 +55,32 @@ export const List = styled.div<{ topMargin?: boolean }>`
     `}
 `;
 
+export const SplitPanel = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+export const PanelBottomButtons = styled.div`
+    margin-top: auto;
+    border-top: 1px solid ${theme.colors.border};
+    border-right: 1px solid ${theme.colors.border};
+    padding: 16px;
+`;
+
 const IconWrapper = styled.div`
     margin: 0 8px;
 `;
 
 type ListButtonProps = {
-    active?: boolean;
-    disabled?: boolean;
     deleted?: boolean;
     modified?: boolean;
     added?: boolean;
     large?: boolean;
 };
 
-export const NavigatableListEntryContainer = styled<React.FC<ListButtonProps>>(Link)`
+export const NavigatableListEntryContainer = styled<React.FC<ListButtonProps>>(NavLink).withConfig({
+    shouldForwardProp: (prop) => !['deleted', 'modified', 'added', 'large'].includes(prop)
+})`
     border: 0;
     background: transparent;
     display: flex;
@@ -85,25 +97,37 @@ export const NavigatableListEntryContainer = styled<React.FC<ListButtonProps>>(L
         border-radius: 5px;
     }
 
-    ${props => props.active ? css`
+    &.active {
         background: ${theme.colors.grey.medium};
-    ` : css`
-        &:hover {
-            background: ${theme.colors.grey.medium}BB;
-            opacity: 0.8;
+    }
+
+    &:hover:not(.active) {
+        background: ${theme.colors.grey.medium}BB;
+        opacity: 0.8;
+    }
+
+    ${props => props.added && css`
+        background-color: ${theme.colors.green}22;
+
+        &.active {
+            background-color: ${theme.colors.green}33;
         }
     `}
 
-    ${props => props.added && css`
-        background-color: ${theme.colors.green}${props.active ? 33 : 22};;
-    `}
-
     ${props => props.deleted && css`
-        background-color: ${theme.colors.red}${props.active ? 33 : 22};;
+        background-color: ${theme.colors.red}22;
+
+        &.active {
+            background-color: ${theme.colors.red}33;
+        }
     `}
 
     ${props => props.modified && css`
-        background-color: ${theme.colors.yellow}${props.active ? 33 : 22};
+        background-color: ${theme.colors.yellow}22;
+
+        &.active {
+            background-color: ${theme.colors.yellow}33;
+        }
     `}
 
     ${props => props.large && css`

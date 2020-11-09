@@ -1,12 +1,12 @@
-import { ProviderCommands, DataRequestStatus, ProviderEvents } from 'main/providers/types';
+import { ProviderCommands, ProviderEvents, DataRequestStatus } from 'main/providers/types';
 import { faFacebookF, faInstagram, faLinkedinIn, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faSquare } from 'app/assets/fa-light';
 import { IpcRendererEvent } from 'electron';
 
 const channel = 'providers';
 
-export interface DataRequestReturnType {
-    dispatched: Map<string, DataRequestStatus>;
+type DataRequestReturnType = {
+    dispatched: Record<string, DataRequestStatus>;
     lastChecked: Date;
     providers: string[];
 }

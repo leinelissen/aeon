@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, useHistory, Switch } from 'react-router-dom';
 import Onboarding from './Onboarding';
 import Timeline from './Timeline';
@@ -15,13 +15,15 @@ function InitialiseRoute(): JSX.Element {
     const initialisationComplete = useSelector((state: State) => state.onboarding.initialisation);
     const history = useHistory();
 
-    // If the user is onboarded already, we can redirect them to the log
-    if (initialisationComplete) {
-        history.push('/timeline');
-    }
-    
-    // If not, redirect to onboarding
-    history.push('/onboarding');
+    useEffect(() => {
+        // If the user is onboarded already, we can redirect them to the log
+        if (initialisationComplete) {
+            history.push('/timeline');
+        }
+        
+        // If not, redirect to onboarding
+        history.push('/onboarding');
+    }, []);
 
     return null;
 }

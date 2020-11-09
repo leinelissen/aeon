@@ -51,7 +51,7 @@ class ProviderManager extends EventEmitter {
         // Construct the dispatchedDataRequests file so that we can save it to
         // disk whenever neccessary
         const retrievedData = store.get('dispatched-data-requests', '[]') as string;
-        const retrievedRequests = JSON.parse(retrievedData, (key, value) => Date.parse(value) ? new Date(value) : value);
+        const retrievedRequests = JSON.parse(retrievedData);
         this.dispatchedDataRequests = new PersistedMap(retrievedRequests, (map) => {
             store.set('dispatched-data-requests', map.toString());
         });
@@ -225,7 +225,7 @@ class ProviderManager extends EventEmitter {
         await instance.dispatchDataRequest();
 
         // Then store the update time
-        this.dispatchedDataRequests.set(key, { dispatched: new Date() });
+        this.dispatchedDataRequests.set(key, { dispatched: new Date().toString() });
 
         ProviderBridge.send(ProviderEvents.DATA_REQUEST_DISPATCHED);
         console.log('Dispatched data request for ', key);
@@ -261,7 +261,7 @@ class ProviderManager extends EventEmitter {
                 // However, we will check if we need to purge it from the map if
                 // it has been completed for x days
                 const ProviderClass: typeof DataRequestProvider = Object.getPrototypeOf(instance).constructor;
-                if (differenceInDays(new Date(), status.completed) > ProviderClass.dataRequestIntervalDays) {
+                if (differenceInDays(new Date(), new Date(status.completed)) > ProviderClass.dataRequestIntervalDays) {
                     console.log(`Data request for ${key} was completed long enough to be purged`);
                     this.dispatchedDataRequests.delete(key);
                 } 
@@ -280,7 +280,11 @@ class ProviderManager extends EventEmitter {
                 Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
                 
                 // Set the flag for completion
-                this.dispatchedDataRequests.set(key, { ...status, lastCheck: new Date(), completed: new Date() });
+                this.dispatchedDataRequests.set(key, { 
+                    ...status, 
+                    lastCheck: new Date().toString(), 
+                    completed: new Date().toString() 
+                });
                 ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
 
                 return;
@@ -288,7 +292,7 @@ class ProviderManager extends EventEmitter {
 
             this.dispatchedDataRequests.set(key, {
                 ...status,
-                lastCheck: new Date(),
+                lastCheck: new Date().toString(),
             });
         }));
 

@@ -4,7 +4,6 @@ class PersistedMap<K, V> extends Map<K, V> {
 
     constructor(obj: { key: K, value: V }[], callback: (map: PersistedMap<K, V>) => void) {
         super();
-
         
         obj.forEach(({ key, value }) => {
             this.set(key, value);
