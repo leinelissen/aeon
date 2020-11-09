@@ -6,7 +6,7 @@ import { H2 } from 'app/components/Typography';
 import Providers from 'app/utilities/Providers';
 import { formatDistanceToNow } from 'date-fns';
 import { DataRequestStatus } from 'main/providers/types';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 interface Props {
     selectedProvider: string;
@@ -14,8 +14,11 @@ interface Props {
 }
 
 function ProviderOverlay({ selectedProvider, status }: Props): JSX.Element {
-    const handleNewRequest = useCallback(() => {
-        Providers.dispatchDataRequest(selectedProvider);
+    const [isLoading, setLoading] = useState(false);
+    const handleNewRequest = useCallback(async () => {
+        setLoading(true);
+        await Providers.dispatchDataRequest(selectedProvider).catch(() => null);
+        setLoading(false);
     }, [selectedProvider]);
 
     return (
@@ -80,6 +83,7 @@ function ProviderOverlay({ selectedProvider, status }: Props): JSX.Element {
                                 icon={faPlus}
                                 onClick={handleNewRequest}
                                 disabled={!!status?.dispatched}
+                                loading={isLoading}
                             >
                                 Start Data Request
                             </Button>
