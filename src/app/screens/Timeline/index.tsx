@@ -49,6 +49,10 @@ class Timeline extends Component<Props, State> {
         Repository.subscribe(this.handleEvent);
     }
 
+    componentDidUpdate() {
+        this.fetchLog();
+    }
+
     componentWillUnmount(): void {
         Repository.unsubscribe(this.handleEvent);
     }
@@ -94,13 +98,14 @@ class Timeline extends Component<Props, State> {
     render(): JSX.Element {
         const { log } = this.state;
         const { params: { commitHash }, newCommits } = this.props;
+        
+        if (!log.length || !commitHash) {
+            return <Loading />;
+        }
+        
         const selectedTree = commitHash === 'new-commit'
             ? newCommits[0]
             : log.find(d => d.oid === commitHash);
-
-        if (!log.length) {
-            return <Loading />;
-        }
 
         return (
             <PanelGrid columns={2} noTopPadding> 
