@@ -141,7 +141,7 @@ class Instagram extends DataRequestProvider {
                 }, (details: Electron.OnCompletedListenerDetails) => {
                     console.log('NEW REQUEST', details);
 
-                    if (details.url === 'https://www.facebook.com/api/graphql/'
+                    if (details.url.endsWith('www.instagram.com%2Fdownload%2Frequest%2F&sdk=joey&wants_cookie_data=true')
                         && details.statusCode === 200) {
                         resolve();
                     }
