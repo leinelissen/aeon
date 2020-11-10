@@ -10,13 +10,20 @@ import theme from 'app/styles/theme';
 import Email from 'app/utilities/Email';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import NewAccountModal from './components/NewAccountModal';
 
 function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): JSX.Element {
+    const history = useHistory();
     const { all, byId } = useSelector((state: State) => state.email.accounts);
-    const deleteAccount = useCallback(() => {
+    const deleteAccount = useCallback(async () => {
+        // GUARD: Double-check the user wants to actually delete the account
         if (window.confirm(`Are you sure you want to delete ${selectedAccount}?`)) {
-            Email.delete(selectedAccount) 
+            // Delete the account
+            await Email.delete(selectedAccount) 
+            
+            // Then return to the previous menu
+            history.push('/settings/email-accounts');
         }
     }, [selectedAccount]);
 
