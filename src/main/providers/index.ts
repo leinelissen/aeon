@@ -10,6 +10,7 @@ import store from 'main/store';
 import path from 'path';
 import Facebook from './facebook';
 import LinkedIn from './linkedin';
+import EmailManager from 'main/email-client';
 
 const providers: Array<typeof Provider | typeof DataRequestProvider> = [
     Instagram,
@@ -18,17 +19,19 @@ const providers: Array<typeof Provider | typeof DataRequestProvider> = [
 ];
 
 class ProviderManager extends EventEmitter {
+    // Refers to the repository obejct
+    repository: Repository;
+    // The email manager
+    email: EmailManager;
+
+    // Whether the manager is initialised
+    isInitialised = false;
+
     // Contains all provider instances
     instances: Map<string, Provider & Partial<DataRequestProvider>> = new Map();
 
     // Contains the keys of all providers that have been initialised by the user
     initialisedProviders: string[];
-
-    // Refers to the repository obejct
-    repository: Repository;
-
-    // Whether the manager is initialised
-    isInitialised = false;
 
     // Stores data requests that have been dispatched, so that we can check upon
     // their state once in a while.
@@ -37,11 +40,12 @@ class ProviderManager extends EventEmitter {
     // The last time the data requests were checked 
     lastDataRequestCheck: Date;
 
-    constructor(repository: Repository) {
+    constructor(repository: Repository, email: EmailManager) {
         super();
 
-        // Store the repository in this class
+        // Store all instances of other classes
         this.repository = repository;
+        this.email = email;
 
         // Construct all providers that have been defined at the top
         providers.forEach((SingleProvider): void => {
