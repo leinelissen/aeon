@@ -1,33 +1,39 @@
+/**
+ * A class that accepts a function that is called each time the map is updated,
+ * as to make persisting it (ie. in electron-store) a bit easier.
+ */
 class PersistedMap<K, V> extends Map<K, V> {
-    private isInitialised = false;
     private callback: (map: PersistedMap<K, V>) => void;
 
-    constructor(obj: { key: K, value: V }[], callback: (map: PersistedMap<K, V>) => void) {
-        super();
+    constructor(rows: [K,V][], callback: (map: PersistedMap<K, V>) => void) {
+        super(rows);
         
-        obj.forEach(({ key, value }) => {
-            this.set(key, value);
-        });
-
+        // Bind the callback to the instance of this class
         this.callback = callback.bind(this);
-        this.isInitialised = true;
     }
 
     set(key: K, value: V): this {
         const ret = super.set(key, value);
 
-        if (this.isInitialised) {
+        // GUARD: the super call in the in the constructor calls set internally.
+        // Since the callback isn't yet set at that point, we disregard any
+        // callback calls when this happens.
+        if (this.callback) {
             this.callback(this);
         }
 
         return ret;
     }
 
-    toString(): string {
-        const obj = Array.from(this.keys()).map((key) => {
-            return { key, value: this.get(key) };
-        });
-        return JSON.stringify(obj);
+    delete(key: K): boolean {
+        const ret = super.delete(key);
+        this.callback(this);
+        return ret;
+    }
+
+    clear(): void {
+        super.clear();
+        this.callback(this);
     }
 }
 

@@ -11,6 +11,7 @@ import Notifications from './Notifications';
 import store, { persistor } from 'app/store';
 import Loading from './Loading';
 import { ProviderSubscription } from 'app/store/requests/selectors';
+import { EmailSubscription } from 'app/store/email/selectors';
 
 const Main = styled.main`
     position: relative;
@@ -34,6 +35,7 @@ class App extends Component {
                             <Notifications />
                             {/** Subscription managers */}
                             <ProviderSubscription />
+                            <EmailSubscription />
                             {/* <Telemetry /> */}
                         </PersistGate>
                     </Provider>

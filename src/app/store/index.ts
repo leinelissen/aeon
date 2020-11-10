@@ -14,19 +14,21 @@ import {
 } from 'redux-persist';
 import { useDispatch } from 'react-redux';
 import ElectronStorage from './persist';
+import migrations from './migrations';
 
 import newCommits from './new-commits';
 import onboarding from './onboarding';
 import telemetry from './telemetry';
-import migrations from './migrations';
 import requests from './requests';
+import email from './email';
 
 // The root reducer contains all the individual reducers that make up the store
 const rootReducer = combineReducers({
     newCommits,
     onboarding,
     telemetry,
-    requests
+    requests,
+    email
 });
 
 // Export types for later inclusion

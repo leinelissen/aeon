@@ -10,6 +10,7 @@ import store from 'main/store';
 import path from 'path';
 import Facebook from './facebook';
 import LinkedIn from './linkedin';
+import EmailManager from 'main/email-client';
 
 const providers: Array<typeof Provider | typeof DataRequestProvider> = [
     Instagram,
@@ -18,17 +19,19 @@ const providers: Array<typeof Provider | typeof DataRequestProvider> = [
 ];
 
 class ProviderManager extends EventEmitter {
+    // Refers to the repository obejct
+    repository: Repository;
+    // The email manager
+    email: EmailManager;
+
+    // Whether the manager is initialised
+    isInitialised = false;
+
     // Contains all provider instances
     instances: Map<string, Provider & Partial<DataRequestProvider>> = new Map();
 
     // Contains the keys of all providers that have been initialised by the user
     initialisedProviders: string[];
-
-    // Refers to the repository obejct
-    repository: Repository;
-
-    // Whether the manager is initialised
-    isInitialised = false;
 
     // Stores data requests that have been dispatched, so that we can check upon
     // their state once in a while.
@@ -37,11 +40,12 @@ class ProviderManager extends EventEmitter {
     // The last time the data requests were checked 
     lastDataRequestCheck: Date;
 
-    constructor(repository: Repository) {
+    constructor(repository: Repository, email: EmailManager) {
         super();
 
-        // Store the repository in this class
+        // Store all instances of other classes
         this.repository = repository;
+        this.email = email;
 
         // Construct all providers that have been defined at the top
         providers.forEach((SingleProvider): void => {
@@ -50,15 +54,14 @@ class ProviderManager extends EventEmitter {
 
         // Construct the dispatchedDataRequests file so that we can save it to
         // disk whenever neccessary
-        const retrievedData = store.get('dispatched-data-requests', '[]') as string;
-        const retrievedRequests = JSON.parse(retrievedData);
+        const retrievedRequests = store.get('dispatched-data-requests', []) as [string, DataRequestStatus][];
         this.dispatchedDataRequests = new PersistedMap(retrievedRequests, (map) => {
-            store.set('dispatched-data-requests', map.toString());
+            store.set('dispatched-data-requests', Array.from(map));
         });
 
         // Construct the initialised providers from the store
-        const retrievedProviders = store.get('initialised-providers', '[]') as string;
-        this.initialisedProviders = JSON.parse(retrievedProviders);
+        const retrievedProviders = store.get('initialised-providers', []) as string[];
+        this.initialisedProviders = retrievedProviders;
 
         // Then we create a timeout function that checks for completed data
         // requests every five minutes. Also immediately commence with queueing
@@ -92,7 +95,7 @@ class ProviderManager extends EventEmitter {
             // Save the key to the array
             this.initialisedProviders = [...this.initialisedProviders, key];
             // And also save the array to the store
-            store.set('initialised-providers', JSON.stringify(this.initialisedProviders));
+            store.set('initialised-providers', this.initialisedProviders);
         }
 
         return success;

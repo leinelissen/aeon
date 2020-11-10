@@ -1,8 +1,9 @@
 import { BrowserWindow } from 'electron';
 import { URL } from 'url';
+import crypto from 'crypto';
 
 interface Params {
-    key: string;
+    key?: string;
     origin: string;
     options?: Electron.BrowserWindowConstructorOptions;
 }
@@ -33,7 +34,7 @@ function createSecureWindow(params: Params): BrowserWindow {
             enableRemoteModule: false,
             sandbox: true,
             contextIsolation: true,
-            partition: `persist:${key}`,
+            partition: `persist:${key || crypto.randomBytes(64).toString('base64')}`,
         },
         ...options,
     });
