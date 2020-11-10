@@ -18,7 +18,7 @@ export default class EmailManager extends EventEmitter2 {
     emailClients: Map<string, EmailClient> = new Map();
 
     constructor() {
-        super();
+        super({ wildcard: true });
 
         // Retrieve the initialised emailaddresses that have been stored in the store
         const addresses = store.get('initialised-email-addresses', []) as [string, string][];
@@ -51,7 +51,7 @@ export default class EmailManager extends EventEmitter2 {
         // Then, initialize the new client
         const client = new Client();
         const emailAddress = await client.initialize();
-        this.initialisedEmailAddress.set(clientKey, emailAddress);
+        this.initialisedEmailAddress.set(emailAddress, clientKey);
         this.emailClients.set(emailAddress, client);
 
         // Send out event
@@ -61,14 +61,23 @@ export default class EmailManager extends EventEmitter2 {
         return emailAddress;
     }
 
+    /**
+     * This call instructs a particularl instantiated email client to
+     * self-destruct, after which all the remaining pieces are deleted as well.
+     * @param address The email address to be deleted
+     */
     deleteAccount(address: string): void {
+        console.log('Deleting email account: ' + address);
+
         // GUARD: Check if the address actually exists
-        if (this.emailClients.has(address)) {
-            throw new Error('Email account now found')
+        if (!this.emailClients.has(address)) {
+            throw new Error('Email account not found')
         }
 
         // Delete the account
         this.emailClients.get(address).delete();
+        this.emailClients.delete(address);
+        this.initialisedEmailAddress.delete(address);
 
         // Send out event
         this.emit(EmailEvents.ACCOUNT_DELETED);

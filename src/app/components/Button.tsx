@@ -1,4 +1,4 @@
-import React, { CSSProperties, HTMLAttributes } from 'react';
+import React, { CSSProperties, HTMLAttributes, PropsWithChildren } from 'react';
 import styled, { css } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import theme from 'app/styles/theme';
@@ -87,13 +87,12 @@ export const GhostButton = styled(SimpleButton)`
 interface Props extends ButtonProps {
     loading?: boolean;
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-    children?: string | JSX.Element | JSX.Element[];
     disabled?: boolean;
     icon?: IconProp;
     style?: CSSProperties;
 }
 
-const Button = ({ children, loading, onClick, disabled, icon, ...props }: Props): JSX.Element => {
+const Button = ({ children, loading, onClick, disabled, icon, ...props }: PropsWithChildren<Props>): JSX.Element => {
     return (
         <StyledButton onClick={onClick} disabled={loading || disabled} {...props}>
             {children}

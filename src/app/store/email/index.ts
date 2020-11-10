@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchAccounts, fetchClients } from './actions';
+import { createNewAccount, fetchAccounts, fetchClients } from './actions';
 
 interface EmailState {
     clients: string[];
@@ -35,6 +35,8 @@ const emailSlice = createSlice({
         builder.addCase(fetchClients.fulfilled, (state, action) => {
             state.clients = action.payload;
         });
+        builder.addCase(createNewAccount.pending, (state) => { state.isLoading.newAccount = true })
+        builder.addCase(createNewAccount.fulfilled, (state) => { state.isLoading.newAccount = false })
     }
 });
 

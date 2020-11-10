@@ -1,4 +1,5 @@
 import { faGoogle, IconDefinition } from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope } from 'app/assets/fa-light';
 import { IpcRendererEvent } from 'electron';
 import { EmailCommands, EmailEvents } from 'main/email-client/types';
 
@@ -35,6 +36,8 @@ class Email {
         switch (clientKey) {
             case 'gmail':
                 return faGoogle;
+            default:
+                return faEnvelope;
         }
     }
 }

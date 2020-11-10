@@ -49,8 +49,10 @@ class Timeline extends Component<Props, State> {
         Repository.subscribe(this.handleEvent);
     }
 
-    componentDidUpdate() {
-        this.fetchLog();
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.params.commitHash !== this.props.params.commitHash) {
+            this.fetchLog();
+        }
     }
 
     componentWillUnmount(): void {

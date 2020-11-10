@@ -14,8 +14,16 @@ class EmailBridge {
 
     constructor(manager: EmailManager) {
         this.manager = manager;
+
+        // Start listening for commands on the set channel name
         ipcMain.handle(channelName, this.handleMessage);
+
+        // Subscribe to manager-initated events
         this.manager.addListener('*', function() {
+            // Log the event
+            console.log('[EMAIL-EVENT]: ', this.event);
+
+            // And pass them on to the app
             EmailBridge.send(this.event);
         });
     }

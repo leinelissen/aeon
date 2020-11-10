@@ -12,19 +12,21 @@ type CategoryPanel = (props: { settingId?: string }) => JSX.Element;
  * that all settings are seperated out into their own components.
  */
 const mapCategoryToPanel: Record<string, CategoryPanel> = {
-    'email': EmailSettings
+    'email-accounts': EmailSettings
 }
 
 function Settings(): JSX.Element {
     const { category, settingId } = useParams<RouteProps['settings']>();
-    const SettingsPanel = category ? mapCategoryToPanel[category] : List;
+    const SettingsPanel = category && category in mapCategoryToPanel
+        ? mapCategoryToPanel[category] 
+        : List;
 
     return (
         <PanelGrid>
             <List>
                 <RowHeading>Categories</RowHeading>
-                <NavigatableListEntry to="/settings/email" icon={faEnvelope}>
-                    Email
+                <NavigatableListEntry to="/settings/email-accounts" icon={faEnvelope}>
+                    Email Accounts
                 </NavigatableListEntry>
             </List>
             <SettingsPanel settingId={settingId} />

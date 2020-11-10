@@ -87,7 +87,7 @@ async function setupRedirectListener(callback: CodeCallback): Promise<string> {
         const server = http.createServer((req, res) => {
             // Write reponse
             res.writeHead(200);
-            res.end('You can close this window.');
+            res.end('Your account has been successfully connected. You can close this window and return to Aeon.');
 
             // Parse parameters
             const params = new URL(`http://localhost${req.url}`).searchParams;

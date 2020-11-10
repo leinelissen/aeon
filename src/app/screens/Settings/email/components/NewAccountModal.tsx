@@ -11,17 +11,24 @@ import React, { PropsWithChildren, useCallback, useState } from 'react';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
-    children: string
+    onComplete: () => void,
 }>;
 
-function NewAccountButton({ client, children, ...props }: NewAccountProps): JSX.Element {
+function NewAccountButton({ client, children, onComplete, ...props }: NewAccountProps): JSX.Element {
     const [isActive, setActive] = useState(false);
     const dispatch = useAppDispatch();
 
+    // A handler for creating a new email account
     const handleClick = useCallback(async () => {
+        // Set activity flag
         setActive(true);
+
+        // Actually create a new account
         await dispatch(createNewAccount(client));
+
+        // Set new activity flag, and let parent component know we're done
         setActive(false);
+        onComplete();
     }, [dispatch, client, setActive])
 
     return (
@@ -43,8 +50,8 @@ function NewAccountModal(): JSX.Element {
                     // <PullContainer verticalAlign key='smtp'><FontAwesomeIcon icon={faEnvelope} /><MarginLeft>SMTP</MarginLeft></PullContainer>,
                 ]}>
                     <Margin>
-                        <p>By connecting your Gmail account, Aeon can send and check emails on your behalf. This makes it easier to submit and check on data requests.</p>
-                        <PullCenter><NewAccountButton client='gmail'>Add new Gmail account</NewAccountButton></PullCenter>
+                        <p>By connecting your Gmail account, Aeon can send and check emails on your behalf. This makes it easier to submit and check on data requests. When clicking the button below, a browser window will open that allows you to connect to a particular Gmail account. </p>
+                        <PullCenter><NewAccountButton client='gmail' onComplete={closeModal}>Add new Gmail account</NewAccountButton></PullCenter>
                     </Margin>
                     {/* <Margin>SMTP</Margin> */}
                 </ModalMenu>
