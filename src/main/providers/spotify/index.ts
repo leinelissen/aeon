@@ -9,11 +9,12 @@ const windowParams = {
 class Spotify extends DataRequestProvider {
     public static key = 'spotify';
     public static dataRequestIntervalDays = 5;
+    public static requiresEmailAccount = true;
 
-    async initialise(): Promise<boolean> {
+    async initialise(): Promise<string> {
         await this.verifyLoggedInStatus();
 
-        return true;
+        return '';
     }
 
     verifyLoggedInStatus = async (): Promise<Electron.Cookie[]> => {

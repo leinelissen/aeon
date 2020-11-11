@@ -1,12 +1,12 @@
 import Providers from 'app/utilities/Providers';
-import { DataRequestStatus } from 'main/providers/types';
+import { InitialisedProvider } from 'main/providers/types';
 import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { State, useAppDispatch } from '..';
-import { fetchRequests } from './actions';
+import { fetchAvailableProviders, fetchProviderAccounts } from './actions';
 
 type RequestState = {
-    providers: State['requests']['allKeys']
+    accounts: State['requests']['all']
     map: State['requests']['byKey']
     isLoading: State['requests']['isLoading']['requests'];
 }
@@ -14,11 +14,11 @@ type RequestState = {
 /**
  * Retrieve all currently active requests
  */
-export function useRequests(): RequestState {
+export function useAccounts(): RequestState {
     const requests = useSelector((state: State) => state.requests);
 
     return {
-        providers: requests.allKeys,
+        accounts: requests.all,
         map: requests.byKey,
         isLoading: requests.isLoading.requests,
     };
@@ -28,7 +28,7 @@ export function useRequests(): RequestState {
  * Retrieve a single provider by key name
  * @param key Provider key
  */
-export function useProvider(key: string): DataRequestStatus {
+export function useProvider(key: string): InitialisedProvider {
     return useSelector((state: State) => state.requests.byKey[key]);
 }
 
@@ -40,7 +40,8 @@ export function ProviderSubscription(): null {
 
     // Callback that fetched all requests
     const refreshProviders = useCallback(() => {
-        dispatch(fetchRequests());
+        dispatch(fetchProviderAccounts());
+        dispatch(fetchAvailableProviders());
     }, [dispatch]);
 
     useEffect(() => {

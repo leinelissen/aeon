@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron';
 import { URL } from 'url';
 import crypto from 'crypto';
 
-interface Params {
+export interface SecureWindowParameters {
     key?: string;
     origin: string;
     options?: Electron.BrowserWindowConstructorOptions;
@@ -16,7 +16,7 @@ interface Params {
  * @param options An optional options object that should be passed to the
  * BrowserWindow constructor. This may not contain webPreferences
  */
-function createSecureWindow(params: Params): BrowserWindow {
+function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
     const { key, origin, options = {} } = params;
 
     // GUARD: webPreferences are off-limits
@@ -66,7 +66,7 @@ function createSecureWindow(params: Params): BrowserWindow {
  * @param fn The function that needs the window object
  */
 export function withSecureWindow<U>(
-    params: Params,
+    params: SecureWindowParameters,
     fn: (window: BrowserWindow) => Promise<U>,
 ): Promise<U> {
     // Create new Window with the given parameters

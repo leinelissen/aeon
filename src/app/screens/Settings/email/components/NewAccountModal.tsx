@@ -6,7 +6,7 @@ import Modal from 'app/components/Modal';
 import ModalMenu from 'app/components/Modal/Menu';
 import { Margin, MarginLeft, PullCenter, PullContainer } from 'app/components/Utility';
 import { useAppDispatch } from 'app/store';
-import { createNewAccount } from 'app/store/email/actions';
+import { createEmailAccount } from 'app/store/email/actions';
 import React, { PropsWithChildren, useCallback, useState } from 'react';
 
 type NewAccountProps = PropsWithChildren<{ 
@@ -24,7 +24,7 @@ function NewAccountButton({ client, children, onComplete, ...props }: NewAccount
         setActive(true);
 
         // Actually create a new account
-        await dispatch(createNewAccount(client));
+        await dispatch(createEmailAccount(client));
 
         // Set new activity flag, and let parent component know we're done
         setActive(false);

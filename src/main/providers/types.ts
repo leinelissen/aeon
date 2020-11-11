@@ -3,10 +3,27 @@ export interface ProviderFile {
     data: Buffer | string;
 }
 
+export interface InitialisedProvider {
+    // The key for the provider that supplies the data
+    provider: string;
+    // The account from which the data emanates
+    account?: string;
+    // A random hash which ensures that sessions are kept between various
+    // invocations of browser windows.
+    windowKey: string;
+    status: DataRequestStatus;
+}
+
 export abstract class Provider {
+    protected accountName?: string;
+    protected windowKey: string;
     /** The key under which all files will be stored. Should be filesystem-safe
      * (no spaces, all-lowercase) */
     public static key: string;
+    /** Whether this provider reqiores an email account in order to make its
+     * requests. In this case, the user will be required to choose an email up front,
+     * which in turn will be supplied to the initialise function.*/
+    public static requiresEmailAccount: boolean;
     /** Update the data that is retrieved by this Provider. Should return an
      * object with all new files, so they can be saved to disk. Alternatively,
      * should return false to indicate that no update was carried out. */
@@ -15,7 +32,11 @@ export abstract class Provider {
      * initialised for the first time during onboarding. The return boolean
      * indicates whether the provider succeeded in initialising, ie. by logging
      * into a particular service */
-    abstract initialise(): Promise<boolean>;
+    abstract initialise(accountName?: string): Promise<string>;
+    constructor(windowKey: string, accountName?: string) {
+        this.accountName = accountName;
+        this.windowKey = windowKey;
+    }
 }
 
 export interface DataRequestProvider extends Provider {
@@ -36,7 +57,7 @@ export abstract class DataRequestProvider extends Provider {
 }
 
 export interface DataRequestStatus {
-    dispatched: string;
+    dispatched?: string;
     completed?: string;
     lastCheck?: string;
 }
@@ -48,7 +69,8 @@ export enum ProviderCommands {
     DISPATCH_DATA_REQUEST_TO_ALL,
     REFRESH,
     INITIALISE,
-    GET_DISPATCHED_DATA_REQUESTS
+    GET_ACCOUNTS,
+    GET_AVAILABLE_PROVIDERS
 }
 
 export enum ProviderEvents {

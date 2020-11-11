@@ -15,11 +15,12 @@ const requestSavePath = path.join(app.getAppPath(), 'data');
 class LinkedIn extends DataRequestProvider {
     public static key = 'linkedin';
     public static dataRequestIntervalDays = 14;
+    public static requiresEmailAccount = false;
 
-    async initialise(): Promise<boolean> {
+    async initialise(): Promise<string> {
         await this.verifyLoggedInStatus();
 
-        return true;
+        return '';
     }
 
     verifyLoggedInStatus = async (): Promise<Electron.Cookie[]> => {

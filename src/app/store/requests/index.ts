@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { DataRequestStatus } from 'main/providers/types';
-import { fetchRequests, refreshRequests } from './actions';
+import { InitialisedProvider } from 'main/providers/types';
+import { fetchAvailableProviders, fetchProviderAccounts, refreshRequests } from './actions';
 
 interface RequestsState {
-    byKey: Record<string, DataRequestStatus>;
-    allKeys: string[];
+    byKey: Record<string, InitialisedProvider>;
+    all: string[];
+    availableProviders: string[];
     isLoading: {
         requests: boolean;
         refresh: boolean;
@@ -13,7 +14,8 @@ interface RequestsState {
 
 const initialState: RequestsState = {
     byKey: {},
-    allKeys: [],
+    all: [],
+    availableProviders: [],
     isLoading: {
         requests: false,
         refresh: false,
@@ -28,12 +30,16 @@ const requestsSlice = createSlice({
         builder.addCase(refreshRequests.pending, state => { state.isLoading.refresh = true });
         builder.addCase(refreshRequests.rejected, state => { state.isLoading.refresh = false });
         builder.addCase(refreshRequests.fulfilled, state => { state.isLoading.refresh = false });
-        builder.addCase(fetchRequests.pending, state => { state.isLoading.requests = true });
-        builder.addCase(fetchRequests.rejected, state => { state.isLoading.requests = false });
-        builder.addCase(fetchRequests.fulfilled, (state, action) => { 
+        builder.addCase(fetchProviderAccounts.pending, state => { state.isLoading.requests = true });
+        builder.addCase(fetchProviderAccounts.rejected, state => { state.isLoading.requests = false });
+        builder.addCase(fetchProviderAccounts.fulfilled, (state, action) => { 
             state.isLoading.requests = false;
-            state.byKey = action.payload.dispatched;
-            state.allKeys = action.payload.providers;
+            state.byKey = action.payload.accounts;
+            state.all = Object.keys(action.payload.accounts);
+        });
+        builder.addCase(fetchAvailableProviders.fulfilled, (state, action) => {
+            console.log(action);
+            state.availableProviders = action.payload;
         });
     }
 });

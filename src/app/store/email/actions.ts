@@ -1,17 +1,17 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import Email from 'app/utilities/Email';
 
-export const fetchAccounts = createAsyncThunk(
+export const fetchEmailAccounts = createAsyncThunk(
     'email/accounts/fetch',
     () => Email.getAccounts()
 );
 
-export const fetchClients = createAsyncThunk(
+export const fetchEmailClients = createAsyncThunk(
     'email/clients/fetch',
     () => Email.getClients()
 );
 
-export const createNewAccount = createAsyncThunk(
+export const createEmailAccount = createAsyncThunk(
     'email/accounts/create',
     (client: string) => Email.initialise(client)
 );
