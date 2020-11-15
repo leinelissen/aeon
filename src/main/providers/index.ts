@@ -59,7 +59,7 @@ class ProviderManager extends EventEmitter {
 
         // Then create instances for each provider that is retrieved from the store
         this.accounts.forEach((account, key) => {
-            const Provider = mapProviderToKey[key];
+            const Provider = mapProviderToKey[account.provider];
             this.instances.set(key, new Provider(account.windowKey, account.account));
         });
 
@@ -166,11 +166,12 @@ class ProviderManager extends EventEmitter {
         updateType: ProviderUpdateType
     ): Promise<number> => {
         console.log(`Saving and committing files for ${key}...`);
+        const account = this.accounts.get(key);
 
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
-            // Prepend the supplied path with the key from the spcific service
-            const location = `${key}/${file.filepath}`;
+            // Prepend the supplied path with the key from the specific service
+            const location = `${account.provider}/${account.account}/${file.filepath}`;
 
             // Save the files to disk, and add the files
             if (file.data) {
@@ -196,7 +197,8 @@ class ProviderManager extends EventEmitter {
 
         // Gather the set of data that is to be appended to the commit
         const messageData: Record<string, string> = {
-            'Aeon-Provider': key,
+            'Aeon-Provider': account.provider,
+            'Aeon-Account': account.account,
             'Aeon-Update-Type': updateType,
         }
 
