@@ -63,7 +63,7 @@ function Requests(): JSX.Element {
                 </PanelBottomButtons>
             </SplitPanel>
             <List>
-                <ProviderOverlay selectedProvider={selectedProvider} status={map[selectedProvider]?.status} />
+                <ProviderOverlay selectedProvider={selectedProvider} />
             </List>
         </PanelGrid>
     )
