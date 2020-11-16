@@ -92,7 +92,7 @@
         "@types/adm-zip": "^0.4.33",
         "@types/deep-equal": "^1.0.1",
         "@types/lodash-es": "^4.17.3",
-        "@types/mailparser": "^2.7.4",
+        "@types/mailparser": "^3.0.0",
         "@types/node": "^12.12.61",
         "@types/node-fetch": "^2.5.7",
         "@types/nodegit": "^0.26.12",
