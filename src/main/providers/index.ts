@@ -103,6 +103,11 @@ class ProviderManager extends EventEmitter {
         const instance = new mapProviderToKey[provider](windowKey);
         const account = await instance.initialise();
 
+        // GUARD: Check if the instance has correctly returned an account name
+        if (!account) {
+            throw new Error('Initialising provider did not return account name');
+        }
+
         // Save the key to the accounts array
         const key = `${provider}_${account}`;
         this.accounts.set(key, {
@@ -275,6 +280,12 @@ class ProviderManager extends EventEmitter {
             // GUARD: If we cannot find an instance for this provider type, we
             // skip it
             if (!instance) {
+                return;
+            }
+
+            // GUARD: If there is not active request for this account, we don't
+            // need to force it
+            if (!account.status.dispatched) {
                 return;
             }
 

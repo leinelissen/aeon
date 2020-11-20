@@ -43,7 +43,7 @@ class ProviderBridge {
                 return availableProviders.map((Client) => Client.key);
             case ProviderCommands.GET_ACCOUNTS:
                 return {
-                    lastChecked: this.providers.lastDataRequestCheck.toString(),
+                    lastChecked: this.providers.lastDataRequestCheck?.toString(),
                     accounts: Object.fromEntries(this.providers.accounts),
                 };
         }

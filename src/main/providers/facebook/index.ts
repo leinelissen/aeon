@@ -5,11 +5,6 @@ import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
 
-const windowParams = {
-    key: 'facebook',
-    origin: 'facebook.com',
-};
-
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
 class Facebook extends DataRequestProvider {
@@ -17,21 +12,48 @@ class Facebook extends DataRequestProvider {
     public static dataRequestIntervalDays = 5;
     public static requiresEmailAccount = false;
 
+    /**
+     * The parameters to be stored for the secure windows
+     */
+    windowParams = {
+        key: this.windowKey,
+        origin: 'facebook.com'
+    };
+
     async initialise(): Promise<string> {
         await this.verifyLoggedInStatus();
+        return this.getAccountName();
+    }
 
-        return '';
+    /**
+     * Get the account name for the logged-in Facebook account
+     */
+    getAccountName = async(): Promise<string> => {
+        return withSecureWindow<string>(this.windowParams, async (window) => {
+            await window.loadURL('https://www.facebook.com/settings?tab=account&view');
+
+            // Wait for two seconds for React to mount its components and load
+            // some friggin iframes
+            // TODO: Wait for Facebook to implement sound engineering practices
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
+            return window.webContents.executeJavaScript(`
+                Array.from(document.querySelectorAll('iframe')).reduce((sum, iframe) => {
+                    return sum || iframe.contentWindow.document.body.querySelector('a[href="/settings?tab=account&section=email"]')
+                }, null)?.querySelector('strong')?.textContent;
+            `); 
+        });
     }
 
     verifyLoggedInStatus = async (): Promise<Electron.Cookie[]> => {
-        return withSecureWindow<Electron.Cookie[]>(windowParams, (window) => {
+        return withSecureWindow<Electron.Cookie[]>(this.windowParams, (window) => {
             const settingsUrl = 'https://www.facebook.com/settings';
-            window.loadURL(settingsUrl);
+            window.loadURL('https://www.facebook.com/login.php?next=https%3A%2F%2Fwww.facebook.com%2Fsettings');
 
             return new Promise((resolve) => {
                 const eventHandler = async(): Promise<void> => {
                     // Check if we ended up at the page in an authenticated form
-                    if (settingsUrl === window.webContents.getURL()) {
+                    if (window.webContents.getURL().startsWith(settingsUrl)) {
                         // If so, we retrieve the cookies
                         const cookies = await window.webContents.session.cookies.get({});
                         
@@ -58,7 +80,7 @@ class Facebook extends DataRequestProvider {
     dispatchDataRequest = async (): Promise<void> => {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<void>(windowParams, async (window) => {
+        return withSecureWindow<void>(this.windowParams, async (window) => {
             window.hide();
 
             await new Promise((resolve) => {
@@ -103,7 +125,7 @@ class Facebook extends DataRequestProvider {
     async isDataRequestComplete(): Promise<boolean> {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<boolean>(windowParams, async (window) => {
+        return withSecureWindow<boolean>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('did-finish-load', resolve)
@@ -126,7 +148,7 @@ class Facebook extends DataRequestProvider {
     }
 
     async parseDataRequest(extractionPath: string): Promise<ProviderFile[]> {
-        return withSecureWindow<ProviderFile[]>(windowParams, async (window) => {
+        return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('dom-ready', resolve)
