@@ -309,7 +309,7 @@ class ProviderManager extends EventEmitter {
                 console.log('A data request has completed! Starting to parse...')
 
                 // If it is complete now, we'll fetch the data and parse it
-                const dirPath = path.join(REPOSITORY_PATH, key);
+                const dirPath = path.join(REPOSITORY_PATH, account.provider, account.account);
                 const files = await instance.parseDataRequest(dirPath);
                 const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
                 Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
