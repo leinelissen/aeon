@@ -28,7 +28,7 @@ class ProviderBridge {
         
         switch(command) {
             case ProviderCommands.INITIALISE:
-                return this.providers.initialise(args[0]);
+                return this.providers.initialise(args[0], args[1]);
             case ProviderCommands.UPDATE:
                 return this.providers.update(args[0]);
             case ProviderCommands.UPDATE_ALL:
@@ -40,7 +40,12 @@ class ProviderBridge {
             case ProviderCommands.REFRESH:
                 return this.providers.refresh();
             case ProviderCommands.GET_AVAILABLE_PROVIDERS:
-                return availableProviders.map((Client) => Client.key);
+                return availableProviders.reduce<Record<string, { requiresEmail: boolean}>>((sum, Client) => {
+                    sum[Client.key] = {
+                        requiresEmail: Object.getPrototypeOf(Client).name === 'EmailDataRequestProvider'
+                    }
+                    return sum;
+                }, {});
             case ProviderCommands.GET_ACCOUNTS:
                 return {
                     lastChecked: this.providers.lastDataRequestCheck?.toString(),

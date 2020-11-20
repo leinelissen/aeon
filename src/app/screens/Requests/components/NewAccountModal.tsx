@@ -9,10 +9,13 @@ import { addProviderAccount } from 'app/store/requests/actions';
 import { State, useAppDispatch } from 'app/store';
 import { useSelector } from 'react-redux';
 import Providers from 'app/utilities/Providers';
+import { Dropdown } from 'app/components/Input';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
     onComplete: () => void,
+    disabled?: boolean;
+    selectedEmail?: string;
 }>;
 
 function NewAccountButton({ client, children, onComplete, ...props }: NewAccountProps): JSX.Element {
@@ -25,7 +28,7 @@ function NewAccountButton({ client, children, onComplete, ...props }: NewAccount
         setActive(true);
 
         // Actually create a new account
-        await dispatch(addProviderAccount({ client }));
+        await dispatch(addProviderAccount({ client, account }));
 
         // Set new activity flag, and let parent component know we're done
         setActive(false);
@@ -38,8 +41,11 @@ function NewAccountButton({ client, children, onComplete, ...props }: NewAccount
 }
 
 function NewAccountModal(): JSX.Element {
+    const allProviders = useSelector((state: State) => state.requests.allProviders);
     const availableProviders = useSelector((state: State) => state.requests.availableProviders);
+    const emailAccounts = useSelector((state: State) => state.email.accounts.all);
     const [modalIsOpen, setModal] = useState(false);
+    const [selectedEmail, setSelectedEmail] = useState(emailAccounts.length ? emailAccounts[0] : '');
     const openModal = useCallback(() => setModal(true), [setModal]);
     const closeModal = useCallback(() => setModal(false), [setModal]);
     
@@ -49,13 +55,34 @@ function NewAccountModal(): JSX.Element {
                 Add new account
             </Button>
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-                <ModalMenu labels={availableProviders.map((key) =>
+                <ModalMenu labels={allProviders.map((key) =>
                     <PullContainer verticalAlign key={key}><FontAwesomeIcon icon={Providers.getIcon(key)} /><MarginLeft>{key}</MarginLeft></PullContainer>
                 )}>
-                    {availableProviders.map((key) => (
+                    {allProviders.map((key) => (
                         <Margin key={key}>
                             <p>By adding a new account for {key}, you are able to retrieve your data from them.</p>
-                            <PullCenter><NewAccountButton client={key} onComplete={closeModal}>Add new account</NewAccountButton></PullCenter>
+                            {availableProviders[key].requiresEmail &&
+                                <>
+                                    <p>In order to use this provider, you must link an email address to Aeon. </p>
+                                    <Dropdown 
+                                        options={emailAccounts}
+                                        label="Email Account" 
+                                        value={selectedEmail}
+                                        onSelect={setSelectedEmail}
+                                        disabled={emailAccounts.length === 0}
+                                    />
+                                </>
+                            }
+                            <PullCenter>
+                                <NewAccountButton
+                                    client={key}
+                                    emailAccount={selectedEmail}
+                                    onComplete={closeModal}
+                                    disabled={availableProviders[key].requiresEmail && selectedEmail === ''}
+                                >
+                                    Add new account
+                                </NewAccountButton>
+                            </PullCenter>
                         </Margin>
                     ))}
                 </ModalMenu>

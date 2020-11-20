@@ -21,8 +21,8 @@ class Providers {
         window.api.removeListener(channel, handler);
     }
 
-    static initialise(key: string): Promise<boolean> {
-        return window.api.invoke(channel, ProviderCommands.INITIALISE, key);
+    static initialise(key: string, account?: string): Promise<boolean> {
+        return window.api.invoke(channel, ProviderCommands.INITIALISE, key, account);
     }
 
     static update(key: string): Promise<void> {
@@ -49,7 +49,7 @@ class Providers {
         return window.api.invoke(channel, ProviderCommands.GET_ACCOUNTS);
     }
 
-    static getAvailableProviders(): Promise<string[]> {
+    static getAvailableProviders(): Promise<Record<string, { requiresEmail: boolean }>> {
         return window.api.invoke(channel, ProviderCommands.GET_AVAILABLE_PROVIDERS);
     }
 

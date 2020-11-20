@@ -1,3 +1,5 @@
+import { EmailClient } from 'main/email-client/types';
+
 export interface ProviderFile {
     filepath: string;
     data: Buffer | string;
@@ -20,10 +22,6 @@ export abstract class Provider {
     /** The key under which all files will be stored. Should be filesystem-safe
      * (no spaces, all-lowercase) */
     public static key: string;
-    /** Whether this provider reqiores an email account in order to make its
-     * requests. In this case, the user will be required to choose an email up front,
-     * which in turn will be supplied to the initialise function.*/
-    public static requiresEmailAccount: boolean;
     /** Update the data that is retrieved by this Provider. Should return an
      * object with all new files, so they can be saved to disk. Alternatively,
      * should return false to indicate that no update was carried out. */
@@ -55,6 +53,15 @@ export abstract class DataRequestProvider extends Provider {
     /** The amount of days that are required between successive data requests */
     public static dataRequestIntervalDays: number;
 }
+
+export abstract class EmailDataRequestProvider extends DataRequestProvider {
+    protected email: EmailClient;
+    setEmailClient(email: EmailClient): void {
+        this.email = email;
+    }
+}
+
+export type ProviderUnion = typeof DataRequestProvider | typeof Provider | typeof EmailDataRequestProvider;
 
 export interface DataRequestStatus {
     dispatched?: string;

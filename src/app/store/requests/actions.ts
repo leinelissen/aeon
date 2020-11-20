@@ -17,7 +17,7 @@ export const refreshRequests = createAsyncThunk(
 export const addProviderAccount = createAsyncThunk(
     'requests/new-account',
     ({ client, account }: { client: string, account?: string }, { dispatch }) => {
-        const value = Providers.initialise(client);
+        const value = Providers.initialise(client, account);
         dispatch(fetchProviderAccounts());
         return value;
     }

@@ -1,24 +1,23 @@
+import { subHours } from 'date-fns';
 import { withSecureWindow } from 'main/lib/create-secure-window';
-import { DataRequestProvider, ProviderFile } from '../types';
+import { EmailDataRequestProvider, ProviderFile } from '../types';
 
-const windowParams = {
-    key: 'spotify',
-    origin: 'spotify.com',
-};
-
-class Spotify extends DataRequestProvider {
+class Spotify extends EmailDataRequestProvider {
     public static key = 'spotify';
     public static dataRequestIntervalDays = 5;
-    public static requiresEmailAccount = true;
+
+    windowParams = {
+        key: this.windowKey,
+        origin: 'spotify.com'
+    }
 
     async initialise(): Promise<string> {
         await this.verifyLoggedInStatus();
-
-        return '';
+        return this.accountName;
     }
 
     verifyLoggedInStatus = async (): Promise<Electron.Cookie[]> => {
-        return withSecureWindow<Electron.Cookie[]>(windowParams, (window) => {
+        return withSecureWindow<Electron.Cookie[]>(this.windowParams, (window) => {
             const settingsUrl = 'https://www.spotify.com/us/account/privacy/';
             window.loadURL(settingsUrl);
 
@@ -51,7 +50,7 @@ class Spotify extends DataRequestProvider {
     dispatchDataRequest = async (): Promise<void> => {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<void>(windowParams, async (window) => {
+        return withSecureWindow<void>(this.windowParams, async (window) => {
             window.hide();
 
             await new Promise((resolve) => {
@@ -61,7 +60,7 @@ class Spotify extends DataRequestProvider {
 
             // Now we must defer the page to the user, so that they can confirm
             // the request. We then listen for a succesfull AJAX call 
-            return new Promise((resolve) => {
+            await new Promise((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
                     urls: [ 'https://*.spotify.com/*' ]
                 }, (details: Electron.OnCompletedListenerDetails) => {
@@ -79,13 +78,38 @@ class Spotify extends DataRequestProvider {
 
                 window.show();
             });     
+
+            // Then, we'll poll for a particular email from Spotify coming in
+            // that we have to click a link from
+            return this.recursivelyWaitForConfirmationEmail();
         });
+    }
+
+    async recursivelyWaitForConfirmationEmail(): Promise<void> {
+        const [ message ] = await this.email.findMessages({
+            from: 'noreply@spotify.com'
+        });
+
+        // Check if there is a message and that it has a date
+        if (message && message.date) {
+            // Then check if it's been sent over in the last two hours
+            const reference = subHours(new Date, 2);
+            if (reference < message.date) {
+                // If so, we find the link and click it
+                console.log(message)
+                return;
+            }
+        }
+
+        // If the mail was not found, wait 15 seconds and execute this method again.
+        await new Promise(resolve => setTimeout(resolve, 15_000));
+        return this.recursivelyWaitForConfirmationEmail();
     }
 
     async isDataRequestComplete(): Promise<boolean> {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<boolean>(windowParams, async (window) => {
+        return withSecureWindow<boolean>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('did-finish-load', resolve)
@@ -103,7 +127,7 @@ class Spotify extends DataRequestProvider {
     async parseDataRequest(): Promise<ProviderFile[]> {
         return [];
         /*
-        return withSecureWindow<ProviderFile[]>(windowParams, async (window) => {
+        return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('dom-ready', resolve)

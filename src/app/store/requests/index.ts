@@ -5,7 +5,8 @@ import { fetchAvailableProviders, fetchProviderAccounts, refreshRequests } from 
 interface RequestsState {
     byKey: Record<string, InitialisedProvider>;
     all: string[];
-    availableProviders: string[];
+    allProviders: string[];
+    availableProviders: Record<string, { requiresEmail: boolean }>;
     isLoading: {
         requests: boolean;
         refresh: boolean;
@@ -15,7 +16,8 @@ interface RequestsState {
 const initialState: RequestsState = {
     byKey: {},
     all: [],
-    availableProviders: [],
+    allProviders: [],
+    availableProviders: {},
     isLoading: {
         requests: false,
         refresh: false,
@@ -39,6 +41,7 @@ const requestsSlice = createSlice({
         });
         builder.addCase(fetchAvailableProviders.fulfilled, (state, action) => {
             console.log(action);
+            state.allProviders = Object.keys(action.payload);
             state.availableProviders = action.payload;
         });
     }

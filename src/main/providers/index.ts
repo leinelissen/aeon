@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns';
 import Instagram from './instagram';
-import { Provider, ProviderFile, DataRequestProvider, ProviderEvents, ProviderUpdateType, InitialisedProvider } from './types';
+import { Provider, ProviderFile, DataRequestProvider, ProviderEvents, ProviderUpdateType, InitialisedProvider, EmailDataRequestProvider, ProviderUnion } from './types';
 import Repository, { REPOSITORY_PATH } from '../lib/repository';
 import Notifications from 'main/lib/notifications';
 import ProviderBridge from './bridge';
@@ -14,14 +14,14 @@ import LinkedIn from './linkedin';
 import Spotify from './spotify';
 import EmailManager from 'main/email-client';
 
-export const providers: Array<typeof Provider | typeof DataRequestProvider> = [
+export const providers: Array<ProviderUnion> = [
     Instagram,
     Facebook,
     LinkedIn,
     Spotify,
 ];
 
-const mapProviderToKey = providers.reduce<Record<string, typeof Provider | typeof DataRequestProvider>>((sum, provider) => {
+const mapProviderToKey = providers.reduce<Record<string, ProviderUnion>>((sum, provider) => {
     sum[provider.key] = provider;
     return sum;
 }, {});
@@ -60,7 +60,21 @@ class ProviderManager extends EventEmitter {
         // Then create instances for each provider that is retrieved from the store
         this.accounts.forEach((account, key) => {
             const Provider = mapProviderToKey[account.provider];
-            this.instances.set(key, new Provider(account.windowKey, account.account));
+
+            // GUARD: If the provider hinges on email, we must inject the client
+            // into the class
+            const instance = new Provider(account.windowKey, account.account);
+            if (instance instanceof EmailDataRequestProvider) {
+                const emailAccount = this.email.emailClients.get(account.account);
+                
+                if (!emailAccount) {
+                    throw new Error('Email account used to initialize a provider is no longer available...');
+                }
+
+                instance.setEmailClient(emailAccount);
+            } 
+
+            this.instances.set(key, instance);
         });
 
         // Then we create a timeout function that checks for completed data
@@ -90,7 +104,7 @@ class ProviderManager extends EventEmitter {
      * the account that has just been created.
      * @param key 
      */
-    initialise = async (provider: string): Promise<string> => {
+    initialise = async (provider: string, accountName?: string): Promise<string> => {
         // Generate a random string that is used to refer to the sessions for
         // this particular account
         const windowKey = crypto.randomBytes(32).toString('hex');
@@ -100,7 +114,24 @@ class ProviderManager extends EventEmitter {
         }
 
         // Call the respective initialise function
-        const instance = new mapProviderToKey[provider](windowKey);
+        const instance = new mapProviderToKey[provider](windowKey, accountName);
+
+        // GUARD: If we are dealing with a provider that implements email, we
+        // must inject an email client into the class
+        if (instance instanceof EmailDataRequestProvider) {
+            // Retrieve an email client that matches the supplied email address
+            const emailAccount = this.email.emailClients.get(accountName);
+                
+            // GUARD: The address must actually exist
+            if (!accountName || !emailAccount) {
+                throw new Error('Could not find email client withs suppled account name...');
+            }
+
+            // Inject the client into the provider
+            instance.setEmailClient(emailAccount);
+        }
+
+        // Then initialise the provider
         const account = await instance.initialise();
 
         // GUARD: Check if the instance has correctly returned an account name
