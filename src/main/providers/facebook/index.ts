@@ -88,35 +88,49 @@ class Facebook extends DataRequestProvider {
                 window.loadURL('https://www.facebook.com/dyi/?referrer=yfi_settings&tab=new_archive');
             });
 
+            // Wait for all the iframes to load
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
             // Now we must defer the page to the user, so that they can enter their
             // password. We then listen for a succesfull AJAX call 
             return new Promise((resolve) => {
-                window.webContents.session.webRequest.onCompleted({
-                    urls: [ 'https://*.facebook.com/*' ]
-                }, (details: Electron.OnCompletedListenerDetails) => {
-                    console.log('NEW REQUEST', details);
+                window.webContents.session.webRequest.onBeforeRequest({
+                    urls: [ 'https://www.facebook.com/api/graphql/' ]
+                }, (details: Electron.OnBeforeRequestListenerDetails) => {
+                    // Parse the upload object that is passed to the GraphQL API
+                    const data = details.uploadData[0]?.bytes?.toString('utf8');
 
-                    if (details.url === 'https://www.facebook.com/api/graphql/'
-                        && details.statusCode === 200) {
+                    // GUARD: If there is not data, we're parsing the wrong requests
+                    if (!data) {
+                        return;
+                    }
+
+                    // Then parse the params that are sent to the GraphQL API
+                    const params = new URLSearchParams(data);
+                    console.log(Array.from(params.keys()));
+
+                    // Check if we're capturing the right call
+                    if (params && params.get('fb_api_req_friendly_name') === 'DYISectionsCreateJobMutation') {
+                        // If so, setup a listener to check if the request is
+                        // completed correctly.
                         resolve();
                     }
                 });
 
                 // Ensure that the data request is in JSON format
                 window.webContents.executeJavaScript(`
-                    Array.from(document.querySelectorAll('label'))
-                        .find(e => e.textContent.startsWith('Format'))
-                        .querySelector('a')
-                        .click();
-                    Array.from(document.querySelectorAll('a[role="menuitemcheckbox"]'))
-                        .find(e => e.textContent === 'JSON')
-                        .click();
-                `);
-
-                window.webContents.executeJavaScript(`
-                    Array.from(document.querySelectorAll('button'))
-                        .find(el => el.textContent === 'Create File')
-                        .click?.()
+                    Array.from(document.querySelectorAll('iframe')).forEach(iframe => {
+                        Array.from(iframe.contentWindow.document.body.querySelectorAll('label'))
+                            ?.find(e => e.textContent.startsWith('Format'))
+                            ?.querySelector('a')
+                            ?.click();
+                        Array.from(iframe.contentWindow.document.body.querySelectorAll('a[role="menuitemcheckbox"]'))
+                            ?.find(e => e.textContent === 'JSON')
+                            ?.click();
+                        Array.from(iframe.contentWindow.document.body.querySelectorAll('button'))
+                            ?.find(el => el.textContent === 'Create File')
+                            ?.click?.()
+                    });
                 `);
             });     
         });
