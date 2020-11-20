@@ -153,12 +153,9 @@ class Instagram extends DataRequestProvider {
             // password. We then listen for a succesfull AJAX call 
             return new Promise((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
-                    urls: [ 'https://*.facebook.com/*' ]
+                    urls: [ 'https://www.instagram.com/download/request_download_data_ajax/' ]
                 }, (details: Electron.OnCompletedListenerDetails) => {
-                    console.log('NEW REQUEST', details);
-
-                    if (details.url.endsWith('www.instagram.com%2Fdownload%2Frequest%2F&sdk=joey&wants_cookie_data=true')
-                        && details.statusCode === 200) {
+                    if (details.statusCode === 200) {
                         resolve();
                     }
                 });
