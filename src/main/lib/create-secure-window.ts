@@ -78,9 +78,13 @@ export function withSecureWindow<U>(
         window.on('close', () => reject(new Error('UserAbort')));
     });
 
-    // Race the function against the closePromise, so that the whole function is
-    // reject if the window is ever closed.
-    return (Promise.race([fn(window), closePromise]) as Promise<U>)
+    // Create a timeout promise, in order to ensure we don't leavy any zombie
+    // windows open in the background
+    const timeoutPromise = new Promise(resolve => setTimeout(resolve, 120_000));
+
+    // Race the function against the other promises, so that the whole function is
+    // rejected if the window is ever closed or encounters the timeout.
+    return (Promise.race([fn(window), closePromise, timeoutPromise]) as Promise<U>)
         .then((values): U => {
             // Also destroy the window when the function has been successfully completed.
             window.destroy();
