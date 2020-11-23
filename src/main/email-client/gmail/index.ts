@@ -174,8 +174,8 @@ export default class GmailEmailClient implements EmailClient {
      * If so, the access token has expired. It will fetch a new one and mount a
      * new request to continue the chain.
      */
-    tokenMiddleware(url: string, init: RequestInit = null): ((response: Response) => Promise<Response>) {
-        return async function(response: Response): Promise<Response> {
+    tokenMiddleware = (url: string, init: RequestInit = null): ((response: Response) => Promise<Response>) => {
+        return async (response: Response): Promise<Response> => {
             // GUARD: Check if the token has expired
             if (response.status === 401) {
                 // If so, refresh the token

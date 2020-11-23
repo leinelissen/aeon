@@ -1,3 +1,6 @@
+import path from 'path';
+import fs from 'fs';
+import AdmZip from 'adm-zip';
 import { subHours } from 'date-fns';
 import { withSecureWindow } from 'main/lib/create-secure-window';
 import { EmailDataRequestProvider, ProviderFile } from '../types';
@@ -51,7 +54,7 @@ class Spotify extends EmailDataRequestProvider {
     dispatchDataRequest = async (): Promise<void> => {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<void>(this.windowParams, async (window) => {
+        await withSecureWindow<void>(this.windowParams, async (window) => {
             window.hide();
 
             await new Promise((resolve) => {
@@ -63,27 +66,31 @@ class Spotify extends EmailDataRequestProvider {
             // the request. We then listen for a succesfull AJAX call 
             await new Promise((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
-                    urls: [ 'https://*.spotify.com/*' ]
+                    urls: [ 
+                        'https://www.spotify.com/us/account/privacy/download/*',
+                        'https://www.spotify.com/us/account/privacy/resend-confirmation-email/*'
+                    ]
                 }, (details: Electron.OnCompletedListenerDetails) => {
-                    if (details.url.startsWith('https://www.spotify.com/us/account/privacy/download')
-                        && details.statusCode === 200) {
+                    if (details.statusCode === 200) {
                         resolve();
                     }
                 });
 
                 // Ensure that the data request is in JSON format
                 window.webContents.executeJavaScript(`
-                    document.querySelector('button#privacy-open-request-download-modal-button')
-                        .click();
+                    const rqst = document.querySelector('button#privacy-open-request-download-modal-button');
+                    rqst?.offsetParent 
+                        ? rqst.click()
+                        : document.querySelector('button.resend-email-button')?.click();
                 `);
 
                 window.show();
             });     
-
-            // Then, we'll poll for a particular email from Spotify coming in
-            // that we have to click a link from
-            return this.recursivelyWaitForConfirmationEmail();
         });
+
+        // Then, we'll poll for a particular email from Spotify coming in
+        // that we have to click a link from
+        return this.recursivelyWaitForConfirmationEmail();
     }
 
     /**
@@ -140,17 +147,21 @@ class Spotify extends EmailDataRequestProvider {
         });
     }
 
-    async parseDataRequest(): Promise<ProviderFile[]> {
-        return [];
-        /*
-        return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
-            // Load page URL
-            await new Promise((resolve) => {
-                window.webContents.once('dom-ready', resolve)
-                window.loadURL('https://www.spotify.com/us/account/privacy/');
-            });
+    async parseDataRequest(extractionPath: string): Promise<ProviderFile[]> {
+        // Get the download link
+        const [message] = await this.email.findMessages({
+            from: 'noreply@spotify.com',
+        });
+        const [downloadLink] = message?.text?.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/retrieve\/[a-f\d]+/);
+        
+        // GUARD: Check if the download link was successfully retrieved
+        if (!message || !downloadLink) {
+            throw new Error('Could not find download link in email for Spotify');
+        }
 
-            const filePath = path.join(requestSavePath, 'facebook.zip');
+        // Open a window with the download link
+        return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
+            const filePath = path.join(extractionPath, 'spotify.zip');
             await new Promise((resolve) => {
                 // Create a handler for any file saving actions
                 window.webContents.session.once('will-download', (event, item) => {
@@ -159,13 +170,9 @@ class Spotify extends EmailDataRequestProvider {
                     item.once('done', resolve);
                 });
 
-                // And then trigger the button click
-                window.webContents.executeJavaScript(`
-                    Array.from(document.querySelectorAll('button'))
-                        .find(el => el.textContent === 'Download' || el.textContent === 'Download Again')
-                        .click();
-                `);
-
+                // And then open the URL and show the window
+                // TODO: Check if an additional click is necessary
+                window.loadURL(downloadLink);
                 window.show();
             });
 
@@ -181,7 +188,6 @@ class Spotify extends EmailDataRequestProvider {
                 return {
                     filepath: entry.entryName,
                     data: null,
-                    // data: entry.getData(),
                 };
             });
 
@@ -190,7 +196,6 @@ class Spotify extends EmailDataRequestProvider {
 
             return files;
         });
-        */
     }
 }
 
