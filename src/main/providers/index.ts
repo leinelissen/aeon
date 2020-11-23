@@ -105,6 +105,7 @@ class ProviderManager extends EventEmitter {
      * @param key 
      */
     initialise = async (provider: string, accountName?: string): Promise<string> => {
+        console.log(`Attempting to initialise a new ${provider} (${accountName})`);
         // Generate a random string that is used to refer to the sessions for
         // this particular account
         const windowKey = crypto.randomBytes(32).toString('hex');

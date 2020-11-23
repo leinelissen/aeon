@@ -12,6 +12,7 @@ class Spotify extends EmailDataRequestProvider {
     }
 
     async initialise(): Promise<string> {
+        console.log('Initialising new spotify account');
         await this.verifyLoggedInStatus();
         return this.accountName;
     }
@@ -85,7 +86,13 @@ class Spotify extends EmailDataRequestProvider {
         });
     }
 
+    /**
+     * A function that will poll the email account linked to this provider, to
+     * check for a particular email with a confirmation link. If it is found,
+     * the link is opened and the Promise is resolved.
+     */
     async recursivelyWaitForConfirmationEmail(): Promise<void> {
+        // Retrieve all messages from Spotify from the server
         const [ message ] = await this.email.findMessages({
             from: 'noreply@spotify.com'
         });
@@ -97,7 +104,16 @@ class Spotify extends EmailDataRequestProvider {
             if (reference < message.date) {
                 // If so, we find the link and click it
                 console.log(message)
-                return;
+                const [link] = message.text.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/confirm\/[a-f\d]+/);
+
+                // GUARD: Check if the link is correctly extracted, else we
+                // might be in the wrong email
+                if (link) {
+                    // If so, we open a new window in which we open the link
+                    return withSecureWindow(this.windowParams, window => {
+                        return window.loadURL(link);
+                    });
+                }
             }
         }
 

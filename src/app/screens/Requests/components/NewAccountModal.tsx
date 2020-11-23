@@ -15,10 +15,11 @@ type NewAccountProps = PropsWithChildren<{
     client: string, 
     onComplete: () => void,
     disabled?: boolean;
+    account?: string;
     selectedEmail?: string;
 }>;
 
-function NewAccountButton({ client, children, onComplete, ...props }: NewAccountProps): JSX.Element {
+function NewAccountButton({ client, children, onComplete, account, ...props }: NewAccountProps): JSX.Element {
     const [isActive, setActive] = useState(false);
     const dispatch = useAppDispatch();
 
@@ -76,7 +77,7 @@ function NewAccountModal(): JSX.Element {
                             <PullCenter>
                                 <NewAccountButton
                                     client={key}
-                                    emailAccount={selectedEmail}
+                                    account={availableProviders[key].requiresEmail ? selectedEmail : undefined}
                                     onComplete={closeModal}
                                     disabled={availableProviders[key].requiresEmail && selectedEmail === ''}
                                 >
