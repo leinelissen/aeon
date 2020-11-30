@@ -39,7 +39,13 @@ function recursivelyExtractData(haystack: {[key: string]: any}, needle: string |
         if (Array.isArray(needle)
             ? needle.includes(key)
             : key === needle) {
-            data.push(item);
+            // GUARD: Double-check if item contains valid date
+            if (item) {
+                // Make sure to unpack any arrays that come along
+                data.push(...(Array.isArray(item) ? item : [item]));
+            }
+            
+            // Exit the loop
             break;
         }
 

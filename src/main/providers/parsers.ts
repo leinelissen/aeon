@@ -3,6 +3,7 @@ import path from 'path';
 import Facebook from './facebook/parser';
 import Instagram from './instagram/parser';
 import LinkedIn from './linkedin/parser';
+import Spotify from './spotify/parser';
 import { ProviderParser } from './types';
 
 // Contains an overview of parsers, sorted by their provider
@@ -10,6 +11,7 @@ const providerParsers: [ ProviderParser[], string ][] = [
     [Instagram, 'instagram'],
     [Facebook, 'facebook'],
     [LinkedIn, 'linkedin'],
+    [Spotify, 'spotify'],
 ];
 
 // Contains an overview of parsers, sorted by the file they parse

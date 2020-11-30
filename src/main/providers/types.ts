@@ -175,6 +175,10 @@ export enum ProvidedDataTypes {
     REGISTRATION_DATE = 'registration_date',
     // A mobile device associated with the platform
     MOBILE_DEVICE = 'mobile_device',
+    // An inference about an individual
+    INFERENCE = 'inference',
+    // A song that has been played by the user
+    PLAYED_SONG = 'played_song',
 }
 
 export interface ProviderDatum<D, T = ProvidedDataTypes> {
@@ -211,7 +215,7 @@ export type TelephoneNumber = ProviderDatum<string, ProvidedDataTypes.TELEPHONE_
 export type Device = ProviderDatum<string, ProvidedDataTypes.DEVICE>;
 export type Username = ProviderDatum<string, ProvidedDataTypes.USERNAME>;
 export type PlaceOfResidence = ProviderDatum<string, ProvidedDataTypes.PLACE_OF_RESIDENCE>;
-export type Address = ProviderDatum<{ street?: string; number?: number; state?: string; }, ProvidedDataTypes.ADDRESS>;
+export type Address = ProviderDatum<{ street?: string; number?: number; state?: string; zipCode?: string }, ProvidedDataTypes.ADDRESS>;
 export type Country = ProviderDatum<string, ProvidedDataTypes.COUNTRY>;
 export type Like = ProviderDatum<string, ProvidedDataTypes.LIKE>;
 export type LoginInstance = ProviderDatum<number, ProvidedDataTypes.LOGIN_INSTANCE>;
@@ -246,6 +250,13 @@ export type Currency = ProviderDatum<string, ProvidedDataTypes.CURRENCY>;
 export type EducationExperience = ProviderDatum<{ institution: string; graduated?: boolean; started_at?: Date; graduated_at?: Date, type?: string}, ProvidedDataTypes.EDUCATION_EXPERIENCE>;
 export type RegistrationDate = ProviderDatum<Date, ProvidedDataTypes.REGISTRATION_DATE>;
 export type MobileDevice = ProviderDatum<{ type: string; os?: string; advertiser_id?: string; device_locale?: string;}, ProvidedDataTypes.MOBILE_DEVICE>;
+export type Inference = ProviderDatum<string, ProvidedDataTypes.INFERENCE>;
+export type PlayedSong = ProviderDatum<{
+    artist: string;
+    track: string;
+    // The duration of play in milliseconds
+    playDuration: number;
+}, ProvidedDataTypes.PLAYED_SONG>;
 
 export interface ProviderParser {
     // The file from which the data has originated
@@ -262,7 +273,7 @@ export interface ProviderParser {
         // An optional transformer that is used to translate complex objects
         // into the required shape
         // eslint-disable-next-line
-        transformer?(object: unknown): Partial<ProviderDatum<unknown, unknown>>[];
+        transformer?(object: unknown): Partial<ProviderDatum<unknown, unknown>>[] | Partial<ProviderDatum<unknown, unknown>>;
         // transformer?: (obj: any) => any | any[];
     }[]
 }
