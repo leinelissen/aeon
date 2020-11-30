@@ -46,3 +46,10 @@ export const EmptyIcon = styled.span`
 export const MarginLeft = styled.span`
     margin-left: 1em;
 `;
+
+export const Ellipsis = styled.div`
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-right: 5px;
+`;
