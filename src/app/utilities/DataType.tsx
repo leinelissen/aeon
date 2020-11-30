@@ -7,7 +7,7 @@ import {
     PrivacySetting,
     LoginInstance,
     ProfilePicture,
-    Session, Employment, EventResponse, VisitedPage, OffSiteActivity, EducationExperience, MobileDevice, RegistrationDate
+    Session, Employment, EventResponse, VisitedPage, OffSiteActivity, EducationExperience, MobileDevice, RegistrationDate, PlayedSong
 } from 'main/providers/types';
 import {
     IconDefinition,
@@ -51,7 +51,9 @@ import {
     faClock,
     faUniversity,
     faUserPlus,
-    faMobile
+    faMobile,
+    faMusic,
+    faRobot
 } from 'app/assets/fa-light';
 
 class DataType {
@@ -149,6 +151,10 @@ class DataType {
                 return faUserPlus;
             case ProvidedDataTypes.MOBILE_DEVICE:
                 return faMobile;
+            case ProvidedDataTypes.PLAYED_SONG:
+                return faMusic;
+            case ProvidedDataTypes.INFERENCE:
+                return faRobot;
             default:
                 return faSquare;
         }
@@ -216,6 +222,10 @@ class DataType {
                 const { data: registrationDate } = datum as RegistrationDate;
                 return registrationDate.toLocaleString();
             }
+            case ProvidedDataTypes.PLAYED_SONG: {
+                const { data: { track, artist } } = datum as PlayedSong;
+                return `${artist} - ${track}`;
+            }
             case ProvidedDataTypes.EMAIL:
             case ProvidedDataTypes.FIRST_NAME:
             case ProvidedDataTypes.LAST_NAME:
@@ -238,6 +248,7 @@ class DataType {
             case ProvidedDataTypes.GENDER:
             case ProvidedDataTypes.SEARCH_QUERY:
             case ProvidedDataTypes.POST_SEEN:
+            case ProvidedDataTypes.INFERENCE:
             default:
                 return datum.data as string;
         }

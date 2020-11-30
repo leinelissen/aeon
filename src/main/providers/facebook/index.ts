@@ -5,32 +5,55 @@ import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
 
-const windowParams = {
-    key: 'facebook',
-    origin: 'facebook.com',
-};
-
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
 class Facebook extends DataRequestProvider {
     public static key = 'facebook';
     public static dataRequestIntervalDays = 5;
+    public static requiresEmailAccount = false;
 
-    async initialise(): Promise<boolean> {
+    /**
+     * The parameters to be stored for the secure windows
+     */
+    windowParams = {
+        key: this.windowKey,
+        origin: 'facebook.com'
+    };
+
+    async initialise(): Promise<string> {
         await this.verifyLoggedInStatus();
+        return this.getAccountName();
+    }
 
-        return true;
+    /**
+     * Get the account name for the logged-in Facebook account
+     */
+    getAccountName = async(): Promise<string> => {
+        return withSecureWindow<string>(this.windowParams, async (window) => {
+            await window.loadURL('https://www.facebook.com/settings?tab=account&view');
+
+            // Wait for two seconds for React to mount its components and load
+            // some friggin iframes
+            // TODO: Wait for Facebook to implement sound engineering practices
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
+            return window.webContents.executeJavaScript(`
+                Array.from(document.querySelectorAll('iframe')).reduce((sum, iframe) => {
+                    return sum || iframe.contentWindow.document.body.querySelector('a[href="/settings?tab=account&section=email"]')
+                }, null)?.querySelector('strong')?.textContent;
+            `); 
+        });
     }
 
     verifyLoggedInStatus = async (): Promise<Electron.Cookie[]> => {
-        return withSecureWindow<Electron.Cookie[]>(windowParams, (window) => {
+        return withSecureWindow<Electron.Cookie[]>(this.windowParams, (window) => {
             const settingsUrl = 'https://www.facebook.com/settings';
-            window.loadURL(settingsUrl);
+            window.loadURL('https://www.facebook.com/login.php?next=https%3A%2F%2Fwww.facebook.com%2Fsettings');
 
             return new Promise((resolve) => {
                 const eventHandler = async(): Promise<void> => {
                     // Check if we ended up at the page in an authenticated form
-                    if (settingsUrl === window.webContents.getURL()) {
+                    if (window.webContents.getURL().startsWith(settingsUrl)) {
                         // If so, we retrieve the cookies
                         const cookies = await window.webContents.session.cookies.get({});
                         
@@ -57,7 +80,7 @@ class Facebook extends DataRequestProvider {
     dispatchDataRequest = async (): Promise<void> => {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<void>(windowParams, async (window) => {
+        return withSecureWindow<void>(this.windowParams, async (window) => {
             window.hide();
 
             await new Promise((resolve) => {
@@ -65,35 +88,49 @@ class Facebook extends DataRequestProvider {
                 window.loadURL('https://www.facebook.com/dyi/?referrer=yfi_settings&tab=new_archive');
             });
 
+            // Wait for all the iframes to load
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
             // Now we must defer the page to the user, so that they can enter their
             // password. We then listen for a succesfull AJAX call 
             return new Promise((resolve) => {
-                window.webContents.session.webRequest.onCompleted({
-                    urls: [ 'https://*.facebook.com/*' ]
-                }, (details: Electron.OnCompletedListenerDetails) => {
-                    console.log('NEW REQUEST', details);
+                window.webContents.session.webRequest.onBeforeRequest({
+                    urls: [ 'https://www.facebook.com/api/graphql/' ]
+                }, (details: Electron.OnBeforeRequestListenerDetails) => {
+                    // Parse the upload object that is passed to the GraphQL API
+                    const data = details.uploadData[0]?.bytes?.toString('utf8');
 
-                    if (details.url === 'https://www.facebook.com/api/graphql/'
-                        && details.statusCode === 200) {
+                    // GUARD: If there is not data, we're parsing the wrong requests
+                    if (!data) {
+                        return;
+                    }
+
+                    // Then parse the params that are sent to the GraphQL API
+                    const params = new URLSearchParams(data);
+                    console.log(Array.from(params.keys()));
+
+                    // Check if we're capturing the right call
+                    if (params && params.get('fb_api_req_friendly_name') === 'DYISectionsCreateJobMutation') {
+                        // If so, setup a listener to check if the request is
+                        // completed correctly.
                         resolve();
                     }
                 });
 
                 // Ensure that the data request is in JSON format
                 window.webContents.executeJavaScript(`
-                    Array.from(document.querySelectorAll('label'))
-                        .find(e => e.textContent.startsWith('Format'))
-                        .querySelector('a')
-                        .click();
-                    Array.from(document.querySelectorAll('a[role="menuitemcheckbox"]'))
-                        .find(e => e.textContent === 'JSON')
-                        .click();
-                `);
-
-                window.webContents.executeJavaScript(`
-                    Array.from(document.querySelectorAll('button'))
-                        .find(el => el.textContent === 'Create File')
-                        .click?.()
+                    Array.from(document.querySelectorAll('iframe')).forEach(iframe => {
+                        Array.from(iframe.contentWindow.document.body.querySelectorAll('label'))
+                            ?.find(e => e.textContent.startsWith('Format'))
+                            ?.querySelector('a')
+                            ?.click();
+                        Array.from(iframe.contentWindow.document.body.querySelectorAll('a[role="menuitemcheckbox"]'))
+                            ?.find(e => e.textContent === 'JSON')
+                            ?.click();
+                        Array.from(iframe.contentWindow.document.body.querySelectorAll('button'))
+                            ?.find(el => el.textContent === 'Create File')
+                            ?.click?.()
+                    });
                 `);
             });     
         });
@@ -102,7 +139,7 @@ class Facebook extends DataRequestProvider {
     async isDataRequestComplete(): Promise<boolean> {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<boolean>(windowParams, async (window) => {
+        return withSecureWindow<boolean>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('did-finish-load', resolve)
@@ -125,7 +162,7 @@ class Facebook extends DataRequestProvider {
     }
 
     async parseDataRequest(extractionPath: string): Promise<ProviderFile[]> {
-        return withSecureWindow<ProviderFile[]>(windowParams, async (window) => {
+        return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('dom-ready', resolve)

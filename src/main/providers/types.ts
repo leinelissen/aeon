@@ -1,9 +1,24 @@
+import { EmailClient } from 'main/email-client/types';
+
 export interface ProviderFile {
     filepath: string;
     data: Buffer | string;
 }
 
+export interface InitialisedProvider {
+    // The key for the provider that supplies the data
+    provider: string;
+    // The account from which the data emanates
+    account?: string;
+    // A random hash which ensures that sessions are kept between various
+    // invocations of browser windows.
+    windowKey: string;
+    status: DataRequestStatus;
+}
+
 export abstract class Provider {
+    protected accountName?: string;
+    protected windowKey: string;
     /** The key under which all files will be stored. Should be filesystem-safe
      * (no spaces, all-lowercase) */
     public static key: string;
@@ -15,7 +30,11 @@ export abstract class Provider {
      * initialised for the first time during onboarding. The return boolean
      * indicates whether the provider succeeded in initialising, ie. by logging
      * into a particular service */
-    abstract initialise(): Promise<boolean>;
+    abstract initialise(accountName?: string): Promise<string>;
+    constructor(windowKey: string, accountName?: string) {
+        this.accountName = accountName;
+        this.windowKey = windowKey;
+    }
 }
 
 export interface DataRequestProvider extends Provider {
@@ -35,8 +54,17 @@ export abstract class DataRequestProvider extends Provider {
     public static dataRequestIntervalDays: number;
 }
 
+export abstract class EmailDataRequestProvider extends DataRequestProvider {
+    protected email: EmailClient;
+    setEmailClient(email: EmailClient): void {
+        this.email = email;
+    }
+}
+
+export type ProviderUnion = typeof DataRequestProvider | typeof Provider | typeof EmailDataRequestProvider;
+
 export interface DataRequestStatus {
-    dispatched: string;
+    dispatched?: string;
     completed?: string;
     lastCheck?: string;
 }
@@ -48,7 +76,8 @@ export enum ProviderCommands {
     DISPATCH_DATA_REQUEST_TO_ALL,
     REFRESH,
     INITIALISE,
-    GET_DISPATCHED_DATA_REQUESTS
+    GET_ACCOUNTS,
+    GET_AVAILABLE_PROVIDERS
 }
 
 export enum ProviderEvents {
@@ -146,6 +175,10 @@ export enum ProvidedDataTypes {
     REGISTRATION_DATE = 'registration_date',
     // A mobile device associated with the platform
     MOBILE_DEVICE = 'mobile_device',
+    // An inference about an individual
+    INFERENCE = 'inference',
+    // A song that has been played by the user
+    PLAYED_SONG = 'played_song',
 }
 
 export interface ProviderDatum<D, T = ProvidedDataTypes> {
@@ -182,7 +215,7 @@ export type TelephoneNumber = ProviderDatum<string, ProvidedDataTypes.TELEPHONE_
 export type Device = ProviderDatum<string, ProvidedDataTypes.DEVICE>;
 export type Username = ProviderDatum<string, ProvidedDataTypes.USERNAME>;
 export type PlaceOfResidence = ProviderDatum<string, ProvidedDataTypes.PLACE_OF_RESIDENCE>;
-export type Address = ProviderDatum<{ street?: string; number?: number; state?: string; }, ProvidedDataTypes.ADDRESS>;
+export type Address = ProviderDatum<{ street?: string; number?: number; state?: string; zipCode?: string }, ProvidedDataTypes.ADDRESS>;
 export type Country = ProviderDatum<string, ProvidedDataTypes.COUNTRY>;
 export type Like = ProviderDatum<string, ProvidedDataTypes.LIKE>;
 export type LoginInstance = ProviderDatum<number, ProvidedDataTypes.LOGIN_INSTANCE>;
@@ -217,6 +250,13 @@ export type Currency = ProviderDatum<string, ProvidedDataTypes.CURRENCY>;
 export type EducationExperience = ProviderDatum<{ institution: string; graduated?: boolean; started_at?: Date; graduated_at?: Date, type?: string}, ProvidedDataTypes.EDUCATION_EXPERIENCE>;
 export type RegistrationDate = ProviderDatum<Date, ProvidedDataTypes.REGISTRATION_DATE>;
 export type MobileDevice = ProviderDatum<{ type: string; os?: string; advertiser_id?: string; device_locale?: string;}, ProvidedDataTypes.MOBILE_DEVICE>;
+export type Inference = ProviderDatum<string, ProvidedDataTypes.INFERENCE>;
+export type PlayedSong = ProviderDatum<{
+    artist: string;
+    track: string;
+    // The duration of play in milliseconds
+    playDuration: number;
+}, ProvidedDataTypes.PLAYED_SONG>;
 
 export interface ProviderParser {
     // The file from which the data has originated
@@ -233,7 +273,7 @@ export interface ProviderParser {
         // An optional transformer that is used to translate complex objects
         // into the required shape
         // eslint-disable-next-line
-        transformer?(object: unknown): Partial<ProviderDatum<unknown, unknown>>[];
+        transformer?(object: unknown): Partial<ProviderDatum<unknown, unknown>>[] | Partial<ProviderDatum<unknown, unknown>>;
         // transformer?: (obj: any) => any | any[];
     }[]
 }

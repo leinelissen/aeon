@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { List, NavigatableListEntry, PanelBottomButtons, PanelGrid, RowHeading, SplitPanel, SubHeading } from 'app/components/PanelGrid';
-import Loading from 'app/components/Loading';
 import Providers from 'app/utilities/Providers';
 import { useParams } from 'react-router-dom';
 import { RouteProps } from '../types';
@@ -9,10 +8,11 @@ import getDescription from './getDescription';
 import styled from 'styled-components';
 import Button from 'app/components/Button';
 import { faSync } from 'app/assets/fa-light';
-import { useRequests } from 'app/store/requests/selectors';
+import { useAccounts } from 'app/store/requests/selectors';
 import { State, useAppDispatch } from 'app/store';
 import { useSelector } from 'react-redux';
 import { refreshRequests } from 'app/store/requests/actions';
+import NewAccountModal from './components/NewAccountModal';
 
 const StatusDescription = styled.span`
     font-size: 12px;
@@ -28,7 +28,7 @@ const Rows = styled.div`
 function Requests(): JSX.Element {
     const dispatch = useAppDispatch();
     const isLoadingRefresh = useSelector((state: State) => state.requests.isLoading.refresh);
-    const { providers, map } = useRequests();
+    const { accounts, map } = useAccounts();
     const { provider: selectedProvider } = useParams<RouteProps['requests']>();
 
     // Callback for refreshing all requests
@@ -40,29 +40,30 @@ function Requests(): JSX.Element {
                 <List>
                     <RowHeading>Your Accounts</RowHeading>
                     <SubHeading>Automated Requests</SubHeading>
-                    {providers.map(provider => 
+                    {accounts.map(account => 
                         <NavigatableListEntry
-                            key={provider}
-                            to={`/requests/${provider}`}
-                            icon={Providers.getIcon(provider)}
+                            key={account}
+                            to={`/requests/${account}`}
+                            icon={Providers.getIcon(map[account].provider)}
                             large
                         >
                             <Rows>
-                                <span>{provider}</span>
-                                <StatusDescription>{getDescription(map[provider])}</StatusDescription>
+                                <span>{map[account].account}</span>
+                                <StatusDescription>{getDescription(map[account].status)}</StatusDescription>
                             </Rows>
                         </NavigatableListEntry>
                     )}
                     <SubHeading>Email-based Requests</SubHeading>
                 </List>
                 <PanelBottomButtons>
+                    <NewAccountModal />
                     <Button fullWidth icon={faSync} loading={isLoadingRefresh} onClick={refresh}>
                         Refresh requests
                     </Button>
                 </PanelBottomButtons>
             </SplitPanel>
             <List>
-                <ProviderOverlay selectedProvider={selectedProvider} status={map[selectedProvider]} />
+                <ProviderOverlay selectedProvider={selectedProvider} />
             </List>
         </PanelGrid>
     )

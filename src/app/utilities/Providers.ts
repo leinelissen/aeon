@@ -1,14 +1,13 @@
-import { ProviderCommands, ProviderEvents, DataRequestStatus } from 'main/providers/types';
-import { faFacebookF, faInstagram, faLinkedinIn, IconDefinition } from '@fortawesome/free-brands-svg-icons';
+import { ProviderCommands, ProviderEvents, InitialisedProvider } from 'main/providers/types';
+import { faFacebookF, faInstagram, faLinkedinIn, faSpotify, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faSquare } from 'app/assets/fa-light';
 import { IpcRendererEvent } from 'electron';
 
 const channel = 'providers';
 
 type DataRequestReturnType = {
-    dispatched: Record<string, DataRequestStatus>;
     lastChecked: Date;
-    providers: string[];
+    accounts: Record<string, InitialisedProvider>;
 }
 
 type SubscriptionHandler = (event: IpcRendererEvent, type: ProviderEvents) => void;
@@ -22,8 +21,8 @@ class Providers {
         window.api.removeListener(channel, handler);
     }
 
-    static initialise(key: string): Promise<boolean> {
-        return window.api.invoke(channel, ProviderCommands.INITIALISE, key);
+    static initialise(key: string, account?: string): Promise<boolean> {
+        return window.api.invoke(channel, ProviderCommands.INITIALISE, key, account);
     }
 
     static update(key: string): Promise<void> {
@@ -46,8 +45,12 @@ class Providers {
         return window.api.invoke(channel, ProviderCommands.REFRESH);
     }
 
-    static getDataRequests(): Promise<DataRequestReturnType> {
-        return window.api.invoke(channel, ProviderCommands.GET_DISPATCHED_DATA_REQUESTS);
+    static getAccounts(): Promise<DataRequestReturnType> {
+        return window.api.invoke(channel, ProviderCommands.GET_ACCOUNTS);
+    }
+
+    static getAvailableProviders(): Promise<Record<string, { requiresEmail: boolean }>> {
+        return window.api.invoke(channel, ProviderCommands.GET_AVAILABLE_PROVIDERS);
     }
 
     static getIcon(key: string): IconDefinition {
@@ -58,6 +61,8 @@ class Providers {
                 return faFacebookF;
             case 'linkedin':
                 return faLinkedinIn;
+            case 'spotify':
+                return faSpotify;
             default:
                 return faSquare;
         }

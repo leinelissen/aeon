@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron';
 import { URL } from 'url';
 import crypto from 'crypto';
 
-interface Params {
+export interface SecureWindowParameters {
     key?: string;
     origin: string;
     options?: Electron.BrowserWindowConstructorOptions;
@@ -16,7 +16,7 @@ interface Params {
  * @param options An optional options object that should be passed to the
  * BrowserWindow constructor. This may not contain webPreferences
  */
-function createSecureWindow(params: Params): BrowserWindow {
+function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
     const { key, origin, options = {} } = params;
 
     // GUARD: webPreferences are off-limits
@@ -66,7 +66,7 @@ function createSecureWindow(params: Params): BrowserWindow {
  * @param fn The function that needs the window object
  */
 export function withSecureWindow<U>(
-    params: Params,
+    params: SecureWindowParameters,
     fn: (window: BrowserWindow) => Promise<U>,
 ): Promise<U> {
     // Create new Window with the given parameters
@@ -75,12 +75,18 @@ export function withSecureWindow<U>(
     // Create a Promise that inspects the window 'close' event, and rejects if
     // it is ever called.
     const closePromise = new Promise((resolve, reject) => {
-        window.on('close', () => reject(new Error('UserAbort')));
+        window.on('close', () => reject(new Error('SecureWindowUserAbort')));
     });
 
-    // Race the function against the closePromise, so that the whole function is
-    // reject if the window is ever closed.
-    return (Promise.race([fn(window), closePromise]) as Promise<U>)
+    // Create a timeout promise, in order to ensure we don't leavy any zombie
+    // windows open in the background
+    const timeoutPromise = new Promise((resolve, reject) => {
+        setTimeout(() => reject(new Error('SecureWindowTimeout')), 120_000);
+    });
+
+    // Race the function against the other promises, so that the whole function is
+    // rejected if the window is ever closed or encounters the timeout.
+    return (Promise.race([fn(window), closePromise, timeoutPromise]) as Promise<U>)
         .then((values): U => {
             // Also destroy the window when the function has been successfully completed.
             window.destroy();

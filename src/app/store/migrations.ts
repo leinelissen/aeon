@@ -11,6 +11,17 @@ const migrations: MigrationManifest = {
             telemetry: state.telemetry,
             newCommits: state.newCommit || [],
         }
+    },
+    6: (state) => {
+        return {
+            ...state,
+            requests: {
+                availableProviders: [],
+                all: [],
+                byKey: {},
+                isLoading: state.requests.isLoading,
+            }
+        }
     }
 }
 

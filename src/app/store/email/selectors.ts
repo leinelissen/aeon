@@ -1,7 +1,7 @@
 import Email from 'app/utilities/Email';
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from '..';
-import { fetchAccounts } from './actions';
+import { fetchEmailAccounts } from './actions';
 
 /**
  * A helper that keeps the providers up-to-date in Redux
@@ -12,7 +12,7 @@ export function EmailSubscription(): null {
     // Callback that fetched all requests
     const refreshAccounts = useCallback(() => {
         console.log('Received email update event');
-        dispatch(fetchAccounts());
+        dispatch(fetchEmailAccounts());
     }, [dispatch]);
 
     useEffect(() => {

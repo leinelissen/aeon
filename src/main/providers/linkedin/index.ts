@@ -5,25 +5,40 @@ import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
 
-const windowParams = {
-    key: 'linkedin',
-    origin: 'linkedin.com',
-};
-
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
 class LinkedIn extends DataRequestProvider {
     public static key = 'linkedin';
     public static dataRequestIntervalDays = 14;
+    public static requiresEmailAccount = false;
 
-    async initialise(): Promise<boolean> {
+    /**
+     * The parameters to be stored for the secure windows
+     */
+    windowParams = {
+        key: this.windowKey,
+        origin: 'linkedin.com',
+    };
+
+    async initialise(): Promise<string> {
         await this.verifyLoggedInStatus();
+        return this.getAccountName();
+    }
 
-        return true;
+    getAccountName = async(): Promise<string> => {
+        return withSecureWindow<string>(this.windowParams, async (window) => {
+            // Go to /me and wait for LinkedIn to redirect
+            await window.loadURL('https://www.linkedin.com/psettings/email');
+
+            // Then steal the accountname from the URL
+            return window.webContents.executeJavaScript(`
+                document.querySelector('.email-container p.email-address').textContent
+            `);
+        });
     }
 
     verifyLoggedInStatus = async (): Promise<Electron.Cookie[]> => {
-        return withSecureWindow<Electron.Cookie[]>(windowParams, (window) => {
+        return withSecureWindow<Electron.Cookie[]>(this.windowParams, (window) => {
             const settingsUrl = 'https://www.linkedin.com/psettings/member-data';
             window.loadURL(settingsUrl);
 
@@ -77,7 +92,7 @@ class LinkedIn extends DataRequestProvider {
     dispatchDataRequest = async (): Promise<void> => {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<void>(windowParams, async (window) => {
+        return withSecureWindow<void>(this.windowParams, async (window) => {
             window.hide();
 
             await new Promise((resolve) => {
@@ -117,7 +132,7 @@ class LinkedIn extends DataRequestProvider {
     async isDataRequestComplete(): Promise<boolean> {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<boolean>(windowParams, async (window) => {
+        return withSecureWindow<boolean>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('did-finish-load', resolve)
@@ -137,7 +152,7 @@ class LinkedIn extends DataRequestProvider {
     }
 
     async parseDataRequest(extractionPath: string): Promise<ProviderFile[]> {
-        return withSecureWindow<ProviderFile[]>(windowParams, async (window) => {
+        return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('did-finish-load', resolve)

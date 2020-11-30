@@ -5,7 +5,7 @@ import theme from 'app/styles/theme';
 import DataType from 'app/utilities/DataType';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faMinus } from 'app/assets/fa-light';
-import { EmptyIcon } from 'app/components/Utility';
+import { Ellipsis, EmptyIcon } from 'app/components/Utility';
 import { useHistory } from 'react-router-dom';
 
 
@@ -120,7 +120,7 @@ export const ClickableDataPoint = ({ datum, type, index, ...props }: ClickableDa
     return (
         <ListButton onClick={handleClick} {...props}>
             <FontAwesomeIcon icon={DataType.getIcon(datum.type as ProvidedDataTypes)} fixedWidth style={{ marginRight: 8 }} />
-            {DataType.toString(datum)}
+            <Ellipsis>{DataType.toString(datum)}</Ellipsis>
             <FontAwesomeIcon icon={faChevronRight} style={{ marginLeft: 'auto', opacity: 0.5 }} />
         </ListButton>
     );

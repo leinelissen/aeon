@@ -23,8 +23,6 @@ function initialise(): void {
         // And also inject this into its respective bridge
         new ProviderBridge(providerManager);
     });
-
-
 }
 
 export default initialise;

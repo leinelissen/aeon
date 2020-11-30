@@ -3,17 +3,19 @@ import { faCheck, faClock, faPlus, faQuestion } from 'app/assets/fa-light';
 import Button from 'app/components/Button';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
 import { H2 } from 'app/components/Typography';
+import { State } from 'app/store';
 import Providers from 'app/utilities/Providers';
 import { formatDistanceToNow } from 'date-fns';
 import { DataRequestStatus } from 'main/providers/types';
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 interface Props {
     selectedProvider: string;
-    status?: DataRequestStatus;
 }
 
-function ProviderOverlay({ selectedProvider, status }: Props): JSX.Element {
+function ProviderOverlay({ selectedProvider }: Props): JSX.Element {
+    const account = useSelector((state: State) => state.requests.byKey[selectedProvider]);
     const [isLoading, setLoading] = useState(false);
     const handleNewRequest = useCallback(async () => {
         setLoading(true);
@@ -28,10 +30,10 @@ function ProviderOverlay({ selectedProvider, status }: Props): JSX.Element {
                     <Section>
                         <H2>
                             <FontAwesomeIcon
-                                icon={Providers.getIcon(selectedProvider)}
+                                icon={Providers.getIcon(account.provider)}
                                 style={{ marginRight: 8 }}
                             />
-                            {selectedProvider}
+                            {account.account}
                         </H2>
                     </Section>
                     <Section>
@@ -41,15 +43,15 @@ function ProviderOverlay({ selectedProvider, status }: Props): JSX.Element {
                                 style={{ marginRight: 8 }}
                                 fixedWidth
                             />
-                            Data requested: <i>{status?.dispatched ? formatDistanceToNow(new Date(status.dispatched)) + ' ago' : 'never'}</i>
+                            Data requested: <i>{account.status?.dispatched ? formatDistanceToNow(new Date(account.status.dispatched)) + ' ago' : 'never'}</i>
                             <br />
                             <FontAwesomeIcon
                                 icon={faClock}
                                 style={{ marginRight: 8 }}
                                 fixedWidth
                             />
-                            Last check: <i>{status?.lastCheck ? formatDistanceToNow(new Date(status.lastCheck)) + ' ago' : 'never'}</i>
-                            {status?.completed && 
+                            Last check: <i>{account.status?.lastCheck ? formatDistanceToNow(new Date(account.status.lastCheck)) + ' ago' : 'never'}</i>
+                            {account.status?.completed && 
                                 <>
                                     <br />
                                     <FontAwesomeIcon
@@ -57,12 +59,12 @@ function ProviderOverlay({ selectedProvider, status }: Props): JSX.Element {
                                         style={{ marginRight: 8 }}
                                         fixedWidth
                                     />
-                                    Completed: <i>{formatDistanceToNow(new Date(status?.completed))} ago</i>
+                                    Completed: <i>{formatDistanceToNow(new Date(account.status?.completed))} ago</i>
                                 </>
                             }
                         </span>
                     </Section>
-                    {status?.dispatched ? 
+                    {account.status?.dispatched ? 
                         <Section>
                             <p>The data request you issued has not been completed yet. We&apos;ll let you know as soon as it&apos;s completed.</p>
                             <Button
@@ -82,7 +84,7 @@ function ProviderOverlay({ selectedProvider, status }: Props): JSX.Element {
                                 fullWidth
                                 icon={faPlus}
                                 onClick={handleNewRequest}
-                                disabled={!!status?.dispatched}
+                                disabled={!!account.status?.dispatched}
                                 loading={isLoading}
                             >
                                 Start Data Request

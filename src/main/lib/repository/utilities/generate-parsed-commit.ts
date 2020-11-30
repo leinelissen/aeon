@@ -1,5 +1,5 @@
 import path from 'path';
-import { parsersByFile } from 'main/providers/parsers';
+import { getParserByFileName } from 'main/providers/parsers';
 import parseSchema from './parse-schema';
 import { ProviderDatum } from 'main/providers/types';
 import { Blob, TreeEntry } from 'nodegit';
@@ -55,8 +55,8 @@ async function generateParsedCommit(
     }
     
     // We then parse the content and get the relevant parser
-    const parser = parsersByFile.get(filepath);
-    
+    const parser = getParserByFileName(filepath);
+
     // GUARD: If there's not parser for the file, there's nothing we can do
     if (!parser) {
         return;

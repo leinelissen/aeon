@@ -15,6 +15,7 @@ export const ListItem = styled.div`
 
 export const RowHeading = styled(ListItem)`
     border-bottom: 1px solid ${theme.colors.border};
+    background-color: #fbfbfb;
     font-weight: 400;
     position: sticky;
     top: 0;

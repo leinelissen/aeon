@@ -10,26 +10,42 @@ import { withSecureWindow } from 'main/lib/create-secure-window';
 
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
-/**
- * The parameters to be stored for the secure windows
- */
-const windowParams = {
-    key: 'instagram',
-    origin: 'instagram.com',
-};
-
 class Instagram extends DataRequestProvider {
     public static key = 'instagram';
     public static dataRequestIntervalDays = 5;
+    public static requiresEmailAccount = false;
 
-    async initialise(): Promise<boolean> {
+    /**
+     * The parameters to be stored for the secure windows
+     */
+    windowParams = {
+        key: this.windowKey,
+        origin: 'instagram.com'
+    };
+
+    async initialise(): Promise<string> {
         await this.verifyLoggedInStatus();
+        return this.getAccountName();
+    }
 
-        return true;
+    /**
+     * Retrieve the username for this account
+     */
+    async getAccountName(): Promise<string> {
+        return withSecureWindow<string>(this.windowParams, async (window) => {
+            await new Promise((resolve) => {
+                window.webContents.once('did-finish-load', resolve);
+                window.loadURL('https://www.instagram.com/accounts/edit/');
+            });
+
+            return window.webContents.executeJavaScript(`
+                document.querySelector('input#pepUsername').value
+            `) as Promise<string>;
+        });
     }
 
     verifyLoggedInStatus = async (): Promise<Electron.Cookie[]> => {
-        return withSecureWindow<Electron.Cookie[]>(windowParams, (window) => {
+        return withSecureWindow<Electron.Cookie[]>(this.windowParams, (window) => {
             // Load a URL in the browser, and see if we get redirected or not
             const profileUrl = 'https://www.instagram.com/accounts/access_tool/ads_interests';
             window.loadURL(profileUrl);
@@ -109,7 +125,7 @@ class Instagram extends DataRequestProvider {
     async dispatchDataRequest(): Promise<void> {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<void>(windowParams, async (window) => {
+        return withSecureWindow<void>(this.windowParams, async (window) => {
             // GUARD: Check if a data request has already been completed. If so,
             // we'll just pretend the request was submitted successfully, and have
             // the normal scheduling pick up some time later.
@@ -137,12 +153,9 @@ class Instagram extends DataRequestProvider {
             // password. We then listen for a succesfull AJAX call 
             return new Promise((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
-                    urls: [ 'https://*.facebook.com/*' ]
+                    urls: [ 'https://www.instagram.com/download/request_download_data_ajax/' ]
                 }, (details: Electron.OnCompletedListenerDetails) => {
-                    console.log('NEW REQUEST', details);
-
-                    if (details.url.endsWith('www.instagram.com%2Fdownload%2Frequest%2F&sdk=joey&wants_cookie_data=true')
-                        && details.statusCode === 200) {
+                    if (details.statusCode === 200) {
                         resolve();
                     }
                 });
@@ -153,7 +166,7 @@ class Instagram extends DataRequestProvider {
     async isDataRequestComplete(): Promise<boolean> {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<boolean>(windowParams, async (window) => {
+        return withSecureWindow<boolean>(this.windowParams, async (window) => {
             console.log('Verified login status');
 
             // Load page URL
@@ -173,7 +186,7 @@ class Instagram extends DataRequestProvider {
     }
 
     async parseDataRequest(extractionPath: string): Promise<ProviderFile[]> {
-        return withSecureWindow<ProviderFile[]>(windowParams, async (window) => {
+        return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
             console.log('Started parsing request');
 
             // Load page URL

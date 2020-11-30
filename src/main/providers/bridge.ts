@@ -1,4 +1,4 @@
-import Repository from '.';
+import Providers, { providers as availableProviders }  from '.';
 import { ProviderCommands, ProviderEvents } from './types';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import WindowStore from 'main/lib/window-store';
@@ -6,13 +6,13 @@ import WindowStore from 'main/lib/window-store';
 const channelName = 'providers';
 
 class ProviderBridge {
-    repository: Repository = null;
+    providers: Providers = null;
 
     messageCache: [IpcMainInvokeEvent, number][] = [];
 
-    constructor(repository: Repository) {
-        this.repository = repository;
-        this.repository.on('ready', this.clearMessageCache);
+    constructor(providers: Providers) {
+        this.providers = providers;
+        this.providers.on('ready', this.clearMessageCache);
 
         ipcMain.handle(channelName, this.handleMessage);
     }
@@ -21,29 +21,35 @@ class ProviderBridge {
     private handleMessage = async (event: IpcMainInvokeEvent, command: number, ...args: any[]): Promise<any> => {
         // GUARD: Check if the repository is initialised. If not, defer to the
         // messagecache, so that it can be injected later.
-        if (!this.repository.isInitialised) {
+        if (!this.providers.isInitialised) {
             this.messageCache.push([event, command]);
             return;
         }
         
         switch(command) {
             case ProviderCommands.INITIALISE:
-                return this.repository.initialise(args[0]);
+                return this.providers.initialise(args[0], args[1]);
             case ProviderCommands.UPDATE:
-                return this.repository.update(args[0]);
+                return this.providers.update(args[0]);
             case ProviderCommands.UPDATE_ALL:
-                return this.repository.updateAll();
+                return this.providers.updateAll();
             case ProviderCommands.DISPATCH_DATA_REQUEST:
-                return this.repository.dispatchDataRequest(args[0]);
+                return this.providers.dispatchDataRequest(args[0]);
             case ProviderCommands.DISPATCH_DATA_REQUEST_TO_ALL:
-                return this.repository.dispatchDataRequestToAll();
+                return this.providers.dispatchDataRequestToAll();
             case ProviderCommands.REFRESH:
-                return this.repository.refresh();
-            case ProviderCommands.GET_DISPATCHED_DATA_REQUESTS:
+                return this.providers.refresh();
+            case ProviderCommands.GET_AVAILABLE_PROVIDERS:
+                return availableProviders.reduce<Record<string, { requiresEmail: boolean}>>((sum, Client) => {
+                    sum[Client.key] = {
+                        requiresEmail: Object.getPrototypeOf(Client).name === 'EmailDataRequestProvider'
+                    }
+                    return sum;
+                }, {});
+            case ProviderCommands.GET_ACCOUNTS:
                 return {
-                    dispatched: Object.fromEntries(this.repository.dispatchedDataRequests), 
-                    lastChecked: this.repository.lastDataRequestCheck.toString(),
-                    providers: Array.from(this.repository.instances.keys()),
+                    lastChecked: this.providers.lastDataRequestCheck?.toString(),
+                    accounts: Object.fromEntries(this.providers.accounts),
                 };
         }
     }

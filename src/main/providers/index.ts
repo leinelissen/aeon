@@ -1,22 +1,30 @@
 import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns';
 import Instagram from './instagram';
-import { Provider, ProviderFile, DataRequestProvider, DataRequestStatus, ProviderEvents, ProviderUpdateType } from './types';
+import { Provider, ProviderFile, DataRequestProvider, ProviderEvents, ProviderUpdateType, InitialisedProvider, EmailDataRequestProvider, ProviderUnion } from './types';
 import Repository, { REPOSITORY_PATH } from '../lib/repository';
 import Notifications from 'main/lib/notifications';
 import ProviderBridge from './bridge';
 import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
 import path from 'path';
+import crypto from 'crypto';
 import Facebook from './facebook';
 import LinkedIn from './linkedin';
+import Spotify from './spotify';
 import EmailManager from 'main/email-client';
 
-const providers: Array<typeof Provider | typeof DataRequestProvider> = [
+export const providers: Array<ProviderUnion> = [
     Instagram,
     Facebook,
     LinkedIn,
+    Spotify,
 ];
+
+const mapProviderToKey = providers.reduce<Record<string, ProviderUnion>>((sum, provider) => {
+    sum[provider.key] = provider;
+    return sum;
+}, {});
 
 class ProviderManager extends EventEmitter {
     // Refers to the repository obejct
@@ -31,11 +39,7 @@ class ProviderManager extends EventEmitter {
     instances: Map<string, Provider & Partial<DataRequestProvider>> = new Map();
 
     // Contains the keys of all providers that have been initialised by the user
-    initialisedProviders: string[];
-
-    // Stores data requests that have been dispatched, so that we can check upon
-    // their state once in a while.
-    dispatchedDataRequests: PersistedMap<string, DataRequestStatus>;
+    accounts: PersistedMap<string, InitialisedProvider>;
 
     // The last time the data requests were checked 
     lastDataRequestCheck: Date;
@@ -47,21 +51,31 @@ class ProviderManager extends EventEmitter {
         this.repository = repository;
         this.email = email;
 
-        // Construct all providers that have been defined at the top
-        providers.forEach((SingleProvider): void => {
-            this.instances.set(SingleProvider.key, new SingleProvider());
-        });
-
-        // Construct the dispatchedDataRequests file so that we can save it to
-        // disk whenever neccessary
-        const retrievedRequests = store.get('dispatched-data-requests', []) as [string, DataRequestStatus][];
-        this.dispatchedDataRequests = new PersistedMap(retrievedRequests, (map) => {
-            store.set('dispatched-data-requests', Array.from(map));
-        });
-
         // Construct the initialised providers from the store
-        const retrievedProviders = store.get('initialised-providers', []) as string[];
-        this.initialisedProviders = retrievedProviders;
+        const retrievedAccounts = store.get('provider-accounts', []) as [string, InitialisedProvider][];
+        this.accounts = new PersistedMap(retrievedAccounts, map => {
+            store.set('provider-accounts', Array.from(map));
+        });
+
+        // Then create instances for each provider that is retrieved from the store
+        this.accounts.forEach((account, key) => {
+            const Provider = mapProviderToKey[account.provider];
+
+            // GUARD: If the provider hinges on email, we must inject the client
+            // into the class
+            const instance = new Provider(account.windowKey, account.account);
+            if (instance instanceof EmailDataRequestProvider) {
+                const emailAccount = this.email.emailClients.get(account.account);
+                
+                if (!emailAccount) {
+                    throw new Error('Email account used to initialize a provider is no longer available...');
+                }
+
+                instance.setEmailClient(emailAccount);
+            } 
+
+            this.instances.set(key, instance);
+        });
 
         // Then we create a timeout function that checks for completed data
         // requests every five minutes. Also immediately commence with queueing
@@ -85,20 +99,60 @@ class ProviderManager extends EventEmitter {
         ));
     }
 
-    initialise = async (key: string): Promise<boolean> => {
-        // Call the respective initialise function
-        const success = await this.instances.get(key)?.initialise();
+    /**
+     * Initialise a new provider account. This will return the unique key for
+     * the account that has just been created.
+     * @param key 
+     */
+    initialise = async (provider: string, accountName?: string): Promise<string> => {
+        console.log(`Attempting to initialise a new ${provider} (${accountName})`);
+        // Generate a random string that is used to refer to the sessions for
+        // this particular account
+        const windowKey = crypto.randomBytes(32).toString('hex');
 
-        // If the initialisation was a success, we save this, so that we can act
-        // on it later.
-        if (success) {
-            // Save the key to the array
-            this.initialisedProviders = [...this.initialisedProviders, key];
-            // And also save the array to the store
-            store.set('initialised-providers', this.initialisedProviders);
+        if (!(provider in mapProviderToKey)) {
+            throw new Error('No provider registered with name');
         }
 
-        return success;
+        // Call the respective initialise function
+        const instance = new mapProviderToKey[provider](windowKey, accountName);
+
+        // GUARD: If we are dealing with a provider that implements email, we
+        // must inject an email client into the class
+        if (instance instanceof EmailDataRequestProvider) {
+            // Retrieve an email client that matches the supplied email address
+            const emailAccount = this.email.emailClients.get(accountName);
+                
+            // GUARD: The address must actually exist
+            if (!accountName || !emailAccount) {
+                throw new Error('Could not find email client withs suppled account name...');
+            }
+
+            // Inject the client into the provider
+            instance.setEmailClient(emailAccount);
+        }
+
+        // Then initialise the provider
+        const account = await instance.initialise();
+
+        // GUARD: Check if the instance has correctly returned an account name
+        if (!account) {
+            throw new Error('Initialising provider did not return account name');
+        }
+
+        // Save the key to the accounts array
+        const key = `${provider}_${account}`;
+        this.accounts.set(key, {
+            account,
+            provider,
+            windowKey,
+            status: {}
+        });
+
+        // Save the instance as well
+        this.instances.set(key, instance);
+
+        return key;
     }
 
     /**
@@ -115,7 +169,7 @@ class ProviderManager extends EventEmitter {
         }
 
         // GUARD: Check if the provider is already initialised
-        if (!this.initialisedProviders.includes(key)) {
+        if (!this.accounts.has(key)) {
             throw new Error('ProviderWasNotInitialised');
         }
 
@@ -149,11 +203,12 @@ class ProviderManager extends EventEmitter {
         updateType: ProviderUpdateType
     ): Promise<number> => {
         console.log(`Saving and committing files for ${key}...`);
+        const account = this.accounts.get(key);
 
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
-            // Prepend the supplied path with the key from the spcific service
-            const location = `${key}/${file.filepath}`;
+            // Prepend the supplied path with the key from the specific service
+            const location = `${account.provider}/${account.account}/${file.filepath}`;
 
             // Save the files to disk, and add the files
             if (file.data) {
@@ -179,7 +234,8 @@ class ProviderManager extends EventEmitter {
 
         // Gather the set of data that is to be appended to the commit
         const messageData: Record<string, string> = {
-            'Aeon-Provider': key,
+            'Aeon-Provider': account.provider,
+            'Aeon-Account': account.account,
             'Aeon-Update-Type': updateType,
         }
 
@@ -202,6 +258,7 @@ class ProviderManager extends EventEmitter {
         // Retrieve the instance based on whether the supplied argument is an
         // index or class key
         const instance = this.instances.get(key);
+        const account = this.accounts.get(key);
 
         // GUARD: Check if we've found an instance
         if (!instance) {
@@ -209,9 +266,8 @@ class ProviderManager extends EventEmitter {
         }
 
         // GUARD: Check if the provider is already initialised
-        if (!this.initialisedProviders.includes(key)) {
-            // throw new Error('ProviderWasNotInitialised');
-            await this.initialise(key);
+        if (!this.accounts.has(key)) {
+            throw new Error('ProviderWasNotInitialised');
         }
 
         // GUARD: Check if the instance supports data request dispatching
@@ -220,7 +276,7 @@ class ProviderManager extends EventEmitter {
         }
 
         // GUARD: Check if a data request hasn't already been dispatched
-        if (this.dispatchedDataRequests.has(key)) {
+        if (account.status.dispatched) {
             throw new Error('DataRequestAlreadyInProgress');
         }
 
@@ -228,7 +284,8 @@ class ProviderManager extends EventEmitter {
         await instance.dispatchDataRequest();
 
         // Then store the update time
-        this.dispatchedDataRequests.set(key, { dispatched: new Date().toString() });
+        account.status.dispatched = new Date().toString();
+        this.accounts.set(key, account);
 
         ProviderBridge.send(ProviderEvents.DATA_REQUEST_DISPATCHED);
         console.log('Dispatched data request for ', key);
@@ -249,7 +306,7 @@ class ProviderManager extends EventEmitter {
         ProviderBridge.send(ProviderEvents.CHECKING_DATA_REQUESTS);
         console.log('Checking for completed data requests...');
 
-        const dataRequests = Promise.all(this.dispatchedDataRequests.map(async (status, key): Promise<void> => {
+        const dataRequests = Promise.all(this.accounts.map(async (account, key): Promise<void> => {
             const instance = this.instances.get(key);
 
             // GUARD: If we cannot find an instance for this provider type, we
@@ -258,15 +315,22 @@ class ProviderManager extends EventEmitter {
                 return;
             }
 
+            // GUARD: If there is not active request for this account, we don't
+            // need to force it
+            if (!account.status.dispatched) {
+                return;
+            }
+
             // GUARD: If a request has already been completed, we do not need to
             // check upon it further
-            if (status.completed) {
+            if (account.status.completed) {
                 // However, we will check if we need to purge it from the map if
                 // it has been completed for x days
                 const ProviderClass: typeof DataRequestProvider = Object.getPrototypeOf(instance).constructor;
-                if (differenceInDays(new Date(), new Date(status.completed)) > ProviderClass.dataRequestIntervalDays) {
+                if (differenceInDays(new Date(), new Date(account.status.completed)) > ProviderClass.dataRequestIntervalDays) {
                     console.log(`Data request for ${key} was completed long enough to be purged`);
-                    this.dispatchedDataRequests.delete(key);
+                    account.status = {};
+                    this.accounts.set(key, account);
                 } 
                     
                 return;
@@ -277,26 +341,22 @@ class ProviderManager extends EventEmitter {
                 console.log('A data request has completed! Starting to parse...')
 
                 // If it is complete now, we'll fetch the data and parse it
-                const dirPath = path.join(REPOSITORY_PATH, key);
+                const dirPath = path.join(REPOSITORY_PATH, account.provider, account.account);
                 const files = await instance.parseDataRequest(dirPath);
                 const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
                 Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
                 
                 // Set the flag for completion
-                this.dispatchedDataRequests.set(key, { 
-                    ...status, 
-                    lastCheck: new Date().toString(), 
-                    completed: new Date().toString() 
-                });
+                account.status.lastCheck = new Date().toString();
+                account.status.completed = new Date().toString();
+                this.accounts.set(key, account);
                 ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
 
                 return;
             }
 
-            this.dispatchedDataRequests.set(key, {
-                ...status,
-                lastCheck: new Date().toString(),
-            });
+            account.status.lastCheck = new Date().toString();
+            this.accounts.set(key, account);
         }));
 
         // Also dispatch regular update requests
