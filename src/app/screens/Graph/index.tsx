@@ -10,7 +10,8 @@ import Repository from 'app/utilities/Repository';
 import calculateGraph from './calculateGraph';
 import DatumOverlay from '../Data/components/DatumOverlay';
 import { RouteProps } from '../types';
-import style, { Container, Tooltip } from './style';
+import style, { Container, ResetButton, Tooltip } from './style';
+import { faUndo } from 'app/assets/fa-light';
 
 type HoveredNode = {
     position: Position;
@@ -91,6 +92,10 @@ function Graph(): JSX.Element {
         }
     }, []);
 
+    const handleReset = useCallback(() => {
+        cy.current.fit();
+    }, [cy]);
+
     useEffect((): void => {
         // GUARD: If the container hasn't mounted yet, we cannot initialise
         // cytoscape in it.
@@ -162,6 +167,7 @@ function Graph(): JSX.Element {
                 </Tooltip>
             }
             {selectedNode && <DatumOverlay datum={data[Number.parseInt(selectedNode)]} />}
+            <ResetButton icon={faUndo} backgroundColor="white" color="black" onClick={handleReset}>Reset View</ResetButton>
         </>
     );
 }

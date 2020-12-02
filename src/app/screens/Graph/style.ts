@@ -1,3 +1,4 @@
+import Button from 'app/components/Button';
 import { Stylesheet } from 'cytoscape';
 import styled, { css } from 'styled-components';
 import renderNode from './renderNode';
@@ -162,6 +163,12 @@ export const Tooltip = styled.div<{ top: number, left: number }>`
         font-family: 'IBM Plex Mono';
         font-size: 10px;
     }
+`;
+
+export const ResetButton = styled(Button)`
+    position: fixed;
+    bottom: 25px;
+    left: 250px;
 `;
 
 export default style;
