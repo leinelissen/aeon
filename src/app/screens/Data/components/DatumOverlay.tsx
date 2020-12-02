@@ -95,6 +95,9 @@ const DatumOverlay = (props: Props): JSX.Element => {
                         </DetailListItem>
                     </Section>
                     <Section>
+                        <code style={{ textTransform: 'uppercase' }}>
+                            {datum.type}
+                        </code>
                         <p>{DataType.getDescription(datum)}</p>
                     </Section>
                     <Section>

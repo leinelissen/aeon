@@ -36,6 +36,10 @@ const InnerContainer = styled.div`
               0 8px 8px rgba(0,0,0,0.01), 
               0 16px 16px rgba(0,0,0,0.01), 
               0 32px 32px rgba(0,0,0,0.01);
+
+    code {
+        margin-bottom: 0;
+    }
 `;
 
 export const CloseButton = styled(GhostButton)`
