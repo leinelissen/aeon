@@ -1,79 +1,116 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import Repository from 'app/utilities/Repository';
-import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
-import styled from 'styled-components';
+import { useHistory, useParams } from 'react-router-dom';
+import { debounce } from 'lodash-es';
 import cytoscape, { NodeSingular, Position } from 'cytoscape';
 import fcose from 'cytoscape-fcose';
+
+import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
+import Repository from 'app/utilities/Repository';
 import calculateGraph from './calculateGraph';
-
-const Container = styled.div`
-    width: 100%;
-    height: 100%;
-`;
-
-const Tooltip = styled.div<{ top: number, left: number }>`
-    position: absolute;
-    top: ${props => props.top + 15}px;
-    left: ${props => props.left}px;
-    transform: translateX(-50%);
-    background-color: white;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 12px;
-    line-height: 1.5;
-    text-align: center;
-    pointer-events: none;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 
-                0 2px 4px rgba(0,0,0,0.04), 
-                0 4px 8px rgba(0,0,0,0.04), 
-                0 8px 16px rgba(0,0,0,0.04);
-
-    span {
-        opacity: 0.5;
-        font-family: 'IBM Plex Mono';
-        font-size: 10px;
-    }
-`;
+import DatumOverlay from '../Data/components/DatumOverlay';
+import { RouteProps } from '../types';
+import style, { Container, Tooltip } from './style';
 
 type HoveredNode = {
     position: Position;
-    type?: string;
+    type: string;
+    datumType?: string;
     label: string;
 }
 
+type CytoEvent = { target: NodeSingular };
+
 function Graph(): JSX.Element {
+    // Register refs for cytoscape and the container to which it is assigned respectively
     const cy = useRef<cytoscape.Core>();
     const container = useRef<HTMLDivElement>();
-    const [hoveredNode, setHoveredNode] = useState<HoveredNode>(null);
 
-    const handleMouseOver = useCallback((event) => {
-        const node = event.target as NodeSingular;
+    // Retrieve the params for selected nodes
+    const history = useHistory();
+    const selectedNode = useParams<RouteProps['graph']>().datumId;
+
+    // Assign state for hovered nodes and all data
+    const [hoveredNode, setHoveredNode] = useState<HoveredNode>(null);
+    const [data, setData] = useState([]);
+
+    /**
+     * Handle a mouseover on one of the Cytoscape node elements
+     */
+    const handleMouseOver = useCallback((event: CytoEvent) => {
+        // Retrieve the node from the event
+        const node = event.target;
+
+        // Assign the hovered class to the node
         node.addClass('hover');
+
+        // Assign a secondary hover class to connected nodes
+        if (node.data('type') === 'type') {
+            const neighbours = node.openNeighborhood();
+            neighbours.addClass('secondary-hover');
+        }
+
+        // Then store the hovered node in state for the hover element
         setHoveredNode({
             position: node.renderedPosition(),
             label: node.data('label'),
-            type: node.data('datumType'),
+            type: node.data('type'),
+            datumType: node.data('datumType'),
         });
     }, [setHoveredNode]);
 
-    const handleMouseOut = useCallback((event) => {
+    /**
+     * Handle the mouseout from one of the Cytoscape nodes
+     */
+    const handleMouseOut = useCallback((event: CytoEvent) => {
+        // Extract node
         const node = event.target as NodeSingular;
+
+        // Reset stored node
         setHoveredNode(null);
+
+        // Remove class from the unhovered node, but also all elements that have
+        // been assigned a secondary hover previously
         node.removeClass('hover');
-    }, [setHoveredNode]);
+        cy.current.elements('.secondary-hover').removeClass('secondary-hover')
+    }, [setHoveredNode, cy]);
+
+    /**
+     * Handle a mouse tap on of the Cytoscape nodes
+     */
+    const handleSelectNode = useCallback((event: CytoEvent) => {
+        // GUARD: If it's not a datum node, we don't handle it
+        if (event.target.data('type') !== 'datum') {
+            return;
+        }
+
+        // Retrieve the particular datum
+        const i = event.target.data('i');
+        if (i) {
+            history.push(`/graph/${i}`);
+        }
+    }, []);
 
     useEffect((): void => {
+        // GUARD: If the container hasn't mounted yet, we cannot initialise
+        // cytoscape in it.
         if (!container.current) {
             return;
         }
 
-        // Allow async functions
+        /**
+         * Create a new Cytoscape instance
+         */
         async function createCytoInstance() {
             // Retrieved all data for this commit from the repository
             const data = await Repository.parsedCommit() as ProviderDatum<string, ProvidedDataTypes>[];
+            setData(data);
+            
+            // Add the fcose layout to cytoscape
+            // eslint-disable-next-line
             cytoscape.use(fcose);
-            // cytoscape.use(popper);
+
+            // Init Cytoscape
             cy.current = cytoscape({
                 container: container.current,
                 minZoom: 0.5,
@@ -82,123 +119,49 @@ function Graph(): JSX.Element {
                     name: 'fcose'
                 },
                 elements: calculateGraph(data),
-                style: [
-                    {
-                        selector: 'node',
-                        style: {
-                            shape: 'ellipse',
-                            content: 'data(label)',
-                            width: 50,
-                            height: 50,
-                            'text-wrap': 'wrap',
-                            'text-valign': 'center',
-                            'text-halign': 'center',
-                            'text-max-width': '10px',
-                            'background-color': '#eee',
-                            'font-size': '10px',
-                            'font-family': 'IBM Plex Mono',
-                        }
-                    },
-                    {
-                        selector: 'node.hover',
-                        style: {
-                            'background-color': '#ccc',
-                        }
-                    },
-                    {
-                        selector: 'node[type="provider"]',
-                        style: {
-                            'background-color': '#0000FF',
-                            'color': '#FFF',
-                            'font-size': 16,
-                            'border-width': 10,
-                            'border-color': '#BAD7FF',
-                            width: 100,
-                            height: 100,
-                        }
-                    },
-                    {
-                        selector: 'node[type="provider"].hover',
-                        style: {
-                            'background-color': '#0000DD',
-                        }
-                    },
-                    {
-                        selector: 'node[type="account"]',
-                        style: {
-                            width: 75,
-                            height: 75,
-                            'background-color': '#BAD7FF',
-                        }
-                    },
-                    {
-                        selector: 'node[type="account"].hover',
-                        style: {
-                            'background-color': '#a9c4e9',
-                        }
-                    },
-                    {
-                        selector: 'node[type="datum"]',
-                        style: {
-                            width: 10,
-                            height: 10,
-                            label: '',
-                        }
-                    },
-                    {
-                        selector: 'edge',
-                        style: {
-                            'line-color': '#ddd',
-                            width: 2,
-                            // label: 'data(label)',
-                            'font-size': '8px',
-                            'font-family': 'IBM Plex Mono',
-                        }
-                    },
-                    {
-                        selector: 'edge[type="datum_type"]',
-                        style: {
-                            'line-color': '#eee',
-                            width: 1,
-                        }
-                    },
-                    {
-                        selector: 'edge[type="datum_account"]',
-                        style: {
-                            
-                        }
-                    },
-                    {
-                        selector: 'edge[type="account_provider"]',
-                        style: {
-                            'line-color': '#BAD7FF',
-                            width: 10,
-                        }
-                    },
-                ]
+                style
             });
+
+            // Initialise the hover handlers
             cy.current.on('mouseover', 'node', handleMouseOver);
             cy.current.on('drag', 'node', handleMouseOver);
             cy.current.on('mouseout', 'node', handleMouseOut);
+            cy.current.on('tap', handleSelectNode);
         }
 
         createCytoInstance();
-    }, [container]);
+    }, [container, setData]);
+
+    /**
+     * Add a handler for window resizes, so Cytoscape participates neatly when
+     * someone wants to see a bit more
+     */
+    useEffect(() => {
+        // Register handler
+        const handleResize = () => cy.current.fit();
+        // Debounce the function so we don't spam cytoscape too often
+        const debouncedHandler = debounce(handleResize, 100);
+
+        // Register listener, and cleanup function
+        window.addEventListener('resize', debouncedHandler);
+        return () => window.removeEventListener('resize', debouncedHandler);
+    });
 
     return (
         <>
-            <Container ref={container} />
+            <Container ref={container} isHovered={hoveredNode && hoveredNode.type === 'datum'} />
             {hoveredNode && 
                 <Tooltip top={hoveredNode.position.y} left={hoveredNode.position.x}>
                     {hoveredNode.label}
-                    {hoveredNode.type &&
+                    {hoveredNode.type === 'datum' &&
                         <span> 
                             <br />
-                            [{hoveredNode.type}]
+                            [{hoveredNode.datumType}]
                         </span>
                     }
                 </Tooltip>
             }
+            {selectedNode && <DatumOverlay datum={data[Number.parseInt(selectedNode)]} />}
         </>
     );
 }

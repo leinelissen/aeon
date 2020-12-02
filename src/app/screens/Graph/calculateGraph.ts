@@ -1,7 +1,7 @@
 import DataType from 'app/utilities/DataType';
-import { EdgeDefinition, ElementDefinition, ElementsDefinition, NodeDefinition } from 'cytoscape';
+import { EdgeDefinition, ElementsDefinition, NodeDefinition } from 'cytoscape';
 import { uniqBy } from 'lodash-es';
-import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from 'main/providers/types';
 
 /**
  * Transforms an incoming set of ProivderDatums into a graph that can be
@@ -14,8 +14,6 @@ export default function calculateGraph(data: ProviderDatum<unknown, unknown>[]):
     const uniqueAccounts = uniqBy(data, datum => `${datum.provider}_${datum.account}`);
     // const uniqueSources = uniqBy(data, 'source');
     const uniqueTypes = uniqBy(data, 'type');
-
-    console.log(uniqueAccounts);
 
     // Create a variable that will hold all the future nodes
     const nodes: NodeDefinition[]  = [
@@ -38,6 +36,7 @@ export default function calculateGraph(data: ProviderDatum<unknown, unknown>[]):
                 id: `type_${datum.type}`,
                 label: datum.type,
                 type: 'type',
+                datumType: datum.type,
             }
         })),
         ...data.map((datum, i): NodeDefinition => ({
@@ -46,6 +45,8 @@ export default function calculateGraph(data: ProviderDatum<unknown, unknown>[]):
                 label: DataType.toString(datum),
                 type: 'datum',
                 datumType: datum.type,
+                parent: `parent_type_${datum.type}`,
+                i
             }
         }))
     ];
@@ -69,8 +70,8 @@ export default function calculateGraph(data: ProviderDatum<unknown, unknown>[]):
             },
             {
                 data: {
-                    source: `datum_${i}`,
-                    target: `type_${datum.type}`,
+                    source: `type_${datum.type}`,
+                    target: `datum_${i}`,
                     type: 'datum_type',
                 },
             },

@@ -27,11 +27,15 @@ const DatumOverlay = (props: Props): JSX.Element => {
     const { category } = useParams<RouteProps['data']>();
     const history = useHistory();
     const handleClose = useCallback(() => {
-        history.push(`/data/${category}`);
+        if (history.location.pathname.startsWith('/data')){
+            history.push(`/data/${category}`);
+        } else if (history.location.pathname.startsWith('/graph')) {
+            history.push('/graph');
+        }
     }, [history, category]);
 
     return (
-        <RightSideOverlay onClose={handleClose} columnPosition={3}>
+        <RightSideOverlay onClose={handleClose}>
             {datum && (
                 <>
                     <Section>

@@ -49,7 +49,7 @@ function Router(): JSX.Element {
                     <Route path="/data/:category?/:datumId?">
                         <Data />
                     </Route>
-                    <Route path="/graph">
+                    <Route path="/graph/:datumId?">
                         <Graph />
                     </Route>
                     <Route path="/settings/:category?/:settingId?">
