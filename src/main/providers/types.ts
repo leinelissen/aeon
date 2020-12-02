@@ -188,6 +188,8 @@ export interface ProviderDatum<D, T = ProvidedDataTypes> {
     type: T;
     // The provider from which this data was gained
     provider: string;
+    // The account from which this data was gained
+    account?: string;
     // The specific file from which the data was extracted
     source: string;
     // A timestamp that is associated with this specific datapoint. For

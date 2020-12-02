@@ -66,7 +66,10 @@ async function generateParsedCommit(
     const data = await tree.getBlob();
     const object = await getObjectByExtension(fileExtension, data);
 
-    return parseSchema(object, parser);
+    // Retrieve the account from the pathname
+    const [provider, account] = filepath.split(path.sep);
+
+    return parseSchema(object, parser, account);
 }
 
 export default generateParsedCommit;

@@ -78,7 +78,7 @@ function recursivelyExtractData(haystack: {[key: string]: any}, needle: string |
  * @param schema A ProviderParser that gives the rules
  */
 // eslint-disable-next-line
-function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderParser): ProviderDatum<any, any>[] {
+function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderParser, account: string): ProviderDatum<any, any>[] {
     const { source, provider } = parser;
 
     // Then we decode the file
@@ -132,6 +132,7 @@ function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderPar
                         type,
                         provider,
                         source,
+                        account,
                         ...item,
                     }));
                 });
@@ -142,6 +143,7 @@ function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderPar
                 type,
                 provider,
                 source,
+                account,
                 data,
             }));
         } catch (e) {

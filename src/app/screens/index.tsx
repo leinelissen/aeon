@@ -8,6 +8,7 @@ import Menu, { ContentContainer, MenuContainer, TitleBar } from 'app/components/
 import Requests from './Requests';
 import { useSelector } from 'react-redux';
 import Settings from './Settings';
+import Graph from './Graph';
 
 /**
  * A helper to determine what the starting screen should be for the application.
@@ -47,6 +48,9 @@ function Router(): JSX.Element {
                     </Route>
                     <Route path="/data/:category?/:datumId?">
                         <Data />
+                    </Route>
+                    <Route path="/graph">
+                        <Graph />
                     </Route>
                     <Route path="/settings/:category?/:settingId?">
                         <Settings />
