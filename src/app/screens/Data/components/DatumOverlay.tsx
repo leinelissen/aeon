@@ -95,6 +95,9 @@ const DatumOverlay = (props: Props): JSX.Element => {
                         </DetailListItem>
                     </Section>
                     <Section>
+                        <p>{DataType.getDescription(datum)}</p>
+                    </Section>
+                    <Section>
                         <Button
                             fullWidth
                             onClick={handleDelete}

@@ -253,6 +253,109 @@ class DataType {
                 return datum.data as string;
         }
     }
+
+    /**
+     * Convert the datum type to a description
+     * @param datum 
+     */
+    static getDescription(datum: ProviderDatum<unknown, unknown>): string {
+        switch(datum.type) {
+            case ProvidedDataTypes.EMAIL:
+                return 'A email adress';
+            case ProvidedDataTypes.FIRST_NAME:
+                return 'A first name';
+            case ProvidedDataTypes.LAST_NAME:
+                return 'A last name';
+            case ProvidedDataTypes.FULL_NAME:
+                return 'A full name, including first and last name';
+            case ProvidedDataTypes.IP_ADDRESS:
+                return 'An IP address';
+            case ProvidedDataTypes.USER_AGENT:
+                return 'A user-agent that was saved as part as a log file';
+            case ProvidedDataTypes.USER_LANGUAGE:
+                return 'A language that is used for browsing the platform';
+            case ProvidedDataTypes.COOKIE:
+                return 'A cookie that was saved';
+            case ProvidedDataTypes.FOLLOWER:
+                return 'A follower for the user';
+            case ProvidedDataTypes.ACCOUNT_FOLLOWING:
+                return 'Another account that the user is following';
+            case ProvidedDataTypes.BLOCKED_ACCOUNT:
+                return 'Another account that the user has blocked';
+            case ProvidedDataTypes.HASHTAG_FOLLOWING:
+                return 'A hashtag the user is following';
+            case ProvidedDataTypes.AD_INTEREST:
+                return 'An ad interest that was flagged by the system for the user';
+            case ProvidedDataTypes.TELEPHONE_NUMBER:
+                return 'A telephone number';
+            case ProvidedDataTypes.COMMENT:
+                return 'A comment made by the user';
+            case ProvidedDataTypes.DEVICE:
+                return 'A device that was used by the user on the platform';
+            case ProvidedDataTypes.USERNAME:
+                return 'A username that is used for a particular platform';
+            case ProvidedDataTypes.PLACE_OF_RESIDENCE:
+                return 'A place (city, town, village, etc.) where the user resides';
+            case ProvidedDataTypes.ADDRESS:
+                return 'A full adress, including street, number, ZIP-code and eventual state';
+            case ProvidedDataTypes.COUNTRY:
+                return 'The country where a user resides';
+            case ProvidedDataTypes.LIKE:
+                return 'A like thas been placed on a particular post';
+            case ProvidedDataTypes.LOGIN_INSTANCE:
+                return 'A saved instance of the user logging in';
+            case ProvidedDataTypes.LOGOUT_INSTANCE:
+                return 'A saved instance of the user logging out';
+            case ProvidedDataTypes.PHOTO:
+                return 'A photo';
+            case ProvidedDataTypes.MESSAGE:
+                return 'A message by the user, to another user';
+            case ProvidedDataTypes.GENDER:
+                return 'A gender';
+            case ProvidedDataTypes.PROFILE_PICTURE:
+                return 'A profile picture';
+            case ProvidedDataTypes.DATE_OF_BIRTH:
+                return 'A birth date';
+            case ProvidedDataTypes.JOIN_DATE:
+                return 'The date on which the user joined a platform';
+            case ProvidedDataTypes.SEARCH_QUERY:
+                return 'A search query by the user';
+            case ProvidedDataTypes.POST_SEEN:
+                return 'A post that the user has seen';
+            case ProvidedDataTypes.PRIVACY_SETTING:
+                return 'A privacy setting for the user';
+            case ProvidedDataTypes.UPLOADED_CONTACT:
+                return 'A telephone contact that has been uploaded by the user';
+            case ProvidedDataTypes.SESSION:
+                return 'A saved cookie with possibly extra information';
+            case ProvidedDataTypes.PEER_GROUP:
+                return 'A categorisation of the peer group you belong to';
+            case ProvidedDataTypes.EMPLOYMENT:
+                return 'A job held currently or in the past';
+            case ProvidedDataTypes.VISITED_PAGE:
+                return 'An in-site visited page';
+            case ProvidedDataTypes.OFF_SITE_ACTIVITY:
+                return 'Recorded activity outside of the platform website';
+            case ProvidedDataTypes.EVENT_RESPONSE:
+                return 'Response to an event invitation';
+            case ProvidedDataTypes.TIMEZONE:
+                return 'Timezone associated with the user';
+            case ProvidedDataTypes.CURRENCY:
+                return 'Currency associated with the user';
+            case ProvidedDataTypes.EDUCATION_EXPERIENCE:
+                return 'An education experience held currently or in the past';
+            case ProvidedDataTypes.REGISTRATION_DATE:
+                return 'Registration date for the platform';
+            case ProvidedDataTypes.MOBILE_DEVICE:
+                return 'A mobile device associated with the platform';
+            case ProvidedDataTypes.INFERENCE:
+                return 'An inference about an individual';
+            case ProvidedDataTypes.PLAYED_SONG:
+                return 'A song that has been played by the user';
+            default:
+                return '';
+        }
+    }
 }
 
 export default DataType;
