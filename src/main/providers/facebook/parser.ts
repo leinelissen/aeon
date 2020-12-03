@@ -56,16 +56,14 @@ const parsers: ProviderParser[] = [
             {
                 key: 'entries',
                 type: ProvidedDataTypes.VISITED_PAGE,
-                transformer: (data: any): Partial<VisitedPage>[] => {
-                    return data.map((entry: any): Partial<VisitedPage> => {
-                        return {
-                            data: {
-                                name: entry?.data?.name,
-                                uri: entry?.data?.uri,
-                            },
-                            timestamp: entry.timestamp && new Date(entry.timestamp * 1000)
-                        };
-                    });
+                transformer: (entry: any): Partial<VisitedPage> => {
+                    return {
+                        data: {
+                            name: entry?.data?.name,
+                            uri: entry?.data?.uri,
+                        },
+                        timestamp: entry.timestamp && new Date(entry.timestamp * 1000)
+                    };
                 }
             }
         ]
@@ -85,17 +83,15 @@ const parsers: ProviderParser[] = [
             {
                 key: 'off_facebook_activity',
                 type: ProvidedDataTypes.OFF_SITE_ACTIVITY,
-                transformer: (data: any): Partial<OffSiteActivity>[] => {
-                    return data.flatMap((website: any) => {
-                        return website.events.map((event: any): Partial<OffSiteActivity> => {
-                            return {
-                                data: {
-                                    website: website.name,
-                                    type: event.type,
-                                },
-                                timestamp: new Date(event.timestamp * 1000)
-                            };
-                        });
+                transformer: (website: any): Partial<OffSiteActivity>[] => {
+                    return website.events.map((event: any): Partial<OffSiteActivity> => {
+                        return {
+                            data: {
+                                website: website.name,
+                                type: event.type,
+                            },
+                            timestamp: new Date(event.timestamp * 1000)
+                        };
                     });
                 }
             }
@@ -107,15 +103,13 @@ const parsers: ProviderParser[] = [
             {
                 key: 'events_interested',
                 type: ProvidedDataTypes.EVENT_RESPONSE,
-                transformer: (data: any): Partial<EventResponse>[] => {
-                    return data.map((event: any): Partial<EventResponse> => {
-                        return {
-                            data: {
-                                name: event.name,
-                                response: 'interested'
-                            }
-                        };
-                    })
+                transformer: (data: any): Partial<EventResponse> => {
+                    return {
+                        data: {
+                            name: data.name,
+                            response: 'interested'
+                        }
+                    };
                 }
             }
         ]
@@ -205,30 +199,26 @@ const parsers: ProviderParser[] = [
             {
                 key: 'education_experiences',
                 type: ProvidedDataTypes.EDUCATION_EXPERIENCE,
-                transformer: (data: any) => {
-                    return data.map((experience: any): Partial<EducationExperience> => {
-                        return {
-                            data: {
-                                institution: experience.name,
-                                type: experience.school_type,
-                                graduated: experience.graduated,
-                            }
+                transformer: (experience: any): Partial<EducationExperience> => {
+                    return {
+                        data: {
+                            institution: experience.name,
+                            type: experience.school_type,
+                            graduated: experience.graduated,
                         }
-                    })
+                    };
                 }
             },
             {
                 key: 'work_experiences',
                 type: ProvidedDataTypes.EMPLOYMENT,
-                transformer: (data: any) => {
-                    return data.map((experience: any): Partial<Employment> => {
-                        return {
-                            data: {
-                                job_title: experience.title,
-                                company: experience.employer,
-                            }
+                transformer: (experience: any): Partial<Employment>  => {
+                    return {
+                        data: {
+                            job_title: experience.title,
+                            company: experience.employer,
                         }
-                    })
+                    };
                 }
             },
             {
@@ -243,13 +233,11 @@ const parsers: ProviderParser[] = [
         schemas: [{
             key: 'searches',
             type: ProvidedDataTypes.SEARCH_QUERY,
-            transformer: (data: any) => {
-                return data.map((query: any): Partial<SearchQuery> => {
-                    return {
-                        data: query.data.reduce((sum: string, q: any) => sum + q.text, ''),
-                        timestamp: new Date(query.timestamp * 1000),
-                    }
-                })
+            transformer: (query: any): Partial<SearchQuery> => {
+                return {
+                    data: query.data.reduce((sum: string, q: any) => sum + q.text, ''),
+                    timestamp: new Date(query.timestamp * 1000),
+                };
             }
         }]
     },
@@ -258,18 +246,16 @@ const parsers: ProviderParser[] = [
         schemas: [{
             key: 'devices',
             type: ProvidedDataTypes.MOBILE_DEVICE,
-            transformer: (data: any) => {
-                return data.map((device: any): Partial<MobileDevice> => {
-                    return {
-                        data: {
-                            type: device.type,
-                            os: device.os,
-                            advertiser_id: device.advertiser_id,
-                            device_locale: device.device_locale,
-                        },
-                        timestamp: new Date(device.update_time * 1000),
-                    }
-                });
+            transformer: (device: any): Partial<MobileDevice> => {
+                return {
+                    data: {
+                        type: device.type,
+                        os: device.os,
+                        advertiser_id: device.advertiser_id,
+                        device_locale: device.device_locale,
+                    },
+                    timestamp: new Date(device.update_time * 1000),
+                }
             }
         }]
     },
@@ -278,13 +264,11 @@ const parsers: ProviderParser[] = [
         schemas: [{
             key: 'user_ip_address',
             type: ProvidedDataTypes.IP_ADDRESS,
-            transformer: (data: any) => {
-                return data.map((entry: any) => {
-                    return {
-                        data: entry.ip,
-                        timestamp: new Date(entry.timestamp * 1000),
-                    }
-                });
+            transformer: (entry: any) => {
+                return {
+                    data: entry.ip,
+                    timestamp: new Date(entry.timestamp * 1000),
+                }
             }
         }]
     }

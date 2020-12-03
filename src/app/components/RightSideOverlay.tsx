@@ -18,6 +18,7 @@ const Container = styled.div`
     max-width: 500px;
     right: 0;
     top: 0;
+    pointer-events: none;
 `;
 
 const InnerContainer = styled.div`
@@ -28,12 +29,17 @@ const InnerContainer = styled.div`
     overflow-y: auto;
     max-height: calc(100% - 20px);
     background-color: white;
+    pointer-events: all;
     box-shadow: 0 1px 1px rgba(0,0,0,0.01), 
               0 2px 2px rgba(0,0,0,0.01), 
               0 4px 4px rgba(0,0,0,0.01), 
               0 8px 8px rgba(0,0,0,0.01), 
               0 16px 16px rgba(0,0,0,0.01), 
               0 32px 32px rgba(0,0,0,0.01);
+
+    code {
+        margin-bottom: 0;
+    }
 `;
 
 export const CloseButton = styled(GhostButton)`
@@ -48,6 +54,10 @@ export const Section = styled.div<{ smallPadding?: boolean}>`
 
     p:first-child {
         margin-top: 0;
+    }
+
+    p:last-child {
+        margin-bottom: 0;
     }
 
     img {

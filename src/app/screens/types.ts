@@ -12,5 +12,8 @@ export interface RouteProps {
     settings: {
         category?: string;
         settingId?: string;
+    },
+    graph: {
+        datumId?: string;
     }
 }
