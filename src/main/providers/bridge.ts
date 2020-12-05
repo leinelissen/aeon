@@ -15,6 +15,15 @@ class ProviderBridge {
         this.providers.on('ready', this.clearMessageCache);
 
         ipcMain.handle(channelName, this.handleMessage);
+
+        // Subscribe to manager-initated events
+        this.providers.addListener('*', function() {
+            // Log the event
+            console.log('[PROVIDER-EVENT]: ', this.event);
+
+            // And pass them on to the app
+            ProviderBridge.send(this.event);
+        });
     }
 
     // eslint-disable-next-line

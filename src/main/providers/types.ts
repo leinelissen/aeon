@@ -100,9 +100,13 @@ export enum ProviderCommands {
 }
 
 export enum ProviderEvents {
-    CHECKING_DATA_REQUESTS,
-    DATA_REQUEST_COMPLETED,
-    DATA_REQUEST_DISPATCHED,
+    CHECKING_DATA_REQUESTS = 'checking_data_requests',
+    DATA_REQUEST_COMPLETED = 'data_request_completed',
+    DATA_REQUEST_DISPATCHED = 'data_request_dispatched',
+    UPDATE_COMPLETE = 'update_complete',
+    ACCOUNT_CREATED = 'account_created',
+    ACCOUNT_DELETED = 'account_deleted',
+    READY = 'ready'
 }
 
 export enum ProvidedDataTypes {

@@ -1,4 +1,3 @@
-import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns';
 import Instagram from './instagram';
 import { Provider, ProviderFile, DataRequestProvider, ProviderEvents, ProviderUpdateType, InitialisedProvider, EmailDataRequestProvider, ProviderUnion, InitOptionalParameters, OpenDataRightsProvider } from './types';
@@ -14,6 +13,7 @@ import LinkedIn from './linkedin';
 import Spotify from './spotify';
 import EmailManager from 'main/email-client';
 import OpenDataRights from './open-data-rights';
+import { EventEmitter2 } from 'eventemitter2';
 
 export const providers: Array<ProviderUnion> = [
     Instagram,
@@ -28,7 +28,7 @@ const mapProviderToKey = providers.reduce<Record<string, ProviderUnion>>((sum, p
     return sum;
 }, {});
 
-class ProviderManager extends EventEmitter {
+class ProviderManager extends EventEmitter2 {
     // Refers to the repository obejct
     repository: Repository;
     // The email manager
@@ -47,7 +47,7 @@ class ProviderManager extends EventEmitter {
     lastDataRequestCheck: Date;
 
     constructor(repository: Repository, email: EmailManager) {
-        super();
+        super({ wildcard: true });
 
         // Store all instances of other classes
         this.repository = repository;
@@ -88,7 +88,7 @@ class ProviderManager extends EventEmitter {
         // Then initialise all classes
         // And after send out a ready event
         this.isInitialised = true;
-        this.emit('ready');
+        this.emit(ProviderEvents.READY);
     }
 
     /**
@@ -163,6 +163,9 @@ class ProviderManager extends EventEmitter {
         // Save the instance as well
         this.instances.set(key, instance);
 
+        // Emit event
+        this.emit(ProviderEvents.ACCOUNT_CREATED);
+
         return key;
     }
 
@@ -200,7 +203,8 @@ class ProviderManager extends EventEmitter {
         // GUARD: Only log stuff if new data is found
         if (changedFiles) {
             console.log('Completed update for ', key);
-            Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`)
+            Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`);
+            this.emit(ProviderEvents.UPDATE_COMPLETE);
         }
     }
 
@@ -298,7 +302,7 @@ class ProviderManager extends EventEmitter {
         account.status.dispatched = new Date().toString();
         this.accounts.set(key, account);
 
-        ProviderBridge.send(ProviderEvents.DATA_REQUEST_DISPATCHED);
+        this.emit(ProviderEvents.DATA_REQUEST_DISPATCHED);
         console.log('Dispatched data request for ', key);
     }
 
@@ -361,7 +365,7 @@ class ProviderManager extends EventEmitter {
                 account.status.lastCheck = new Date().toString();
                 account.status.completed = new Date().toString();
                 this.accounts.set(key, account);
-                ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
+                this.emit(ProviderEvents.DATA_REQUEST_COMPLETED);
 
                 return;
             }
@@ -373,7 +377,7 @@ class ProviderManager extends EventEmitter {
         // Also dispatch regular update requests
         await(Promise.allSettled([dataRequests, await this.updateAll()]));
 
-        ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
+        this.emit(ProviderEvents.DATA_REQUEST_COMPLETED);
         this.lastDataRequestCheck = new Date();
         console.log('Check completed.')
     }
