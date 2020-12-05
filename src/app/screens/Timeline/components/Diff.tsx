@@ -10,8 +10,10 @@ import { H2, H5 } from 'app/components/Typography';
 import { formatDistanceToNow } from 'date-fns';
 import Code from 'app/components/Code';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
-import { faCodeCommit, faPlus } from 'app/assets/fa-light';
+import { faCodeCommit, faLink, faPlus, faSync, faUser } from 'app/assets/fa-light';
 import { MarginLeft, PullContainer } from 'app/components/Utility';
+import convertMetaToObject from 'app/utilities/convertMetaToObject';
+import Providers from 'app/utilities/Providers';
 
 interface Props {
     commit: Commit;
@@ -83,6 +85,8 @@ class Diff extends PureComponent<Props, State> {
     render(): JSX.Element {
         const diff = this.props.diff || this.state.diff;
         const { commit } = this.props;
+        const meta = convertMetaToObject(commit.message);
+        console.log(meta);
 
         if (!diff) {
             return (
@@ -99,7 +103,7 @@ class Diff extends PureComponent<Props, State> {
                         <H2>
                             <PullContainer verticalAlign>
                                 <FontAwesomeIcon icon={faCodeCommit} fixedWidth />
-                                <MarginLeft>{commit.message}</MarginLeft>
+                                <MarginLeft>{meta.title}</MarginLeft>
                             </PullContainer>
                         </H2>
                     </Section>
@@ -108,6 +112,22 @@ class Diff extends PureComponent<Props, State> {
                             <FontAwesomeIcon icon={faPlus} />
                             <MarginLeft>Committed {formatDistanceToNow(new Date(commit.author.when))} ago</MarginLeft>
                         </PullContainer>
+                        {meta.provider && <PullContainer verticalAlign>
+                            <FontAwesomeIcon icon={Providers.getIcon(meta.provider)} />
+                            <MarginLeft>{meta.provider}</MarginLeft>
+                        </PullContainer>}
+                        {meta.account && <PullContainer verticalAlign>
+                            <FontAwesomeIcon icon={faUser} />
+                            <MarginLeft>{meta.account}</MarginLeft>
+                        </PullContainer>}
+                        {meta.updateType && <PullContainer verticalAlign>
+                            <FontAwesomeIcon icon={faSync} />
+                            <MarginLeft>{meta.updateType}</MarginLeft>
+                        </PullContainer>}
+                        {meta.url && <PullContainer verticalAlign>
+                            <FontAwesomeIcon icon={faLink} />
+                            <MarginLeft>{meta.url}</MarginLeft>
+                        </PullContainer>}
                     </Section>
                     <CodeRectifier>
                         {(diff.added.length || diff.updated.length || diff.deleted.length) ?
