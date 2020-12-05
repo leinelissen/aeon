@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import Button from 'app/components/Button';
 import { ProviderDatum, ProvidedDataTypes } from 'main/providers/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCassetteTape, faClock, faHashtag, faEye, faLink } from 'app/assets/fa-light';
+import { faCassetteTape, faClock, faHashtag, faEye, faLink, faUser } from 'app/assets/fa-light';
 import { H2 } from 'app/components/Typography';
 import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';
@@ -68,6 +68,17 @@ const DatumOverlay = (props: Props): JSX.Element => {
                                     />
                                 </span>
                                 <span>{datum.hostname}</span>
+                            </DetailListItem>
+                        }
+                        {datum.account && 
+                            <DetailListItem>
+                                <span>
+                                    <FontAwesomeIcon
+                                        icon={faUser}
+                                        fixedWidth
+                                    />
+                                </span>
+                                <span>{datum.account}</span>
                             </DetailListItem>
                         }
                         <DetailListItem>
