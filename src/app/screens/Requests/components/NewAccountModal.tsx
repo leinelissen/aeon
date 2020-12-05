@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import Providers from 'app/utilities/Providers';
 import { Dropdown, Label, TextInput } from 'app/components/Input';
 import { InitOptionalParameters } from 'main/providers/types';
+import isValidUrl from 'app/utilities/isValidUrl';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
@@ -53,6 +54,8 @@ function NewAccountModal(): JSX.Element {
     const closeModal = useCallback(() => setModal(false), [setModal]);
     const handleUrlChange = useCallback((event) => setSelectedUrl(event.target.value), [setSelectedUrl]);
     
+    console.log(availableProviders['open-data-rights'].requiresUrl && !isValidUrl(selectedUrl), isValidUrl(selectedUrl), selectedUrl);
+    
     return (
         <>
             <Button fullWidth icon={faPlus} onClick={openModal}>
@@ -86,6 +89,7 @@ function NewAccountModal(): JSX.Element {
                                             value={selectedUrl}
                                             onChange={handleUrlChange}
                                             placeholder="https://open-data.acme-corp.com"
+                                            type="url"
                                         />
                                     </Label>
                                 </>
@@ -98,7 +102,10 @@ function NewAccountModal(): JSX.Element {
                                         apiUrl: availableProviders[key].requiresUrl ? selectedUrl : undefined
                                     }}
                                     onComplete={closeModal}
-                                    disabled={availableProviders[key].requiresEmail && selectedEmail === ''}
+                                    disabled={
+                                        availableProviders[key].requiresEmail && selectedEmail === ''
+                                        || availableProviders[key].requiresUrl && !isValidUrl(selectedUrl)
+                                    }
                                 >
                                     Add new account
                                 </NewAccountButton>

@@ -143,7 +143,11 @@ class ProviderManager extends EventEmitter2 {
         // GUARD: If we are dealing with a provider that implements the Open
         // Data Rights API, we must inject the URL into the provider
         if (instance instanceof OpenDataRightsProvider) {
-            instance.setUrl(optional.apiUrl);
+            // Attempt to parse the URL. If it's not a valid URL, this
+            // should throw.
+            new URL(optional.apiUrl);
+            // Then set the URL with trailing slashes removed
+            instance.setUrl(optional.apiUrl.replace(/\/+$/, ''));
         }
 
         // Then initialise the provider
@@ -168,7 +172,7 @@ class ProviderManager extends EventEmitter2 {
             account,
             provider,
             windowKey,
-            url: optional.apiUrl,
+            url: optional.apiUrl.replace(/\/+$/, ''),
             hostname,
             status: {}
         }
