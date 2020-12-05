@@ -150,7 +150,7 @@ class ProviderManager extends EventEmitter2 {
 
         // Save the key to the accounts array
         const key = optional.apiUrl
-            ? `${provider}_${optional.apiUrl}_ ${account}`
+            ? `${provider}_${new URL(optional.apiUrl).hostname}_${account}`
             : `${provider}_${account}`;
         this.accounts.set(key, {
             account,

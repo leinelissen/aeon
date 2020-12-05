@@ -1,12 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faClock, faPlus, faQuestion } from 'app/assets/fa-light';
+import { faCheck, faClock, faLink, faPlus, faQuestion } from 'app/assets/fa-light';
+import faOpenDataRights from 'app/assets/open-data-rights';
 import Button from 'app/components/Button';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
 import { H2 } from 'app/components/Typography';
 import { State } from 'app/store';
 import Providers from 'app/utilities/Providers';
 import { formatDistanceToNow } from 'date-fns';
-import { DataRequestStatus } from 'main/providers/types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -23,6 +23,8 @@ function ProviderOverlay({ selectedProvider }: Props): JSX.Element {
         setLoading(false);
     }, [selectedProvider]);
 
+    console.log(selectedProvider);
+
     return (
         <RightSideOverlay>
             {selectedProvider && (
@@ -38,6 +40,25 @@ function ProviderOverlay({ selectedProvider }: Props): JSX.Element {
                     </Section>
                     <Section>
                         <span>
+                            {account.url && 
+                                <>
+                                    <FontAwesomeIcon
+                                        icon={faOpenDataRights}
+                                        style={{ marginRight: 8 }}
+                                        fixedWidth
+                                    />
+                                    Open Data Rights API-based
+                                    <br />
+                                    <FontAwesomeIcon
+                                        icon={faLink}
+                                        style={{ marginRight: 8 }}
+                                        fixedWidth
+                                    />
+                                    Host: <i>{account.url}</i>
+                                    <br />
+                                    
+                                </>
+                            }
                             <FontAwesomeIcon
                                 icon={faQuestion}
                                 style={{ marginRight: 8 }}
