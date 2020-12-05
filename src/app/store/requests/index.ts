@@ -40,7 +40,6 @@ const requestsSlice = createSlice({
             state.all = Object.keys(action.payload.accounts);
         });
         builder.addCase(fetchAvailableProviders.fulfilled, (state, action) => {
-            console.log(action);
             state.allProviders = Object.keys(action.payload);
             state.availableProviders = action.payload;
         });

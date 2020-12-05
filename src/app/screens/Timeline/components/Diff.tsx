@@ -84,8 +84,6 @@ class Diff extends PureComponent<Props, State> {
         const diff = this.props.diff || this.state.diff;
         const { commit } = this.props;
 
-        console.log(diff);
-
         if (!diff) {
             return (
                 <RightSideOverlay>
