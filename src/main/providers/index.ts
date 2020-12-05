@@ -154,19 +154,27 @@ class ProviderManager extends EventEmitter2 {
             throw new Error('Initialising provider did not return account name');
         }
 
+        const hostname = optional.apiUrl
+            ? new URL(optional.apiUrl).host
+            : undefined;
+
         // Save the key to the accounts array
         const key = optional.apiUrl
-            ? `${provider}_${new URL(optional.apiUrl).hostname}_${account}`
+            ? `${provider}_${hostname}_${account}`
             : `${provider}_${account}`;
-        this.accounts.set(key, {
+
+        // Construct the details for the provider
+        const newAccount: InitialisedProvider = {
             account,
             provider,
             windowKey,
             url: optional.apiUrl,
+            hostname,
             status: {}
-        });
+        }
 
         // Save the instance as well
+        this.accounts.set(key, newAccount);
         this.instances.set(key, instance);
 
         // Emit event
@@ -258,6 +266,12 @@ class ProviderManager extends EventEmitter2 {
             'Aeon-Provider': account.provider,
             'Aeon-Account': account.account,
             'Aeon-Update-Type': updateType,
+        };
+
+        // Also add optional parameters
+        if (account.url && account.hostname) {
+            messageData['Aeon-Provider-Hostname'] = account.hostname;
+            messageData['Aeon-Provider-URL'] = account.url;
         }
 
         // Parse the object as a series of "key: value \n" statements
@@ -363,8 +377,8 @@ class ProviderManager extends EventEmitter2 {
                 console.log('A data request has completed! Starting to parse...')
 
                 // If it is complete now, we'll fetch the data and parse it
-                const dirPath = account.url
-                    ? path.join(REPOSITORY_PATH, account.provider, new URL(account.url).hostname,  account.account)
+                const dirPath = account.url && account.hostname
+                    ? path.join(REPOSITORY_PATH, account.provider, account.hostname,  account.account)
                     : path.join(REPOSITORY_PATH, account.provider, account.account);
                 const files = await instance.parseDataRequest(dirPath, account.status.requestId);
                 const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
