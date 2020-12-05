@@ -40,9 +40,10 @@ class ProviderBridge {
             case ProviderCommands.REFRESH:
                 return this.providers.refresh();
             case ProviderCommands.GET_AVAILABLE_PROVIDERS:
-                return availableProviders.reduce<Record<string, { requiresEmail: boolean}>>((sum, Client) => {
+                return availableProviders.reduce<Record<string, { requiresEmail: boolean, requiresUrl: boolean, }>>((sum, Client) => {
                     sum[Client.key] = {
-                        requiresEmail: Object.getPrototypeOf(Client).name === 'EmailDataRequestProvider'
+                        requiresEmail: Object.getPrototypeOf(Client).name === 'EmailDataRequestProvider',
+                        requiresUrl: Object.getPrototypeOf(Client).name === 'OpenDataRightsProvider',
                     }
                     return sum;
                 }, {});

@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, Session, session } from 'electron';
 import { URL } from 'url';
 import crypto from 'crypto';
 
@@ -24,6 +24,8 @@ function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
         throw new Error('InvalidBrowserWindowConfiguration');
     }
 
+    const persistKey = key || crypto.randomBytes(64).toString('base64');
+
     // Initialise the window
     const window = new BrowserWindow({ 
         width: 400, 
@@ -34,13 +36,18 @@ function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
             enableRemoteModule: false,
             sandbox: true,
             contextIsolation: true,
-            partition: `persist:${key || crypto.randomBytes(64).toString('base64')}`,
+            partition: `persist:${persistKey}`,
         },
         ...options,
     });
 
     // Disable menu bar in windows and linux
     window.setMenu(null);
+
+    // Register the aeon:// protocol
+    window.webContents.session.protocol.registerHttpProtocol('aeon', (request, callback) => {
+        callback({ data: 'OK' }); 
+    });
 
     // Deny any request for extra permissions in this handler
     window.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => callback(false));
@@ -49,7 +56,7 @@ function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
     window.webContents.on('will-navigate', (event, navigationUrl: string): void => {
         const parsedUrl = new URL(navigationUrl); 
 
-        if (!parsedUrl.origin.endsWith(origin)) {
+        if (!parsedUrl.origin.endsWith(origin) && parsedUrl.protocol !== 'aeon:') {
             console.error(`[BROWSER-WINDOW] A request for ${navigationUrl} was blocked because it did not match the predefined domain (${origin}, read ${parsedUrl.origin})`);
             event.preventDefault();
         }

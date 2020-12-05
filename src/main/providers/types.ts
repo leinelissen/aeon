@@ -10,6 +10,8 @@ export interface InitialisedProvider {
     provider: string;
     // The account from which the data emanates
     account?: string;
+    // A URL that is associated with a provider that handles APIs
+    url?: string;
     // A random hash which ensures that sessions are kept between various
     // invocations of browser windows.
     windowKey: string;
@@ -40,13 +42,15 @@ export abstract class Provider {
 export interface DataRequestProvider extends Provider {
     /** Dispatch a data request to this Provider. The difference between a
      * regular update and a data request, is that it is asynchronous, and might
-     * take a couple hours or even days to complete. */
-    dispatchDataRequest?(): Promise<void>;
+     * take a couple hours or even days to complete.
+     * Optionall, this request may return a string or number that indicates some
+     * request identifier. This id is then reinserted into the other two methods */
+    dispatchDataRequest?(): Promise<void> | Promise<string | number>;
     /** Check if the data request is already complete */
-    isDataRequestComplete?(): Promise<boolean>;
+    isDataRequestComplete?(identifier?: string | number): Promise<boolean>;
     /** If the data request has been completed, download the resulting dump and
      * parse it, so that it can be processed and saved to the repository */
-    parseDataRequest?(extractionPath?: string): Promise<ProviderFile[]>;
+    parseDataRequest?(extractionPath: string, identifier?: string | number): Promise<ProviderFile[]>;
 }
 
 export abstract class DataRequestProvider extends Provider {
@@ -58,6 +62,21 @@ export abstract class EmailDataRequestProvider extends DataRequestProvider {
     protected email: EmailClient;
     setEmailClient(email: EmailClient): void {
         this.email = email;
+    }
+}
+
+export abstract class OpenDataRightsProvider extends DataRequestProvider {
+    protected url: string;
+    protected windowParams: {
+        key: string;
+        origin: string;
+    };
+    setUrl(url: string): void {
+        this.url = url;
+        this.windowParams = {
+            key: this.windowKey,
+            origin: url,
+        }
     }
 }
 
@@ -283,4 +302,9 @@ export interface ProviderParser {
 export enum ProviderUpdateType {
     UPDATE = 'update',
     DATA_REQUEST = 'data_request'
+}
+
+export type InitOptionalParameters = {
+    accountName?: string;
+    apiUrl?: string;
 }

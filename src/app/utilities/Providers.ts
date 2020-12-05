@@ -1,7 +1,8 @@
-import { ProviderCommands, ProviderEvents, InitialisedProvider } from 'main/providers/types';
+import { ProviderCommands, ProviderEvents, InitialisedProvider, InitOptionalParameters } from 'main/providers/types';
 import { faFacebookF, faInstagram, faLinkedinIn, faSpotify, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faSquare } from 'app/assets/fa-light';
 import { IpcRendererEvent } from 'electron';
+import faOpenDataRights from 'app/assets/open-data-rights';
 
 const channel = 'providers';
 
@@ -21,8 +22,8 @@ class Providers {
         window.api.removeListener(channel, handler);
     }
 
-    static initialise(key: string, account?: string): Promise<boolean> {
-        return window.api.invoke(channel, ProviderCommands.INITIALISE, key, account);
+    static initialise(key: string, optional?: InitOptionalParameters): Promise<boolean> {
+        return window.api.invoke(channel, ProviderCommands.INITIALISE, key, optional);
     }
 
     static update(key: string): Promise<void> {
@@ -49,7 +50,7 @@ class Providers {
         return window.api.invoke(channel, ProviderCommands.GET_ACCOUNTS);
     }
 
-    static getAvailableProviders(): Promise<Record<string, { requiresEmail: boolean }>> {
+    static getAvailableProviders(): Promise<Record<string, { requiresEmail: boolean, requiresUrl: boolean }>> {
         return window.api.invoke(channel, ProviderCommands.GET_AVAILABLE_PROVIDERS);
     }
 
@@ -63,6 +64,8 @@ class Providers {
                 return faLinkedinIn;
             case 'spotify':
                 return faSpotify;
+            case 'open-data-rights':
+                return faOpenDataRights;
             default:
                 return faSquare;
         }

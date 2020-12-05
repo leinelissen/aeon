@@ -9,17 +9,18 @@ import { addProviderAccount } from 'app/store/requests/actions';
 import { State, useAppDispatch } from 'app/store';
 import { useSelector } from 'react-redux';
 import Providers from 'app/utilities/Providers';
-import { Dropdown } from 'app/components/Input';
+import { Dropdown, Label, TextInput } from 'app/components/Input';
+import { InitOptionalParameters } from 'main/providers/types';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
     onComplete: () => void,
     disabled?: boolean;
-    account?: string;
+    optionalParameters: InitOptionalParameters;
     selectedEmail?: string;
 }>;
 
-function NewAccountButton({ client, children, onComplete, account, ...props }: NewAccountProps): JSX.Element {
+function NewAccountButton({ client, children, onComplete, optionalParameters, ...props }: NewAccountProps): JSX.Element {
     const [isActive, setActive] = useState(false);
     const dispatch = useAppDispatch();
 
@@ -29,12 +30,12 @@ function NewAccountButton({ client, children, onComplete, account, ...props }: N
         setActive(true);
 
         // Actually create a new account
-        await dispatch(addProviderAccount({ client, account }));
+        await dispatch(addProviderAccount({ client, optionalParameters }));
 
         // Set new activity flag, and let parent component know we're done
         setActive(false);
         onComplete();
-    }, [dispatch, client, setActive])
+    }, [dispatch, client, setActive, optionalParameters]);
 
     return (
         <Button icon={faPlus} {...props} onClick={handleClick} loading={isActive}>{children}</Button>
@@ -47,8 +48,10 @@ function NewAccountModal(): JSX.Element {
     const emailAccounts = useSelector((state: State) => state.email.accounts.all);
     const [modalIsOpen, setModal] = useState(false);
     const [selectedEmail, setSelectedEmail] = useState(emailAccounts.length ? emailAccounts[0] : '');
+    const [selectedUrl, setSelectedUrl] = useState('');
     const openModal = useCallback(() => setModal(true), [setModal]);
     const closeModal = useCallback(() => setModal(false), [setModal]);
+    const handleUrlChange = useCallback((event) => setSelectedUrl(event.target.value), [setSelectedUrl]);
     
     return (
         <>
@@ -74,10 +77,26 @@ function NewAccountModal(): JSX.Element {
                                     />
                                 </>
                             }
+                            {availableProviders[key].requiresUrl &&
+                                <>
+                                    <p>This provider allows you to get data from any organisation that supports the Open Data Rights API. Please enter the URL for the organisation:</p>
+                                    <Label>
+                                        <span>Open Data Rights API URL</span>
+                                        <TextInput 
+                                            value={selectedUrl}
+                                            onChange={handleUrlChange}
+                                            placeholder="https://open-data.acme-corp.com"
+                                        />
+                                    </Label>
+                                </>
+                            }
                             <PullCenter>
                                 <NewAccountButton
                                     client={key}
-                                    account={availableProviders[key].requiresEmail ? selectedEmail : undefined}
+                                    optionalParameters={{
+                                        accountName: availableProviders[key].requiresEmail ? selectedEmail : undefined,
+                                        apiUrl: availableProviders[key].requiresUrl ? selectedUrl : undefined
+                                    }}
                                     onComplete={closeModal}
                                     disabled={availableProviders[key].requiresEmail && selectedEmail === ''}
                                 >

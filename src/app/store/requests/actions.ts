@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import Providers from 'app/utilities/Providers';
+import { InitOptionalParameters } from 'main/providers/types';
 
 export const fetchProviderAccounts = createAsyncThunk(
     'requests/fetch/accounts',
@@ -16,8 +17,8 @@ export const refreshRequests = createAsyncThunk(
 
 export const addProviderAccount = createAsyncThunk(
     'requests/new-account',
-    ({ client, account }: { client: string, account?: string }, { dispatch }) => {
-        const value = Providers.initialise(client, account);
+    ({ client, optionalParameters }: { client: string, optionalParameters: InitOptionalParameters }, { dispatch }) => {
+        const value = Providers.initialise(client, optionalParameters);
         dispatch(fetchProviderAccounts());
         return value;
     }

@@ -6,7 +6,7 @@ interface RequestsState {
     byKey: Record<string, InitialisedProvider>;
     all: string[];
     allProviders: string[];
-    availableProviders: Record<string, { requiresEmail: boolean }>;
+    availableProviders: Record<string, { requiresEmail: boolean, requiresUrl: boolean }>;
     isLoading: {
         requests: boolean;
         refresh: boolean;

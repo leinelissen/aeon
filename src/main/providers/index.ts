@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns';
 import Instagram from './instagram';
-import { Provider, ProviderFile, DataRequestProvider, ProviderEvents, ProviderUpdateType, InitialisedProvider, EmailDataRequestProvider, ProviderUnion } from './types';
+import { Provider, ProviderFile, DataRequestProvider, ProviderEvents, ProviderUpdateType, InitialisedProvider, EmailDataRequestProvider, ProviderUnion, InitOptionalParameters, OpenDataRightsProvider } from './types';
 import Repository, { REPOSITORY_PATH } from '../lib/repository';
 import Notifications from 'main/lib/notifications';
 import ProviderBridge from './bridge';
@@ -13,12 +13,14 @@ import Facebook from './facebook';
 import LinkedIn from './linkedin';
 import Spotify from './spotify';
 import EmailManager from 'main/email-client';
+import OpenDataRights from './open-data-rights';
 
 export const providers: Array<ProviderUnion> = [
     Instagram,
     Facebook,
     LinkedIn,
     Spotify,
+    OpenDataRights
 ];
 
 const mapProviderToKey = providers.reduce<Record<string, ProviderUnion>>((sum, provider) => {
@@ -104,8 +106,8 @@ class ProviderManager extends EventEmitter {
      * the account that has just been created.
      * @param key 
      */
-    initialise = async (provider: string, accountName?: string): Promise<string> => {
-        console.log(`Attempting to initialise a new ${provider} (${accountName})`);
+    initialise = async (provider: string, optional: InitOptionalParameters): Promise<string> => {
+        console.log(`Attempting to initialise a new ${provider} (${optional.accountName})`);
         // Generate a random string that is used to refer to the sessions for
         // this particular account
         const windowKey = crypto.randomBytes(32).toString('hex');
@@ -115,21 +117,27 @@ class ProviderManager extends EventEmitter {
         }
 
         // Call the respective initialise function
-        const instance = new mapProviderToKey[provider](windowKey, accountName);
+        const instance = new mapProviderToKey[provider](windowKey, optional.accountName);
 
         // GUARD: If we are dealing with a provider that implements email, we
         // must inject an email client into the class
         if (instance instanceof EmailDataRequestProvider) {
             // Retrieve an email client that matches the supplied email address
-            const emailAccount = this.email.emailClients.get(accountName);
+            const emailAccount = this.email.emailClients.get(optional.accountName);
                 
             // GUARD: The address must actually exist
-            if (!accountName || !emailAccount) {
+            if (!optional.accountName || !emailAccount) {
                 throw new Error('Could not find email client withs suppled account name...');
             }
 
             // Inject the client into the provider
             instance.setEmailClient(emailAccount);
+        }
+
+        // GUARD: If we are dealing with a provider that implements the Open
+        // Data Rights API, we must inject the URL into the provider
+        if (instance instanceof OpenDataRightsProvider) {
+            instance.setUrl(optional.apiUrl);
         }
 
         // Then initialise the provider
@@ -141,11 +149,14 @@ class ProviderManager extends EventEmitter {
         }
 
         // Save the key to the accounts array
-        const key = `${provider}_${account}`;
+        const key = optional.apiUrl
+            ? `${provider}_${optional.apiUrl}_ ${account}`
+            : `${provider}_${account}`;
         this.accounts.set(key, {
             account,
             provider,
             windowKey,
+            url: optional.apiUrl,
             status: {}
         });
 
