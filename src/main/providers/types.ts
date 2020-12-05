@@ -83,9 +83,14 @@ export abstract class OpenDataRightsProvider extends DataRequestProvider {
 export type ProviderUnion = typeof DataRequestProvider | typeof Provider | typeof EmailDataRequestProvider;
 
 export interface DataRequestStatus {
+    // An ISO date describing when the request was dispatched
     dispatched?: string;
+    // An ISO data describing when the request was completed
     completed?: string;
+    // An ISO data describing when the request was last checked
     lastCheck?: string;
+    // An optional identifier for the request
+    requestId?: string | number;
 }
 
 export enum ProviderCommands {
@@ -213,6 +218,8 @@ export interface ProviderDatum<D, T = ProvidedDataTypes> {
     provider: string;
     // The account from which this data was gained
     account?: string;
+    // An API host from where the data was gained
+    url?: string;
     // The specific file from which the data was extracted
     source: string;
     // A timestamp that is associated with this specific datapoint. For

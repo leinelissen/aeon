@@ -76,6 +76,12 @@ class ProviderManager extends EventEmitter2 {
                 instance.setEmailClient(emailAccount);
             } 
 
+            // GUARD: If the provider based on an API, we must inject in into
+            // the provider
+            if (instance instanceof OpenDataRightsProvider) {
+                instance.setUrl(account.url);
+            }
+
             this.instances.set(key, instance);
         });
 
@@ -296,10 +302,11 @@ class ProviderManager extends EventEmitter2 {
         }
 
         // Dispatch the request and wait for it to complete
-        await instance.dispatchDataRequest();
+        const requestId = await instance.dispatchDataRequest();
 
         // Then store the update time
         account.status.dispatched = new Date().toString();
+        if (requestId) account.status.requestId = requestId;
         this.accounts.set(key, account);
 
         this.emit(ProviderEvents.DATA_REQUEST_DISPATCHED);
@@ -352,12 +359,14 @@ class ProviderManager extends EventEmitter2 {
             }
 
             // If it is uncompleted, we need to check upon it
-            if (await instance.isDataRequestComplete().catch(() => false)) {
+            if (await instance.isDataRequestComplete(account.status.requestId).catch(() => false)) {
                 console.log('A data request has completed! Starting to parse...')
 
                 // If it is complete now, we'll fetch the data and parse it
-                const dirPath = path.join(REPOSITORY_PATH, account.provider, account.account);
-                const files = await instance.parseDataRequest(dirPath);
+                const dirPath = account.url
+                    ? path.join(REPOSITORY_PATH, account.provider, new URL(account.url).hostname,  account.account)
+                    : path.join(REPOSITORY_PATH, account.provider, account.account);
+                const files = await instance.parseDataRequest(dirPath, account.status.requestId);
                 const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
                 Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
                 
