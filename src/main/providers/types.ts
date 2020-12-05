@@ -10,6 +10,10 @@ export interface InitialisedProvider {
     provider: string;
     // The account from which the data emanates
     account?: string;
+    // A URL that is associated with a provider that handles APIs
+    url?: string;
+    // A path- and URL-safe version of the URL
+    hostname?: string;
     // A random hash which ensures that sessions are kept between various
     // invocations of browser windows.
     windowKey: string;
@@ -40,13 +44,15 @@ export abstract class Provider {
 export interface DataRequestProvider extends Provider {
     /** Dispatch a data request to this Provider. The difference between a
      * regular update and a data request, is that it is asynchronous, and might
-     * take a couple hours or even days to complete. */
-    dispatchDataRequest?(): Promise<void>;
+     * take a couple hours or even days to complete.
+     * Optionall, this request may return a string or number that indicates some
+     * request identifier. This id is then reinserted into the other two methods */
+    dispatchDataRequest?(): Promise<void> | Promise<string | number>;
     /** Check if the data request is already complete */
-    isDataRequestComplete?(): Promise<boolean>;
+    isDataRequestComplete?(identifier?: string | number): Promise<boolean>;
     /** If the data request has been completed, download the resulting dump and
      * parse it, so that it can be processed and saved to the repository */
-    parseDataRequest?(extractionPath?: string): Promise<ProviderFile[]>;
+    parseDataRequest?(extractionPath: string, identifier?: string | number): Promise<ProviderFile[]>;
 }
 
 export abstract class DataRequestProvider extends Provider {
@@ -61,12 +67,32 @@ export abstract class EmailDataRequestProvider extends DataRequestProvider {
     }
 }
 
+export abstract class OpenDataRightsProvider extends DataRequestProvider {
+    protected url: string;
+    protected windowParams: {
+        key: string;
+        origin: string;
+    };
+    setUrl(url: string): void {
+        this.url = url;
+        this.windowParams = {
+            key: this.windowKey,
+            origin: url,
+        }
+    }
+}
+
 export type ProviderUnion = typeof DataRequestProvider | typeof Provider | typeof EmailDataRequestProvider;
 
 export interface DataRequestStatus {
+    // An ISO date describing when the request was dispatched
     dispatched?: string;
+    // An ISO data describing when the request was completed
     completed?: string;
+    // An ISO data describing when the request was last checked
     lastCheck?: string;
+    // An optional identifier for the request
+    requestId?: string | number;
 }
 
 export enum ProviderCommands {
@@ -81,9 +107,13 @@ export enum ProviderCommands {
 }
 
 export enum ProviderEvents {
-    CHECKING_DATA_REQUESTS,
-    DATA_REQUEST_COMPLETED,
-    DATA_REQUEST_DISPATCHED,
+    CHECKING_DATA_REQUESTS = 'checking_data_requests',
+    DATA_REQUEST_COMPLETED = 'data_request_completed',
+    DATA_REQUEST_DISPATCHED = 'data_request_dispatched',
+    UPDATE_COMPLETE = 'update_complete',
+    ACCOUNT_CREATED = 'account_created',
+    ACCOUNT_DELETED = 'account_deleted',
+    READY = 'ready'
 }
 
 export enum ProvidedDataTypes {
@@ -190,6 +220,8 @@ export interface ProviderDatum<D, T = ProvidedDataTypes> {
     provider: string;
     // The account from which this data was gained
     account?: string;
+    // An API host from where the data was gained
+    hostname?: string;
     // The specific file from which the data was extracted
     source: string;
     // A timestamp that is associated with this specific datapoint. For
@@ -283,4 +315,9 @@ export interface ProviderParser {
 export enum ProviderUpdateType {
     UPDATE = 'update',
     DATA_REQUEST = 'data_request'
+}
+
+export type InitOptionalParameters = {
+    accountName?: string;
+    apiUrl?: string;
 }

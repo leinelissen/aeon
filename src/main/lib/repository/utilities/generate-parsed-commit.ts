@@ -4,6 +4,7 @@ import parseSchema from './parse-schema';
 import { ProviderDatum } from 'main/providers/types';
 import { Blob, TreeEntry } from 'nodegit';
 import parseCsv from './parse-csv';
+import parseOpenDataRights, { OpenDataRightsDatum } from './parse-open-data-rights';
 
 const utfDecoder = new TextDecoder('utf-8');
 
@@ -53,6 +54,24 @@ async function generateParsedCommit(
     if (!parsedExtensions.includes(fileExtension)) {
         return;
     }
+
+    // Retrieve the data from the tree
+    const data = await tree.getBlob();
+    const object = await getObjectByExtension(fileExtension, data);
+
+    // GUARD: If the file is open-data-rights based, we don't need any fancy
+    // parsers. We can just directly import the data and add the right flags.
+    if (filepath.startsWith('open-data-rights')) {
+        // Retrieve the hostname and account from the path. Also gather the rest
+        // of the path so we can clarify the exact source
+        const [, hostname, account, ...rest] = filepath.split(path.sep);
+        return parseOpenDataRights(
+            object as OpenDataRightsDatum[],
+            hostname,
+            account,
+            rest.join(path.sep)
+        );
+    }
     
     // We then parse the content and get the relevant parser
     const parser = getParserByFileName(filepath);
@@ -61,13 +80,10 @@ async function generateParsedCommit(
     if (!parser) {
         return;
     }
-    
-    // Retrieve the data from the tree
-    const data = await tree.getBlob();
-    const object = await getObjectByExtension(fileExtension, data);
+
 
     // Retrieve the account from the pathname
-    const [provider, account] = filepath.split(path.sep);
+    const [, account] = filepath.split(path.sep);
 
     return parseSchema(object, parser, account);
 }

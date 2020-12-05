@@ -3,7 +3,7 @@ import 'v8-compile-cache';
 require('source-map-support').install();
 
 import './lib/map-map';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, protocol } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer';
 import path from 'path';
 import initialise from './initialise';

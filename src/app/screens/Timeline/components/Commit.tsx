@@ -96,7 +96,7 @@ class Commit extends Component<Props> {
         return (
             <StyledCommit active={active} onClick={this.handleClick}>
                 <Dot active={active} />
-                {entry.message}
+                {entry.message.split('\n')[0]}
                 {latestCommit && <PullRight><Badge>Current Identity</Badge></PullRight>}
             </StyledCommit>
         )

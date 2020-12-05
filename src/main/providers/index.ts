@@ -1,7 +1,6 @@
-import { EventEmitter } from 'events';
 import { differenceInDays } from 'date-fns';
 import Instagram from './instagram';
-import { Provider, ProviderFile, DataRequestProvider, ProviderEvents, ProviderUpdateType, InitialisedProvider, EmailDataRequestProvider, ProviderUnion } from './types';
+import { Provider, ProviderFile, DataRequestProvider, ProviderEvents, ProviderUpdateType, InitialisedProvider, EmailDataRequestProvider, ProviderUnion, InitOptionalParameters, OpenDataRightsProvider } from './types';
 import Repository, { REPOSITORY_PATH } from '../lib/repository';
 import Notifications from 'main/lib/notifications';
 import ProviderBridge from './bridge';
@@ -13,12 +12,15 @@ import Facebook from './facebook';
 import LinkedIn from './linkedin';
 import Spotify from './spotify';
 import EmailManager from 'main/email-client';
+import OpenDataRights from './open-data-rights';
+import { EventEmitter2 } from 'eventemitter2';
 
 export const providers: Array<ProviderUnion> = [
     Instagram,
     Facebook,
     LinkedIn,
     Spotify,
+    OpenDataRights
 ];
 
 const mapProviderToKey = providers.reduce<Record<string, ProviderUnion>>((sum, provider) => {
@@ -26,7 +28,7 @@ const mapProviderToKey = providers.reduce<Record<string, ProviderUnion>>((sum, p
     return sum;
 }, {});
 
-class ProviderManager extends EventEmitter {
+class ProviderManager extends EventEmitter2 {
     // Refers to the repository obejct
     repository: Repository;
     // The email manager
@@ -45,7 +47,7 @@ class ProviderManager extends EventEmitter {
     lastDataRequestCheck: Date;
 
     constructor(repository: Repository, email: EmailManager) {
-        super();
+        super({ wildcard: true });
 
         // Store all instances of other classes
         this.repository = repository;
@@ -74,6 +76,12 @@ class ProviderManager extends EventEmitter {
                 instance.setEmailClient(emailAccount);
             } 
 
+            // GUARD: If the provider based on an API, we must inject in into
+            // the provider
+            if (instance instanceof OpenDataRightsProvider) {
+                instance.setUrl(account.url);
+            }
+
             this.instances.set(key, instance);
         });
 
@@ -86,7 +94,7 @@ class ProviderManager extends EventEmitter {
         // Then initialise all classes
         // And after send out a ready event
         this.isInitialised = true;
-        this.emit('ready');
+        this.emit(ProviderEvents.READY);
     }
 
     /**
@@ -104,8 +112,8 @@ class ProviderManager extends EventEmitter {
      * the account that has just been created.
      * @param key 
      */
-    initialise = async (provider: string, accountName?: string): Promise<string> => {
-        console.log(`Attempting to initialise a new ${provider} (${accountName})`);
+    initialise = async (provider: string, optional: InitOptionalParameters): Promise<string> => {
+        console.log(`Attempting to initialise a new ${provider} (${optional.accountName})`);
         // Generate a random string that is used to refer to the sessions for
         // this particular account
         const windowKey = crypto.randomBytes(32).toString('hex');
@@ -115,21 +123,31 @@ class ProviderManager extends EventEmitter {
         }
 
         // Call the respective initialise function
-        const instance = new mapProviderToKey[provider](windowKey, accountName);
+        const instance = new mapProviderToKey[provider](windowKey, optional.accountName);
 
         // GUARD: If we are dealing with a provider that implements email, we
         // must inject an email client into the class
         if (instance instanceof EmailDataRequestProvider) {
             // Retrieve an email client that matches the supplied email address
-            const emailAccount = this.email.emailClients.get(accountName);
+            const emailAccount = this.email.emailClients.get(optional.accountName);
                 
             // GUARD: The address must actually exist
-            if (!accountName || !emailAccount) {
+            if (!optional.accountName || !emailAccount) {
                 throw new Error('Could not find email client withs suppled account name...');
             }
 
             // Inject the client into the provider
             instance.setEmailClient(emailAccount);
+        }
+
+        // GUARD: If we are dealing with a provider that implements the Open
+        // Data Rights API, we must inject the URL into the provider
+        if (instance instanceof OpenDataRightsProvider) {
+            // Attempt to parse the URL. If it's not a valid URL, this
+            // should throw.
+            new URL(optional.apiUrl);
+            // Then set the URL with trailing slashes removed
+            instance.setUrl(optional.apiUrl.replace(/\/+$/, ''));
         }
 
         // Then initialise the provider
@@ -140,17 +158,31 @@ class ProviderManager extends EventEmitter {
             throw new Error('Initialising provider did not return account name');
         }
 
+        const hostname = optional.apiUrl
+            ? new URL(optional.apiUrl).host
+            : undefined;
+
         // Save the key to the accounts array
-        const key = `${provider}_${account}`;
-        this.accounts.set(key, {
+        const key = optional.apiUrl
+            ? `${provider}_${hostname}_${account}`
+            : `${provider}_${account}`;
+
+        // Construct the details for the provider
+        const newAccount: InitialisedProvider = {
             account,
             provider,
             windowKey,
+            url: optional.apiUrl.replace(/\/+$/, ''),
+            hostname,
             status: {}
-        });
+        }
 
         // Save the instance as well
+        this.accounts.set(key, newAccount);
         this.instances.set(key, instance);
+
+        // Emit event
+        this.emit(ProviderEvents.ACCOUNT_CREATED);
 
         return key;
     }
@@ -189,7 +221,8 @@ class ProviderManager extends EventEmitter {
         // GUARD: Only log stuff if new data is found
         if (changedFiles) {
             console.log('Completed update for ', key);
-            Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`)
+            Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`);
+            this.emit(ProviderEvents.UPDATE_COMPLETE);
         }
     }
 
@@ -237,6 +270,12 @@ class ProviderManager extends EventEmitter {
             'Aeon-Provider': account.provider,
             'Aeon-Account': account.account,
             'Aeon-Update-Type': updateType,
+        };
+
+        // Also add optional parameters
+        if (account.url && account.hostname) {
+            messageData['Aeon-Provider-Hostname'] = account.hostname;
+            messageData['Aeon-Provider-URL'] = account.url;
         }
 
         // Parse the object as a series of "key: value \n" statements
@@ -281,13 +320,14 @@ class ProviderManager extends EventEmitter {
         }
 
         // Dispatch the request and wait for it to complete
-        await instance.dispatchDataRequest();
+        const requestId = await instance.dispatchDataRequest();
 
         // Then store the update time
         account.status.dispatched = new Date().toString();
+        if (requestId) account.status.requestId = requestId;
         this.accounts.set(key, account);
 
-        ProviderBridge.send(ProviderEvents.DATA_REQUEST_DISPATCHED);
+        this.emit(ProviderEvents.DATA_REQUEST_DISPATCHED);
         console.log('Dispatched data request for ', key);
     }
 
@@ -337,12 +377,14 @@ class ProviderManager extends EventEmitter {
             }
 
             // If it is uncompleted, we need to check upon it
-            if (await instance.isDataRequestComplete().catch(() => false)) {
+            if (await instance.isDataRequestComplete(account.status.requestId).catch(() => false)) {
                 console.log('A data request has completed! Starting to parse...')
 
                 // If it is complete now, we'll fetch the data and parse it
-                const dirPath = path.join(REPOSITORY_PATH, account.provider, account.account);
-                const files = await instance.parseDataRequest(dirPath);
+                const dirPath = account.url && account.hostname
+                    ? path.join(REPOSITORY_PATH, account.provider, account.hostname,  account.account)
+                    : path.join(REPOSITORY_PATH, account.provider, account.account);
+                const files = await instance.parseDataRequest(dirPath, account.status.requestId);
                 const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
                 Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
                 
@@ -350,7 +392,7 @@ class ProviderManager extends EventEmitter {
                 account.status.lastCheck = new Date().toString();
                 account.status.completed = new Date().toString();
                 this.accounts.set(key, account);
-                ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
+                this.emit(ProviderEvents.DATA_REQUEST_COMPLETED);
 
                 return;
             }
@@ -362,7 +404,7 @@ class ProviderManager extends EventEmitter {
         // Also dispatch regular update requests
         await(Promise.allSettled([dataRequests, await this.updateAll()]));
 
-        ProviderBridge.send(ProviderEvents.DATA_REQUEST_COMPLETED);
+        this.emit(ProviderEvents.DATA_REQUEST_COMPLETED);
         this.lastDataRequestCheck = new Date();
         console.log('Check completed.')
     }

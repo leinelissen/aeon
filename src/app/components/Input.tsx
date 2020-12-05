@@ -10,6 +10,7 @@ export const TextInput = styled.input`
     padding: 16px;
     border-radius: 4px;
     font-size: 16px;
+    margin-bottom: 16px;
 
     &::placeholder {
         color: #33333355;
@@ -21,6 +22,12 @@ export const Label = styled.label`
     display: flex;
     flex-direction: column;
     color: #33333355;
+    font-family: 'IBM Plex Mono';
+
+    & > span {
+        margin-left: 4px;
+        margin-bottom: 2px;
+    }
 `;
 
 const Select = styled.select`
@@ -46,7 +53,7 @@ const SelectContainer = styled.div`
     svg {
         position: absolute;
         right: 16px;
-        top: 50%;
+        top: calc(50% - 8px);
         transform: translateY(-50%);
     }
 `;
@@ -74,7 +81,7 @@ export function Dropdown(props: DropdownProps): JSX.Element {
 
     return (
         <Label>
-            {label}
+            <span>{label}</span>
             <SelectContainer>
                 <Select value={value} disabled={disabled} onChange={handleChange}>
                     {availableOptions.map(option =>
