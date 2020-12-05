@@ -12,6 +12,8 @@ export interface InitialisedProvider {
     account?: string;
     // A URL that is associated with a provider that handles APIs
     url?: string;
+    // A path- and URL-safe version of the URL
+    hostname?: string;
     // A random hash which ensures that sessions are kept between various
     // invocations of browser windows.
     windowKey: string;
@@ -219,7 +221,7 @@ export interface ProviderDatum<D, T = ProvidedDataTypes> {
     // The account from which this data was gained
     account?: string;
     // An API host from where the data was gained
-    url?: string;
+    hostname?: string;
     // The specific file from which the data was extracted
     source: string;
     // A timestamp that is associated with this specific datapoint. For
