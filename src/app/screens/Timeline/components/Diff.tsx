@@ -62,7 +62,7 @@ class Diff extends PureComponent<Props, State> {
 
     fetchDiff = async (): Promise<void> => {
         this.setState({ diff: null });
-        const diff = await Repository.diff(this.props.commit.oid) as DiffResult<ExtractedDataDiff>[];
+        const diff = await Repository.diff(this.props.commit?.oid) as DiffResult<ExtractedDataDiff>[];
         this.setState({ diff: this.filterAndSortExtractedData(diff) });
     }
 
@@ -85,8 +85,6 @@ class Diff extends PureComponent<Props, State> {
     render(): JSX.Element {
         const diff = this.props.diff || this.state.diff;
         const { commit } = this.props;
-        const meta = convertMetaToObject(commit.message);
-        console.log(meta);
 
         if (!diff) {
             return (
@@ -95,6 +93,8 @@ class Diff extends PureComponent<Props, State> {
                 </RightSideOverlay>
             );
         }
+
+        const meta = convertMetaToObject(commit?.message);
 
         return (
             <RightSideOverlay>

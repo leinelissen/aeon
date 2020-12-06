@@ -23,8 +23,6 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
         setLoading(false);
     }, [selectedAccount]);
 
-    console.log(selectedAccount);
-
     return (
         <RightSideOverlay>
             {selectedAccount && (

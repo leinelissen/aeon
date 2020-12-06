@@ -35,7 +35,7 @@ function Graph(): JSX.Element {
 
     // Assign state for hovered nodes and all data
     const [hoveredNode, setHoveredNode] = useState<HoveredNode>(null);
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(null);
 
     /**
      * Handle a mouseover on one of the Cytoscape node elements
@@ -154,7 +154,9 @@ function Graph(): JSX.Element {
         return () => window.removeEventListener('resize', debouncedHandler);
     });
 
-    if(data && !Object.keys(data).length) {
+    // If there is not data to display, render a view imploring the user to
+    // start adding accounts
+    if (data && !data.length) {
         return <NoData />;
     }
 
