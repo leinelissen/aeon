@@ -13,6 +13,7 @@ import { Dropdown, Label, TextInput } from 'app/components/Input';
 import { InitOptionalParameters } from 'main/providers/types';
 import isValidUrl from 'app/utilities/isValidUrl';
 import { useHistory, useLocation } from 'react-router-dom';
+import Tour from 'app/components/Tour';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
@@ -74,7 +75,7 @@ function NewAccountModal(): JSX.Element {
     
     return (
         <>
-            <Button fullWidth icon={faPlus} onClick={openModal}>
+            <Button fullWidth icon={faPlus} onClick={openModal} data-tour="accounts-create-account">
                 Add new account
             </Button>
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
@@ -130,6 +131,7 @@ function NewAccountModal(): JSX.Element {
                         </Margin>
                     ))}
                 </ModalMenu>
+                <Tour tour="/screen/accounts/new-account" />
             </Modal>
         </>
     );

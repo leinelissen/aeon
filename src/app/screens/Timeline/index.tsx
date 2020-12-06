@@ -6,7 +6,6 @@ import Diff from './components/Diff';
 import Loading from 'app/components/Loading';
 import { RepositoryEvents, Commit as CommitType } from 'main/lib/repository/types';
 import { IpcRendererEvent } from 'electron';
-import TutorialOverlay from './components/TutorialOverlay';
 import { State as AppState } from 'app/store';
 import { useHistory, useParams } from 'react-router-dom';
 import { RouteProps } from '../types';
@@ -14,6 +13,7 @@ import { History } from 'history';
 import { List, PanelGrid } from 'app/components/PanelGrid';
 import { connect } from 'react-redux';
 import NoData from '../../components/NoData';
+import Tour from 'app/components/Tour';
 
 interface State {
     log: CommitType[];
@@ -100,34 +100,37 @@ class Timeline extends Component<Props, State> {
             : log.find(d => d.oid === commitHash);
 
         return (
-            <PanelGrid columns={2} noTopPadding> 
-                <List>
-                    <TimelineLine />
-                    <CommitContainer>
-                        {newCommits.length ? 
-                            <Commit
-                                entry={newCommits[0]}
-                                active={'new-commit' === commitHash}
-                                onClick={this.handleClick}
-                            />
-                            : null}
-                        {log.map((entry, i) => (
-                            <Commit
-                                key={entry.oid}
-                                entry={entry}
-                                onClick={this.handleClick}
-                                active={entry.oid === commitHash}
-                                latestCommit={i === 0}
-                                data-telemetry-id="timeline-view-commit"
-                            />
-                        ))}
-                    </CommitContainer>
-                </List>
-                <List topMargin>
-                    <Diff commit={selectedTree} diff={newCommits.length && commitHash === 'new-commit' && newCommits[0].diff} />
-                </List>
-                <TutorialOverlay />
-            </PanelGrid>
+            <>
+                <PanelGrid columns={2} noTopPadding> 
+                    <List>
+                        <TimelineLine />
+                        <CommitContainer data-tour="timeline-commits-list">
+                            {newCommits.length ? 
+                                <Commit
+                                    entry={newCommits[0]}
+                                    active={'new-commit' === commitHash}
+                                    onClick={this.handleClick}
+                                />
+                                : null}
+                            {log.map((entry, i) => (
+                                <Commit
+                                    key={entry.oid}
+                                    entry={entry}
+                                    onClick={this.handleClick}
+                                    active={entry.oid === commitHash}
+                                    latestCommit={i === 0}
+                                    data-telemetry-id="timeline-view-commit"
+                                    data-tour={i === 0 ? 'timeline-first-commit' : undefined}
+                                />
+                            ))}
+                        </CommitContainer>
+                    </List>
+                    <List topMargin>
+                        <Diff commit={selectedTree} diff={newCommits.length && commitHash === 'new-commit' && newCommits[0].diff} />
+                    </List>
+                </PanelGrid>
+                <Tour tour="/screen/timeline" />
+            </>
         );
     }
 }

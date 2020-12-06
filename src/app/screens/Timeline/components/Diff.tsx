@@ -86,7 +86,7 @@ class Diff extends PureComponent<Props, State> {
         const diff = this.props.diff || this.state.diff;
         const { commit } = this.props;
 
-        if (!diff) {
+        if (!diff || !commit) {
             return (
                 <RightSideOverlay>
                     <Loading />
@@ -97,7 +97,7 @@ class Diff extends PureComponent<Props, State> {
         const meta = convertMetaToObject(commit?.message);
 
         return (
-            <RightSideOverlay>
+            <RightSideOverlay data-tour="timeline-diff-container">
                 <>
                     <Section>
                         <H2>
@@ -107,7 +107,7 @@ class Diff extends PureComponent<Props, State> {
                             </PullContainer>
                         </H2>
                     </Section>
-                    <Section>
+                    <Section data-tour="timeline-diff-info">
                         <PullContainer verticalAlign>
                             <FontAwesomeIcon icon={faPlus} />
                             <MarginLeft>Committed {formatDistanceToNow(new Date(commit.author.when))} ago</MarginLeft>
@@ -129,7 +129,7 @@ class Diff extends PureComponent<Props, State> {
                             <MarginLeft>{meta.url}</MarginLeft>
                         </PullContainer>}
                     </Section>
-                    <CodeRectifier>
+                    <CodeRectifier data-tour="timeline-diff-data">
                         {(diff.added.length || diff.updated.length || diff.deleted.length) ?
                             <Section smallPadding>
                                 {diff.added.length ? (

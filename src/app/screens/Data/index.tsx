@@ -9,7 +9,6 @@ import {
     ClickableDataPoint,
 } from './styles';
 import DatumOverlay from './components/DatumOverlay';
-import TutorialOverlay from './components/TutorialOverlay';
 import { GroupedData, DeletedData } from './types';
 import CreateNewCommit from './components/CreateNewCommit';
 import { RouteProps } from '../types';
@@ -17,6 +16,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import type { History} from 'history';
 import { List, PanelGrid, RowHeading } from 'app/components/PanelGrid';
 import NoData from 'app/components/NoData';
+import Tour from 'app/components/Tour';
 
 interface State {
     // The data that is extracted from the commit
@@ -129,7 +129,7 @@ class Data extends Component<Props, State> {
 
         return (
             <PanelGrid>
-                <List>
+                <List data-tour="data-categories-list">
                     <RowHeading>Categories</RowHeading>
                     {Object.values(ProvidedDataTypes).map((key) => (
                         <ClickableCategory
@@ -140,11 +140,12 @@ class Data extends Component<Props, State> {
                             disabled={!(key in groupedData)}
                             deleted={deletedData[key].length > 0}
                             onKeyUp={this.handleKeyUp}
+                            data-tour="data-category-button"
                             data-telemetry-id={`new-commit-select-category-${key}`}
                         />
                     ))}
                 </List>
-                <List>
+                <List data-tour="data-data-points-list">
                     <RowHeading>Data Points</RowHeading>
                     {category && groupedData[category].map((datum, index) => (
                         <ClickableDataPoint
@@ -155,6 +156,7 @@ class Data extends Component<Props, State> {
                             key={`${datum.type}-${index}`} 
                             deleted={deletedData[category].includes(index)}
                             onKeyUp={this.handleKeyUp}
+                            data-tour="data-data-point-button"
                             data-telemetry-id={`new-commit-select-data-point-${index}`}
                         />
                     ))}
@@ -166,7 +168,7 @@ class Data extends Component<Props, State> {
                     />
                 </List>
                 <CreateNewCommit isModalOpen={false} groupedData={groupedData} deletedData={deletedData} />
-                <TutorialOverlay />
+                <Tour tour="/screen/data" />
             </PanelGrid>
         );
     }

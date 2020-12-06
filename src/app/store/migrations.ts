@@ -29,6 +29,15 @@ const migrations: MigrationManifest = {
             ...rest,
             accounts: requests,
         }
+    },
+    8: (state) => {
+        return {
+            ...state,
+            onboarding: {
+                initialisation: false,
+                tour: [],
+            }
+        }
     }
 }
 

@@ -79,6 +79,7 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
     const { 
         onClose: handleClose,
         children,
+        ...otherProps
     } = props;
 
     return (
@@ -88,7 +89,7 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
         >
             {children => children && 
                 (props =>
-                    <Container style={props}>
+                    <Container style={props} {...otherProps}>
                         <InnerContainer>
                             {handleClose ? 
                                 <CloseButton onClick={handleClose}>

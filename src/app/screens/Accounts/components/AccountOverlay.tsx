@@ -24,7 +24,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
     }, [selectedAccount]);
 
     return (
-        <RightSideOverlay>
+        <RightSideOverlay data-tour="accounts-account-overlay">
             {selectedAccount && (
                 <>
                     <Section>
@@ -96,7 +96,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                             </Button>
                         </Section>
                         : 
-                        <Section>
+                        <Section data-tour="accounts-start-data-request">
                             <p>If you would like to retrieve your data, use the button below to start a new data request.</p>
                             <p>When you click the button, a new window will appear, in which you will asked to enter your credentials. Aeon does not store any of your credentials. Rather, the window is used to perform actions on your behalf.</p>
                             <Button

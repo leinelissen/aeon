@@ -38,7 +38,7 @@ export type State = ReturnType<typeof rootReducer>;
 const persistConfig: PersistConfig<State> = {
     key: 'app_store',
     storage: ElectronStorage(),
-    version: 7,
+    version: 8,
     migrate: createMigrate(migrations),
     serialize: false,
     deserialize: false,

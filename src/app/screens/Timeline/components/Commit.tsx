@@ -91,10 +91,10 @@ class Commit extends Component<Props> {
     }
 
     render(): JSX.Element {
-        const { entry, active, latestCommit } = this.props;
+        const { entry, active, latestCommit, onClick, ...props } = this.props;
 
         return (
-            <StyledCommit active={active} onClick={this.handleClick}>
+            <StyledCommit active={active} onClick={this.handleClick} {...props}>
                 <Dot active={active} />
                 {entry.message.split('\n')[0]}
                 {latestCommit && <PullRight><Badge>Current Identity</Badge></PullRight>}

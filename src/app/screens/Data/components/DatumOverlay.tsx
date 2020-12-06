@@ -35,7 +35,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
     }, [history, category]);
 
     return (
-        <RightSideOverlay onClose={handleClose}>
+        <RightSideOverlay onClose={handleClose} data-tour="data-datum-overlay">
             {datum && (
                 <>
                     <Section>
@@ -127,6 +127,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
                             fullWidth
                             onClick={handleDelete}
                             backgroundColor={theme.colors.red}
+                            data-tour="data-delete-datum-button"
                             data-telemetry-id="datum-overlay-delete-datapoint"
                         >
                             Delete this data point

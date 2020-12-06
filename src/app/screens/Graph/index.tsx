@@ -14,6 +14,7 @@ import style, { Container, ResetButton, Tooltip } from './style';
 import { faUndo } from 'app/assets/fa-light';
 import Loading from 'app/components/Loading';
 import NoData from 'app/components/NoData';
+import Tour from 'app/components/Tour';
 
 type HoveredNode = {
     position: Position;
@@ -162,8 +163,13 @@ function Graph(): JSX.Element {
 
     return (
         <>
-            <Container ref={container} isHovered={hoveredNode && hoveredNode.type === 'datum'} />
+            <Container
+                ref={container}
+                isHovered={hoveredNode && hoveredNode.type === 'datum'}
+                data-tour="graph-container" 
+            />
             {!data && <Loading />}
+            {data && <Tour tour="/screen/graph" />}
             {hoveredNode && 
                 <Tooltip top={hoveredNode.position.y} left={hoveredNode.position.x}>
                     {hoveredNode.label}
