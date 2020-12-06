@@ -11,7 +11,7 @@ body {
     font-size: 15px;
     /* background-color: white; */
     color: #000000;
-    line-height: 2;
+    line-height: 1.8;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
 }

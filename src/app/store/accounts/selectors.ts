@@ -8,9 +8,9 @@ import { State, useAppDispatch } from '..';
 import { fetchAvailableProviders, fetchProviderAccounts } from './actions';
 
 type RequestState = {
-    accounts: State['requests']['all']
-    map: State['requests']['byKey']
-    isLoading: State['requests']['isLoading']['requests'];
+    accounts: State['accounts']['all']
+    map: State['accounts']['byKey']
+    isLoading: State['accounts']['isLoading']['requests'];
 }
 
 /**

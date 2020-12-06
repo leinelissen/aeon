@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import Commit, { TimelineLine } from './components/Commit';
 import Diff from './components/Diff';
 import Loading from 'app/components/Loading';
-import Providers from 'app/utilities/Providers';
 import { RepositoryEvents, Commit as CommitType } from 'main/lib/repository/types';
 import { IpcRendererEvent } from 'electron';
 import TutorialOverlay from './components/TutorialOverlay';
@@ -14,6 +13,7 @@ import { RouteProps } from '../types';
 import { History } from 'history';
 import { List, PanelGrid } from 'app/components/PanelGrid';
 import { connect } from 'react-redux';
+import NoData from '../../components/NoData';
 
 interface State {
     log: CommitType[];
@@ -40,7 +40,7 @@ const CommitContainer = styled.div`
 
 class Timeline extends Component<Props, State> {
     state: State = {
-        log: [],
+        log: null,
         updating: false,
     };
 
@@ -83,26 +83,16 @@ class Timeline extends Component<Props, State> {
         // this.setState({ selectedCommit: hash });
     }
 
-    handleRefresh = async (): Promise<void> => {
-        this.setState({ updating: true });
-        await Providers.refresh().catch(null);
-        this.setState({ updating: false });
-        this.fetchLog();
-    }
-
-    handleDispatch = async (): Promise<void> => {
-        this.setState({ updating: true });
-        await Providers.dispatchDataRequest('instagram').catch(null);
-        this.setState({ updating: false });
-        this.fetchLog();
-    }
-
     render(): JSX.Element {
         const { log } = this.state;
         const { params: { commitHash }, newCommits } = this.props;
-        
-        if (!log.length || !commitHash) {
+
+        if (!log) {
             return <Loading />;
+        }
+        
+        if (log.length <= 1) {
+            return <NoData />;
         }
         
         const selectedTree = commitHash === 'new-commit'

@@ -16,6 +16,7 @@ import { RouteProps } from '../types';
 import { useHistory, useParams } from 'react-router-dom';
 import type { History} from 'history';
 import { List, PanelGrid, RowHeading } from 'app/components/PanelGrid';
+import NoData from 'app/components/NoData';
 
 interface State {
     // The data that is extracted from the commit
@@ -120,6 +121,10 @@ class Data extends Component<Props, State> {
 
         if (!groupedData) {
             return <Loading />;
+        }
+
+        if (!Object.keys(groupedData).length) {
+            return <NoData />;
         }
 
         return (

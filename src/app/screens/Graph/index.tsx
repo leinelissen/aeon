@@ -12,6 +12,8 @@ import DatumOverlay from '../Data/components/DatumOverlay';
 import { RouteProps } from '../types';
 import style, { Container, ResetButton, Tooltip } from './style';
 import { faUndo } from 'app/assets/fa-light';
+import Loading from 'app/components/Loading';
+import NoData from 'app/components/NoData';
 
 type HoveredNode = {
     position: Position;
@@ -152,9 +154,14 @@ function Graph(): JSX.Element {
         return () => window.removeEventListener('resize', debouncedHandler);
     });
 
+    if(data && !Object.keys(data).length) {
+        return <NoData />;
+    }
+
     return (
         <>
             <Container ref={container} isHovered={hoveredNode && hoveredNode.type === 'datum'} />
+            {!data && <Loading />}
             {hoveredNode && 
                 <Tooltip top={hoveredNode.position.y} left={hoveredNode.position.x}>
                     {hoveredNode.label}

@@ -12,7 +12,7 @@ import Providers from 'app/utilities/Providers';
 import { Dropdown, Label, TextInput } from 'app/components/Input';
 import { InitOptionalParameters } from 'main/providers/types';
 import isValidUrl from 'app/utilities/isValidUrl';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
@@ -45,6 +45,7 @@ function NewAccountButton({ client, children, onComplete, optionalParameters, ..
 }
 
 function NewAccountModal(): JSX.Element {
+    const location = useLocation();
     const history = useHistory();
     const allProviders = useSelector((state: State) => state.accounts.allProviders);
     const availableProviders = useSelector((state: State) => state.accounts.availableProviders);
@@ -52,9 +53,15 @@ function NewAccountModal(): JSX.Element {
     const [modalIsOpen, setModal] = useState(false);
     const [selectedEmail, setSelectedEmail] = useState(emailAccounts.length ? emailAccounts[0] : '');
     const [selectedUrl, setSelectedUrl] = useState('');
-    const openModal = useCallback(() => setModal(true), [setModal]);
-    const closeModal = useCallback(() => setModal(false), [setModal]);
+    const closeModal = useCallback(() => history.push(location.pathname), [location]);
+    const openModal = useCallback(() => history.push(location.pathname + '?create-new-account'), [location]);
     const handleUrlChange = useCallback((event) => setSelectedUrl(event.target.value), [setSelectedUrl]);
+    
+    // Make whether the modal is open dependent on the query parameters
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        setModal(params.has('create-new-account'));
+    }, [location, setModal]);
     
     // Redirect a user to the Create New Email Account modal, when they select
     // the option from the email accounts dropdown
