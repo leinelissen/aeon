@@ -13,10 +13,16 @@ import { Provider,
     EmailDataRequestProvider, 
     ProviderUnion, 
     OpenDataRightsProvider 
-} from "./types/Provider";
-import { ProviderEvents } from "./types/Events";
+} from './types/Provider';
+import {
+    AccountCreated,
+    DataRequestCompleted,
+    DataRequestDispatched,
+    ProviderEvents, 
+    UpdateComplete
+} from './types/Events';
 
-import Notifications from 'main/lib/notifications';
+
 import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
 import EmailManager from 'main/email-client';
@@ -196,7 +202,7 @@ class ProviderManager extends EventEmitter2 {
         this.instances.set(key, instance);
 
         // Emit event
-        this.emit(ProviderEvents.ACCOUNT_CREATED);
+        this.emit(ProviderEvents.ACCOUNT_CREATED, newAccount as AccountCreated);
 
         return key;
     }
@@ -230,13 +236,15 @@ class ProviderManager extends EventEmitter2 {
         }
 
         // Alternatively, we save the files and attempt to commit
-        const changedFiles = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`, ProviderUpdateType.UPDATE);
+        const commit = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`, ProviderUpdateType.UPDATE);
         
         // GUARD: Only log stuff if new data is found
-        if (changedFiles) {
-            console.log('Completed update for ', key);
-            Notifications.success(`The update for ${key} was successfully completed. ${changedFiles} files were changed.`);
-            this.emit(ProviderEvents.UPDATE_COMPLETE);
+        if (commit.changedFiles) {
+            const event: UpdateComplete = {
+                ...this.accounts.get(key),
+                ...commit,
+            }
+            this.emit(ProviderEvents.UPDATE_COMPLETE, event);
         }
     }
 
@@ -248,14 +256,16 @@ class ProviderManager extends EventEmitter2 {
         key: string, 
         message: string,
         updateType: ProviderUpdateType
-    ): Promise<number> => {
+    ): Promise<{ changedFiles: number; commitHash: string; }> => {
         console.log(`Saving and committing files for ${key}...`);
         const account = this.accounts.get(key);
 
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
             // Prepend the supplied path with the key from the specific service
-            const location = `${account.provider}/${account.account}/${file.filepath}`;
+            const location = account.hostname
+                ? `${account.provider}/${account.hostname}/${account.account}/${file.filepath}`
+                : `${account.provider}/${account.account}/${file.filepath}`;
 
             // Save the files to disk, and add the files
             if (file.data) {
@@ -299,9 +309,12 @@ class ProviderManager extends EventEmitter2 {
 
         // Acutally create the commit
         console.log('Creating commit: ', message);
-        await this.repository.commit(augmentedMessage);
+        const commit = await this.repository.commit(augmentedMessage);
 
-        return changedFiles.length;
+        return {
+            changedFiles: changedFiles.length,
+            commitHash: commit,
+        };
     }
 
     /**
@@ -341,7 +354,7 @@ class ProviderManager extends EventEmitter2 {
         if (requestId) account.status.requestId = requestId;
         this.accounts.set(key, account);
 
-        this.emit(ProviderEvents.DATA_REQUEST_DISPATCHED);
+        this.emit(ProviderEvents.DATA_REQUEST_DISPATCHED, account as DataRequestDispatched);
         console.log('Dispatched data request for ', key);
     }
 
@@ -399,14 +412,19 @@ class ProviderManager extends EventEmitter2 {
                     ? path.join(REPOSITORY_PATH, account.provider, account.hostname,  account.account)
                     : path.join(REPOSITORY_PATH, account.provider, account.account);
                 const files = await instance.parseDataRequest(dirPath, account.status.requestId);
-                const changedFiles = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
-                Notifications.success(`The data request for ${key} was successfully completed. ${changedFiles} files were changed.`);
+                const commit = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
                 
                 // Set the flag for completion
                 account.status.lastCheck = new Date().toString();
                 account.status.completed = new Date().toString();
                 this.accounts.set(key, account);
-                this.emit(ProviderEvents.DATA_REQUEST_COMPLETED);
+
+                // Emit an event for completion
+                const event: DataRequestCompleted = {
+                    ...account,
+                    ...commit,
+                }
+                this.emit(ProviderEvents.DATA_REQUEST_COMPLETED, event);
 
                 return;
             }
@@ -417,8 +435,6 @@ class ProviderManager extends EventEmitter2 {
 
         // Also dispatch regular update requests
         await(Promise.allSettled([dataRequests, await this.updateAll()]));
-
-        this.emit(ProviderEvents.DATA_REQUEST_COMPLETED);
         this.lastDataRequestCheck = new Date();
         console.log('Check completed.')
     }

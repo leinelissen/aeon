@@ -26,25 +26,29 @@ export type CheckingDataRequests = Record<string, never>;
 
 export interface DataRequestActionRequired {
     provider: string;
-    account: string;
-    changedFiles: number;
+    account?: string;
     hostname?: string;
     url?: string;
     status: DataRequestStatus;
 }
 
-export type DataRequestCompleted = DataRequestActionRequired;
+export interface DataRequestCompleted extends DataRequestActionRequired {
+    changedFiles: number;
+    commitHash: string;
+}
 export type DataRequestDispatched = DataRequestActionRequired;
 
 export interface UpdateComplete {
     provider: string;
-    account: string;
-    changedFiles: string;
+    account?: string;
+    url?: string;
+    changedFiles: number;
+    commitHash: string;
 }
 
 export interface AccountCreated {
     provider: string;
-    account: string;
+    account?: string;
     hostname?: string;
     url?: string;
 }

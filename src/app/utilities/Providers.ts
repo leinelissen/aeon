@@ -12,7 +12,7 @@ type DataRequestReturnType = {
     accounts: Record<string, InitialisedProvider>;
 }
 
-type SubscriptionHandler = (event: IpcRendererEvent, type: ProviderEvents) => void;
+type SubscriptionHandler = (event: IpcRendererEvent, type: ProviderEvents, ...props: unknown[]) => void;
 
 class Providers {
     static subscribe(handler: SubscriptionHandler): void {

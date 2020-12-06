@@ -30,23 +30,19 @@ const channelWhitelist = ['repository', 'providers', 'notifications', 'email' ];
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld(
     'api', {
-        // eslint-disable-next-line
-        send: (channel: string, ...args: any[]) => {
+        send: (channel: string, ...args: unknown[]) => {
             // whitelist channels
             if (channelWhitelist.includes(channel)) {
                 ipcRenderer.send(channel, ...args);
             }
         },
-        // eslint-disable-next-line
-        invoke: (channel: string, ...args: any[]) => {
-            // whitelist channels
+        invoke: (channel: string, ...args: unknown[]) => {
             if (channelWhitelist.includes(channel)) {
                 return ipcRenderer.invoke(channel, ...args);
             }
         },
-        on: (channel: string, func: () => void) => {
+        on: (channel: string, func: (...props: unknown[]) => void) => {
             if (channelWhitelist.includes(channel)) {
-                // Deliberately strip event as it includes `sender` 
                 return ipcRenderer.on(channel, func);
             }
         },

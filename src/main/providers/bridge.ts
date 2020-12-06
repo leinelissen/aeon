@@ -17,12 +17,12 @@ class ProviderBridge {
         ipcMain.handle(channelName, this.handleMessage);
 
         // Subscribe to manager-initated events
-        this.providers.addListener('*', function() {
+        this.providers.addListener('*', function(...props) {
             // Log the event
             console.log('[PROVIDER-EVENT]: ', this.event);
 
             // And pass them on to the app
-            ProviderBridge.send(this.event);
+            ProviderBridge.send(this.event, ...props);
         });
     }
 
@@ -73,9 +73,9 @@ class ProviderBridge {
      * Send an event to the renderer
      * @param event The event to send out
      */
-    public static send(event: ProviderEvents): void {
+    public static send(event: ProviderEvents, ...props: unknown[]): void {
         const window = WindowStore.getInstance().window;
-        window?.webContents.send(channelName, event);
+        window?.webContents.send(channelName, event, ...props);
     }
 }
 

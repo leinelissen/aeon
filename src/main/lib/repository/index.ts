@@ -271,7 +271,7 @@ class Repository extends EventEmitter {
         );
     }
     
-    public async commit(message: string): Promise<void> {
+    public async commit(message: string): Promise<string> {
         // Retrieve and write new index
         await this.index.write();
         const oid = await this.index.writeTree();
@@ -281,13 +281,15 @@ class Repository extends EventEmitter {
         const parent = await this.repository.getCommit(head);
 
         // Create commit using new index
-        await this.repository.createCommit('HEAD', this.author, this.author, message, oid, [parent]);
+        const commit = await this.repository.createCommit('HEAD', this.author, this.author, message, oid, [parent]);
 
         // Refresh index, just in case
         this.index = await this.repository.refreshIndex();
 
         // Notify app of new commit
         RepositoryBridge.send(RepositoryEvents.NEW_COMMIT);
+
+        return commit.tostrS();
     }
 
     public status(): Promise<StatusFile[]> {
