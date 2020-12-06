@@ -28,6 +28,7 @@ const StyledButtonStyles = css<ButtonProps>`
     margin: 5px 0;
     border: 0;
     padding: 0 16px;
+    text-transform: capitalize;
 
     &:hover&:not(:disabled) {
         cursor: pointer;

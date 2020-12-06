@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { faPlus } from 'app/assets/fa-light';
 import Button from 'app/components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,6 +12,7 @@ import Providers from 'app/utilities/Providers';
 import { Dropdown, Label, TextInput } from 'app/components/Input';
 import { InitOptionalParameters } from 'main/providers/types';
 import isValidUrl from 'app/utilities/isValidUrl';
+import { useHistory } from 'react-router-dom';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
@@ -44,6 +45,7 @@ function NewAccountButton({ client, children, onComplete, optionalParameters, ..
 }
 
 function NewAccountModal(): JSX.Element {
+    const history = useHistory();
     const allProviders = useSelector((state: State) => state.requests.allProviders);
     const availableProviders = useSelector((state: State) => state.requests.availableProviders);
     const emailAccounts = useSelector((state: State) => state.email.accounts.all);
@@ -54,7 +56,14 @@ function NewAccountModal(): JSX.Element {
     const closeModal = useCallback(() => setModal(false), [setModal]);
     const handleUrlChange = useCallback((event) => setSelectedUrl(event.target.value), [setSelectedUrl]);
     
-    console.log(availableProviders['open-data-rights'].requiresUrl && !isValidUrl(selectedUrl), isValidUrl(selectedUrl), selectedUrl);
+    // Redirect a user to the Create New Email Account modal, when they select
+    // the option from the email accounts dropdown
+    useEffect(() => {
+        if (selectedEmail === 'Create New Email Account...') {
+            history.push('/settings/email-accounts?create-new-email-account');
+            setSelectedEmail(emailAccounts.length ? emailAccounts[0] : '');
+        }
+    }, [selectedEmail, setSelectedEmail, history]);
     
     return (
         <>
@@ -63,16 +72,17 @@ function NewAccountModal(): JSX.Element {
             </Button>
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
                 <ModalMenu labels={allProviders.map((key) =>
-                    <PullContainer verticalAlign key={key}><FontAwesomeIcon icon={Providers.getIcon(key)} /><MarginLeft>{key}</MarginLeft></PullContainer>
+                    <PullContainer verticalAlign key={key}><FontAwesomeIcon icon={Providers.getIcon(key)} /><MarginLeft>{key.replace(/(-|_)/g, ' ')}</MarginLeft></PullContainer>
                 )}>
                     {allProviders.map((key) => (
                         <Margin key={key}>
                             <p>By adding a new account for {key}, you are able to retrieve your data from them.</p>
+                            <p>When you create a new account, a window will pop up asking for your credentials. Aeon will never store your credentials. Rather, when you log in, Aeon can hijack the window to perform actions on your behalf. These actions are limited to doing data requests for you.</p>
                             {availableProviders[key].requiresEmail &&
                                 <>
                                     <p>In order to use this provider, you must link an email address to Aeon. </p>
                                     <Dropdown 
-                                        options={emailAccounts}
+                                        options={[...emailAccounts, 'Create New Email Account...']}
                                         label="Email Account" 
                                         value={selectedEmail}
                                         onSelect={setSelectedEmail}
@@ -107,7 +117,7 @@ function NewAccountModal(): JSX.Element {
                                         || availableProviders[key].requiresUrl && !isValidUrl(selectedUrl)
                                     }
                                 >
-                                    Add new account
+                                    Add new {key.replace(/(-|_)/g, ' ')} account
                                 </NewAccountButton>
                             </PullCenter>
                         </Margin>

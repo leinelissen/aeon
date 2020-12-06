@@ -99,7 +99,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
                                 </span>
                             </DetailListItem>
                         }
-                        <DetailListItem>
+                        {/* <DetailListItem>
                             <span>
                                 <FontAwesomeIcon icon={faHashtag} fixedWidth />
                             </span>
@@ -114,7 +114,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
                             <span>
                                 Data is visisble
                             </span>
-                        </DetailListItem>
+                        </DetailListItem> */}
                     </Section>
                     <Section>
                         <code style={{ textTransform: 'uppercase' }}>

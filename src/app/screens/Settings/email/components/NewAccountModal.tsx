@@ -7,7 +7,8 @@ import ModalMenu from 'app/components/Modal/Menu';
 import { Margin, MarginLeft, PullCenter, PullContainer } from 'app/components/Utility';
 import { useAppDispatch } from 'app/store';
 import { createEmailAccount } from 'app/store/email/actions';
-import React, { PropsWithChildren, useCallback, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
@@ -37,9 +38,15 @@ function NewAccountButton({ client, children, onComplete, ...props }: NewAccount
 }
 
 function NewAccountModal(): JSX.Element {
+    const location = useLocation();
+    const history = useHistory();
     const [modalIsOpen, setModal] = useState(false);
-    const openModal = useCallback(() => setModal(true), [setModal]);
-    const closeModal = useCallback(() => setModal(false), [setModal]);
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        setModal(params.has('create-new-email-account'));
+    }, [location, setModal]);
+    const closeModal = useCallback(() => history.push(location.pathname), [location]);
+    const openModal = useCallback(() => history.push(location.pathname + '?create-new-email-account'), [location]);
     
     return (
         <>
@@ -50,7 +57,7 @@ function NewAccountModal(): JSX.Element {
                     // <PullContainer verticalAlign key='smtp'><FontAwesomeIcon icon={faEnvelope} /><MarginLeft>SMTP</MarginLeft></PullContainer>,
                 ]}>
                     <Margin>
-                        <p>By connecting your Gmail account, Aeon can send and check emails on your behalf. This makes it easier to submit and check on data requests. When clicking the button below, a browser window will open that allows you to connect to a particular Gmail account. </p>
+                        <p>By connecting your Gmail account, Aeon can send and check emails on your behalf. This makes it easier to submit and check on data requests. When clicking the button below, a browser window will open that allows you to connect to a particular Gmail account. Aeon does not store any credentials for your email accounts. Rather, the Gmail API is used to do actions on your behalf. You can revoke this access at any time.</p>
                         <PullCenter><NewAccountButton client='gmail' onComplete={closeModal}>Add new Gmail account</NewAccountButton></PullCenter>
                     </Margin>
                     {/* <Margin>SMTP</Margin> */}

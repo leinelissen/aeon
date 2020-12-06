@@ -15,6 +15,7 @@ const MenuContainer = styled.div<{ active?: boolean; }>`
         border-bottom: 3px solid transparent;
         margin-right: 16px;
         color: ${theme.colors.grey.dark};
+        text-transform: capitalize;
 
         &.active {
             border-color: ${theme.colors.black};

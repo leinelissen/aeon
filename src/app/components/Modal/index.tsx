@@ -24,13 +24,13 @@ const Container = styled.div`
     top: 0;
     height: 100vh;
     width: 100vw;
-    background-color: #eeeeeecc;
+    background-color: #eeeeeef0;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 10vh 0;
     z-index: 5000;
-    backdrop-filter: blur(50px);
+    /* backdrop-filter: blur(50px); */
 `;
 
 const StyledDialog = styled.div`
@@ -45,7 +45,7 @@ const StyledDialog = styled.div`
     min-width: 50vw;
     min-height: 25h;
     max-height: 80vh;
-    max-width: 80vw;
+    max-width: 700px;
     padding-top: 32px;
     overflow-y: auto;
 `;

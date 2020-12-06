@@ -27,7 +27,6 @@ function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): 
         }
     }, [selectedAccount]);
 
-
     return (
         <>
             <SplitPanel>

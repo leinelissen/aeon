@@ -100,7 +100,7 @@ function ProviderOverlay({ selectedProvider }: Props): JSX.Element {
                         : 
                         <Section>
                             <p>If you would like to retrieve your data, use the button below to start a new data request.</p>
-                            <p><i>Note: you may be asked to confirm your password</i></p>
+                            <p>When you click the button, a new window will appear, in which you will asked to enter your credentials. Aeon does not store any of your credentials. Rather, the window is used to perform actions on your behalf.</p>
                             <Button
                                 fullWidth
                                 icon={faPlus}
