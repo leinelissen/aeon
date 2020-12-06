@@ -1,21 +1,33 @@
 import { differenceInDays } from 'date-fns';
-import Instagram from './instagram';
-import { ProviderFile, ProviderUpdateType, InitOptionalParameters } from './types';
-import { Provider, DataRequestProvider, InitialisedProvider, EmailDataRequestProvider, ProviderUnion, OpenDataRightsProvider } from "./types/Provider";
-import { ProviderEvents } from "./types/Events";
-import Repository, { REPOSITORY_PATH } from '../lib/repository';
-import Notifications from 'main/lib/notifications';
-import ProviderBridge from './bridge';
-import PersistedMap from 'main/lib/persisted-map';
-import store from 'main/store';
 import path from 'path';
 import crypto from 'crypto';
+import { EventEmitter2 } from 'eventemitter2';
+
+import { ProviderFile, 
+    ProviderUpdateType, 
+    InitOptionalParameters, 
+    InitialisedProvider 
+} from './types';
+import { Provider, 
+    DataRequestProvider, 
+    EmailDataRequestProvider, 
+    ProviderUnion, 
+    OpenDataRightsProvider 
+} from "./types/Provider";
+import { ProviderEvents } from "./types/Events";
+
+import Notifications from 'main/lib/notifications';
+import PersistedMap from 'main/lib/persisted-map';
+import store from 'main/store';
+import EmailManager from 'main/email-client';
+import Repository, { REPOSITORY_PATH } from '../lib/repository';
+import ProviderBridge from './bridge';
+
 import Facebook from './facebook';
 import LinkedIn from './linkedin';
 import Spotify from './spotify';
-import EmailManager from 'main/email-client';
+import Instagram from './instagram';
 import OpenDataRights from './open-data-rights';
-import { EventEmitter2 } from 'eventemitter2';
 
 export const providers: Array<ProviderUnion> = [
     Instagram,

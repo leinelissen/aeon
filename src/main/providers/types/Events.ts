@@ -41,3 +41,14 @@ export interface UpdateComplete {
     account: string;
     changedFiles: string;
 }
+
+export interface AccountCreated {
+    provider: string;
+    account: string;
+    hostname?: string;
+    url?: string;
+}
+
+export type AccountDeleted = AccountCreated;
+
+export type ProvidersReady = Record<string, never>;
