@@ -1,4 +1,6 @@
-import { ProviderCommands, ProviderEvents, InitialisedProvider, InitOptionalParameters } from 'main/providers/types';
+import { InitOptionalParameters } from 'main/providers/types';
+import { InitialisedProvider } from "main/providers/types/Provider";
+import { ProviderCommands, ProviderEvents } from "main/providers/types/Events";
 import { faFacebookF, faInstagram, faLinkedinIn, faSpotify, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faSquare } from 'app/assets/fa-light';
 import { IpcRendererEvent } from 'electron';

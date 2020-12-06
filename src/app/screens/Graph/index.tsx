@@ -5,7 +5,7 @@ import { debounce } from 'lodash-es';
 import cytoscape, { NodeSingular, Position } from 'cytoscape';
 import fcose from 'cytoscape-fcose';
 
-import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
+import { ProvidedDataTypes, ProviderDatum } from "main/providers/types/Data";
 import Repository from 'app/utilities/Repository';
 import calculateGraph from './calculateGraph';
 import DatumOverlay from '../Data/components/DatumOverlay';

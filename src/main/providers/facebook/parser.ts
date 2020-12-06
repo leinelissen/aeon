@@ -1,4 +1,4 @@
-import { EducationExperience, Employment, EventResponse, MobileDevice, OffSiteActivity, ProvidedDataTypes, ProviderParser, SearchQuery, VisitedPage } from '../types';
+import { EducationExperience, Employment, EventResponse, MobileDevice, OffSiteActivity, ProvidedDataTypes, ProviderParser, SearchQuery, VisitedPage } from "../types/Data";
 import path from 'path';
 
 const parsers: ProviderParser[] = [

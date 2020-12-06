@@ -1,4 +1,5 @@
-import { ProviderFile, DataRequestProvider } from '../types';
+import { ProviderFile } from '../types';
+import { DataRequestProvider } from "../types/Provider";
 import crypto from 'crypto';
 import path from 'path';
 import fetch from 'node-fetch';

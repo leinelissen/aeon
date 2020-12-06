@@ -1,5 +1,5 @@
 import { DiffResult, RepositoryCommands, RepositoryArguments, RepositoryEvents, Commit } from 'main/lib/repository/types';
-import { ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from "main/providers/types/Data";
 import type { StatusFile } from 'nodegit';
 import { IpcRendererEvent } from 'electron';
 

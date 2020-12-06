@@ -1,5 +1,5 @@
 import React, { useCallback, HTMLAttributes, PropsWithChildren } from 'react';
-import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
+import { ProvidedDataTypes, ProviderDatum } from "main/providers/types/Data";
 import styled, { css } from 'styled-components';
 import theme from 'app/styles/theme';
 import DataType from 'app/utilities/DataType';

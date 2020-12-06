@@ -6,7 +6,7 @@ import {
     Photo,
     PrivacySetting,
     PostSeen
-} from '../types';
+} from "../types/Data";
 import { parseISO } from 'date-fns';
 import { objectToKeyValueTransformer } from 'main/lib/map-object-to-key-value';
 import { REPOSITORY_PATH } from 'main/lib/repository';

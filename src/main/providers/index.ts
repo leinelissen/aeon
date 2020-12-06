@@ -1,6 +1,8 @@
 import { differenceInDays } from 'date-fns';
 import Instagram from './instagram';
-import { Provider, ProviderFile, DataRequestProvider, ProviderEvents, ProviderUpdateType, InitialisedProvider, EmailDataRequestProvider, ProviderUnion, InitOptionalParameters, OpenDataRightsProvider } from './types';
+import { ProviderFile, ProviderUpdateType, InitOptionalParameters } from './types';
+import { Provider, DataRequestProvider, InitialisedProvider, EmailDataRequestProvider, ProviderUnion, OpenDataRightsProvider } from "./types/Provider";
+import { ProviderEvents } from "./types/Events";
 import Repository, { REPOSITORY_PATH } from '../lib/repository';
 import Notifications from 'main/lib/notifications';
 import ProviderBridge from './bridge';

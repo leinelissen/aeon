@@ -8,7 +8,7 @@ import {
     LoginInstance,
     ProfilePicture,
     Session, Employment, EventResponse, VisitedPage, OffSiteActivity, EducationExperience, MobileDevice, RegistrationDate, PlayedSong
-} from 'main/providers/types';
+} from "main/providers/types/Data";
 import {
     IconDefinition,
     faSquare,

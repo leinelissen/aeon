@@ -1,5 +1,5 @@
 import Providers, { providers as availableProviders }  from '.';
-import { ProviderCommands, ProviderEvents } from './types';
+import { ProviderCommands, ProviderEvents } from "./types/Events";
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import WindowStore from 'main/lib/window-store';
 

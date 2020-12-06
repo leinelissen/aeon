@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import Button from 'app/components/Button';
-import { ProviderDatum, ProvidedDataTypes } from 'main/providers/types';
+import { ProviderDatum, ProvidedDataTypes } from "main/providers/types/Data";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCassetteTape, faClock, faHashtag, faEye, faLink, faUser } from 'app/assets/fa-light';
 import { H2 } from 'app/components/Typography';

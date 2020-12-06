@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
+import { ProvidedDataTypes, ProviderDatum } from "main/providers/types/Data";
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 import Repository from 'app/utilities/Repository';
 import Loading from 'app/components/Loading';

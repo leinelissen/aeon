@@ -16,7 +16,7 @@ import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
 import diffMapFunction from './utilities/diff-map';
 import generateParsedCommit from './utilities/generate-parsed-commit';
-import { ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from "main/providers/types/Data";
 import RepositoryBridge from './bridge';
 
 // Define a location where the repository will be saved

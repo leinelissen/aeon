@@ -1,120 +1,3 @@
-import { EmailClient } from 'main/email-client/types';
-
-export interface ProviderFile {
-    filepath: string;
-    data: Buffer | string;
-}
-
-export interface InitialisedProvider {
-    // The key for the provider that supplies the data
-    provider: string;
-    // The account from which the data emanates
-    account?: string;
-    // A URL that is associated with a provider that handles APIs
-    url?: string;
-    // A path- and URL-safe version of the URL
-    hostname?: string;
-    // A random hash which ensures that sessions are kept between various
-    // invocations of browser windows.
-    windowKey: string;
-    status: DataRequestStatus;
-}
-
-export abstract class Provider {
-    protected accountName?: string;
-    protected windowKey: string;
-    /** The key under which all files will be stored. Should be filesystem-safe
-     * (no spaces, all-lowercase) */
-    public static key: string;
-    /** Update the data that is retrieved by this Provider. Should return an
-     * object with all new files, so they can be saved to disk. Alternatively,
-     * should return false to indicate that no update was carried out. */
-    abstract update(): Promise<ProviderFile[]> | Promise<false>;
-    /** Initialise the provider. This function is called only when it is
-     * initialised for the first time during onboarding. The return boolean
-     * indicates whether the provider succeeded in initialising, ie. by logging
-     * into a particular service */
-    abstract initialise(accountName?: string): Promise<string>;
-    constructor(windowKey: string, accountName?: string) {
-        this.accountName = accountName;
-        this.windowKey = windowKey;
-    }
-}
-
-export interface DataRequestProvider extends Provider {
-    /** Dispatch a data request to this Provider. The difference between a
-     * regular update and a data request, is that it is asynchronous, and might
-     * take a couple hours or even days to complete.
-     * Optionall, this request may return a string or number that indicates some
-     * request identifier. This id is then reinserted into the other two methods */
-    dispatchDataRequest?(): Promise<void> | Promise<string | number>;
-    /** Check if the data request is already complete */
-    isDataRequestComplete?(identifier?: string | number): Promise<boolean>;
-    /** If the data request has been completed, download the resulting dump and
-     * parse it, so that it can be processed and saved to the repository */
-    parseDataRequest?(extractionPath: string, identifier?: string | number): Promise<ProviderFile[]>;
-}
-
-export abstract class DataRequestProvider extends Provider {
-    /** The amount of days that are required between successive data requests */
-    public static dataRequestIntervalDays: number;
-}
-
-export abstract class EmailDataRequestProvider extends DataRequestProvider {
-    protected email: EmailClient;
-    setEmailClient(email: EmailClient): void {
-        this.email = email;
-    }
-}
-
-export abstract class OpenDataRightsProvider extends DataRequestProvider {
-    protected url: string;
-    protected windowParams: {
-        key: string;
-        origin: string;
-    };
-    setUrl(url: string): void {
-        this.url = url;
-        this.windowParams = {
-            key: this.windowKey,
-            origin: url,
-        }
-    }
-}
-
-export type ProviderUnion = typeof DataRequestProvider | typeof Provider | typeof EmailDataRequestProvider;
-
-export interface DataRequestStatus {
-    // An ISO date describing when the request was dispatched
-    dispatched?: string;
-    // An ISO data describing when the request was completed
-    completed?: string;
-    // An ISO data describing when the request was last checked
-    lastCheck?: string;
-    // An optional identifier for the request
-    requestId?: string | number;
-}
-
-export enum ProviderCommands {
-    UPDATE,
-    UPDATE_ALL,
-    DISPATCH_DATA_REQUEST,
-    DISPATCH_DATA_REQUEST_TO_ALL,
-    REFRESH,
-    INITIALISE,
-    GET_ACCOUNTS,
-    GET_AVAILABLE_PROVIDERS
-}
-
-export enum ProviderEvents {
-    CHECKING_DATA_REQUESTS = 'checking_data_requests',
-    DATA_REQUEST_COMPLETED = 'data_request_completed',
-    DATA_REQUEST_DISPATCHED = 'data_request_dispatched',
-    UPDATE_COMPLETE = 'update_complete',
-    ACCOUNT_CREATED = 'account_created',
-    ACCOUNT_DELETED = 'account_deleted',
-    READY = 'ready'
-}
 
 export enum ProvidedDataTypes {
     // A email adress
@@ -208,7 +91,7 @@ export enum ProvidedDataTypes {
     // An inference about an individual
     INFERENCE = 'inference',
     // A song that has been played by the user
-    PLAYED_SONG = 'played_song',
+    PLAYED_SONG = 'played_song'
 }
 
 export interface ProviderDatum<D, T = ProvidedDataTypes> {
@@ -249,12 +132,12 @@ export type TelephoneNumber = ProviderDatum<string, ProvidedDataTypes.TELEPHONE_
 export type Device = ProviderDatum<string, ProvidedDataTypes.DEVICE>;
 export type Username = ProviderDatum<string, ProvidedDataTypes.USERNAME>;
 export type PlaceOfResidence = ProviderDatum<string, ProvidedDataTypes.PLACE_OF_RESIDENCE>;
-export type Address = ProviderDatum<{ street?: string; number?: number; state?: string; zipCode?: string }, ProvidedDataTypes.ADDRESS>;
+export type Address = ProviderDatum<{ street?: string; number?: number; state?: string; zipCode?: string; }, ProvidedDataTypes.ADDRESS>;
 export type Country = ProviderDatum<string, ProvidedDataTypes.COUNTRY>;
 export type Like = ProviderDatum<string, ProvidedDataTypes.LIKE>;
 export type LoginInstance = ProviderDatum<number, ProvidedDataTypes.LOGIN_INSTANCE>;
 export type LogOutInstance = ProviderDatum<unknown, ProvidedDataTypes.LOGOUT_INSTANCE>;
-export type Photo = ProviderDatum<{ url: string, description: string }, ProvidedDataTypes.PHOTO>;
+export type Photo = ProviderDatum<{ url: string; description: string; }, ProvidedDataTypes.PHOTO>;
 export type Message = ProviderDatum<string, ProvidedDataTypes.MESSAGE>;
 export type Gender = ProviderDatum<string, ProvidedDataTypes.GENDER>;
 export type ProfilePicture = ProviderDatum<string, ProvidedDataTypes.PROFILE_PICTURE>;
@@ -263,7 +146,7 @@ export type JoinDate = ProviderDatum<Date, ProvidedDataTypes.JOIN_DATE>;
 export type SearchQuery = ProviderDatum<string, ProvidedDataTypes.SEARCH_QUERY>;
 export type PostSeen = ProviderDatum<string, ProvidedDataTypes.POST_SEEN>;
 // eslint-disable-next-line
-export type PrivacySetting = ProviderDatum<{ key: string; value: any }, ProvidedDataTypes.PRIVACY_SETTING>;
+export type PrivacySetting = ProviderDatum<{ key: string; value: any; }, ProvidedDataTypes.PRIVACY_SETTING>;
 export type UploadedContact = ProviderDatum<unknown, ProvidedDataTypes.UPLOADED_CONTACT>;
 type SessionData = {
     cookie_name: string;
@@ -272,18 +155,18 @@ type SessionData = {
     timestamp: string;
     user_agent: string;
     device_id: string;
-}
+};
 export type Session = ProviderDatum<SessionData, ProvidedDataTypes.SESSION>;
 export type PeerGroup = ProviderDatum<string, ProvidedDataTypes.PEER_GROUP>;
 export type Employment = ProviderDatum<{ job_title: string; company: string; }, ProvidedDataTypes.EMPLOYMENT>;
-export type VisitedPage = ProviderDatum<{ name: string; uri?: string }, ProvidedDataTypes.VISITED_PAGE>;
+export type VisitedPage = ProviderDatum<{ name: string; uri?: string; }, ProvidedDataTypes.VISITED_PAGE>;
 export type OffSiteActivity = ProviderDatum<{ type?: string; website: string; }, ProvidedDataTypes.OFF_SITE_ACTIVITY>;
 export type EventResponse = ProviderDatum<{ name?: string; response?: string; }, ProvidedDataTypes.EVENT_RESPONSE>;
 export type Timezone = ProviderDatum<string, ProvidedDataTypes.TIMEZONE>;
 export type Currency = ProviderDatum<string, ProvidedDataTypes.CURRENCY>;
-export type EducationExperience = ProviderDatum<{ institution: string; graduated?: boolean; started_at?: Date; graduated_at?: Date, type?: string}, ProvidedDataTypes.EDUCATION_EXPERIENCE>;
+export type EducationExperience = ProviderDatum<{ institution: string; graduated?: boolean; started_at?: Date; graduated_at?: Date; type?: string; }, ProvidedDataTypes.EDUCATION_EXPERIENCE>;
 export type RegistrationDate = ProviderDatum<Date, ProvidedDataTypes.REGISTRATION_DATE>;
-export type MobileDevice = ProviderDatum<{ type: string; os?: string; advertiser_id?: string; device_locale?: string;}, ProvidedDataTypes.MOBILE_DEVICE>;
+export type MobileDevice = ProviderDatum<{ type: string; os?: string; advertiser_id?: string; device_locale?: string; }, ProvidedDataTypes.MOBILE_DEVICE>;
 export type Inference = ProviderDatum<string, ProvidedDataTypes.INFERENCE>;
 export type PlayedSong = ProviderDatum<{
     artist: string;
@@ -303,21 +186,10 @@ export interface ProviderParser {
         // the key is not set, the root object is assumed to be the key
         key?: string | string[];
         // The type that is found at the particular key
-        type: ProvidedDataTypes
+        type: ProvidedDataTypes;
         // An optional transformer that is used to translate complex objects
         // into the required shape
         // eslint-disable-next-line
         transformer?(object: unknown): Partial<ProviderDatum<unknown, unknown>>[] | Partial<ProviderDatum<unknown, unknown>>;
-        // transformer?: (obj: any) => any | any[];
-    }[]
-}
-
-export enum ProviderUpdateType {
-    UPDATE = 'update',
-    DATA_REQUEST = 'data_request'
-}
-
-export type InitOptionalParameters = {
-    accountName?: string;
-    apiUrl?: string;
+    }[];
 }

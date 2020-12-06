@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { InitialisedProvider } from 'main/providers/types';
+import { InitialisedProvider } from "main/providers/types/Provider";
 import { fetchAvailableProviders, fetchProviderAccounts, refreshRequests } from './actions';
 
 interface RequestsState {

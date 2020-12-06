@@ -1,7 +1,7 @@
 import DataType from 'app/utilities/DataType';
 import { EdgeDefinition, ElementsDefinition, NodeDefinition } from 'cytoscape';
 import { uniqBy } from 'lodash-es';
-import { ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from "main/providers/types/Data";
 
 /**
  * Transforms an incoming set of ProivderDatums into a graph that can be

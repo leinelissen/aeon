@@ -1,4 +1,4 @@
-import { ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from "main/providers/types/Data";
 
 export enum DiffType {
     // An object DiffType is the diff of an regular object

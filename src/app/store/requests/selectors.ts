@@ -1,5 +1,5 @@
 import Providers from 'app/utilities/Providers';
-import { InitialisedProvider } from 'main/providers/types';
+import { InitialisedProvider } from "main/providers/types/Provider";
 import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { State, useAppDispatch } from '..';

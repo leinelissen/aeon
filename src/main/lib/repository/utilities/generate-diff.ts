@@ -1,6 +1,6 @@
 import { DiffType, DiffResult } from '../types';
 import generateParsedCommit from './generate-parsed-commit';
-import { ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from "main/providers/types/Data";
 import deepEqual from 'deep-equal';
 import { TreeEntry } from 'nodegit';
 

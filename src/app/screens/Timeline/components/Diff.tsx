@@ -4,7 +4,7 @@ import Repository from 'app/utilities/Repository';
 import styled from 'styled-components';
 import DataType from 'app/utilities/DataType';
 import Loading from 'app/components/Loading';
-import { ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from "main/providers/types/Data";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { H2, H5 } from 'app/components/Typography';
 import { formatDistanceToNow } from 'date-fns';

@@ -1,4 +1,4 @@
-import { ProviderDatum, ProviderParser } from 'main/providers/types';
+import { ProviderDatum, ProviderParser } from "main/providers/types/Data";
 
 const decoder = new TextDecoder('utf-8');
 
