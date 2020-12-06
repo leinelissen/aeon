@@ -6,7 +6,7 @@ import { EventEmitter2 } from 'eventemitter2';
 import { ProviderFile, 
     ProviderUpdateType, 
     InitOptionalParameters, 
-    InitialisedProvider 
+    InitialisedAccount 
 } from './types';
 import { Provider, 
     DataRequestProvider, 
@@ -61,7 +61,7 @@ class ProviderManager extends EventEmitter2 {
     instances: Map<string, Provider & Partial<DataRequestProvider>> = new Map();
 
     // Contains the keys of all providers that have been initialised by the user
-    accounts: PersistedMap<string, InitialisedProvider>;
+    accounts: PersistedMap<string, InitialisedAccount>;
 
     // The last time the data requests were checked 
     lastDataRequestCheck: Date;
@@ -74,7 +74,7 @@ class ProviderManager extends EventEmitter2 {
         this.email = email;
 
         // Construct the initialised providers from the store
-        const retrievedAccounts = store.get('provider-accounts', []) as [string, InitialisedProvider][];
+        const retrievedAccounts = store.get('provider-accounts', []) as [string, InitialisedAccount][];
         this.accounts = new PersistedMap(retrievedAccounts, map => {
             store.set('provider-accounts', Array.from(map));
         });
@@ -188,7 +188,7 @@ class ProviderManager extends EventEmitter2 {
             : `${provider}_${account}`;
 
         // Construct the details for the provider
-        const newAccount: InitialisedProvider = {
+        const newAccount: InitialisedAccount = {
             account,
             provider,
             windowKey,

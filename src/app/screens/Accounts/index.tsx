@@ -3,15 +3,15 @@ import { List, NavigatableListEntry, PanelBottomButtons, PanelGrid, RowHeading, 
 import Providers from 'app/utilities/Providers';
 import { useParams } from 'react-router-dom';
 import { RouteProps } from '../types';
-import ProviderOverlay from './components/ProviderOverlay';
+import AccountOverlay from './components/AccountOverlay';
 import getDescription from './getDescription';
 import styled from 'styled-components';
 import Button from 'app/components/Button';
 import { faSync } from 'app/assets/fa-light';
-import { useAccounts } from 'app/store/requests/selectors';
+import { useAccounts } from 'app/store/accounts/selectors';
 import { State, useAppDispatch } from 'app/store';
 import { useSelector } from 'react-redux';
-import { refreshRequests } from 'app/store/requests/actions';
+import { refreshRequests } from 'app/store/accounts/actions';
 import NewAccountModal from './components/NewAccountModal';
 
 const StatusDescription = styled.span`
@@ -25,11 +25,11 @@ const Rows = styled.div`
     line-height: 1.5;
 `;
 
-function Requests(): JSX.Element {
+function Accounts(): JSX.Element {
     const dispatch = useAppDispatch();
-    const isLoadingRefresh = useSelector((state: State) => state.requests.isLoading.refresh);
+    const isLoadingRefresh = useSelector((state: State) => state.accounts.isLoading.refresh);
     const { accounts, map } = useAccounts();
-    const { provider: selectedProvider } = useParams<RouteProps['requests']>();
+    const { account: selectedAccount } = useParams<RouteProps['requests']>();
 
     // Callback for refreshing all requests
     const refresh = useCallback(() => dispatch(refreshRequests()), [dispatch]);
@@ -43,7 +43,7 @@ function Requests(): JSX.Element {
                     {accounts.map(account => 
                         <NavigatableListEntry
                             key={account}
-                            to={`/requests/${account}`}
+                            to={`/accounts/${account}`}
                             icon={Providers.getIcon(map[account].provider)}
                             large
                         >
@@ -63,10 +63,10 @@ function Requests(): JSX.Element {
                 </PanelBottomButtons>
             </SplitPanel>
             <List>
-                <ProviderOverlay selectedProvider={selectedProvider} />
+                <AccountOverlay selectedAccount={selectedAccount} />
             </List>
         </PanelGrid>
     )
 }
 
-export default Requests;
+export default Accounts;

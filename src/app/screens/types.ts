@@ -7,7 +7,7 @@ export interface RouteProps {
         datumId?: string;
     },
     requests: {
-        provider?: string;
+        account?: string;
     },
     settings: {
         category?: string;

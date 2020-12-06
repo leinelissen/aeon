@@ -11,23 +11,23 @@ import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 interface Props {
-    selectedProvider: string;
+    selectedAccount: string;
 }
 
-function ProviderOverlay({ selectedProvider }: Props): JSX.Element {
-    const account = useSelector((state: State) => state.requests.byKey[selectedProvider]);
+function AccountOverlay({ selectedAccount }: Props): JSX.Element {
+    const account = useSelector((state: State) => state.accounts.byKey[selectedAccount]);
     const [isLoading, setLoading] = useState(false);
     const handleNewRequest = useCallback(async () => {
         setLoading(true);
-        await Providers.dispatchDataRequest(selectedProvider).catch(() => null);
+        await Providers.dispatchDataRequest(selectedAccount).catch(() => null);
         setLoading(false);
-    }, [selectedProvider]);
+    }, [selectedAccount]);
 
-    console.log(selectedProvider);
+    console.log(selectedAccount);
 
     return (
         <RightSideOverlay>
-            {selectedProvider && (
+            {selectedAccount && (
                 <>
                     <Section>
                         <H2>
@@ -118,4 +118,4 @@ function ProviderOverlay({ selectedProvider }: Props): JSX.Element {
     );
 }
 
-export default ProviderOverlay;
+export default AccountOverlay;

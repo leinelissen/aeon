@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Modal from 'app/components/Modal';
 import ModalMenu from 'app/components/Modal/Menu';
 import { PullContainer, MarginLeft, Margin, PullCenter } from 'app/components/Utility';
-import { addProviderAccount } from 'app/store/requests/actions';
+import { addProviderAccount } from 'app/store/accounts/actions';
 import { State, useAppDispatch } from 'app/store';
 import { useSelector } from 'react-redux';
 import Providers from 'app/utilities/Providers';
@@ -46,8 +46,8 @@ function NewAccountButton({ client, children, onComplete, optionalParameters, ..
 
 function NewAccountModal(): JSX.Element {
     const history = useHistory();
-    const allProviders = useSelector((state: State) => state.requests.allProviders);
-    const availableProviders = useSelector((state: State) => state.requests.availableProviders);
+    const allProviders = useSelector((state: State) => state.accounts.allProviders);
+    const availableProviders = useSelector((state: State) => state.accounts.availableProviders);
     const emailAccounts = useSelector((state: State) => state.email.accounts.all);
     const [modalIsOpen, setModal] = useState(false);
     const [selectedEmail, setSelectedEmail] = useState(emailAccounts.length ? emailAccounts[0] : '');

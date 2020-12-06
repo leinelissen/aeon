@@ -14,7 +14,7 @@ export interface DataRequestStatus {
     requestId?: string | number;
 }
 
-export interface InitialisedProvider {
+export interface InitialisedAccount {
     // The key for the provider that supplies the data
     provider: string;
     // The account from which the data emanates

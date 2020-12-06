@@ -5,7 +5,7 @@ import Timeline from './Timeline';
 import Data from './Data';
 import { State } from 'app/store';
 import Menu, { ContentContainer, MenuContainer, TitleBar } from 'app/components/Menu';
-import Requests from './Requests';
+import Accounts from './Accounts';
 import { useSelector } from 'react-redux';
 import Settings from './Settings';
 import Graph from './Graph';
@@ -43,8 +43,8 @@ function Router(): JSX.Element {
                     <Route path='/onboarding'>
                         <Onboarding />
                     </Route>
-                    <Route path="/requests/:provider?">
-                        <Requests />
+                    <Route path="/accounts/:account?">
+                        <Accounts />
                     </Route>
                     <Route path="/data/:category?/:datumId?">
                         <Data />

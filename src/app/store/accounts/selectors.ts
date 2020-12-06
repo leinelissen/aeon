@@ -1,5 +1,5 @@
 import Providers from 'app/utilities/Providers';
-import { InitialisedProvider } from "main/providers/types";
+import { InitialisedAccount } from "main/providers/types";
 import { DataRequestCompleted, ProviderEvents, UpdateComplete } from 'main/providers/types/Events';
 import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -17,7 +17,7 @@ type RequestState = {
  * Retrieve all currently active requests
  */
 export function useAccounts(): RequestState {
-    const requests = useSelector((state: State) => state.requests);
+    const requests = useSelector((state: State) => state.accounts);
 
     return {
         accounts: requests.all,
@@ -30,8 +30,8 @@ export function useAccounts(): RequestState {
  * Retrieve a single provider by key name
  * @param key Provider key
  */
-export function useProvider(key: string): InitialisedProvider {
-    return useSelector((state: State) => state.requests.byKey[key]);
+export function useProvider(key: string): InitialisedAccount {
+    return useSelector((state: State) => state.accounts.byKey[key]);
 }
 
 /**
