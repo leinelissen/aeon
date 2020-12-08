@@ -12,7 +12,6 @@ import store, { persistor } from 'app/store';
 import Loading from './Loading';
 import { ProviderSubscription } from 'app/store/accounts/selectors';
 import { EmailSubscription } from 'app/store/email/selectors';
-import Tour from './Tour';
 
 const Main = styled.main`
     position: relative;

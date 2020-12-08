@@ -4,7 +4,15 @@
     "version": "0.2.3",
     "description": "Online identity versioning for the masses",
     "main": ".webpack/main",
-    "sideEffects": false,
+    "sideEffects": [
+        "src/app/components/App.tsx",
+        "src/app/styles/index.ts",
+        "src/main/lib/map-map.ts",
+        "*.css",
+        "*.svg",
+        "*.woff",
+        "*.woff2"
+    ],
     "scripts": {
         "start": "electron-forge start",
         "package": "electron-forge package",
@@ -29,7 +37,7 @@
         "forge": {
             "packagerConfig": {
                 "icon": "./src/icon",
-                "executableName": "aeon"
+                "executableName": "Aeon"
             },
             "makers": [
                 {

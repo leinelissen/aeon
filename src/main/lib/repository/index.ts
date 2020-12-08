@@ -187,6 +187,13 @@ class Repository extends EventEmitter {
         const refCommit = ref === 'HEAD' 
             ? await this.repository.getHeadCommit()
             : await this.repository.getCommit(ref);
+
+        // GUARD: Before any data requests are issued, there is only a single
+        // commit in the repository. This means we cannot compare anything.
+        if (!refCommit) {
+            throw new Error('No reference commit to parse');
+        }
+
         // Then retrieve the tree for the the retrieved commit
         const refTree = await refCommit.getTree();
 

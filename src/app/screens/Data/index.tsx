@@ -23,6 +23,7 @@ interface State {
     groupedData?: GroupedData;
     // Any data that the user wishes to have deleted in a new commit
     deletedData: DeletedData;
+    isLoading: boolean;
 }
 
 interface Props {
@@ -32,6 +33,7 @@ interface Props {
 
 class Data extends Component<Props, State> {
     state: State = {
+        isLoading: true,
         groupedData: null,
         deletedData: Object.values(ProvidedDataTypes).reduce((obj: DeletedData, key) => {
             obj[key] = [];
@@ -40,24 +42,31 @@ class Data extends Component<Props, State> {
     }
 
     async componentDidMount(): Promise<void> {
-        // Retrieved all data for this commit from the repository
-        const data = await Repository.parsedCommit() as ProviderDatum<string, ProvidedDataTypes>[];
+        try {
+            // Retrieved all data for this commit from the repository
+            const data = await Repository.parsedCommit() as ProviderDatum<string, ProvidedDataTypes>[];
         
-        // Then sort the data into their respective categories
-        const groupedData = data.reduce((accumulator: GroupedData, datum): GroupedData => {
-            // If there is no category yet, create it
-            if (!accumulator[datum.type]) {
-                accumulator[datum.type] = [];
-            }
+            // Then sort the data into their respective categories
+            const groupedData = data.reduce((accumulator: GroupedData, datum): GroupedData => {
+                // If there is no category yet, create it
+                if (!accumulator[datum.type]) {
+                    accumulator[datum.type] = [];
+                }
 
-            // Then push the data type to the right category
-            accumulator[datum.type].push(datum);
+                // Then push the data type to the right category
+                accumulator[datum.type].push(datum);
 
-            // And return the resulting object
-            return accumulator;
-        }, {});
+                // And return the resulting object
+                return accumulator;
+            }, {});
 
-        this.setState({ groupedData });
+            this.setState({ groupedData, isLoading: false });
+        } catch (e) {
+            // If we fail to retrieve the data, it's most likely no data is
+            // available yet.
+            this.setState({ isLoading: false });
+            return;
+        }
     }
 
     /**
@@ -112,6 +121,7 @@ class Data extends Component<Props, State> {
         const { 
             groupedData,
             deletedData,
+            isLoading
         } = this.state;
         const { params: {
             category,
@@ -119,11 +129,11 @@ class Data extends Component<Props, State> {
         } } = this.props;
         const parsedDatumId = Number.parseInt(datumId);
 
-        if (!groupedData) {
+        if (isLoading) {
             return <Loading />;
         }
 
-        if (!Object.keys(groupedData).length) {
+        if (!groupedData || !Object.keys(groupedData).length) {
             return <NoData />;
         }
 
