@@ -44,6 +44,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: 'Capitalise binary (macOS only)'
+        if: runner.os == 'macOS'
+        run: |
+          sed -i '.bak' 's/"executableName": "aeon"/"executableName": "Aeon"/' package.json
+
       - name: Compile
         run: npm run make
 
