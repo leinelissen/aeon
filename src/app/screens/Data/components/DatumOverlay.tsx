@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import Button from 'app/components/Button';
-import { ProviderDatum, ProvidedDataTypes } from "main/providers/types/Data";
+import { ProvidedDataTypes } from "main/providers/types/Data";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCassetteTape, faClock, faHashtag, faEye, faLink, faUser } from 'app/assets/fa-light';
+import { faCassetteTape, faClock, faLink, faUser } from 'app/assets/fa-light';
 import { H2 } from 'app/components/Typography';
 import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';
@@ -10,18 +10,18 @@ import theme from 'app/styles/theme';
 import RightSideOverlay, { DetailListItem, Section } from 'app/components/RightSideOverlay';
 import { useHistory, useParams } from 'react-router-dom';
 import { RouteProps } from 'app/screens/types';
+import { State, useAppDispatch } from 'app/store';
+import { deleteDatum } from 'app/store/data/actions';
+import { useSelector } from 'react-redux';
 
 interface Props {
-    datum: ProviderDatum<unknown, unknown>;
-    onDelete?: () => void;
-    onModify?: () => void;
+    datumId: number;
 }
 
-const DatumOverlay = (props: Props): JSX.Element => {
-    const { 
-        onDelete: handleDelete,
-        datum 
-    } = props;
+const DatumOverlay = ({ datumId }: Props): JSX.Element => {
+    const { byKey, deleted } = useSelector((state: State) => state.data);
+    const datum = datumId && byKey[datumId];
+    const isDeleted = datumId && deleted.includes(datumId);
 
     // Create handler that redirects the page if the overlay is closed
     const { category } = useParams<RouteProps['data']>();
@@ -34,18 +34,27 @@ const DatumOverlay = (props: Props): JSX.Element => {
         }
     }, [history, category]);
 
+    // Create handler for deleting data points
+    const dispatch = useAppDispatch();
+    const handleDelete = useCallback(() => {
+        dispatch(deleteDatum(datumId));
+    }, [dispatch, datumId]);
+
     return (
         <RightSideOverlay onClose={handleClose} data-tour="data-datum-overlay">
             {datum && (
                 <>
                     <Section>
-                        <H2>
+                        <H2 style={{ color: isDeleted ? theme.colors.red : theme.colors.black }}>
                             <FontAwesomeIcon
                                 icon={DataType.getIcon(datum.type as ProvidedDataTypes)}
                                 style={{ marginRight: 8 }}
                             />
                             {DataType.toString(datum)}
                         </H2>
+                        {isDeleted && <p>
+                            This data point is marked for erasure    
+                        </p>}
                     </Section>
                     <Section>
                         <DetailListItem>
@@ -129,6 +138,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
                             backgroundColor={theme.colors.red}
                             data-tour="data-delete-datum-button"
                             data-telemetry-id="datum-overlay-delete-datapoint"
+                            disabled={isDeleted}
                         >
                             Delete this data point
                         </Button>

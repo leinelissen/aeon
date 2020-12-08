@@ -109,7 +109,7 @@ export interface ProviderDatum<D, T = ProvidedDataTypes> {
     source: string;
     // A timestamp that is associated with this specific datapoint. For
     // instance, when a post was posted.
-    timestamp?: Date;
+    timestamp?: string;
     // Wether this datum can be edited with the provider
     isEditable?: boolean;
     // Whether this datum can be deleted at the provider

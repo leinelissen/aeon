@@ -1,9 +1,11 @@
+import { ProvidedDataTypes } from 'main/providers/types/Data';
+
 export interface RouteProps {
     timeline: {
         commitHash?: string;
     }
     data: {
-        category?: string;
+        category?: ProvidedDataTypes;
         datumId?: string;
     },
     requests: {

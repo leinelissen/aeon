@@ -1,193 +1,78 @@
-import React, { Component } from 'react';
-import { ProvidedDataTypes, ProviderDatum } from "main/providers/types/Data";
-import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
-import Repository from 'app/utilities/Repository';
+import React from 'react';
+import { ProvidedDataTypes } from "main/providers/types/Data";
 import Loading from 'app/components/Loading';
-import { uniq } from 'lodash-es';
 import {
     ClickableCategory,
     ClickableDataPoint,
 } from './styles';
 import DatumOverlay from './components/DatumOverlay';
-import { GroupedData, DeletedData } from './types';
-import CreateNewCommit from './components/CreateNewCommit';
+// import CreateNewCommit from './components/CreateNewCommit';
 import { RouteProps } from '../types';
-import { useHistory, useParams } from 'react-router-dom';
-import type { History} from 'history';
+import { useParams } from 'react-router-dom';
 import { List, PanelGrid, RowHeading } from 'app/components/PanelGrid';
 import NoData from 'app/components/NoData';
 import Tour from 'app/components/Tour';
+import { useSelector } from 'react-redux';
+import { State } from 'app/store';
 
-interface State {
-    // The data that is extracted from the commit
-    groupedData?: GroupedData;
-    // Any data that the user wishes to have deleted in a new commit
-    deletedData: DeletedData;
-    isLoading: boolean;
-}
+function Data(): JSX.Element {
+    const { category, datumId } = useParams<RouteProps['data']>();
+    const {
+        isLoading,
+        byKey,
+        byType,
+        deleted,
+        deletedByType
+    } = useSelector((state: State) => state.data);
+    const parsedDatumId = Number.parseInt(datumId);
 
-interface Props {
-    params: RouteProps['data'];
-    history: History;
-}
-
-class Data extends Component<Props, State> {
-    state: State = {
-        isLoading: true,
-        groupedData: null,
-        deletedData: Object.values(ProvidedDataTypes).reduce((obj: DeletedData, key) => {
-            obj[key] = [];
-            return obj;
-        }, {}),
+    if (isLoading) {
+        return <Loading />;
     }
 
-    async componentDidMount(): Promise<void> {
-        try {
-            // Retrieved all data for this commit from the repository
-            const data = await Repository.parsedCommit() as ProviderDatum<string, ProvidedDataTypes>[];
-        
-            // Then sort the data into their respective categories
-            const groupedData = data.reduce((accumulator: GroupedData, datum): GroupedData => {
-                // If there is no category yet, create it
-                if (!accumulator[datum.type]) {
-                    accumulator[datum.type] = [];
-                }
-
-                // Then push the data type to the right category
-                accumulator[datum.type].push(datum);
-
-                // And return the resulting object
-                return accumulator;
-            }, {});
-
-            this.setState({ groupedData, isLoading: false });
-        } catch (e) {
-            // If we fail to retrieve the data, it's most likely no data is
-            // available yet.
-            this.setState({ isLoading: false });
-            return;
-        }
+    if (!byKey.length) {
+        return <NoData />;
     }
 
-    /**
-     * Handle simple keystrokes in order to navigate through the datapoints
-     */
-    handleKeyUp = (event: React.KeyboardEvent<HTMLButtonElement>): void => {
-        const { params: {
-            category,
-            datumId
-        } } = this.props;
-
-        if ((event.key === 'Left' && datumId)) {
-            this.props.history.push(`/data/${category}`)
-        } else if (event.key === 'Escape') {
-            if (datumId) {
-                this.props.history.push(`/data/${category}`)
-            } else if (category) {
-                this.props.history.push(`/data`);
-            } else {
-                this.props.history.push(`/timeline?transition=${TransitionDirection.left}`);
-            }
-        }
-    }
-
-    // setCategory = (category: ProvidedDataTypes): void => 
-    //     this.setState({ category, datumId: null });
-
-    // setDatum = (datumId: number): void => this.setState({ datumId });
-    
-    deleteDatum = (): void => {
-        const { deletedData } = this.state;
-        const { params: {
-            category,
-            datumId
-        } } = this.props;
-
-
-        this.setState({
-            deletedData: {
-                ...deletedData,
-                [category]: uniq([
-                    ...deletedData[category],
-                    Number.parseInt(datumId),
-                ]),
-            }
-        })
-    }
-
-    // closeOverlay = (): void => this.setState({ datumId: null });
-
-    render(): JSX.Element {
-        const { 
-            groupedData,
-            deletedData,
-            isLoading
-        } = this.state;
-        const { params: {
-            category,
-            datumId
-        } } = this.props;
-        const parsedDatumId = Number.parseInt(datumId);
-
-        if (isLoading) {
-            return <Loading />;
-        }
-
-        if (!groupedData || !Object.keys(groupedData).length) {
-            return <NoData />;
-        }
-
-        return (
-            <PanelGrid>
-                <List data-tour="data-categories-list">
-                    <RowHeading>Categories</RowHeading>
-                    {Object.values(ProvidedDataTypes).map((key) => (
-                        <ClickableCategory
-                            key={key}
-                            type={key}
-                            items={groupedData[key]?.length}
-                            active={category === key}
-                            disabled={!(key in groupedData)}
-                            deleted={deletedData[key].length > 0}
-                            onKeyUp={this.handleKeyUp}
-                            data-tour="data-category-button"
-                            data-telemetry-id={`new-commit-select-category-${key}`}
-                        />
-                    ))}
-                </List>
-                <List data-tour="data-data-points-list">
-                    <RowHeading>Data Points</RowHeading>
-                    {category && groupedData[category].map((datum, index) => (
-                        <ClickableDataPoint
-                            type={category as ProvidedDataTypes}
-                            datum={datum}
-                            index={index}
-                            active={parsedDatumId === index}
-                            key={`${datum.type}-${index}`} 
-                            deleted={deletedData[category].includes(index)}
-                            onKeyUp={this.handleKeyUp}
-                            data-tour="data-data-point-button"
-                            data-telemetry-id={`new-commit-select-data-point-${index}`}
-                        />
-                    ))}
-                </List>
-                <List>
-                    <DatumOverlay
-                        datum={groupedData[category]?.[parsedDatumId]}
-                        onDelete={this.deleteDatum}
+    return (
+        <PanelGrid>
+            <List data-tour="data-categories-list">
+                <RowHeading>Categories</RowHeading>
+                {Object.values(ProvidedDataTypes).map((key) => (
+                    <ClickableCategory
+                        key={key}
+                        type={key}
+                        items={byType[key].length}
+                        active={category === key}
+                        disabled={!(key in byType)}
+                        deleted={deletedByType[key].length > 0}
+                        data-tour="data-category-button"
+                        data-telemetry-id={`new-commit-select-category-${key}`}
                     />
-                </List>
-                <CreateNewCommit isModalOpen={false} groupedData={groupedData} deletedData={deletedData} />
-                <Tour tour="/screen/data" />
-            </PanelGrid>
-        );
-    }
+                ))}
+            </List>
+            <List data-tour="data-data-points-list">
+                <RowHeading>Data Points</RowHeading>
+                {category && byType[category].map((datum) => (
+                    <ClickableDataPoint
+                        type={category as ProvidedDataTypes}
+                        datum={byKey[datum]}
+                        index={datum}
+                        active={parsedDatumId === datum}
+                        key={`datum-${datum}`} 
+                        deleted={deleted.includes(datum)}
+                        data-tour="data-data-point-button"
+                        data-telemetry-id={`new-commit-select-data-point-${datum}`}
+                    />
+                ))}
+            </List>
+            <List>
+                <DatumOverlay datumId={parsedDatumId} />
+            </List>
+            {/* <CreateNewCommit isModalOpen={false} groupedData={groupedData} deletedData={deletedData} /> */}
+            <Tour tour="/screen/data" />
+        </PanelGrid>
+    );
 }
 
-const RouterWrapper = (...props: unknown[]): JSX.Element => {
-    const params = useParams();
-    const history = useHistory();
-    return <Data {...props} params={params} history={history} />
-}
-
-export default RouterWrapper;
+export default Data;

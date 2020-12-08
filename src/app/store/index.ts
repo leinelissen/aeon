@@ -21,6 +21,7 @@ import onboarding from './onboarding';
 import telemetry from './telemetry';
 import accounts from './accounts';
 import email from './email';
+import data from './data';
 
 // The root reducer contains all the individual reducers that make up the store
 const rootReducer = combineReducers({
@@ -28,7 +29,8 @@ const rootReducer = combineReducers({
     onboarding,
     telemetry,
     accounts,
-    email
+    email,
+    data
 });
 
 // Export types for later inclusion
@@ -42,6 +44,7 @@ const persistConfig: PersistConfig<State> = {
     migrate: createMigrate(migrations),
     serialize: false,
     deserialize: false,
+    blacklist: ['data']
 }
 
 // Create a persisted reducer

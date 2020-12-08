@@ -67,7 +67,7 @@ const parsers: ProviderParser[] = [
                             track: song.trackName,
                             playDuration: song.msPlayed,
                         },
-                        timestamp: new Date(song.endTime),
+                        timestamp: new Date(song.endTime).toString(),
                     };
                 }
             }
