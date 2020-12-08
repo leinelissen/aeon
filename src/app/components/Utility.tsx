@@ -4,6 +4,10 @@ export const Margin = styled.div`
     padding: 32px;
 `;
 
+export const MarginSmall = styled.div`
+    padding: 16px 32px;
+`;
+
 interface PullContainerProps {
     vertical?: boolean;
     verticalAlign?: boolean;

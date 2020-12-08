@@ -1,10 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartNetwork, faClock, faCog, faUser, faTable } from 'app/assets/fa-light';
+import { faChartNetwork, faClock, faCog, faUser, faTable, faTrash } from 'app/assets/fa-light';
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Emblem from 'app/assets/aeon-emblem-dark.svg';
 import theme from 'app/styles/theme';
+import { useSelector } from 'react-redux';
+import { State } from 'app/store';
+import { PullDown } from './Utility';
 
 export const MenuContainer = styled.div`
     display: grid;
@@ -97,10 +100,9 @@ const Link = styled(NavLink)`
 `;
 
 const AeonLogo = styled.div`
-    margin-top: auto;
-    display: inline-flex;
+    display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin: 20px auto;
 
     img {
         width: 25px;
@@ -119,6 +121,8 @@ export function TitleBar(): JSX.Element {
 }
 
 export default function Menu(): JSX.Element {
+    const deleted = useSelector((state: State) => state.data.deleted);
+
     return (
         <Container>
             <Link to="/timeline" activeClassName="active">
@@ -141,7 +145,15 @@ export default function Menu(): JSX.Element {
                 <span className="icon"><FontAwesomeIcon icon={faCog} fixedWidth /></span>
                 <span>Settings</span>
             </Link>
-            <AeonLogo><img src={Emblem} /></AeonLogo>
+            {deleted.length ? (
+                <Link to="/erasure" activeClassName="active">
+                    <span className="icon"><FontAwesomeIcon icon={faTrash} fixedWidth /></span>
+                    <span>Erasure ({deleted.length})</span>
+                </Link>
+            ) : null}
+            <PullDown>
+                <AeonLogo><img src={Emblem} /></AeonLogo>
+            </PullDown>
         </Container>
     );
 }

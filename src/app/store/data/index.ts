@@ -8,6 +8,7 @@ interface DataState {
     byKey: ProviderDatum<unknown, unknown>[];
     byType: Record<ProvidedDataTypes, number[]>;
     deletedByType: Record<ProvidedDataTypes, number[]>;
+    deletedByProvider: Record<string, number[]>;
     deleted: number[];
     isLoading: boolean;
 }
@@ -22,6 +23,7 @@ const initialState: DataState = {
     byKey: [],
     byType,
     deletedByType: byType,
+    deletedByProvider: {},
     deleted: [],
     isLoading: false,
 }
@@ -44,6 +46,7 @@ const data = createSlice({
                 state.byType[type] = [];
                 state.deletedByType[type] = []; 
             });
+            state.deletedByProvider = {};
             state.deleted = [];
 
             // Then assign the payload directly to the state
@@ -64,6 +67,12 @@ const data = createSlice({
 
             // Also add it to the list for deleted types
             state.deletedByType[datum.type as ProvidedDataTypes].push(action.payload);
+            
+            // Also add it to the list sorted by provider
+            if (!(datum.provider in state.deletedByProvider)) {
+                state.deletedByProvider[datum.provider] = [];
+            }
+            state.deletedByProvider[datum.provider].push(action.payload);
         });
     }
 });
