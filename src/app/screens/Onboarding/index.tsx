@@ -8,9 +8,8 @@ import { completeOnboarding } from 'app/store/onboarding/actions';
 import React, { useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import Logo from '../../assets/aeon-logo.svg';
+import Logo from 'app/assets/aeon-logo.svg';
 
 const Container = styled.div`
     display: flex;
@@ -29,7 +28,6 @@ const Container = styled.div`
 `;
 
 function Onboarding(): JSX.Element {
-    const history = useHistory();
     const dispatch = useDispatch();
     const isOnboardingComplete = useSelector((state: State) => state.onboarding.initialisation);
     
@@ -37,7 +35,7 @@ function Onboarding(): JSX.Element {
         // Redirect to /timeline if the user has already completed the
         // first-time application onboarding screen
         if (isOnboardingComplete) {
-            history.push('/timeline');
+            // history.push('/timeline');
         }
 
         return () => {
@@ -53,7 +51,7 @@ function Onboarding(): JSX.Element {
         <Container>
             <img src={Logo} />
             <H2>Welcome to Aeon!</H2>
-            <p>Aeon is an application that makes managing where your data is to be found online. If you&apos;re feeling adventerous, feel free to explore around. If not, adding your first account is good place to start.</p>
+            <p>Aeon is an application that makes managing where your data is found online easy. If you&apos;re feeling adventerous, feel free to explore around. Adding your first account is also a good place to start.</p>
             <LinkButton to="/accounts">
                 Add your first account
                 <MarginLeft><FontAwesomeIcon icon={faPlus} /></MarginLeft>
