@@ -55,7 +55,9 @@
                 },
                 {
                     "name": "@electron-forge/maker-deb",
-                    "config": {}
+                    "config": {
+                        "bin": "out/Aeon-linux-x64/Aeon"
+                    }
                 },
                 {
                     "name": "@electron-forge/maker-rpm",
