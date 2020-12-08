@@ -28,7 +28,7 @@
         "name": "Lei Nelissen",
         "email": "lei@codified.nl"
     },
-    "license": "UNLICENSED",
+    "license": "EUPL-1.2",
     "repository": {
         "type": "git",
         "url": "https://github.com/leinelissen/aeon"
