@@ -6,8 +6,17 @@ import { ProviderFile } from '.';
  * API, organisation, etc.) that can provider data to Aeon.
  */
 export abstract class Provider {
+    /* The account name for the account this provider provides */
     protected accountName?: string;
+    /* A key that is used by withSecureWindow to keep all windows that are
+    opened from the provider safe and secure from other. */
     protected windowKey: string;
+    /* Wehther this provider requires email to operate. May be overriden by
+    other abstract classes */
+    public static requiresEmail = false;
+    /* Wehther this provider requires a URL to operate. May be overriden by
+    other abstract classes */
+    public static requiresUrl = false;
     /** The key under which all files will be stored. Should be filesystem-safe
      * (no spaces, all-lowercase) */
     public static key: string;
@@ -61,6 +70,8 @@ export abstract class DataRequestProvider extends Provider {
  * account to this provider, which is then accessible in the class.
  */
 export abstract class EmailDataRequestProvider extends DataRequestProvider {
+    /* Set a flag that email is required for this provider */
+    public static requiresEmail = true;
     /* An email client that is available for use in this provider. This will
     automatically be set by Aeon when constructing the class. */
     protected email: EmailClient;
@@ -80,6 +91,8 @@ export abstract class EmailDataRequestProvider extends DataRequestProvider {
  * @see https://whitepaper.open-data-rights.org
  */
 export abstract class OpenDataRightsProvider extends DataRequestProvider {
+    /* Set a flag that email is required for this provider */
+    public static requiresUrl = true;
     /* The Open Data Rights API URL, for use in the class */
     protected url: string;
     /* A convenience method to pass to withSecureWindow */

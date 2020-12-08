@@ -51,8 +51,8 @@ class ProviderBridge {
             case ProviderCommands.GET_AVAILABLE_PROVIDERS:
                 return availableProviders.reduce<Record<string, { requiresEmail: boolean, requiresUrl: boolean, }>>((sum, Client) => {
                     sum[Client.key] = {
-                        requiresEmail: Object.getPrototypeOf(Client).name === 'EmailDataRequestProvider',
-                        requiresUrl: Object.getPrototypeOf(Client).name === 'OpenDataRightsProvider',
+                        requiresEmail: Client.requiresEmail,
+                        requiresUrl: Client.requiresUrl,
                     }
                     return sum;
                 }, {});
