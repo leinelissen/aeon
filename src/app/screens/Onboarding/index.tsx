@@ -1,121 +1,61 @@
-import React, { useCallback, useState } from 'react';
-import styled, { css } from 'styled-components';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInstagram, faFacebookF, faSpotify, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import theme from 'app/styles/theme';
-import Providers from 'app/utilities/Providers';
-import { useAppDispatch } from 'app/store';
-import Button from 'app/components/Button';
+import { faPlus } from 'app/assets/fa-light';
+import { LinkButton } from 'app/components/Button';
+import { H2 } from 'app/components/Typography';
+import { MarginLeft } from 'app/components/Utility';
+import { State } from 'app/store';
 import { completeOnboarding } from 'app/store/onboarding/actions';
+import React, { useEffect } from 'react';
+
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+import Logo from 'app/assets/aeon-logo.svg';
 
 const Container = styled.div`
-    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     height: 100%;
-    max-width: 1000px;
+    text-align: center;
+    max-width: 500px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-`;
 
-const Bottom = styled.div`
-    margin-top: auto;
-`;
-
-const Center = styled.div`
-    margin-top: auto;
-    margin-bottom: auto;
-    display: flex;
-    align-items: center;
-
-    & > * {
-        width: 50%;
-        padding: 20px;
-    }
-`;
-
-const BrandContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-
-interface ProviderProps {
-    disabled?: boolean;
-    active?: boolean;
-}
-
-const Provider = styled.button<ProviderProps>`
-    width: 120px;
-    height: 120px;
-    border-radius: 120px;
-    margin: 5px;
-    border: 1px solid #eee;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #888;
-
-    ${(props) => props.disabled && css`
-        color: #eee;
-        opacity: 0.5;
-    `}
-
-    ${(props) => props.active && css`
-        color: ${theme.colors.blue.primary};
-        border-color: ${theme.colors.blue.primary};
-    `}
-
-    &:hover:not(:disabled) {
-        color: #555;
+    img {
+        width: 250px;
+        margin-bottom: 48px;
     }
 `;
 
 function Onboarding(): JSX.Element {
-    const [isInitialised, setIsInitialised] = useState(false);
-    const dispatch = useAppDispatch();
+    const dispatch = useDispatch();
+    const isOnboardingComplete = useSelector((state: State) => state.onboarding.initialisation);
+    
+    useEffect(() => {
+        // Redirect to /timeline if the user has already completed the
+        // first-time application onboarding screen
+        if (isOnboardingComplete) {
+            // history.push('/timeline');
+        }
 
-    const handleClick = useCallback(async (): Promise<void> => {
-        // Initialise the provider on the back-end
-        const isInitialised = await Providers.initialise('instagram');
-
-        // Then store it locally and in the store
-        setIsInitialised(isInitialised);
-        dispatch(completeOnboarding('initialisation'));
-    }, []);
+        return () => {
+            // If the user has not completed onboarding yet, dispatch the
+            // completion action for this onboarding when the component is unmounted.
+            if (!isOnboardingComplete) {
+                dispatch(completeOnboarding('initialisation'));
+            }
+        }
+    });
 
     return (
         <Container>
-            <Center>
-                <div>
-                    <p>There is lots of data out there on you. Aeon makes it easier for you to get the picture of what that looks like. It hooks into your platforms of choice, and helps you get a grip.</p>
-                    <p>In order to manage this data, Aeon pulls the data from the platforms you use. You will need to enter your login credentials for this. Don&apos;t worry, your passwords are never stored, and the resulting data is stored using strong encryption.</p>
-                    <p><strong>Connect to the platforms of your choice to reshape your online identity.</strong></p>
-                </div>
-                <BrandContainer>
-                    <Provider active={isInitialised} onClick={handleClick} data-telemetry-id="initialise-instagram">
-                        <FontAwesomeIcon icon={faInstagram} size="3x" />
-                    </Provider>
-                    <div style={{ display: 'flex' }}>
-                        <Provider disabled>
-                            <FontAwesomeIcon icon={faFacebookF} size="3x" />
-                        </Provider>
-                        <Provider disabled>
-                            <FontAwesomeIcon icon={faSpotify} size="3x" />
-                        </Provider>
-                    </div>
-                    <Provider disabled>
-                        <FontAwesomeIcon icon={faLinkedin} size="3x" />
-                    </Provider>
-                </BrandContainer>
-            </Center>
-            <Bottom>
-                {isInitialised ? <Link to="/timeline" data-telemetry-id="proceed-from-onboarding"><Button>Continue</Button></Link> : <br />}
-            </Bottom>
+            <img src={Logo} />
+            <H2>Welcome to Aeon!</H2>
+            <p>Aeon is an application that makes managing where your data is found online easy. If you&apos;re feeling adventerous, feel free to explore around. Adding your first account is also a good place to start.</p>
+            <LinkButton to="/accounts">
+                Add your first account
+                <MarginLeft><FontAwesomeIcon icon={faPlus} /></MarginLeft>
+            </LinkButton>
         </Container>
     );
 }

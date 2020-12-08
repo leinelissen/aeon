@@ -5,13 +5,16 @@ import { debounce } from 'lodash-es';
 import cytoscape, { NodeSingular, Position } from 'cytoscape';
 import fcose from 'cytoscape-fcose';
 
-import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
+import { ProvidedDataTypes, ProviderDatum } from "main/providers/types/Data";
 import Repository from 'app/utilities/Repository';
 import calculateGraph from './calculateGraph';
 import DatumOverlay from '../Data/components/DatumOverlay';
 import { RouteProps } from '../types';
 import style, { Container, ResetButton, Tooltip } from './style';
 import { faUndo } from 'app/assets/fa-light';
+import Loading from 'app/components/Loading';
+import NoData from 'app/components/NoData';
+import Tour from 'app/components/Tour';
 
 type HoveredNode = {
     position: Position;
@@ -33,7 +36,7 @@ function Graph(): JSX.Element {
 
     // Assign state for hovered nodes and all data
     const [hoveredNode, setHoveredNode] = useState<HoveredNode>(null);
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(null);
 
     /**
      * Handle a mouseover on one of the Cytoscape node elements
@@ -152,9 +155,21 @@ function Graph(): JSX.Element {
         return () => window.removeEventListener('resize', debouncedHandler);
     });
 
+    // If there is not data to display, render a view imploring the user to
+    // start adding accounts
+    if (data && !data.length) {
+        return <NoData />;
+    }
+
     return (
         <>
-            <Container ref={container} isHovered={hoveredNode && hoveredNode.type === 'datum'} />
+            <Container
+                ref={container}
+                isHovered={hoveredNode && hoveredNode.type === 'datum'}
+                data-tour="graph-container" 
+            />
+            {!data && <Loading />}
+            {data && <Tour tour="/screen/graph" />}
             {hoveredNode && 
                 <Tooltip top={hoveredNode.position.y} left={hoveredNode.position.x}>
                     {hoveredNode.label}

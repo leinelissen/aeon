@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartNetwork, faClock, faCog, faSync, faTable } from 'app/assets/fa-light';
+import { faChartNetwork, faClock, faCog, faUser, faTable } from 'app/assets/fa-light';
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -125,9 +125,9 @@ export default function Menu(): JSX.Element {
                 <span className="icon"><FontAwesomeIcon icon={faClock} fixedWidth /></span>
                 <span>Timeline</span>
             </Link>
-            <Link to="/requests" activeClassName="active">
-                <span className="icon"><FontAwesomeIcon icon={faSync} fixedWidth /></span>
-                <span>Requests</span>
+            <Link to="/accounts" activeClassName="active">
+                <span className="icon"><FontAwesomeIcon icon={faUser} fixedWidth /></span>
+                <span>Accounts</span>
             </Link>
             <Link to="/data" activeClassName="active">
                 <span className="icon"><FontAwesomeIcon icon={faTable} fixedWidth /></span>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types';
+import { ProvidedDataTypes, ProviderDatum } from "main/providers/types/Data";
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 import Repository from 'app/utilities/Repository';
 import Loading from 'app/components/Loading';
@@ -9,19 +9,21 @@ import {
     ClickableDataPoint,
 } from './styles';
 import DatumOverlay from './components/DatumOverlay';
-import TutorialOverlay from './components/TutorialOverlay';
 import { GroupedData, DeletedData } from './types';
 import CreateNewCommit from './components/CreateNewCommit';
 import { RouteProps } from '../types';
 import { useHistory, useParams } from 'react-router-dom';
 import type { History} from 'history';
 import { List, PanelGrid, RowHeading } from 'app/components/PanelGrid';
+import NoData from 'app/components/NoData';
+import Tour from 'app/components/Tour';
 
 interface State {
     // The data that is extracted from the commit
     groupedData?: GroupedData;
     // Any data that the user wishes to have deleted in a new commit
     deletedData: DeletedData;
+    isLoading: boolean;
 }
 
 interface Props {
@@ -31,6 +33,7 @@ interface Props {
 
 class Data extends Component<Props, State> {
     state: State = {
+        isLoading: true,
         groupedData: null,
         deletedData: Object.values(ProvidedDataTypes).reduce((obj: DeletedData, key) => {
             obj[key] = [];
@@ -39,24 +42,31 @@ class Data extends Component<Props, State> {
     }
 
     async componentDidMount(): Promise<void> {
-        // Retrieved all data for this commit from the repository
-        const data = await Repository.parsedCommit() as ProviderDatum<string, ProvidedDataTypes>[];
+        try {
+            // Retrieved all data for this commit from the repository
+            const data = await Repository.parsedCommit() as ProviderDatum<string, ProvidedDataTypes>[];
         
-        // Then sort the data into their respective categories
-        const groupedData = data.reduce((accumulator: GroupedData, datum): GroupedData => {
-            // If there is no category yet, create it
-            if (!accumulator[datum.type]) {
-                accumulator[datum.type] = [];
-            }
+            // Then sort the data into their respective categories
+            const groupedData = data.reduce((accumulator: GroupedData, datum): GroupedData => {
+                // If there is no category yet, create it
+                if (!accumulator[datum.type]) {
+                    accumulator[datum.type] = [];
+                }
 
-            // Then push the data type to the right category
-            accumulator[datum.type].push(datum);
+                // Then push the data type to the right category
+                accumulator[datum.type].push(datum);
 
-            // And return the resulting object
-            return accumulator;
-        }, {});
+                // And return the resulting object
+                return accumulator;
+            }, {});
 
-        this.setState({ groupedData });
+            this.setState({ groupedData, isLoading: false });
+        } catch (e) {
+            // If we fail to retrieve the data, it's most likely no data is
+            // available yet.
+            this.setState({ isLoading: false });
+            return;
+        }
     }
 
     /**
@@ -111,6 +121,7 @@ class Data extends Component<Props, State> {
         const { 
             groupedData,
             deletedData,
+            isLoading
         } = this.state;
         const { params: {
             category,
@@ -118,13 +129,17 @@ class Data extends Component<Props, State> {
         } } = this.props;
         const parsedDatumId = Number.parseInt(datumId);
 
-        if (!groupedData) {
+        if (isLoading) {
             return <Loading />;
+        }
+
+        if (!groupedData || !Object.keys(groupedData).length) {
+            return <NoData />;
         }
 
         return (
             <PanelGrid>
-                <List>
+                <List data-tour="data-categories-list">
                     <RowHeading>Categories</RowHeading>
                     {Object.values(ProvidedDataTypes).map((key) => (
                         <ClickableCategory
@@ -135,11 +150,12 @@ class Data extends Component<Props, State> {
                             disabled={!(key in groupedData)}
                             deleted={deletedData[key].length > 0}
                             onKeyUp={this.handleKeyUp}
+                            data-tour="data-category-button"
                             data-telemetry-id={`new-commit-select-category-${key}`}
                         />
                     ))}
                 </List>
-                <List>
+                <List data-tour="data-data-points-list">
                     <RowHeading>Data Points</RowHeading>
                     {category && groupedData[category].map((datum, index) => (
                         <ClickableDataPoint
@@ -150,6 +166,7 @@ class Data extends Component<Props, State> {
                             key={`${datum.type}-${index}`} 
                             deleted={deletedData[category].includes(index)}
                             onKeyUp={this.handleKeyUp}
+                            data-tour="data-data-point-button"
                             data-telemetry-id={`new-commit-select-data-point-${index}`}
                         />
                     ))}
@@ -161,7 +178,7 @@ class Data extends Component<Props, State> {
                     />
                 </List>
                 <CreateNewCommit isModalOpen={false} groupedData={groupedData} deletedData={deletedData} />
-                <TutorialOverlay />
+                <Tour tour="/screen/data" />
             </PanelGrid>
         );
     }

@@ -1,4 +1,4 @@
-import { ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from "main/providers/types/Data";
 
 export type OpenDataRightsDatum = Pick<
     ProviderDatum<unknown, unknown>,

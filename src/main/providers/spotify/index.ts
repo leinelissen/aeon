@@ -3,7 +3,8 @@ import fs from 'fs';
 import AdmZip from 'adm-zip';
 import { subHours } from 'date-fns';
 import { withSecureWindow } from 'main/lib/create-secure-window';
-import { EmailDataRequestProvider, ProviderFile } from '../types';
+import { ProviderFile } from '../types';
+import { EmailDataRequestProvider } from "../types/Provider";
 
 class Spotify extends EmailDataRequestProvider {
     public static key = 'spotify';

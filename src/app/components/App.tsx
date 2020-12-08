@@ -10,7 +10,7 @@ import Pages from 'app/screens';
 import Notifications from './Notifications';
 import store, { persistor } from 'app/store';
 import Loading from './Loading';
-import { ProviderSubscription } from 'app/store/requests/selectors';
+import { ProviderSubscription } from 'app/store/accounts/selectors';
 import { EmailSubscription } from 'app/store/email/selectors';
 
 const Main = styled.main`

@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 rules.push({
     test: /\.(woff|woff2)$/,
+    sideEffects: true,
     use: [{
         loader: 'file-loader',
         options: {
@@ -24,6 +25,7 @@ rules.push({
 
 rules.push({
     test: /\.css$/,
+    sideEffects: true,
     use: [{
         loader: MiniCssExtractPlugin.loader,
         options: {

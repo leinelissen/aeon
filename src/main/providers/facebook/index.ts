@@ -1,6 +1,7 @@
 import { app } from 'electron';
 import { withSecureWindow } from 'main/lib/create-secure-window';
-import { DataRequestProvider, ProviderFile } from '../types';
+import { ProviderFile } from '../types';
+import { DataRequestProvider } from "../types/Provider";
 import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';

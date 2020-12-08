@@ -4,7 +4,7 @@ import Facebook from './facebook/parser';
 import Instagram from './instagram/parser';
 import LinkedIn from './linkedin/parser';
 import Spotify from './spotify/parser';
-import { ProviderParser } from './types';
+import { ProviderParser } from "./types/Data";
 
 // Contains an overview of parsers, sorted by their provider
 const providerParsers: [ ProviderParser[], string ][] = [

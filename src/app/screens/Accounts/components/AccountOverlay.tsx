@@ -11,23 +11,21 @@ import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 interface Props {
-    selectedProvider: string;
+    selectedAccount: string;
 }
 
-function ProviderOverlay({ selectedProvider }: Props): JSX.Element {
-    const account = useSelector((state: State) => state.requests.byKey[selectedProvider]);
+function AccountOverlay({ selectedAccount }: Props): JSX.Element {
+    const account = useSelector((state: State) => state.accounts.byKey[selectedAccount]);
     const [isLoading, setLoading] = useState(false);
     const handleNewRequest = useCallback(async () => {
         setLoading(true);
-        await Providers.dispatchDataRequest(selectedProvider).catch(() => null);
+        await Providers.dispatchDataRequest(selectedAccount).catch(() => null);
         setLoading(false);
-    }, [selectedProvider]);
-
-    console.log(selectedProvider);
+    }, [selectedAccount]);
 
     return (
-        <RightSideOverlay>
-            {selectedProvider && (
+        <RightSideOverlay data-tour="accounts-account-overlay">
+            {selectedAccount && (
                 <>
                     <Section>
                         <H2>
@@ -98,9 +96,9 @@ function ProviderOverlay({ selectedProvider }: Props): JSX.Element {
                             </Button>
                         </Section>
                         : 
-                        <Section>
+                        <Section data-tour="accounts-start-data-request">
                             <p>If you would like to retrieve your data, use the button below to start a new data request.</p>
-                            <p><i>Note: you may be asked to confirm your password</i></p>
+                            <p>When you click the button, a new window will appear, in which you will asked to enter your credentials. Aeon does not store any of your credentials. Rather, the window is used to perform actions on your behalf.</p>
                             <Button
                                 fullWidth
                                 icon={faPlus}
@@ -118,4 +116,4 @@ function ProviderOverlay({ selectedProvider }: Props): JSX.Element {
     );
 }
 
-export default ProviderOverlay;
+export default AccountOverlay;

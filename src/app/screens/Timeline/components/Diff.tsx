@@ -4,7 +4,7 @@ import Repository from 'app/utilities/Repository';
 import styled from 'styled-components';
 import DataType from 'app/utilities/DataType';
 import Loading from 'app/components/Loading';
-import { ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from "main/providers/types/Data";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { H2, H5 } from 'app/components/Typography';
 import { formatDistanceToNow } from 'date-fns';
@@ -62,7 +62,7 @@ class Diff extends PureComponent<Props, State> {
 
     fetchDiff = async (): Promise<void> => {
         this.setState({ diff: null });
-        const diff = await Repository.diff(this.props.commit.oid) as DiffResult<ExtractedDataDiff>[];
+        const diff = await Repository.diff(this.props.commit?.oid) as DiffResult<ExtractedDataDiff>[];
         this.setState({ diff: this.filterAndSortExtractedData(diff) });
     }
 
@@ -85,10 +85,8 @@ class Diff extends PureComponent<Props, State> {
     render(): JSX.Element {
         const diff = this.props.diff || this.state.diff;
         const { commit } = this.props;
-        const meta = convertMetaToObject(commit.message);
-        console.log(meta);
 
-        if (!diff) {
+        if (!diff || !commit) {
             return (
                 <RightSideOverlay>
                     <Loading />
@@ -96,8 +94,10 @@ class Diff extends PureComponent<Props, State> {
             );
         }
 
+        const meta = convertMetaToObject(commit?.message);
+
         return (
-            <RightSideOverlay>
+            <RightSideOverlay data-tour="timeline-diff-container">
                 <>
                     <Section>
                         <H2>
@@ -107,7 +107,7 @@ class Diff extends PureComponent<Props, State> {
                             </PullContainer>
                         </H2>
                     </Section>
-                    <Section>
+                    <Section data-tour="timeline-diff-info">
                         <PullContainer verticalAlign>
                             <FontAwesomeIcon icon={faPlus} />
                             <MarginLeft>Committed {formatDistanceToNow(new Date(commit.author.when))} ago</MarginLeft>
@@ -129,7 +129,7 @@ class Diff extends PureComponent<Props, State> {
                             <MarginLeft>{meta.url}</MarginLeft>
                         </PullContainer>}
                     </Section>
-                    <CodeRectifier>
+                    <CodeRectifier data-tour="timeline-diff-data">
                         {(diff.added.length || diff.updated.length || diff.deleted.length) ?
                             <Section smallPadding>
                                 {diff.added.length ? (

@@ -16,7 +16,7 @@ import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
 import diffMapFunction from './utilities/diff-map';
 import generateParsedCommit from './utilities/generate-parsed-commit';
-import { ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from "main/providers/types/Data";
 import RepositoryBridge from './bridge';
 
 // Define a location where the repository will be saved
@@ -187,6 +187,13 @@ class Repository extends EventEmitter {
         const refCommit = ref === 'HEAD' 
             ? await this.repository.getHeadCommit()
             : await this.repository.getCommit(ref);
+
+        // GUARD: Before any data requests are issued, there is only a single
+        // commit in the repository. This means we cannot compare anything.
+        if (!refCommit) {
+            throw new Error('No reference commit to parse');
+        }
+
         // Then retrieve the tree for the the retrieved commit
         const refTree = await refCommit.getTree();
 
@@ -271,7 +278,7 @@ class Repository extends EventEmitter {
         );
     }
     
-    public async commit(message: string): Promise<void> {
+    public async commit(message: string): Promise<string> {
         // Retrieve and write new index
         await this.index.write();
         const oid = await this.index.writeTree();
@@ -281,13 +288,15 @@ class Repository extends EventEmitter {
         const parent = await this.repository.getCommit(head);
 
         // Create commit using new index
-        await this.repository.createCommit('HEAD', this.author, this.author, message, oid, [parent]);
+        const commit = await this.repository.createCommit('HEAD', this.author, this.author, message, oid, [parent]);
 
         // Refresh index, just in case
         this.index = await this.repository.refreshIndex();
 
         // Notify app of new commit
         RepositoryBridge.send(RepositoryEvents.NEW_COMMIT);
+
+        return commit.tostrS();
     }
 
     public status(): Promise<StatusFile[]> {

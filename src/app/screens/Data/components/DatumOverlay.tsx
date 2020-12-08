@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import Button from 'app/components/Button';
-import { ProviderDatum, ProvidedDataTypes } from 'main/providers/types';
+import { ProviderDatum, ProvidedDataTypes } from "main/providers/types/Data";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCassetteTape, faClock, faHashtag, faEye, faLink, faUser } from 'app/assets/fa-light';
 import { H2 } from 'app/components/Typography';
@@ -35,7 +35,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
     }, [history, category]);
 
     return (
-        <RightSideOverlay onClose={handleClose}>
+        <RightSideOverlay onClose={handleClose} data-tour="data-datum-overlay">
             {datum && (
                 <>
                     <Section>
@@ -99,7 +99,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
                                 </span>
                             </DetailListItem>
                         }
-                        <DetailListItem>
+                        {/* <DetailListItem>
                             <span>
                                 <FontAwesomeIcon icon={faHashtag} fixedWidth />
                             </span>
@@ -114,7 +114,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
                             <span>
                                 Data is visisble
                             </span>
-                        </DetailListItem>
+                        </DetailListItem> */}
                     </Section>
                     <Section>
                         <code style={{ textTransform: 'uppercase' }}>
@@ -127,6 +127,7 @@ const DatumOverlay = (props: Props): JSX.Element => {
                             fullWidth
                             onClick={handleDelete}
                             backgroundColor={theme.colors.red}
+                            data-tour="data-delete-datum-button"
                             data-telemetry-id="datum-overlay-delete-datapoint"
                         >
                             Delete this data point

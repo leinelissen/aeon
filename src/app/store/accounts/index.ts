@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { InitialisedProvider } from 'main/providers/types';
+import { InitialisedAccount } from "main/providers/types";
 import { fetchAvailableProviders, fetchProviderAccounts, refreshRequests } from './actions';
 
-interface RequestsState {
-    byKey: Record<string, InitialisedProvider>;
+interface AccountsState {
+    byKey: Record<string, InitialisedAccount>;
     all: string[];
     allProviders: string[];
     availableProviders: Record<string, { requiresEmail: boolean, requiresUrl: boolean }>;
@@ -13,7 +13,7 @@ interface RequestsState {
     }
 }
 
-const initialState: RequestsState = {
+const initialState: AccountsState = {
     byKey: {},
     all: [],
     allProviders: [],

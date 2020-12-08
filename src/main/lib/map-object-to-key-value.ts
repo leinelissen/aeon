@@ -1,4 +1,4 @@
-import { ProviderDatum } from 'main/providers/types';
+import { ProviderDatum } from "main/providers/types/Data";
 
 /**
  * Maps an object that is written as { key: value } to an object that is written

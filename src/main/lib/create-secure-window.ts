@@ -1,4 +1,4 @@
-import { BrowserWindow, Session, session } from 'electron';
+import { BrowserWindow } from 'electron';
 import { URL } from 'url';
 import crypto from 'crypto';
 

@@ -2,7 +2,7 @@ import {
     ProviderParser,
     ProvidedDataTypes,
     ProviderDatum
-} from '../types';
+} from "../types/Data";
 
 /**
  * Will transform a string of values seperated by semicolons into an array of strings

@@ -1,4 +1,5 @@
-import { OpenDataRightsProvider, ProviderFile } from '../types';
+import { ProviderFile } from '../types';
+import { OpenDataRightsProvider } from "../types/Provider";
 import fetch, { RequestInit } from 'node-fetch';
 import store from 'main/store';
 import AdmZip from 'adm-zip';

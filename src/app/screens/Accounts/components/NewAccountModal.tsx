@@ -1,17 +1,19 @@
-import React, { PropsWithChildren, useCallback, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { faPlus } from 'app/assets/fa-light';
 import Button from 'app/components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Modal from 'app/components/Modal';
 import ModalMenu from 'app/components/Modal/Menu';
 import { PullContainer, MarginLeft, Margin, PullCenter } from 'app/components/Utility';
-import { addProviderAccount } from 'app/store/requests/actions';
+import { addProviderAccount } from 'app/store/accounts/actions';
 import { State, useAppDispatch } from 'app/store';
 import { useSelector } from 'react-redux';
 import Providers from 'app/utilities/Providers';
 import { Dropdown, Label, TextInput } from 'app/components/Input';
 import { InitOptionalParameters } from 'main/providers/types';
 import isValidUrl from 'app/utilities/isValidUrl';
+import { useHistory, useLocation } from 'react-router-dom';
+import Tour from 'app/components/Tour';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
@@ -44,35 +46,51 @@ function NewAccountButton({ client, children, onComplete, optionalParameters, ..
 }
 
 function NewAccountModal(): JSX.Element {
-    const allProviders = useSelector((state: State) => state.requests.allProviders);
-    const availableProviders = useSelector((state: State) => state.requests.availableProviders);
+    const location = useLocation();
+    const history = useHistory();
+    const allProviders = useSelector((state: State) => state.accounts.allProviders);
+    const availableProviders = useSelector((state: State) => state.accounts.availableProviders);
     const emailAccounts = useSelector((state: State) => state.email.accounts.all);
     const [modalIsOpen, setModal] = useState(false);
     const [selectedEmail, setSelectedEmail] = useState(emailAccounts.length ? emailAccounts[0] : '');
     const [selectedUrl, setSelectedUrl] = useState('');
-    const openModal = useCallback(() => setModal(true), [setModal]);
-    const closeModal = useCallback(() => setModal(false), [setModal]);
+    const closeModal = useCallback(() => history.push(location.pathname), [location]);
+    const openModal = useCallback(() => history.push(location.pathname + '?create-new-account'), [location]);
     const handleUrlChange = useCallback((event) => setSelectedUrl(event.target.value), [setSelectedUrl]);
     
-    console.log(availableProviders['open-data-rights'].requiresUrl && !isValidUrl(selectedUrl), isValidUrl(selectedUrl), selectedUrl);
+    // Make whether the modal is open dependent on the query parameters
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        setModal(params.has('create-new-account'));
+    }, [location, setModal]);
+    
+    // Redirect a user to the Create New Email Account modal, when they select
+    // the option from the email accounts dropdown
+    useEffect(() => {
+        if (selectedEmail === 'Create New Email Account...') {
+            history.push('/settings/email-accounts?create-new-email-account');
+            setSelectedEmail(emailAccounts.length ? emailAccounts[0] : '');
+        }
+    }, [selectedEmail, setSelectedEmail, history]);
     
     return (
         <>
-            <Button fullWidth icon={faPlus} onClick={openModal}>
+            <Button fullWidth icon={faPlus} onClick={openModal} data-tour="accounts-create-account">
                 Add new account
             </Button>
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
                 <ModalMenu labels={allProviders.map((key) =>
-                    <PullContainer verticalAlign key={key}><FontAwesomeIcon icon={Providers.getIcon(key)} /><MarginLeft>{key}</MarginLeft></PullContainer>
+                    <PullContainer verticalAlign key={key}><FontAwesomeIcon icon={Providers.getIcon(key)} /><MarginLeft>{key.replace(/(-|_)/g, ' ')}</MarginLeft></PullContainer>
                 )}>
                     {allProviders.map((key) => (
                         <Margin key={key}>
                             <p>By adding a new account for {key}, you are able to retrieve your data from them.</p>
+                            <p>When you create a new account, a window will pop up asking for your credentials. Aeon will never store your credentials. Rather, when you log in, Aeon can hijack the window to perform actions on your behalf. These actions are limited to doing data requests for you.</p>
                             {availableProviders[key].requiresEmail &&
                                 <>
                                     <p>In order to use this provider, you must link an email address to Aeon. </p>
                                     <Dropdown 
-                                        options={emailAccounts}
+                                        options={[...emailAccounts, 'Create New Email Account...']}
                                         label="Email Account" 
                                         value={selectedEmail}
                                         onSelect={setSelectedEmail}
@@ -107,12 +125,13 @@ function NewAccountModal(): JSX.Element {
                                         || availableProviders[key].requiresUrl && !isValidUrl(selectedUrl)
                                     }
                                 >
-                                    Add new account
+                                    Add new {key.replace(/(-|_)/g, ' ')} account
                                 </NewAccountButton>
                             </PullCenter>
                         </Margin>
                     ))}
                 </ModalMenu>
+                <Tour tour="/screen/accounts/new-account" />
             </Modal>
         </>
     );

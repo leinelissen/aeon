@@ -1,6 +1,7 @@
 import React, { Component, useCallback, PropsWithChildren } from 'react';
 import Loading, { Ball } from 'app/components/Loading';
-import { DataRequestStatus, ProviderEvents } from 'main/providers/types';
+import { DataRequestStatus } from 'main/providers/types';
+import { ProviderEvents } from "main/providers/types/Events";
 import Providers from 'app/utilities/Providers';
 import styled, { css } from 'styled-components';
 import theme from 'app/styles/theme';

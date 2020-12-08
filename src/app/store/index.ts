@@ -19,7 +19,7 @@ import migrations from './migrations';
 import newCommits from './new-commits';
 import onboarding from './onboarding';
 import telemetry from './telemetry';
-import requests from './requests';
+import accounts from './accounts';
 import email from './email';
 
 // The root reducer contains all the individual reducers that make up the store
@@ -27,7 +27,7 @@ const rootReducer = combineReducers({
     newCommits,
     onboarding,
     telemetry,
-    requests,
+    accounts,
     email
 });
 
@@ -38,7 +38,7 @@ export type State = ReturnType<typeof rootReducer>;
 const persistConfig: PersistConfig<State> = {
     key: 'app_store',
     storage: ElectronStorage(),
-    version: 6,
+    version: 8,
     migrate: createMigrate(migrations),
     serialize: false,
     deserialize: false,

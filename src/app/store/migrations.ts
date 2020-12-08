@@ -19,7 +19,23 @@ const migrations: MigrationManifest = {
                 availableProviders: [],
                 all: [],
                 byKey: {},
-                isLoading: state.requests.isLoading,
+                isLoading: state.accounts.isLoading,
+            }
+        }
+    },
+    7: (state) => {
+        const { requests, ...rest} = state;
+        return {
+            ...rest,
+            accounts: requests,
+        }
+    },
+    8: (state) => {
+        return {
+            ...state,
+            onboarding: {
+                initialisation: false,
+                tour: [],
             }
         }
     }

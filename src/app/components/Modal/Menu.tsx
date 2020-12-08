@@ -15,6 +15,7 @@ const MenuContainer = styled.div<{ active?: boolean; }>`
         border-bottom: 3px solid transparent;
         margin-right: 16px;
         color: ${theme.colors.grey.dark};
+        text-transform: capitalize;
 
         &.active {
             border-color: ${theme.colors.black};
@@ -34,19 +35,19 @@ type Props = {
     labels?: JSX.Element[] | string[];
 }
 
-function ModalMenu({ children, labels = [] }: Props): JSX.Element {
+function ModalMenu({ children, labels = [], }: Props): JSX.Element {
     const [selectedItem, setSelectedItem] = useState(0);
 
     return (
         <>
-            <MenuContainer>
+            <MenuContainer data-tour="modal-menu-options">
                 {[...new Array(Array.isArray(children) ? children.length : 1)].map((a, i) =>
                     <SimpleButton key={i} onClick={() => setSelectedItem(i)} className={selectedItem === i ? 'active' : ''}>
                         {labels[i] || i}
                     </SimpleButton>
                 )}
             </MenuContainer>
-            <div>
+            <div data-tour="modal-menu-container">
                 {Array.isArray(children) ? children[selectedItem] : children}
             </div>
         </>

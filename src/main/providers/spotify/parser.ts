@@ -1,5 +1,5 @@
 import path from 'path';
-import { Address, PlayedSong, ProvidedDataTypes, ProviderParser } from '../types';
+import { Address, PlayedSong, ProvidedDataTypes, ProviderParser } from "../types/Data";
 
 type SpotifyStreamHistorySong = {
     endTime: string;
