@@ -7,7 +7,6 @@ import {
     PrivacySetting,
     PostSeen
 } from "../types/Data";
-import { parseISO } from 'date-fns';
 import { objectToKeyValueTransformer } from 'main/lib/map-object-to-key-value';
 import { REPOSITORY_PATH } from 'main/lib/repository';
 import path from 'path';
@@ -89,7 +88,7 @@ const parsers: ProviderParser[] = [
                     return Object.keys(obj).map((key): Partial<Follower> => {
                         return {
                             data: key,
-                            timestamp: parseISO(obj[key]),
+                            timestamp: obj[key],
                         };
                     });
                 }
@@ -100,7 +99,7 @@ const parsers: ProviderParser[] = [
                     return Object.keys(obj).map((key): Partial<AccountFollowing> => {
                         return {
                             data: key,
-                            timestamp: parseISO(obj[key]),
+                            timestamp: obj[key],
                         };
                     });
                 }
@@ -128,7 +127,7 @@ const parsers: ProviderParser[] = [
                             url: 'file://' + path.join(REPOSITORY_PATH, Instagram.key, photo.path),
                             description: photo.caption
                         },
-                        timestamp: parseISO(photo.taken_at)
+                        timestamp: photo.taken_at
                     }))
                 }
             },
@@ -141,7 +140,7 @@ const parsers: ProviderParser[] = [
                             url: 'file://' + path.join(REPOSITORY_PATH, Instagram.key, photo.path),
                             description: photo.caption
                         },
-                        timestamp: parseISO(photo.taken_at)
+                        timestamp: photo.taken_at
                     }))
                 }
             }
@@ -154,7 +153,7 @@ const parsers: ProviderParser[] = [
                 key: 'date_joined',
                 type: ProvidedDataTypes.JOIN_DATE,
                 // eslint-disable-next-line
-                transformer: (date: string): any => ({ timestamp: parseISO(date) }),
+                transformer: (date: string): any => ({ timestamp: date })
             }, 
             {
                 key: 'email',
@@ -201,7 +200,7 @@ const parsers: ProviderParser[] = [
                 transformer: (obj: { timestamp: string; author: string }[]): Partial<PostSeen>[] => {
                     return obj.map((post): Partial<PostSeen> => ({
                         data: post.author,
-                        timestamp: parseISO(post.timestamp)
+                        timestamp: post.timestamp
                     }));
                 }
             }

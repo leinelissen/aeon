@@ -62,7 +62,7 @@ const parsers: ProviderParser[] = [
                             name: entry?.data?.name,
                             uri: entry?.data?.uri,
                         },
-                        timestamp: entry.timestamp && new Date(entry.timestamp * 1000)
+                        timestamp: entry.timestamp && new Date(entry.timestamp * 1000).toString()
                     };
                 }
             }
@@ -90,7 +90,7 @@ const parsers: ProviderParser[] = [
                                 website: website.name,
                                 type: event.type,
                             },
-                            timestamp: new Date(event.timestamp * 1000)
+                            timestamp: new Date(event.timestamp * 1000).toString(),
                         };
                     });
                 }
@@ -224,7 +224,7 @@ const parsers: ProviderParser[] = [
             {
                 key: 'registration_timestamp',
                 type: ProvidedDataTypes.REGISTRATION_DATE,
-                transformer: (timestamp: number) => [{ data: new Date(timestamp * 1000) }],
+                transformer: (timestamp: number) => [{ data: new Date(timestamp * 1000).toString() }],
             },
         ]
     },
@@ -236,7 +236,7 @@ const parsers: ProviderParser[] = [
             transformer: (query: any): Partial<SearchQuery> => {
                 return {
                     data: query.data.reduce((sum: string, q: any) => sum + q.text, ''),
-                    timestamp: new Date(query.timestamp * 1000),
+                    timestamp: new Date(query.timestamp * 1000).toString(),
                 };
             }
         }]
@@ -254,7 +254,7 @@ const parsers: ProviderParser[] = [
                         advertiser_id: device.advertiser_id,
                         device_locale: device.device_locale,
                     },
-                    timestamp: new Date(device.update_time * 1000),
+                    timestamp: new Date(device.update_time * 1000).toString(),
                 }
             }
         }]
@@ -267,7 +267,7 @@ const parsers: ProviderParser[] = [
             transformer: (entry: any) => {
                 return {
                     data: entry.ip,
-                    timestamp: new Date(entry.timestamp * 1000),
+                    timestamp: new Date(entry.timestamp * 1000).toString(),
                 }
             }
         }]

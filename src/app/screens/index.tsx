@@ -7,6 +7,8 @@ import Data from './Data';
 import Accounts from './Accounts';
 import Settings from './Settings';
 import Graph from './Graph';
+import Erasure from './Erasure';
+import ErasureEmails from './Erasure/Emails';
 
 function Router(): JSX.Element {
     return (
@@ -32,6 +34,12 @@ function Router(): JSX.Element {
                     </Route>
                     <Route path="/settings/:category?/:settingId?">
                         <Settings />
+                    </Route>
+                    <Route exact path="/erasure">
+                        <Erasure />
+                    </Route>
+                    <Route path="/erasure/emails">
+                        <ErasureEmails />
                     </Route>
                     <Route exact path="/">
                         <Onboarding />

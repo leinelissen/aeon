@@ -64,12 +64,12 @@ async function generateParsedCommit(
     if (filepath.startsWith('open-data-rights')) {
         // Retrieve the hostname and account from the path. Also gather the rest
         // of the path so we can clarify the exact source
-        const [, hostname, account, ...rest] = filepath.split(path.sep);
+        const [, hostname, account, ...rest] = filepath.split('/');
         return parseOpenDataRights(
             object as OpenDataRightsDatum[],
             hostname,
             account,
-            rest.join(path.sep)
+            rest.join('/')
         );
     }
     
@@ -83,7 +83,7 @@ async function generateParsedCommit(
 
 
     // Retrieve the account from the pathname
-    const [, account] = filepath.split(path.sep);
+    const [, account] = filepath.split('/');
 
     return parseSchema(object, parser, account);
 }

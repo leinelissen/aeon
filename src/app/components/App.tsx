@@ -10,6 +10,7 @@ import Pages from 'app/screens';
 import Notifications from './Notifications';
 import store, { persistor } from 'app/store';
 import Loading from './Loading';
+import { RepositorySubscription } from 'app/store/data/selectors';
 import { ProviderSubscription } from 'app/store/accounts/selectors';
 import { EmailSubscription } from 'app/store/email/selectors';
 
@@ -36,6 +37,7 @@ class App extends Component {
                             {/** Subscription managers */}
                             <ProviderSubscription />
                             <EmailSubscription />
+                            <RepositorySubscription />
                             {/* <Telemetry /> */}
                         </PersistGate>
                     </Provider>

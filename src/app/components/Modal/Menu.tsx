@@ -12,7 +12,7 @@ const MenuContainer = styled.div<{ active?: boolean; }>`
     ${SimpleButton} {
         height: 40px;
         background-color: ${theme.colors.white};
-        border-bottom: 3px solid transparent;
+        border-bottom: 2px solid transparent;
         margin-right: 16px;
         color: ${theme.colors.grey.dark};
         text-transform: capitalize;

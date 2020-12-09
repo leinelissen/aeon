@@ -1,6 +1,7 @@
 import {
     contextBridge,
-    ipcRenderer
+    ipcRenderer,
+    shell
 } from 'electron';
 // eslint-disable-next-line
 import sourceMapSupport from 'source-map-support';
@@ -19,7 +20,8 @@ declare global {
                 persist: (store: unknown) => void;
                 retrieve: () => State;
                 clear: () => void;
-            }
+            },
+            openExternalLink: (link: string) => Promise<void>;
         };
     }
 }
@@ -63,5 +65,6 @@ contextBridge.exposeInMainWorld(
             }
         },
         sourceMapSupport: sourceMapSupport,
+        openExternalLink: (link: string) => shell.openExternal(link)
     },
 );

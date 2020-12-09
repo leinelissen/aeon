@@ -22,7 +22,8 @@ export type TourKeys = '/screen/timeline'
     | '/screen/settings'
     | '/screen/accounts/has-accounts'
     | '/screen/accounts/no-accounts'
-    | '/screen/accounts/new-account';
+    | '/screen/accounts/new-account'
+    | '/screen/erasure';
 
 const steps: Record<TourKeys, ReactourStep[]> = {
     '/screen/timeline': [
@@ -151,6 +152,12 @@ const steps: Record<TourKeys, ReactourStep[]> = {
         }
     ],
     '/screen/settings': [],
+    '/screen/erasure': [
+        {
+            content: 'You\'ve just tentatively deleted a data point. When you\'re done selecting data points, head over to the Erasure screen to create a erasure request.',
+            selector: '[data-tour="erasure-screen"]'
+        }
+    ]
 }
 
 export default steps;

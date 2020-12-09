@@ -1,5 +1,3 @@
-import path from 'path';
-
 import Facebook from './facebook/parser';
 import Instagram from './instagram/parser';
 import LinkedIn from './linkedin/parser';
@@ -57,7 +55,7 @@ export const parsersByProvider: Map<string, Map<string, ProviderParser>> = new M
 export function getParserByFileName(filepath: string): ProviderParser | void {
     // First, we'll split the filename, where the first directory should match
     // the key of the provider
-    const [provider, ...rest] = filepath.split(path.sep);
+    const [provider, ...rest] = filepath.split('/');
 
     // Then we'll retrieve the particular set of parsers for this provider
     const parserMap = parsersByProvider.get(provider);
