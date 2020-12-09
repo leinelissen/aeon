@@ -161,7 +161,7 @@ const steps: Record<TourKeys, ReactourStep[]> = {
 }
 
 // Tentatively add a tour step for creating email-based data requests
-if (process.env.DEMO_MODE === 'true') {
+if (window.api.env.DEMO_MODE) {
     steps['/screen/accounts/new-account'].push({
         selector: '[data-tour="accounts-create-account-email"]',
         content: 'Or, if the organisation you want to get data from an organisation that does not support any of the other methods, you can just send a plain old email! Just link an email account to Aeon and select the organisation you want to get your data from.'

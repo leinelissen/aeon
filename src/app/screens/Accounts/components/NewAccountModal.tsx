@@ -57,7 +57,7 @@ function NewAccountModal(): JSX.Element {
     // If demo mode is activated, we insert a dummy 'email' provider option,
     // which theoretically can be used to automatically send emails to
     // providers, but as of yet is not working. Lets call it Wizard of Oz.
-    const all = process.env.DEMO_MODE === 'true'
+    const all = window.api.env.DEMO_MODE
         ? [...allProviders, 'email']
         : allProviders;
 
