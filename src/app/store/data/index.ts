@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { forEach } from 'lodash-es';
 import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types/Data';
-import { deleteDatum, fetchParsedCommit } from './actions';
+import { deleteDatum, fetchParsedCommit, resetDeletedData } from './actions';
 
 interface DataState {
     all: number[];
@@ -73,6 +73,11 @@ const data = createSlice({
                 state.deletedByProvider[datum.provider] = [];
             }
             state.deletedByProvider[datum.provider].push(action.payload);
+        });
+        builder.addCase(resetDeletedData, state => {
+            state.deleted = [];
+            state.deletedByType = initialState.deletedByType;
+            state.deletedByProvider = {};
         });
     }
 });

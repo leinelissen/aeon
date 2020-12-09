@@ -8,4 +8,8 @@ export const fetchParsedCommit = createAsyncThunk(
 
 export const deleteDatum = createAction<number>(
     '/data/datum/delete',
+);
+
+export const resetDeletedData = createAction(
+    '/data/datum/reset-deleted'
 )

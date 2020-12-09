@@ -11,6 +11,7 @@ export const MarginSmall = styled.div`
 interface PullContainerProps {
     vertical?: boolean;
     verticalAlign?: boolean;
+    center?: boolean;
 }
 
 export const PullContainer = styled.div<PullContainerProps>`
@@ -22,6 +23,10 @@ export const PullContainer = styled.div<PullContainerProps>`
 
     ${props => props.verticalAlign && css`
         align-items: center;
+    `}
+
+    ${props => props.center && css`
+        justify-content: center;
     `}
 `;
 

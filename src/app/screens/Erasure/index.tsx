@@ -1,10 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from 'app/assets/fa-light';
-import Button from 'app/components/Button';
+import Button, { GhostButton } from 'app/components/Button';
 import Modal from 'app/components/Modal';
 import { H3 } from 'app/components/Typography';
-import { MarginSmall } from 'app/components/Utility';
-import { State } from 'app/store';
+import { MarginSmall, PullContainer } from 'app/components/Utility';
+import { State, useAppDispatch } from 'app/store';
+import { resetDeletedData } from 'app/store/data/actions';
 import theme from 'app/styles/theme';
 import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';
@@ -31,6 +32,11 @@ const Provider = styled.div`
     margin-bottom: 25px;
 `;
 
+const ResetButton = styled(GhostButton)`
+    margin-left: 8px;
+    background-color: transparent;
+`;
+
 const ScrollContainer = styled.div`
     background-color: ${theme.colors.red}10;
     font-family: 'IBM Plex Mono';
@@ -43,6 +49,7 @@ const ScrollContainer = styled.div`
 
 function Erasure(): JSX.Element {
     const history = useHistory();
+    const dispatch = useAppDispatch();
     const { byKey, deleted, deletedByProvider } = useSelector((state: State) => state.data);
 
     // Redirect to timeline on menu item close
@@ -55,9 +62,15 @@ function Erasure(): JSX.Element {
         history.push('/erasure/emails');
     }, [history]);
 
+    // Reset the deleted items, and close the modal
+    const handleReset = useCallback(() => {
+        dispatch(resetDeletedData());
+        handleClose();
+    }, [handleClose, dispatch]);
+
     return (
         <Modal isOpen onRequestClose={handleClose}>
-            <MarginSmall><p>You have selected the following data points for removal:</p></MarginSmall>
+            <MarginSmall><p>You have selected the following data point{deleted.length > 1 ? 's' : ''} for removal</p></MarginSmall>
             <ScrollContainer>
                 {Object.keys(deletedByProvider).map(provider => (
                     <Provider key={provider}>
@@ -79,10 +92,16 @@ function Erasure(): JSX.Element {
                 ))}
             </ScrollContainer>
             <MarginSmall>
-                <p>When you&apos;re ready to erase these data-points with their respective providers, click the button below. You will need to send out the notices yourself.</p>
-                <Button backgroundColor={theme.colors.red} fullWidth icon={faTrash} onClick={handleDelete}>
-                    Remove {deleted.length} data {deleted.length > 1 ? 'points' : 'point'}
-                </Button>
+                <p>To actually remove this data from their origins, you must send a request for erasure to the organisation processing it. So long as the organisation is processing this data, it will remain in Aeon.</p>
+                <p>When you&apos;re ready to erase these data-points with their respective providers, click the button below. This will generate a seperate email for each source, which will you need to send out yourself.</p>
+                <PullContainer center>
+                    <Button backgroundColor={theme.colors.red} icon={faTrash} onClick={handleDelete}>
+                        Remove {deleted.length} data {deleted.length > 1 ? 'points' : 'point'}
+                    </Button>
+                    <ResetButton onClick={handleReset}>
+                        Reset removed data points
+                    </ResetButton>
+                </PullContainer>
             </MarginSmall>
         </Modal>
     );

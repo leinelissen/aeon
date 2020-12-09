@@ -8,6 +8,7 @@ import theme from 'app/styles/theme';
 import { useSelector } from 'react-redux';
 import { State } from 'app/store';
 import { PullDown } from './Utility';
+import Tour from './Tour';
 
 export const MenuContainer = styled.div`
     display: grid;
@@ -146,10 +147,13 @@ export default function Menu(): JSX.Element {
                 <span>Settings</span>
             </Link>
             {deleted.length ? (
-                <Link to="/erasure" activeClassName="active">
-                    <span className="icon"><FontAwesomeIcon icon={faTrash} fixedWidth /></span>
-                    <span>Erasure ({deleted.length})</span>
-                </Link>
+                <>
+                    <Link to="/erasure" activeClassName="active" data-tour="erasure-screen">
+                        <span className="icon"><FontAwesomeIcon icon={faTrash} fixedWidth /></span>
+                        <span>Erasure ({deleted.length})</span>
+                    </Link>
+                    <Tour tour="/screen/erasure" />
+                </>
             ) : null}
             <PullDown>
                 <AeonLogo><img src={Emblem} /></AeonLogo>
