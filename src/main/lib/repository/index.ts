@@ -32,7 +32,7 @@ class Repository extends EventEmitter {
     /**
      * The repository path for nodegit
      */
-    dir = path.join(REPOSITORY_PATH, '.git');
+    dir = path.join(REPOSITORY_PATH, '.git').replace(/\\/g, '/');
 
     /**
      * Whether the git repository is ready for querying
@@ -78,7 +78,7 @@ class Repository extends EventEmitter {
         console.log('Repository was not found, creating a new one');
 
         // First we'll initiate the repository
-        // await git.init(this.config)
+        await fs.promises.mkdir(this.dir, { recursive: true });
         const repository = await NodeGitRepository.init(this.dir, 0);
 
         // Then we'll write a file to disk so that the repository is populated
@@ -86,9 +86,6 @@ class Repository extends EventEmitter {
         await fs.promises.writeFile(path.resolve(REPOSITORY_PATH, readmePath), Buffer.from('# Aeon Repository', 'utf8'));
 
         // And create a first commit with the file
-        // await git.add({ ...this.config, filepath: readmePath });
-        // await git.commit({ ...this.config, author: this.author, message:
-        // 'Initial commit' })
         const index = await repository.refreshIndex();
         await index.addByPath(readmePath);
         await index.write();
