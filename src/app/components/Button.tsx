@@ -22,7 +22,6 @@ const StyledButtonStyles = css<ButtonProps>`
     font-size: 14px;
     font-weight: 400;
     text-decoration: none !important;
-    /* flex: 0 0 auto; */
     border-radius: 5px;
     outline: 0 !important;
     margin: 5px 0;

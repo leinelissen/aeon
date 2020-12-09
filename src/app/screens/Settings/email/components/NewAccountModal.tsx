@@ -8,7 +8,7 @@ import { Margin, MarginLeft, PullCenter, PullContainer } from 'app/components/Ut
 import { useAppDispatch } from 'app/store';
 import { createEmailAccount } from 'app/store/email/actions';
 import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 

@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { forEach } from 'lodash-es';
 import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types/Data';
 import { deleteDatum, fetchParsedCommit, resetDeletedData } from './actions';
 

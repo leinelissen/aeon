@@ -1,5 +1,3 @@
-import path from 'path';
-
 import Facebook from './facebook/parser';
 import Instagram from './instagram/parser';
 import LinkedIn from './linkedin/parser';

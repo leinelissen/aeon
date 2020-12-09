@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from 'app/assets/fa-light';
-import Button, { LinkButton } from 'app/components/Button';
+import Button from 'app/components/Button';
 import Modal from 'app/components/Modal';
 import ModalMenu from 'app/components/Modal/Menu';
 import { PullContainer, MarginLeft, MarginSmall } from 'app/components/Utility';
@@ -45,9 +45,6 @@ function ErasureEmails(): JSX.Element {
 
                     return (
                         <>
-                            {/* <MarginSmall key={provider}>
-                                <p>Send out the following email:</p>
-                            </MarginSmall>     */}
                             <ScrollContainer>
                                 {email}
                             </ScrollContainer>
