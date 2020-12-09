@@ -1,6 +1,11 @@
 import DataType from 'app/utilities/DataType';
 import { ProviderDatum } from 'main/providers/types/Data';
 
+/**
+ * Generate an email body using the supplied data, with the selected provider.
+ * Email text courtesy of Bits of Freedom, adapted 09/12/2020, from:
+ * https://code.bitsoffreedom.nl/bitsoffreedom/mydatadoneright/frontend/-/tree/master/assets/locales/en
+ */
 function generateEmail(data: ProviderDatum<unknown, unknown>[], provider: string): string {
     return `
         Date: ${new Date().toLocaleDateString()}
