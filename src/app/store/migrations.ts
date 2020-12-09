@@ -38,6 +38,18 @@ const migrations: MigrationManifest = {
                 tour: [],
             }
         }
+    },
+    9: (state) => {
+        return {
+            ...state,
+            accounts: {
+                ...state.accounts,
+                emailProviders: {
+                    all: [],
+                    byKey: {},
+                }
+            }
+        }
     }
 }
 

@@ -14,6 +14,7 @@ import { InitOptionalParameters } from 'main/providers/types';
 import isValidUrl from 'app/utilities/isValidUrl';
 import { useHistory, useLocation } from 'react-router-dom';
 import Tour from 'app/components/Tour';
+import EmailProvider from './EmailProvider';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
@@ -48,15 +49,35 @@ function NewAccountButton({ client, children, onComplete, optionalParameters, ..
 function NewAccountModal(): JSX.Element {
     const location = useLocation();
     const history = useHistory();
-    const allProviders = useSelector((state: State) => state.accounts.allProviders);
-    const availableProviders = useSelector((state: State) => state.accounts.availableProviders);
+
+    // Selectors
+    const { allProviders, availableProviders} = useSelector((state: State) => state.accounts);
     const emailAccounts = useSelector((state: State) => state.email.accounts.all);
+    
+    // If demo mode is activated, we insert a dummy 'email' provider option,
+    // which theoretically can be used to automatically send emails to
+    // providers, but as of yet is not working. Lets call it Wizard of Oz.
+    const all = process.env.DEMO_MODE === 'true'
+        ? [...allProviders, 'email']
+        : allProviders;
+
+    // State    
     const [modalIsOpen, setModal] = useState(false);
     const [selectedEmail, setSelectedEmail] = useState(emailAccounts.length ? emailAccounts[0] : '');
     const [selectedUrl, setSelectedUrl] = useState('');
-    const closeModal = useCallback(() => history.push(location.pathname), [location]);
-    const openModal = useCallback(() => history.push(location.pathname + '?create-new-account'), [location]);
-    const handleUrlChange = useCallback((event) => setSelectedUrl(event.target.value), [setSelectedUrl]);
+
+    // Handlers
+    const closeModal = useCallback(() => {
+        history.push(location.pathname)
+    }, [location]);
+
+    const openModal = useCallback(() => { 
+        history.push(location.pathname + '?create-new-account')
+    }, [location]);
+
+    const handleUrlChange = useCallback((event) => { 
+        setSelectedUrl(event.target.value)
+    }, [setSelectedUrl]);
     
     // Make whether the modal is open dependent on the query parameters
     useEffect(() => {
@@ -79,16 +100,22 @@ function NewAccountModal(): JSX.Element {
                 Add new account
             </Button>
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-                <ModalMenu labels={allProviders.map((key) =>
+                <ModalMenu labels={all.map((key) =>
                     <PullContainer verticalAlign key={key}><FontAwesomeIcon icon={Providers.getIcon(key)} /><MarginLeft>{key.replace(/(-|_)/g, ' ')}</MarginLeft></PullContainer>
                 )}>
-                    {allProviders.map((key) => (
-                        <Margin key={key}>
-                            <p>By adding a new account for {key}, you are able to retrieve your data from them.</p>
-                            <p>When you create a new account, a window will pop up asking for your credentials. Aeon will never store your credentials. Rather, when you log in, Aeon can hijack the window to perform actions on your behalf. These actions are limited to doing data requests for you.</p>
-                            {availableProviders[key].requiresEmail &&
+                    {all.map((key) => key === 'email' ? 
+                        <EmailProvider key="email" />
+                        : (
+                            <Margin key={key}>
+                                {key !== 'email' && key !== 'open-data-rights'
+                                    ? <p>By adding a new account for {key}, you are able to retrieve your data from them.</p>
+                                    : <p>With this option, you are requesting your data for another organisation that is served by this method.</p>}
+                                {key !== 'email' 
+                                    ? <p>When you create a new account, a window will pop up asking for your credentials. Aeon will never store your credentials. Rather, when you log in, Aeon can hijack the window to perform actions on your behalf. These actions are limited to doing data requests for you.</p> 
+                                    : null}
+                                {availableProviders[key].requiresEmail &&
                                 <>
-                                    <p>In order to use this provider, you must link an email address to Aeon. </p>
+                                    <p>In order to use this provider, you must link an email address to Aeon. Selected a previously linked email address in the list below or link one first.</p>
                                     <Dropdown 
                                         options={[...emailAccounts, 'Create New Email Account...']}
                                         label="Email Account" 
@@ -97,8 +124,8 @@ function NewAccountModal(): JSX.Element {
                                         disabled={emailAccounts.length === 0}
                                     />
                                 </>
-                            }
-                            {availableProviders[key].requiresUrl &&
+                                }
+                                {availableProviders[key].requiresUrl &&
                                 <>
                                     <p>This provider allows you to get data from any organisation that supports the Open Data Rights API. Please enter the URL for the organisation:</p>
                                     <Label>
@@ -111,25 +138,25 @@ function NewAccountModal(): JSX.Element {
                                         />
                                     </Label>
                                 </>
-                            }
-                            <PullCenter>
-                                <NewAccountButton
-                                    client={key}
-                                    optionalParameters={{
-                                        accountName: availableProviders[key].requiresEmail ? selectedEmail : undefined,
-                                        apiUrl: availableProviders[key].requiresUrl ? selectedUrl : undefined
-                                    }}
-                                    onComplete={closeModal}
-                                    disabled={
-                                        availableProviders[key].requiresEmail && selectedEmail === ''
+                                }
+                                <PullCenter>
+                                    <NewAccountButton
+                                        client={key}
+                                        optionalParameters={{
+                                            accountName: availableProviders[key].requiresEmail ? selectedEmail : undefined,
+                                            apiUrl: availableProviders[key].requiresUrl ? selectedUrl : undefined
+                                        }}
+                                        onComplete={closeModal}
+                                        disabled={
+                                            availableProviders[key].requiresEmail && selectedEmail === ''
                                         || availableProviders[key].requiresUrl && !isValidUrl(selectedUrl)
-                                    }
-                                >
+                                        }
+                                    >
                                     Add new {key.replace(/(-|_)/g, ' ')} account
-                                </NewAccountButton>
-                            </PullCenter>
-                        </Margin>
-                    ))}
+                                    </NewAccountButton>
+                                </PullCenter>
+                            </Margin>
+                        ))}
                 </ModalMenu>
                 <Tour tour="/screen/accounts/new-account" />
             </Modal>

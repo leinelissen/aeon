@@ -27,6 +27,10 @@ const MenuContainer = styled.div<{ active?: boolean; }>`
             border-width: 1px;
             padding-bottom: 2px;
         }
+
+        &:first-child {
+            margin-left: 40px;
+        }
     }
 `;
 
@@ -37,7 +41,7 @@ type Props = {
 
 function ModalMenu({ children, labels = [], }: Props): JSX.Element {
     const [selectedItem, setSelectedItem] = useState(0);
-
+    
     return (
         <>
             <MenuContainer data-tour="modal-menu-options">

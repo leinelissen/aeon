@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { InitialisedAccount } from "main/providers/types";
-import { fetchAvailableProviders, fetchProviderAccounts, refreshRequests } from './actions';
+import { createEmailAccount, dispatchEmailRequest, fetchAvailableProviders, fetchProviderAccounts, refreshRequests } from './actions';
+import { EmailProvider } from './types';
 
 interface AccountsState {
     byKey: Record<string, InitialisedAccount>;
@@ -10,6 +11,10 @@ interface AccountsState {
     isLoading: {
         requests: boolean;
         refresh: boolean;
+    }
+    emailProviders: {
+        all: string[];
+        byKey: Record<string, EmailProvider>;
     }
 }
 
@@ -21,6 +26,10 @@ const initialState: AccountsState = {
     isLoading: {
         requests: false,
         refresh: false,
+    },
+    emailProviders: {
+        all: [],
+        byKey: {},
     }
 }
 
@@ -42,6 +51,15 @@ const requestsSlice = createSlice({
         builder.addCase(fetchAvailableProviders.fulfilled, (state, action) => {
             state.allProviders = Object.keys(action.payload);
             state.availableProviders = action.payload;
+        });
+        builder.addCase(createEmailAccount, (state, action) => {
+            if (!state.emailProviders.all.includes(action.payload.account)) {
+                state.emailProviders.all.push(action.payload.account);
+            }
+            state.emailProviders.byKey[action.payload.account] = action.payload;
+        });
+        builder.addCase(dispatchEmailRequest, (state, action) => {
+            state.emailProviders.byKey[action.payload].status.dispatched = new Date().toString()
         });
     }
 });

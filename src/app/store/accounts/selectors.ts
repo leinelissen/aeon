@@ -11,6 +11,7 @@ type RequestState = {
     accounts: State['accounts']['all']
     map: State['accounts']['byKey']
     isLoading: State['accounts']['isLoading']['requests'];
+    email: State['accounts']['emailProviders'];
 }
 
 /**
@@ -23,6 +24,7 @@ export function useAccounts(): RequestState {
         accounts: requests.all,
         map: requests.byKey,
         isLoading: requests.isLoading.requests,
+        email: requests.emailProviders,
     };
 }
 
