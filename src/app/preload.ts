@@ -22,6 +22,9 @@ declare global {
                 clear: () => void;
             },
             openExternalLink: (link: string) => Promise<void>;
+            env: {
+                DEMO_MODE: boolean;
+            }
         };
     }
 }
@@ -65,6 +68,9 @@ contextBridge.exposeInMainWorld(
             }
         },
         sourceMapSupport: sourceMapSupport,
-        openExternalLink: (link: string) => shell.openExternal(link)
+        openExternalLink: (link: string) => shell.openExternal(link),
+        env: {
+            DEMO_MODE: process.env.DEMO_MODE === 'true',
+        }
     },
 );

@@ -7,7 +7,7 @@ import AccountOverlay from './components/AccountOverlay';
 import getDescription from './getDescription';
 import styled from 'styled-components';
 import Button from 'app/components/Button';
-import { faSync } from 'app/assets/fa-light';
+import { faEnvelope, faSync } from 'app/assets/fa-light';
 import { useAccounts } from 'app/store/accounts/selectors';
 import { State, useAppDispatch } from 'app/store';
 import { useSelector } from 'react-redux';
@@ -29,7 +29,7 @@ const Rows = styled.div`
 function Accounts(): JSX.Element {
     const dispatch = useAppDispatch();
     const isLoadingRefresh = useSelector((state: State) => state.accounts.isLoading.refresh);
-    const { accounts, map } = useAccounts();
+    const { accounts, map, email } = useAccounts();
     const { account: selectedAccount } = useParams<RouteProps['requests']>();
 
     // Callback for refreshing all requests
@@ -57,6 +57,19 @@ function Accounts(): JSX.Element {
                             </NavigatableListEntry>
                         )}
                         <SubHeading>Email-based Requests</SubHeading>
+                        {email.all.map(account => (
+                            <NavigatableListEntry
+                                key={account}
+                                to={`/accounts/email_${account}`}
+                                icon={faEnvelope}
+                                large
+                            >
+                                <Rows>
+                                    <span>{email.byKey[account].organisation} ({email.byKey[account].emailAccount})</span>
+                                    <StatusDescription>{getDescription(email.byKey[account].status)}</StatusDescription>
+                                </Rows>
+                            </NavigatableListEntry>
+                        ))}
                     </List>
                     <PanelBottomButtons>
                         <NewAccountModal />

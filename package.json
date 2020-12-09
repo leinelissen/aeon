@@ -1,7 +1,7 @@
 {
     "name": "aeon",
     "productName": "Aeon",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "description": "Online identity versioning for the masses",
     "main": ".webpack/main",
     "sideEffects": [
@@ -111,6 +111,7 @@
         "@types/react-dom": "^17.0.0",
         "@types/react-redux": "^7.1.11",
         "@types/react-router-dom": "^5.1.6",
+        "@types/react-select": "^3.0.27",
         "@types/reactour": "^1.17.1",
         "@types/source-map-support": "^0.5.3",
         "@types/styled-components": "^5.1.4",
@@ -169,6 +170,7 @@
         "react-popper": "^2.2.4",
         "react-redux": "^7.2.2",
         "react-router-dom": "^5.2.0",
+        "react-select": "^3.1.1",
         "react-spring": "^8.0.27",
         "reactour": "^1.18.0",
         "redux": "^4.0.5",

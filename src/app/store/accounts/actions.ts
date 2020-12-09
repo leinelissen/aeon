@@ -1,6 +1,7 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import Providers from 'app/utilities/Providers';
 import { InitOptionalParameters } from 'main/providers/types';
+import { EmailProvider } from './types';
 
 export const fetchProviderAccounts = createAsyncThunk(
     'requests/fetch/accounts',
@@ -27,4 +28,12 @@ export const addProviderAccount = createAsyncThunk(
 export const fetchAvailableProviders = createAsyncThunk(
     'requests/fetch/providers',
     () => Providers.getAvailableProviders(),
+)
+
+export const createEmailAccount = createAction<EmailProvider>(
+    'requests/new-email-account'
+)
+
+export const dispatchEmailRequest = createAction<string>(
+    'requests/email/dispatch'
 )

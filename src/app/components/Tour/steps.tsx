@@ -77,7 +77,7 @@ const steps: Record<TourKeys, ReactourStep[]> = {
             )
         },
         {
-            selector: '[data-tour="modal-menu-options"] > *:last-child',
+            selector: '[data-tour="accounts-create-account-open-data-rights"]',
             content: (
                 <>
                     <p>This one is a special one. Rather than being tied to a particular website, it allows data requests from any website that supports the Open Data Rights API.</p>
@@ -158,6 +158,14 @@ const steps: Record<TourKeys, ReactourStep[]> = {
             selector: '[data-tour="erasure-screen"]'
         }
     ]
+}
+
+// Tentatively add a tour step for creating email-based data requests
+if (window.api.env.DEMO_MODE) {
+    steps['/screen/accounts/new-account'].push({
+        selector: '[data-tour="accounts-create-account-email"]',
+        content: 'Or, if the organisation you want to get data from an organisation that does not support any of the other methods, you can just send a plain old email! Just link an email account to Aeon and select the organisation you want to get your data from.'
+    });
 }
 
 export default steps;
