@@ -31,10 +31,14 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
 
     // Handle a request for a new request
     const handleNewRequest = useCallback(async () => {
+        // If the provider is of email type, we just dispatch directly to
+        // the store.
         if (account.provider === 'email') {
-            // If the provider is of email type, we just dispatch directly to
-            // the store
+            // Add some arbitrary delay
+            setLoading(true);
+            await new Promise((resolve) => setTimeout(resolve, 1500));
             dispatch(dispatchEmailRequest(selectedAccount.split('email_')[1]));
+            setLoading(false);
         } else {
             // If not, we dispatch to the backend and have the back-end deal
             // with it
