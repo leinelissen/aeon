@@ -10,6 +10,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Logo from 'app/assets/aeon-logo.svg';
+import { useHistory } from 'react-router-dom';
 
 const Container = styled.div`
     display: flex;
@@ -29,13 +30,14 @@ const Container = styled.div`
 
 function Onboarding(): JSX.Element {
     const dispatch = useDispatch();
+    const history = useHistory();
     const isOnboardingComplete = useSelector((state: State) => state.onboarding.initialisation);
     
     useEffect(() => {
         // Redirect to /timeline if the user has already completed the
         // first-time application onboarding screen
         if (isOnboardingComplete) {
-            // history.push('/timeline');
+            history.push('/timeline');
         }
 
         return () => {
@@ -45,7 +47,7 @@ function Onboarding(): JSX.Element {
                 dispatch(completeOnboarding('initialisation'));
             }
         }
-    });
+    }, []);
 
     return (
         <Container>
