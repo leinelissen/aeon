@@ -6,6 +6,8 @@ import Reactour from 'reactour';
 import steps, { TourKeys } from './steps';
 import { createGlobalStyle } from 'styled-components';
 import theme from 'app/styles/theme';
+import { faCheck } from 'app/assets/fa-light';
+import Button from '../Button';
 
 const Overrides = createGlobalStyle`
     #___reactour {
@@ -46,6 +48,7 @@ function Tour({ tour }: Props): JSX.Element {
                 isOpen={isOpen}
                 onRequestClose={handleClose}
                 accentColor={theme.colors.blue.primary}
+                lastStepNextButton={<Button icon={faCheck}>Done</Button>}
             />
         </>
     );
