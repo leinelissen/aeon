@@ -124,7 +124,7 @@ function NewAccountModal(): JSX.Element {
                                         label="Email Account" 
                                         value={selectedEmail}
                                         onSelect={setSelectedEmail}
-                                        disabled={emailAccounts.length === 0}
+                                        placeholder="Please select an email account"
                                     />
                                 </>
                                 }

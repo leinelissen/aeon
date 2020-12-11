@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from 'app/assets/fa-light';
 import theme from 'app/styles/theme';
 import React, { useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const TextInput = styled.input`
     border: 1px solid #eee;
@@ -30,7 +30,7 @@ export const Label = styled.label`
     }
 `;
 
-const Select = styled.select`
+const Select = styled.select<{ hasPlaceholder?: boolean }>`
     height: 50px;
     padding: 16px;
     border-radius: 4px;
@@ -39,6 +39,10 @@ const Select = styled.select`
     appearance: none;
     width: 100%;
     margin-bottom: 16px;
+
+    ${props => props.hasPlaceholder && css`
+        color: #00000066;
+    `};
 
     &:disabled {
         background-color: ${theme.colors.grey.medium};
@@ -64,12 +68,13 @@ interface DropdownProps {
     value: string;
     onSelect: (selectedValue: string) => void;
     disabled?: boolean;
+    placeholder?: string;
 }
 
 type Option = { key: string, value: unknown };
 
 export function Dropdown(props: DropdownProps): JSX.Element {
-    const { label, options, value, disabled, onSelect } = props;
+    const { label, options, value, disabled, placeholder, onSelect } = props;
 
     const availableOptions: Option[] = Array.isArray(options)
         ? options.map<Option>((o) => ({ key: o, value: o }))
@@ -83,7 +88,14 @@ export function Dropdown(props: DropdownProps): JSX.Element {
         <Label>
             <span>{label}</span>
             <SelectContainer>
-                <Select value={value} disabled={disabled} onChange={handleChange}>
+                <Select
+                    value={value}
+                    disabled={disabled}
+                    onChange={handleChange}
+                    placeholder="Please select an account"
+                    // hasPlaceholder={value === ''}
+                >
+                    <option key="" disabled={value !== ''}>{placeholder || 'Please select an option'}</option>
                     {availableOptions.map(option =>
                         <option key={option.key}>{option.value}</option>    
                     )}

@@ -1,7 +1,7 @@
 import { Dropdown, Label } from 'app/components/Input';
 import { Margin, MarginSmall, PullCenter } from 'app/components/Utility';
 import { State, useAppDispatch } from 'app/store';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import AsyncSelect, { AsyncProps } from 'react-select/async';
 import { useSelector } from 'react-redux';
 import { OptionTypeBase } from 'react-select';
@@ -107,6 +107,15 @@ function EmailProvider(): JSX.Element {
         }));
         history.push('/accounts');
     }, [selectedOrganisation, selectedEmail, history]);
+    
+    // Redirect a user to the Create New Email Account modal, when they select
+    // the option from the email accounts dropdown
+    useEffect(() => {
+        if (selectedEmail === 'Create New Email Account...') {
+            history.push('/settings/email-accounts?create-new-email-account');
+            setSelectedEmail(emailAccounts.length ? emailAccounts[0] : '');
+        }
+    }, [selectedEmail, setSelectedEmail, history]);
 
     return (
         <Margin>
@@ -117,7 +126,6 @@ function EmailProvider(): JSX.Element {
                 label="Email Account" 
                 value={selectedEmail}
                 onSelect={setSelectedEmail}
-                disabled={emailAccounts.length === 0}
             />
             <Label>
                 Organisation
