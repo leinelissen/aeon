@@ -192,7 +192,7 @@ class ProviderManager extends EventEmitter2 {
             account,
             provider,
             windowKey,
-            url: optional.apiUrl.replace(/\/+$/, ''),
+            url: optional.apiUrl && optional.apiUrl.replace(/\/+$/, ''),
             hostname,
             status: {}
         }
