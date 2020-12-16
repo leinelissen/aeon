@@ -1,19 +1,34 @@
-![Aeon](https://raw.githubusercontent.com/leinelissen/aeon/master/src/app/assets/aeon-logo.svg)
+<a href="https://aeon.technology">![Aeon](https://raw.githubusercontent.com/leinelissen/aeon/master/docs/.gitbook/assets/aeon-whitespace-2x.png)</a>
 
-![Build](https://github.com/leinelissen/aeon/workflows/Build/badge.svg)
-[![Depfu](https://badges.depfu.com/badges/ff7165e5aae595f0e17058ce40fdbe68/overview.svg)](https://depfu.com/github/leinelissen/aeon?project_id=13989)
+<p align="center">
+    <em>Get a grip on your personal information</em>
+</p>
 
-## About Aeon
+<br />
+
+<div align="center">
+    <img src="https://github.com/leinelissen/aeon/workflows/Build/badge.svg" />
+    <img alt="Depfu" src="https://img.shields.io/depfu/leinelissen/aeon">
+    <img alt="License" src="https://img.shields.io/badge/license-EUPL-green">
+    <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/leinelissen/aeon?color=green">
+    <a href="https://docs.aeon.technology"><img alt="Documentation" src="https://img.shields.io/badge/documentation-up-green"></a>
+</div>
+
+<br />
+<br />
+
+# About Aeon
 Your online identity is formed by the data that defines you. With ground-breaking laws such as the EU GDPR and US CCPA, data rights are within reach for citizens. Aeon aims to bridge the gap between data rights and citizen control over data.
 
 Aeon is an online identity tool that automatically retrieves data from a variety of sources. Just like your identity is yours to change, so should your data be. Aeon makes sending a request for data deletion and modification available at the click of a button.
 
 When maintaining your online identity, Aeon becomes a repository of how your identity has evolved over time. This repository is in your control, rather than in the hands of commercial interests.
-
-## About the author
+# About the author
 Aeon is being conceived and actively developed as part of a master graduation project at the department of Industrial Design, Eindhoven University of Technology. It is created by Lei Nelissen, a graduate student with a particular interest in data rights, privacy and the user experience of both. 
 
 Get in touch with Lei via [e-mail](mailto:l.g.m.nelissen@student.tue.nl), or pick any of the regular communication channels.
+
+# Documentation
 
 ## Using Aeon
 You can find the latest build of Aeon over at the [releases page](https://github.com/leinelissen/aeon/releases). There's builds for Windows, macOS and Linux. 
