@@ -119,7 +119,7 @@
         "@typescript-eslint/parser": "^4.11.0",
         "babel-loader": "^8.2.2",
         "babel-plugin-styled-components": "^1.12.0",
-        "csp-html-webpack-plugin": "5.0.0",
+        "csp-html-webpack-plugin": "5.0.1",
         "css-loader": "^5.0.1",
         "dotenv-webpack": "5.0.0",
         "electron": "^10.1.6",
