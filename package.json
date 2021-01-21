@@ -151,7 +151,7 @@
         "adm-zip": "^0.5.1",
         "cogo-toast": "^4.2.3",
         "cytoscape": "^3.17.1",
-        "cytoscape-fcose": "^1.2.3",
+        "cytoscape-fcose": "^2.0.0",
         "date-fns": "^2.16.1",
         "deep-equal": "^2.0.5",
         "electron-squirrel-startup": "^1.0.0",
