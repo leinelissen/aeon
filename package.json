@@ -155,7 +155,7 @@
         "date-fns": "^2.19.0",
         "deep-equal": "^2.0.5",
         "electron-squirrel-startup": "^1.0.0",
-        "electron-store": "^6.0.1",
+        "electron-store": "^8.0.1",
         "eventemitter2": "^6.4.4",
         "hex-to-rgba": "^2.0.1",
         "history": "^5.0.0",
