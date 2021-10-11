@@ -171,7 +171,7 @@
         "react-redux": "^7.2.2",
         "react-router-dom": "^5.2.0",
         "react-select": "^4.3.0",
-        "react-spring": "^8.0.27",
+        "react-spring": "^9.3.0",
         "reactour": "^1.18.3",
         "redux": "^4.0.5",
         "redux-persist": "^6.0.0",
