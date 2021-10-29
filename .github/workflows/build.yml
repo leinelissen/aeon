@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 13.x
+          node-version: 14.x
 
       - name: Install Build dependencies
         if: runner.os == 'Linux'
@@ -38,11 +38,10 @@ jobs:
         env:
           JOBS: 'max'
         run: |
-          npm ci
-          node scripts/prepareNodeGit.js
+          yarn install --frozen-lockfile
 
       - name: Lint
-        run: npm run lint
+        run: yarn lint
 
       - name: 'Capitalise binary (macOS only)'
         if: runner.os == 'macOS'
@@ -50,11 +49,11 @@ jobs:
           sed -i '.bak' 's/"executableName": "aeon"/"executableName": "Aeon"/' package.json
 
       - name: Compile
-        run: npm run make
+        run: yarn make
 
       - name: Test
         if: runner.os == 'Windows' || runner.os == 'macOS'
-        run: npm test
+        run: yarn test
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v1

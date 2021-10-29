@@ -1,0 +1,3 @@
+[submodule "vendor/nodegit"]
+	path = vendor/nodegit
+	url = https://github.com/nodegit/nodegit.git

@@ -4,6 +4,7 @@
     "version": "0.2.8",
     "description": "Online identity versioning for the masses",
     "main": ".webpack/main",
+    "private": true,
     "sideEffects": [
         "src/app/components/App.tsx",
         "src/app/styles/index.ts",
@@ -19,8 +20,7 @@
         "make": "electron-forge make",
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts,.tsx .",
-        "test": "mocha --exit --bail",
-        "preinstall": "npx npm-force-resolutions"
+        "test": "mocha --exit --bail"
     },
     "keywords": [],
     "author": {
@@ -177,7 +177,7 @@
         "styled-components": "^5.2.1",
         "v8-compile-cache": "^2.3.0"
     },
-    "resolutions": {
-        "normalize-url": "^4.5.0"
-    }
+    "workspaces": [
+        "vendor/nodegit"
+    ]
 }
