@@ -19,14 +19,14 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
 
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 1
 
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: '16'
 
       - name: Install Build dependencies
         if: runner.os == 'Linux'
@@ -38,10 +38,10 @@ jobs:
         env:
           JOBS: 'max'
         run: |
-          yarn install --frozen-lockfile
+          npm ci
 
       - name: Lint
-        run: yarn lint
+        run: npm run lint
 
       - name: 'Capitalise binary (macOS only)'
         if: runner.os == 'macOS'
@@ -49,11 +49,11 @@ jobs:
           sed -i '.bak' 's/"executableName": "aeon"/"executableName": "Aeon"/' package.json
 
       - name: Compile
-        run: yarn make
+        run: npm run make
 
       - name: Test
         if: runner.os == 'Windows' || runner.os == 'macOS'
-        run: yarn test
+        run: npm run test
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
