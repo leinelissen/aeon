@@ -3,7 +3,7 @@
     "productName": "Aeon",
     "version": "0.2.8",
     "description": "Online identity versioning for the masses",
-    "main": ".webpack/main",
+    "main": ".webpack/main/index.js",
     "private": true,
     "sideEffects": [
         "src/app/components/App.tsx",
@@ -83,13 +83,6 @@
         }
     },
     "devDependencies": {
-        "@babel/core": "^7.15.8",
-        "@babel/plugin-proposal-class-properties": "^7.14.5",
-        "@babel/plugin-proposal-numeric-separator": "^7.14.5",
-        "@babel/plugin-proposal-optional-chaining": "^7.14.5",
-        "@babel/preset-env": "^7.15.8",
-        "@babel/preset-react": "^7.14.5",
-        "@babel/preset-typescript": "^7.15.0",
         "@electron-forge/cli": "^6.0.0-beta.61",
         "@electron-forge/maker-deb": "^6.0.0-beta.61",
         "@electron-forge/maker-dmg": "^6.0.0-beta.61",
@@ -97,6 +90,7 @@
         "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
         "@electron-forge/maker-zip": "^6.0.0-beta.61",
         "@electron-forge/plugin-webpack": "^6.0.0-beta.61",
+        "@swc/core": "^1.2.105",
         "@types/adm-zip": "^0.4.34",
         "@types/cytoscape": "^3.19.0",
         "@types/deep-equal": "^1.0.1",
@@ -116,7 +110,7 @@
         "@types/styled-components": "^5.1.15",
         "@typescript-eslint/eslint-plugin": "^5.2.0",
         "@typescript-eslint/parser": "^5.2.0",
-        "babel-loader": "^8.2.3",
+        "@vercel/webpack-asset-relocator-loader": "^1.7.0",
         "babel-plugin-styled-components": "^1.13.3",
         "csp-html-webpack-plugin": "5.1.0",
         "css-loader": "^5.1.3",
@@ -135,6 +129,7 @@
         "react-hot-loader": "^4.13.0",
         "spectron": "^15.0.0",
         "style-loader": "^3.3.1",
+        "swc-loader": "^0.1.15",
         "typescript": "^4.4.4",
         "webpack-bundle-analyzer": "^4.5.0"
     },
