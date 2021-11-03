@@ -3,22 +3,9 @@ name: Build
 on: [push]
 
 jobs:
-  build:
-
-    runs-on: ${{ matrix.os }}
-    env:
-      NPM_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
-
-    strategy:
-      matrix:
-        os: [macos-11, windows-2019, ubuntu-20.04]
-
+  build-macos:
+    runs-on: macos-11
     steps:
-      - name: Context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
@@ -29,56 +16,77 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Install Build dependencies (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt update
-          sudo apt install libkrb5-dev
-
-      - uses: ilammy/setup-nasm@v1
-        if: runner.os == 'Windows'
-
-      - name: install Build dependencies (Windows)
-        if: runner.os == 'Windows'
-        run: choco install openssl
-
-      - name: Install dependencies (Windows)
-        if: runner.os == 'Windows'
-        env:
-          JOBS: 'max'
-          npm_config_vcvarsall_path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat'
-          npm_config_openssl_dir: 'C:\Program Files\OpenSSL'
-        run: |
-          npm ci
-
-      - name: Install dependencies (macOS)
-        if: runner.os == 'macOS'
+      - name: Install dependencies
         env:
           JOBS: 'max'
           npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
         run: |
           npm ci
 
-      - name: Install dependencies (Ubuntu)
-        if: runner.os == 'Linux'
+      - name: Lint
+        run: npm run lint
+
+      - name: 'Capitalise binary'
+        run: |
+          sed -i '.bak' 's/"executableName": "aeon"/"executableName": "Aeon"/' package.json
+
+      - name: Compile
+        env:
+          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
+        run: npm run make
+
+      - name: Test
+        run: npm run test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.os }}
+          path: out/make
+          
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "out/make/**"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-windows:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - uses: ilammy/setup-nasm@v1
+
+      - name: install Build dependencies
+        run: choco install openssl
+
+      - name: Install dependencies
         env:
           JOBS: 'max'
+          npm_config_vcvarsall_path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat'
+          npm_config_openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
         run: |
           npm ci
 
       - name: Lint
         run: npm run lint
 
-      - name: 'Capitalise binary (macOS only)'
-        if: runner.os == 'macOS'
-        run: |
-          sed -i '.bak' 's/"executableName": "aeon"/"executableName": "Aeon"/' package.json
-
       - name: Compile
+        env:
+          npm_config_openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
         run: npm run make
 
       - name: Test
-        if: runner.os == 'Windows' || runner.os == 'macOS'
         run: npm run test
 
       - name: Upload artifacts
@@ -94,3 +102,49 @@ jobs:
           files: "out/make/**"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install Build dependencies
+        run: |
+          sudo apt update
+          sudo apt install libkrb5-dev
+
+      - name: Install dependencies
+        env:
+          JOBS: 'max'
+        run: |
+          npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Compile
+        run: npm run make
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ runner.os }}
+          path: out/make
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "out/make/**"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
