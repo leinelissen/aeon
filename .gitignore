@@ -85,4 +85,4 @@ jspm_packages/
 # Electron-Forge
 out/
 
-/data/
+data/

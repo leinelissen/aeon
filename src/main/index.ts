@@ -28,14 +28,8 @@ const createWindow = (): void => {
         titleBarStyle: 'hiddenInset',
         vibrancy: 'medium-light',
         webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
             preload: path.join(__dirname, 'preload.js'),
             webSecurity: process.env.NODE_ENV === 'production',
-            // TODO: This is necessary because for some reason electron-store
-            // requires access to the remote module to work, despite being a
-            // part of the preload script.
-            enableRemoteModule: true,
         }
     });
 

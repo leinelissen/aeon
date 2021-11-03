@@ -4,23 +4,9 @@ const plugins = require('./webpack.plugins');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 rules.push({
-    test: /\.(woff|woff2)$/,
+    test: /\.(woff|woff2|svg)$/,
     sideEffects: true,
-    use: [{
-        loader: 'file-loader',
-        options: {
-            outputPath: 'assets',
-        }
-    }],
-}, {
-    test: /\.(svg)$/,
-    use: [{
-        loader: 'file-loader',
-        options: {
-            outputPath: 'assets',
-            publicPath: '../assets',
-        }
-    }],
+    type: 'asset/resource'
 });
 
 rules.push({
@@ -29,7 +15,7 @@ rules.push({
     use: [{
         loader: MiniCssExtractPlugin.loader,
         options: {
-            publicPath: "..",
+            publicPath: "../",
         }
     }, 'css-loader'],
 });

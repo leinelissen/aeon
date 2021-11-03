@@ -3,63 +3,96 @@ name: Build
 on: [push]
 
 jobs:
-  build:
-
-    runs-on: ${{ matrix.os }}
-    env:
-      NPM_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
-
-    strategy:
-      matrix:
-        os: [macOS-latest, windows-latest, ubuntu-18.04]
-
+  build-macos:
+    runs-on: macos-11
     steps:
-      - name: Context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 1
+          submodules: true
 
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: 13.x
-
-      - name: Install Build dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt update
-          sudo apt install libkrb5-dev
+          node-version: '16'
 
       - name: Install dependencies
         env:
           JOBS: 'max'
+          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
         run: |
           npm ci
-          node scripts/prepareNodeGit.js
 
       - name: Lint
         run: npm run lint
 
-      - name: 'Capitalise binary (macOS only)'
-        if: runner.os == 'macOS'
+      - name: 'Capitalise binary'
         run: |
           sed -i '.bak' 's/"executableName": "aeon"/"executableName": "Aeon"/' package.json
 
       - name: Compile
+        env:
+          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
         run: npm run make
 
       - name: Test
-        if: runner.os == 'Windows' || runner.os == 'macOS'
-        run: npm test
+        run: npm run test
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: ${{ matrix.os }}
+          name: ${{ runner.os }}
+          path: out/make
+          
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "out/make/**"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-windows:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - uses: ilammy/setup-nasm@v1
+
+      - name: install Build dependencies
+        run: choco install openssl
+
+      - name: Install dependencies
+        env:
+          JOBS: 'max'
+          npm_config_vcvarsall_path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat'
+          npm_config_openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
+        run: |
+          npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Compile
+        env:
+          npm_config_openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
+        run: npm run make
+
+      - name: Test
+        run: npm run test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ runner.os }}
           path: out/make
 
       - name: Release
@@ -69,3 +102,52 @@ jobs:
           files: "out/make/**"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install Build dependencies
+        run: |
+          sudo apt update
+          sudo apt install libkrb5-dev
+
+      - name: Install dependencies
+        env:
+          JOBS: 'max'
+        run: |
+          npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Compile
+        run: npm run make
+
+      - name: Test
+        run: xvfb-run --auto-servernum -- npm test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ runner.os }}
+          path: out/make
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "out/make/**"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

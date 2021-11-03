@@ -33,6 +33,7 @@
             "node": {
                 "paths": [ "src" ]
             }
-        }
+        },
+        "import/core-modules": [ "electron", "nodegit" ]
     }
 }

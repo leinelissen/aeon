@@ -65,7 +65,7 @@ class Spotify extends EmailDataRequestProvider {
 
             // Now we must defer the page to the user, so that they can confirm
             // the request. We then listen for a succesfull AJAX call 
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
                     urls: [ 
                         'https://www.spotify.com/us/account/privacy/download/*',
@@ -153,7 +153,13 @@ class Spotify extends EmailDataRequestProvider {
         const [message] = await this.email.findMessages({
             from: 'noreply@spotify.com',
         });
-        const [downloadLink] = message?.text?.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/retrieve\/[a-f\d]+/);
+        
+        // GUARD: Double-check that message.text exists
+        if(!message.text) {
+            throw new Error('Failed to find email text for Spotify');
+        }
+
+        const [downloadLink] = message.text.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/retrieve\/[a-f\d]+/);
         
         // GUARD: Check if the download link was successfully retrieved
         if (!message || !downloadLink) {
