@@ -29,11 +29,15 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Install Build dependencies
+      - name: Install Build dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt update
           sudo apt install libkrb5-dev
+
+      - name: Install Build dependencies (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/setup-nasm@v1
 
       - name: Install dependencies
         env:
