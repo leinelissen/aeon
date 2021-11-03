@@ -135,7 +135,7 @@ jobs:
         run: npm run make
 
       - name: Test
-        run: npm run test
+        run: xvfb-run --auto-servernum -- npm test
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
