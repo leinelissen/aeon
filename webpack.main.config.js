@@ -34,5 +34,5 @@ module.exports = {
     plugins: [
         Dotenv,
     ],
-    devtool: 'source-map'
+    devtool: 'source-map',
 };

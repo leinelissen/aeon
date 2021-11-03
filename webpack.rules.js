@@ -20,7 +20,12 @@ module.exports = [
         test: /\.tsx?$/,
         exclude: /(node_modules|\.webpack)/,
         use: {
-            loader: 'swc-loader'
+            loader: 'swc-loader',
+            options: {
+                jsc: {
+                    target: "es2020",
+                },
+            }
         }
     },
 ];
