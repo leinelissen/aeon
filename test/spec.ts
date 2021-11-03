@@ -10,7 +10,7 @@ test.beforeAll(async () => {
     const mainJsPath = path.resolve('.webpack', 'main', 'index.js');
 
     app = await electron.launch({
-        args: [mainJsPath],
+        args: [mainJsPath, '--no-auto-updates'],
     });
 });
 

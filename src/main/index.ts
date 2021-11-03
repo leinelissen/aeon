@@ -13,10 +13,14 @@ declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
 app.allowRendererProcessReuse = true;
 
-// Set up Electron auto-updater
-const server = "https://updates.aeon.technology";
-const url = `${server}/update/${process.platform}/${app.getVersion()}`;
-autoUpdater.setFeedURL({ url })
+// GUARD: Check if auto updates are not flagged to be disabled
+// We use this particularly on macOS when testing so that we don't run into
+// codesigning issues.
+if (!process.argv.includes('--no-auto-updates')) {
+    const server = "https://updates.aeon.technology";
+    const url = `${server}/update/${process.platform}/${app.getVersion()}`;
+    autoUpdater.setFeedURL({ url })
+}
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
