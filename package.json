@@ -20,7 +20,8 @@
         "make": "electron-forge make",
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts,.tsx .",
-        "test": "mocha --exit --bail"
+        "test": "mocha --exit --bail",
+        "postinstall": "npm run babel -w vendor/nodegit"
     },
     "keywords": [],
     "author": {
