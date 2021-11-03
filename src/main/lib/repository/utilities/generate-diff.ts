@@ -1,7 +1,7 @@
 import { DiffType, DiffResult } from '../types';
 import generateParsedCommit from './generate-parsed-commit';
 import { ProviderDatum } from "main/providers/types/Data";
-import deepEqual from 'deep-equal';
+import { isEqual } from 'lodash-es';
 import { TreeEntry } from 'nodegit';
 
 interface DataArrayDiff {
@@ -53,7 +53,7 @@ function diffDataArray(
         // Find any object on the after array that matches this datapoint
         const match = after.find(dAfter => {
             return typeof dAfter.data === 'object' && dAfter.data !== null
-                ? deepEqual(dBefore.data, dAfter.data)
+                ? isEqual(dBefore.data, dAfter.data)
                 : dBefore.data === dAfter.data
         });
 
