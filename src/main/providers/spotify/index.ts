@@ -65,7 +65,7 @@ class Spotify extends EmailDataRequestProvider {
 
             // Now we must defer the page to the user, so that they can confirm
             // the request. We then listen for a succesfull AJAX call 
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
                     urls: [ 
                         'https://www.spotify.com/us/account/privacy/download/*',
