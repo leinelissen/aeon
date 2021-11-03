@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         env:
           JOBS: 'max'
-          npm_config_vcvarsall_path: 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat'
+          npm_config_vcvarsall_path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat'
         run: |
           npm ci
 
