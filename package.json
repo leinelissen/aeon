@@ -21,7 +21,7 @@
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts,.tsx .",
         "test": "mocha --exit --bail",
-        "postinstall": "npm run babel -w vendor/nodegit"
+        "postinstall": "npm run babel -w ./vendor/nodegit"
     },
     "keywords": [],
     "author": {
