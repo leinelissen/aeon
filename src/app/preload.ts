@@ -21,7 +21,7 @@ declare global {
                 retrieve: () => State;
                 clear: () => void;
             },
-            openExternalLink: (link: string) => Promise<void>;
+            openEmailClient: (email: string, subject: string, body: string) => Promise<void>;
             env: {
                 DEMO_MODE: boolean;
             }
@@ -68,7 +68,9 @@ contextBridge.exposeInMainWorld(
             }
         },
         sourceMapSupport: sourceMapSupport,
-        openExternalLink: (link: string) => shell.openExternal(link),
+        openExternalLink: (email: string, subject: string, body: string) => shell.openExternal(
+            `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+        ),
         env: {
             DEMO_MODE: process.env.DEMO_MODE === 'true',
         }
