@@ -25,4 +25,4 @@ jobs:
         env:
           GREN_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npx gren release -o
+          npx github-release-notes release -o
