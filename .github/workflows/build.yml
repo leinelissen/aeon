@@ -36,13 +36,35 @@ jobs:
           sudo apt install libkrb5-dev
 
       - uses: ilammy/setup-nasm@v1
+        if: runner.os == 'Windows'
 
-      - name: Install dependencies
+      - name: install Build dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: choco install openssl
+
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
         env:
           JOBS: 'max'
           npm_config_vcvarsall_path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat'
+          npm_config_openssl_dir: 'C:\Program Files\OpenSSL'
         run: |
-          npm install --loglevel verbose
+          npm ci
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        env:
+          JOBS: 'max'
+          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
+        run: |
+          npm ci
+
+      - name: Install dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        env:
+          JOBS: 'max'
+        run: |
+          npm ci
 
       - name: Lint
         run: npm run lint
