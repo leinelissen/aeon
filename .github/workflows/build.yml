@@ -41,7 +41,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: ${{ matrix.os }}
+          name: ${{ runner.os }}
           path: out/make
           
       - name: Release
@@ -92,7 +92,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: ${{ matrix.os }}
+          name: ${{ runner.os }}
           path: out/make
 
       - name: Release
@@ -133,6 +133,9 @@ jobs:
 
       - name: Compile
         run: npm run make
+
+      - name: Test
+        run: npm run test
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
