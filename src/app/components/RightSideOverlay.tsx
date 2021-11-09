@@ -5,6 +5,7 @@ import { Transition } from 'react-spring/renderprops'
 import { slideProps, SlideDirection } from 'app/components/SlideIn';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from 'app/assets/fa-light';
+import theme from 'app/styles/theme';
 
 export type RightSideOverlayProps = PropsWithChildren<{
     onClose?: () => void;
@@ -28,7 +29,6 @@ const InnerContainer = styled.div`
     padding-top: 16px;
     overflow-y: auto;
     max-height: calc(100% - 20px);
-    background-color: white;
     pointer-events: all;
     box-shadow: 0 1px 1px rgba(0,0,0,0.01), 
               0 2px 2px rgba(0,0,0,0.01), 
@@ -36,6 +36,14 @@ const InnerContainer = styled.div`
               0 8px 8px rgba(0,0,0,0.01), 
               0 16px 16px rgba(0,0,0,0.01), 
               0 32px 32px rgba(0,0,0,0.01);
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #272727;
+    }
+    
+    @media (prefers-color-scheme: light) {
+        background-color: ${theme.colors.white};
+    }
 
     code {
         margin-bottom: 0;
@@ -49,8 +57,15 @@ export const CloseButton = styled(GhostButton)`
 `;
 
 export const Section = styled.div<{ smallPadding?: boolean}>`
-    border-bottom: 1px solid #eee;
     padding: ${props => props.smallPadding ? 15: 25}px;
+
+    @media (prefers-color-scheme: dark) {
+        border-bottom: 1px solid #373737;
+    }
+    
+    @media (prefers-color-scheme: light) {
+        border-bottom: 1px solid #eee;
+    }
 
     p:first-child {
         margin-top: 0;

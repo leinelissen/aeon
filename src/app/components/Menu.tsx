@@ -31,14 +31,22 @@ const TitleBarContainer = styled.div`
     -webkit-app-region: drag;
     background: transparent;
     opacity: 0;
-    background-color: ${theme.colors.grey.medium}33;
     transition: all 0.3s ease;
     backdrop-filter: blur(25px) brightness(1.1);
-    border-bottom: 1px solid ${theme.colors.grey.medium};
     text-transform: capitalize;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #22222233;
+        border-bottom: 1px solid ${theme.colors.borderDarkMode};    
+    }
+    
+    @media (prefers-color-scheme: light) {
+        background-color: ${theme.colors.grey.medium}33;
+        border-bottom: 1px solid ${theme.colors.border};
+    }
 
     span {
         font-size: 12px;
@@ -52,10 +60,19 @@ const TitleBarContainer = styled.div`
 
 export const ContentContainer = styled.div`
     grid-area: content;
-    background-color: #FBFBFB;
     grid-area: content;
     overflow: auto;
     position: relative;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #222222;
+        color: ${theme.colors.white};
+    }
+
+    @media (prefers-color-scheme: light) {
+        background-color: #FBFBFB;
+        color: ${theme.colors.black};
+    }
 `;
 
 const Container = styled.div`
@@ -65,38 +82,65 @@ const Container = styled.div`
     padding: 5px 0;
     -webkit-app-region: drag;
     padding-top: 40px;
-    border-right: 1px solid ${theme.colors.grey.medium};
+    
+    @media (prefers-color-scheme: dark) {
+        color: ${theme.colors.white};
+        border-right: 1px solid ${theme.colors.borderDarkMode};
+    }
+    
+    @media (prefers-color-scheme: light) {
+        border-right: 1px solid ${theme.colors.border};
+        color: ${theme.colors.black};
+    }
 `;
 
 const Link = styled(NavLink)`
     background: none;
     border: 0;
     font-family: 'IBM Plex Sans';
-    font-size: 15px;
+    font-size: 16px;
     text-align: left;
-    height: 50px;
+    height: 40px;
     display: flex;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 6px;
+    margin: 5px 10px;
     font-weight: 400;
-    color: ${theme.colors.black};
     -webkit-app-region: no-drag;
+    color: inherit;
+    border-radius: 6px;
 
     span:not(.icon) {
         margin-left: 10px;
-        font-size: 18px;
+        font-size: 16px;
     }
 
     span.icon {
-        font-size: 20px;
+        font-size: 18px;
+        @media (prefers-color-scheme: dark) {
+            color: ${theme.colors.blue.primaryDarkMode};
+        }
+        @media (prefers-color-scheme: light) {
+            color: ${theme.colors.blue.primary};
+        }
     }
 
     &.active {
-        background-color: ${theme.colors.black}14;
+        @media (prefers-color-scheme: dark) {
+            background-color: ${theme.colors.white}18;
+        }
+        @media (prefers-color-scheme: light) {
+            background-color: ${theme.colors.black}18;
+        }
     }
 
     &:hover:not(.active) {
-        background-color: ${theme.colors.black}08;
+        @media (prefers-color-scheme: dark) {
+            background-color: ${theme.colors.white}08;
+        }
+        @media (prefers-color-scheme: light) {
+            background-color: ${theme.colors.black}08;
+        }
     }
 `;
 

@@ -26,16 +26,29 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     display: flex;
     align-items: center;
     position: relative;
-    color: ${theme.colors.black};
+    color: inherit;
     background-color: transparent;
 
     &:hover {
         cursor: pointer;
-        background-color: #fcfcfc;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #272727;
+        }
+        
+        @media (prefers-color-scheme: light) {
+            background-color: #fcfcfc;
+        }   
     }
 
     &:active {
-        background-color: #f5f5f5;
+        @media (prefers-color-scheme: dark) {
+            background-color: #333333;
+        }
+        
+        @media (prefers-color-scheme: light) {
+            background-color: #f5f5f5;
+        }   
     }
 
     &:focus {
@@ -43,9 +56,16 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     }
 
     ${(props) => props.active && css`
-        background-color: ${theme.colors.white} !important;
         border-radius: 16px;
         color: inherit;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #333333 !important;
+        }
+        
+        @media (prefers-color-scheme: light) {
+            background-color: ${theme.colors.white} !important;
+        }     
     `}
 `
 
@@ -55,10 +75,8 @@ const Dot = styled.div<{ active?: boolean }>`
     border-radius: 32px;
     margin-left: -5px;
     margin-right: 16px; 
-    background-color: ${theme.colors.white};
     z-index: 2;
     flex-shrink: 0;
-    border: 4px solid #fcfcfc;
     transition: transform 0.3s ease;
     box-shadow: 0 1px 2px rgba(0,0,0,0.04), 
                 0 2px 4px rgba(0,0,0,0.04), 
@@ -66,9 +84,27 @@ const Dot = styled.div<{ active?: boolean }>`
                 0 8px 16px rgba(0,0,0,0.04),
                 0 16px 32px rgba(0,0,0,0.04);
 
+
+    @media (prefers-color-scheme: dark) {
+        border: 4px solid #373737;
+        background-color: #222222;
+    }
+    
+    @media (prefers-color-scheme: light) {
+        border: 4px solid #fcfcfc;
+        background-color: ${theme.colors.white};
+    }    
+
     ${(props) => props.active && css`
-        background-color: ${theme.colors.blue.primary};
-        border: 4px solid ${theme.colors.blue.veryLight};
+        @media (prefers-color-scheme: dark) {
+            background-color: ${theme.colors.blue.primaryDarkMode} !important; 
+            border: 4px solid #28465E !important;
+        }
+        
+        @media (prefers-color-scheme: light) {
+            background-color: ${theme.colors.blue.primary} !important; 
+            border: 4px solid ${theme.colors.blue.veryLight} !important;
+        }    
         color: inherit;
         transform: scale(1.25);
     `}
@@ -81,8 +117,15 @@ export const TimelineLine = styled.div`
     left: 32px;
     width: 10px;
     min-height: 100%;
-    background-color: ${theme.colors.grey.light};
     z-index: 0;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #272727;
+    }
+    
+    @media (prefers-color-scheme: light) {
+        background-color: ${theme.colors.grey.light};
+    }    
 `;
 
 class Commit extends Component<Props> {

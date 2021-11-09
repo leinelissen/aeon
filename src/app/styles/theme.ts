@@ -2,6 +2,7 @@ const theme = {
     colors: {
         blue: {
             primary: '#0000FF',
+            primaryDarkMode: '#008cff',
             light: '#78BDFF',
             veryLight: '#BAD7FF',
             dark: '#00186E',
@@ -17,6 +18,7 @@ const theme = {
         red: '#FF6142',
         yellow: '#FFBE29',
         border: '#eee',
+        borderDarkMode: '#333333',
     },
 };
 

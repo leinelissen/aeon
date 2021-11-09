@@ -8,7 +8,6 @@ import { faChevronRight, faMinus } from 'app/assets/fa-light';
 import { Ellipsis, EmptyIcon } from 'app/components/Utility';
 import { useHistory } from 'react-router-dom';
 
-
 interface ListButtonProps extends HTMLAttributes<HTMLButtonElement> {
     active?: boolean;
     disabled?: boolean;
@@ -26,7 +25,7 @@ export const StyledListButton = styled.button<ListButtonProps>`
     margin: 0;
     padding: 14px 24px 14px 0;
     font-weight: 400;
-    color: ${theme.colors.black};
+    color: inherit;
 
     img {
         max-height: 100px;
@@ -35,7 +34,13 @@ export const StyledListButton = styled.button<ListButtonProps>`
     }
 
     ${props => props.active ? css`
-        background: ${theme.colors.grey.medium};
+        @media (prefers-color-scheme: dark) {
+            background: ${theme.colors.grey.dark};
+        }
+        
+        @media (prefers-color-scheme: light) {
+            background: ${theme.colors.grey.medium};
+        }
     ` : css`
         &:hover {
             background: ${theme.colors.grey.medium}BB;

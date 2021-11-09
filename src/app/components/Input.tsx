@@ -5,28 +5,49 @@ import React, { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
 export const TextInput = styled.input`
-    border: 1px solid #eee;
-    background-color: #fbfbfb;
     padding: 16px;
     border-radius: 4px;
     font-size: 16px;
     margin-bottom: 16px;
 
-    &::placeholder {
-        color: #33333355;
+    @media (prefers-color-scheme: dark) {
+        background-color: #222222;
+        border: 1px solid ${theme.colors.borderDarkMode};
+        color: ${theme.colors.white};
+
+        &::placeholder {
+            color: #cccccc55;
+        }
     }
+    
+    @media (prefers-color-scheme: light) {
+        background-color: #fbfbfb;
+        border: 1px solid ${theme.colors.border};
+
+        &::placeholder {
+            color: #33333355;
+        }
+    }
+
 `;
 
 export const Label = styled.label`
     font-size: 12px;
     display: flex;
     flex-direction: column;
-    color: #33333355;
     font-family: 'IBM Plex Mono';
 
     & > span {
         margin-left: 4px;
         margin-bottom: 2px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        color: #cccccc55;
+    }
+    
+    @media (prefers-color-scheme: light) {
+        color: #33333355;
     }
 `;
 

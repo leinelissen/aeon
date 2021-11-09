@@ -24,13 +24,20 @@ const Container = styled.div`
     top: 0;
     height: 100vh;
     width: 100vw;
-    background-color: #eeeeeef0;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 10vh 0;
     z-index: 5000;
     /* backdrop-filter: blur(50px); */
+    
+    @media (prefers-color-scheme: dark) {
+        background-color: #222222f0;
+    }
+    
+    @media (prefers-color-scheme: light) {
+        background-color: #eeeeeef0;
+    }
 `;
 
 const StyledDialog = styled.div`
@@ -41,13 +48,20 @@ const StyledDialog = styled.div`
                 0 8px 16px rgba(0,0,0,0.07),
                 0 16px 32px rgba(0,0,0,0.07), 
                 0 32px 64px rgba(0,0,0,0.07);
-    background-color: white;
     min-width: 50vw;
     min-height: 25h;
     max-height: 80vh;
     max-width: 700px;
     padding-top: 32px;
     overflow-y: auto;
+  
+    @media (prefers-color-scheme: dark) {
+        background-color: #222222;
+    }
+    
+    @media (prefers-color-scheme: light) {
+        background-color: white;
+    }
 `;
 
 type DialogProps = PropsWithChildren<
@@ -71,7 +85,6 @@ function Dialog(props: DialogProps): JSX.Element {
 
 const CloseButton = styled(GhostButton)`
     position: fixed;
-    background: white;
     top: 0;
     left: 0;
     padding: 16px;

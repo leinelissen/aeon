@@ -5,20 +5,32 @@ import { SimpleButton } from '../Button';
 
 const MenuContainer = styled.div<{ active?: boolean; }>`
     display: flex;
-    border-bottom: 1px solid ${theme.colors.grey.light};
     justify-content: flex-end;
     margin-top: -25px;
 
+    @media (prefers-color-scheme: dark) {
+        border-bottom: 1px solid ${theme.colors.borderDarkMode};
+    }
+    
+    @media (prefers-color-scheme: light) {
+        border-bottom: 1px solid ${theme.colors.border};
+    }
+
     ${SimpleButton} {
         height: 40px;
-        background-color: ${theme.colors.white};
         border-bottom: 2px solid transparent;
         margin-right: 16px;
         color: ${theme.colors.grey.dark};
         text-transform: capitalize;
 
         &.active {
-            border-color: ${theme.colors.black};
+            @media (prefers-color-scheme: dark) {
+                border-color: ${theme.colors.white};
+            }
+            
+            @media (prefers-color-scheme: light) {
+                border-color: ${theme.colors.black};
+            }
             color: inherit;
         }
 

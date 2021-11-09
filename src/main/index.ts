@@ -16,7 +16,8 @@ app.allowRendererProcessReuse = true;
 // GUARD: Check if auto updates are not flagged to be disabled
 // We use this particularly on macOS when testing so that we don't run into
 // codesigning issues.
-if (!process.argv.includes('--no-auto-updates')) {
+if (!process.argv.includes('--no-auto-updates')
+    && process.env.NODE_ENV === 'production') {
     const server = "https://updates.aeon.technology";
     const url = `${server}/update/${process.platform}/${app.getVersion()}`;
     autoUpdater.setFeedURL({ url })
@@ -35,7 +36,8 @@ const createWindow = (): void => {
         minWidth: 600,
         minHeight: 600,
         titleBarStyle: 'hiddenInset',
-        vibrancy: 'medium-light',
+        vibrancy: 'menu',
+        transparent: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             webSecurity: process.env.NODE_ENV === 'production',

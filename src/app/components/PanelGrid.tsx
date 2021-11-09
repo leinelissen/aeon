@@ -15,7 +15,6 @@ export const ListItem = styled.div`
 
 export const RowHeading = styled(ListItem)`
     border-bottom: 1px solid ${theme.colors.border};
-    background-color: #fbfbfb;
     font-weight: 400;
     position: sticky;
     top: 0;
@@ -23,14 +22,29 @@ export const RowHeading = styled(ListItem)`
     z-index: 2;
     font-size: 14px;
     width: 100%;
+
+    @media (prefers-color-scheme: dark) {
+        border-bottom: 1px solid ${theme.colors.borderDarkMode};
+    }
+    
+    @media (prefers-color-scheme: light) {
+        border-bottom: 1px solid ${theme.colors.border};
+    }
 `;
 
 export const SubHeading = styled(RowHeading)`
     font-size: 10px;
     font-family: 'IBM Plex Mono';
     text-transform: uppercase;
-    color: ${theme.colors.grey.dark};
     letter-spacing: 0.3px;
+
+    @media (prefers-color-scheme: dark) {
+        color: ${theme.colors.grey.light};
+    }
+    
+    @media (prefers-color-scheme: light) {
+        color: ${theme.colors.grey.dark};
+    }
 `;
 
 export const PanelGrid = styled.div<{ columns?: number; noTopPadding?: boolean; }>`
@@ -46,7 +60,6 @@ export const PanelGrid = styled.div<{ columns?: number; noTopPadding?: boolean; 
 export const List = styled.div<{ topMargin?: boolean }>`
     display: flex;
     flex-direction: column;
-    border-right: 1px solid ${theme.colors.border};
     flex-grow: 1;
     overflow-y: auto;
     position: relative;
@@ -54,6 +67,14 @@ export const List = styled.div<{ topMargin?: boolean }>`
     ${props => props.topMargin && css`
         margin-top: 40px;
     `}
+
+    @media (prefers-color-scheme: dark) {
+        border-right: 1px solid ${theme.colors.borderDarkMode};
+    }
+    
+    @media (prefers-color-scheme: light) {
+        border-right: 1px solid ${theme.colors.border};
+    }
 `;
 
 export const SplitPanel = styled.div`
@@ -63,9 +84,17 @@ export const SplitPanel = styled.div`
 
 export const PanelBottomButtons = styled.div`
     margin-top: auto;
-    border-top: 1px solid ${theme.colors.border};
-    border-right: 1px solid ${theme.colors.border};
     padding: 16px;
+
+    @media (prefers-color-scheme: dark) {
+        border-top: 1px solid ${theme.colors.borderDarkMode};
+        border-right: 1px solid ${theme.colors.borderDarkMode};
+    }
+
+    @media (prefers-color-scheme: light) {
+        border-top: 1px solid ${theme.colors.border};
+        border-right: 1px solid ${theme.colors.border};
+    }
 `;
 
 const IconWrapper = styled.div`
@@ -90,7 +119,14 @@ export const NavigatableListEntryContainer = styled<React.FC<ListButtonProps>>(N
     margin: 0;
     padding: 14px 24px;
     font-weight: 400;
-    color: ${theme.colors.black};
+
+    @media (prefers-color-scheme: dark) {
+        color: ${theme.colors.white};
+    }
+    
+    @media (prefers-color-scheme: light) {
+        color: ${theme.colors.black};
+    }
 
     img {
         max-height: 100px;

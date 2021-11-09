@@ -14,6 +14,7 @@ import { List, PanelGrid } from 'app/components/PanelGrid';
 import { connect } from 'react-redux';
 import NoData from '../../components/NoData';
 import Tour from 'app/components/Tour';
+import theme from 'app/styles/theme';
 
 interface State {
     log: CommitType[];
@@ -33,9 +34,16 @@ const CommitContainer = styled.div`
     position: relative;
     top: 0;
     flex-shrink: 0;
-    border-right: 1px solid #eee;
     overflow-y: auto;
     padding-top: 40px;
+
+    @media (prefers-color-scheme: dark) {
+        border-right: 1px solid ${theme.colors.borderDarkMode};
+    }
+    
+    @media (prefers-color-scheme: light) {
+        border-right: 1px solid ${theme.colors.border};
+    }
 `;
 
 class Timeline extends Component<Props, State> {

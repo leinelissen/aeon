@@ -45,7 +45,7 @@ const DatumOverlay = ({ datumId }: Props): JSX.Element => {
             {datum && (
                 <>
                     <Section>
-                        <H2 style={{ color: isDeleted ? theme.colors.red : theme.colors.black }}>
+                        <H2 style={{ color: isDeleted ? theme.colors.red : 'inherit' }}>
                             <FontAwesomeIcon
                                 icon={DataType.getIcon(datum.type as ProvidedDataTypes)}
                                 style={{ marginRight: 8 }}

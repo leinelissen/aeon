@@ -65,10 +65,12 @@ export const SimpleButton = styled.button`
     border: 0;
     margin: 0;
     padding: 0;
+    background-color: inherit;
+    color: inherit;
 `;
 
 export const GhostButton = styled(SimpleButton)`
-    color: black;
+    color: inherit;
     opacity: 0.3;
     font-size: 14px;
     padding: 8px 16px;
