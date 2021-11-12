@@ -26,7 +26,9 @@ Your account is now set up, and you can feel free to add other accounts too!
 
 If your accounts are all set up, you can browser through them in the Accounts tab.
 
-&#x20;![](../.gitbook/assets/accounts.webp)
+&#x20;
+
+![](../.gitbook/assets/accounts.webp)
 
 &#x20;If you wish to retrieve data, select an account and click **Start Data Request**. You might need to enter your credentials again.
 
@@ -52,7 +54,9 @@ If you like, you can click an individual data point to inspect it:
 
 Feel like a platform should not be having one of your data points? You can automatically generate a request for deleting it. Click the **Delete This Data Point** button in any data visualisation to add it to data points slated for deleting.
 
-&#x20;![](<../.gitbook/assets/Schermafbeelding 2021-11-12 om 14.51.10.png>)
+&#x20;
+
+![](<../.gitbook/assets/Schermafbeelding 2021-11-12 om 14.51.31 (1).png>)
 
 If you are sure you want to delete the data points, go to the **Erasure (1)** tab on the left-hand side.
 
