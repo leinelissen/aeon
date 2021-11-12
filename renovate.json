@@ -3,5 +3,8 @@
     "config:base",
     "group:allNonMajor",
     "schedule:earlyMondays"
-  ]
+  ],
+  "git-submodules": {
+    "enabled": true
+  }
 }
