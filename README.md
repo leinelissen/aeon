@@ -1,4 +1,4 @@
-<a href="https://aeon.technology">![Aeon](https://raw.githubusercontent.com/leinelissen/aeon/master/docs/.gitbook/assets/aeon-whitespace-2x.png)</a>
+<a href="https://aeon.technology">![Aeon](./docs/.gitbook/assets/aeon-logo-whitespace.png)</a>
 
 <p align="center">
     <em>📡 Scan the internet for your personal information and modify or remove it</em>
