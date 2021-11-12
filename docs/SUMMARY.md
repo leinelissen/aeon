@@ -5,6 +5,7 @@
 ## Using Aeon
 
 * [Installation](using-aeon/installation.md)
+* [Getting Started](using-aeon/getting-started.md)
 
 ## Extending Aeon
 
@@ -12,4 +13,3 @@
 * [Reporting Issues](extending-aeon/reporting-issues.md)
 * [Architecture](extending-aeon/architecture/README.md)
   * [Providers](extending-aeon/architecture/providers.md)
-
