@@ -23,6 +23,11 @@
 
 ❌&nbsp; Don't agree with the data Facebook (or another platform) knows about you? Generate a request for modification or deletion with the click of a button!
 
+<br />
+<p align="center">
+    <img src="./docs/.gitbook/assets/aeon-demo.gif" width="600" />
+</p>
+<br />
 
 # Installing Aeon
 <svg width="285" height="50" viewBox="0 0 285 50" fill="none" xmlns="http://www.w3.org/2000/svg">
