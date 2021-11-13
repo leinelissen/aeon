@@ -66,7 +66,7 @@ async function exchangeAccessCode(response: CodeAndRedirectUri, verifier: string
     return fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         body: formData,
-    }).then(response => response.json());
+    }).then(response => response.json() as Promise<TokenResponse>);
 }
 
 type CodeCallback = (code: CodeAndRedirectUri) => void;
@@ -160,7 +160,7 @@ export function refreshGmailTokens(refresh_token: string): Promise<TokenResponse
     return fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         body: formData,
-    }).then(response => response.json())
+    }).then(response => response.json() as Promise<TokenResponse>)
         .then(response => ({
             ...response,
             refresh_token

@@ -85,7 +85,7 @@ const SelectContainer = styled.div`
 
 interface DropdownProps {
     label: string;
-    options: string[] | JSX.Element[] | Record<string, JSX.Element>;
+    options: string[] | Record<string, JSX.Element>;
     value: string;
     onSelect: (selectedValue: string) => void;
     disabled?: boolean;

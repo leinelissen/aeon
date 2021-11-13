@@ -2,6 +2,7 @@ import Providers, { providers as availableProviders }  from '.';
 import { ProviderCommands, ProviderEvents } from "./types/Events";
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import WindowStore from 'main/lib/window-store';
+import { ProviderUnion } from './types/Provider';
 
 const channelName = 'providers';
 
@@ -50,9 +51,9 @@ class ProviderBridge {
                 return this.providers.refresh();
             case ProviderCommands.GET_AVAILABLE_PROVIDERS:
                 return availableProviders.reduce<Record<string, { requiresEmail: boolean, requiresUrl: boolean, }>>((sum, Client) => {
-                    sum[Client.key] = {
-                        requiresEmail: Client.requiresEmail,
-                        requiresUrl: Client.requiresUrl,
+                    sum[(Client as unknown as ProviderUnion).key] = {
+                        requiresEmail: (Client as unknown as ProviderUnion).requiresEmail,
+                        requiresUrl: (Client as unknown as ProviderUnion).requiresUrl,
                     }
                     return sum;
                 }, {});

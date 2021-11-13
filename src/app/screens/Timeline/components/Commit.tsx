@@ -1,6 +1,6 @@
 
 import styled, { css } from 'styled-components'
-import React, { Component } from 'react';
+import React, { Component, MouseEventHandler } from 'react';
 import theme from 'app/styles/theme';
 import { Badge } from 'app/components/Typography';
 import { PullRight } from 'app/components/Utility';
@@ -129,11 +129,12 @@ export const TimelineLine = styled.div`
 `;
 
 class Commit extends Component<Props> {
-    handleClick = (): void => {
+    handleClick: MouseEventHandler<HTMLButtonElement> = () => {
         this.props.onClick(this.props.entry.oid);
     }
 
     render(): JSX.Element {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { entry, active, latestCommit, onClick, ...props } = this.props;
 
         return (

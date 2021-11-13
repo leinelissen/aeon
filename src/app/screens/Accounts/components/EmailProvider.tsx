@@ -4,7 +4,7 @@ import { State, useAppDispatch } from 'app/store';
 import React, { useCallback, useEffect, useState } from 'react';
 import AsyncSelect, { AsyncProps } from 'react-select/async';
 import { useSelector } from 'react-redux';
-import { OptionTypeBase } from 'react-select';
+import { GroupBase } from 'react-select';
 import styled from 'styled-components';
 import Button from 'app/components/Button';
 import { faEnvelope } from 'app/assets/fa-light';
@@ -72,7 +72,7 @@ function EmailProvider(): JSX.Element {
     const [organisations, setOrganisations] = useState<Result[]>([]);
     
     // A handler responding to React-Select requesting more options
-    const handleSearch: AsyncProps<OptionTypeBase>['loadOptions'] = useCallback(async (inputValue) => {
+    const handleSearch: AsyncProps<unknown, false, GroupBase<unknown>>['loadOptions'] = useCallback(async (inputValue: string) => {
         // Retrieve a set of organisations from the MyDataDone right API
         const response = await fetch(`https://api.mydatadoneright.eu/api/v1/organizations.json?limit=5&q=${inputValue}`)
             .then(response => response.json()) as APIResponse;

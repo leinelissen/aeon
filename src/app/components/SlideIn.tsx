@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTransition, animated } from 'react-spring'
-import { config } from 'react-spring/renderprops';
+import { config, SpringConfig, TransitionProps } from 'react-spring/renderprops';
 
 export enum SlideDirection {
     UP,
@@ -40,7 +40,7 @@ interface Props {
 }
 
 const SlideIn  = ({ visible, direction, children }: Props): JSX.Element => {
-    const transitions = useTransition(visible, null, slideProps(direction));
+    const transitions = useTransition(visible, null, slideProps(direction) as SpringConfig);
 
     return <>
         {transitions.map(({ item, key, props }) =>
@@ -49,8 +49,7 @@ const SlideIn  = ({ visible, direction, children }: Props): JSX.Element => {
     </>;
 }
 
-// eslint-disable-next-line
-export function slideProps(direction: SlideDirection) {
+export function slideProps(direction: SlideDirection): Omit<TransitionProps<unknown>, 'items'> {
     return {
         enter: defaultAnimation,
         from: Transitions.get(direction),

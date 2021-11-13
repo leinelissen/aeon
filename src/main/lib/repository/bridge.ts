@@ -32,7 +32,7 @@ class RepositoryBridge {
             case RepositoryCommands.DIFF:
                 return this.repository.diff(...args);
             case RepositoryCommands.STATUS:
-                return this.repository.status(...args);
+                return this.repository.status();
             case RepositoryCommands.PARSED_COMMIT: {
                 return this.repository.getParsedCommit(...args);
             }

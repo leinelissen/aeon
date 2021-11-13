@@ -33,7 +33,6 @@ function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
         alwaysOnTop: true, 
         show: false, 
         webPreferences: {
-            enableRemoteModule: false,
             sandbox: true,
             contextIsolation: true,
             partition: `persist:${persistKey}`,

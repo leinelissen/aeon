@@ -11,8 +11,8 @@ import { ProviderFile,
 import { Provider, 
     DataRequestProvider, 
     EmailDataRequestProvider, 
-    ProviderUnion, 
-    OpenDataRightsProvider 
+    OpenDataRightsProvider, 
+    UninstatiatedProvider
 } from './types/Provider';
 import {
     AccountCreated,
@@ -35,7 +35,7 @@ import Spotify from './spotify';
 import Instagram from './instagram';
 import OpenDataRights from './open-data-rights';
 
-export const providers: Array<ProviderUnion> = [
+export const providers: Array<UninstatiatedProvider> = [
     Instagram,
     Facebook,
     LinkedIn,
@@ -43,8 +43,8 @@ export const providers: Array<ProviderUnion> = [
     OpenDataRights
 ];
 
-const mapProviderToKey = providers.reduce<Record<string, ProviderUnion>>((sum, provider) => {
-    sum[provider.key] = provider;
+const mapProviderToKey = providers.reduce<Record<string, UninstatiatedProvider>>((sum, provider) => {
+    sum[(provider as unknown as typeof Provider).key] = provider;
     return sum;
 }, {});
 

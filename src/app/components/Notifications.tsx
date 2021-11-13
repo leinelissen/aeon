@@ -3,8 +3,6 @@ import { Component } from 'react';
 import cogoToast, { CTOptions } from 'cogo-toast';
 
 class Notifications extends Component {
-    handler: EventHandlerNonNull;
-
     config: CTOptions = {
         position: 'top-right',
         hideAfter: 10,

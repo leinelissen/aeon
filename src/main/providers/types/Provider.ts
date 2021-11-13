@@ -110,3 +110,4 @@ export abstract class OpenDataRightsProvider extends DataRequestProvider {
 }
 
 export type ProviderUnion = typeof DataRequestProvider | typeof Provider | typeof EmailDataRequestProvider;
+export type UninstatiatedProvider = new (windowKey: string, accountName?: string) => DataRequestProvider | Provider | EmailDataRequestProvider;

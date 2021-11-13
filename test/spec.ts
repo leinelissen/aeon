@@ -1,4 +1,4 @@
-import { ElectronApplication, _electron as electron, Page, ConsoleMessage } from "playwright";
+import { ElectronApplication, _electron as electron, ConsoleMessage } from "playwright";
 import { expect, test } from "@playwright/test";
 import path from "path";
 

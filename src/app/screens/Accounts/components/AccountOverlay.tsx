@@ -9,11 +9,16 @@ import { dispatchEmailRequest } from 'app/store/accounts/actions';
 import { EmailProvider } from 'app/store/accounts/types';
 import Providers from 'app/utilities/Providers';
 import { formatDistanceToNow } from 'date-fns';
+import { InitialisedAccount } from 'main/providers/types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 interface Props {
     selectedAccount: string;
+}
+
+function hasUrl(account: InitialisedAccount | EmailProvider): account is InitialisedAccount {
+    return 'url' in (account as InitialisedAccount);
 }
 
 function AccountOverlay({ selectedAccount }: Props): JSX.Element {
@@ -63,7 +68,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                     </Section>
                     <Section>
                         <span>
-                            {account.url && 
+                            {hasUrl(account) && 
                                 <>
                                     <FontAwesomeIcon
                                         icon={faOpenDataRights}

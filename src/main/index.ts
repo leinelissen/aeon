@@ -11,8 +11,6 @@ import WindowStore from './lib/window-store';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
-app.allowRendererProcessReuse = true;
-
 // GUARD: Check if auto updates are not flagged to be disabled
 // We use this particularly on macOS when testing so that we don't run into
 // codesigning issues.

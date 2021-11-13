@@ -19,7 +19,7 @@
         "package": "electron-forge package",
         "make": "electron-forge make",
         "publish": "electron-forge publish",
-        "lint": "eslint --ext .ts,.tsx .",
+        "lint": "eslint --ext .ts,.tsx . && tsc --noEmit",
         "test": "playwright test",
         "postinstall": "npm run babel -w nodegit"
     },
@@ -91,6 +91,7 @@
         "@openfonts/ibm-plex-sans_all": "1.44.2",
         "@popperjs/core": "2.10.2",
         "@reduxjs/toolkit": "1.6.2",
+        "@types/stream-chain": "^2.0.1",
         "adm-zip": "0.5.9",
         "cogo-toast": "4.2.3",
         "cytoscape": "3.20.0",
