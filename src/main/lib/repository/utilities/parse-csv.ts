@@ -15,7 +15,7 @@ function parseCsv(blob: Blob): Promise<unknown> {
     return new Promise((resolve, reject) => {
         // Create holding array for feature headers and rows
         let headers: string[] = [];
-        const rows: any = [];
+        const rows: unknown[] = [];
 
         // Then setup the parse
         const parser = parse()

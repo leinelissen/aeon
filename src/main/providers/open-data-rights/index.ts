@@ -59,14 +59,14 @@ class OpenDataRights extends OpenDataRightsProvider {
         this.token = await fetch(`${this.url}/oauth/token`, {
             method: 'POST',
             body: formData,
-        }).then(response => response.json());
+        }).then(response => response.json() as Promise<Token>);
 
         // Also save it to disk
         store.set(this.windowKey, this.token);
 
         // Now we just need to fetch the account
         return fetch(`${this.url}/data/me`, this.getInit())
-            .then(response => response.json())
+            .then(response => response.json() as Promise<{ account: string }>)
             .then(response => response.account);
     }
 
@@ -80,7 +80,7 @@ class OpenDataRights extends OpenDataRightsProvider {
         return fetch(`${this.url}/requests`, {
             ...this.getInit(),
             method: 'POST',
-        }).then(response => response.json())
+        }).then(response => response.json() as Promise<{ requestId: string }>)
             .then(response => response.requestId);
     }
 

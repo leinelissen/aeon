@@ -115,7 +115,7 @@ class Instagram extends DataRequestProvider {
         );
 
         // We then transform the data so that we can return it to the handler
-        return responses.map(response => {
+        return responses.map((response: any) => {
             return {
                 filepath: `${response.page_name}.json`,
                 data: JSON.stringify(response.data.data, null, 4),

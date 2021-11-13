@@ -1,8 +1,8 @@
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { IconDefinition, IconName } from '@fortawesome/fontawesome-svg-core';
 
 const faOpenDataRights: IconDefinition = {
     prefix: 'fab',
-    iconName: 'open-data-rights',
+    iconName: 'open-data-rights' as IconName,
     icon: [
         512,
         512,

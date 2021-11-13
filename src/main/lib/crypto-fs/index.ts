@@ -41,7 +41,7 @@ class CryptoFs {
         })
     }
 
-    public readFile = (filepath: string, opts: { encoding?: string } = {}): Promise<string | Buffer> => {
+    public readFile = (filepath: string, opts: { encoding?: BufferEncoding } = {}): Promise<string | Buffer> => {
         return fs.promises.readFile(filepath)
             .then((data: Buffer) => {
                 // Retrieve the initialisation vector from the first sixteen bytes

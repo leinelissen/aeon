@@ -71,7 +71,7 @@ function diffDataArray(
         // Find any object on the after array that matches this datapoint
         const match = before.find(dBefore => {
             return typeof dAfter.data === 'object' && dAfter.data !== null
-                ? deepEqual(dAfter.data, dBefore.data)
+                ? isEqual(dAfter.data, dBefore.data)
                 : dAfter.data === dBefore.data
         });
 

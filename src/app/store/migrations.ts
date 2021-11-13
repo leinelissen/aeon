@@ -4,7 +4,7 @@ const migrations: MigrationManifest = {
     /**
      * Migrate from the undux-based store to Redux
      */
-    5: (state) => {
+    5: (state: any) => {
         return {
             _persist: state._persist,
             onboarding: state.onboardingComplete,
@@ -12,7 +12,7 @@ const migrations: MigrationManifest = {
             newCommits: state.newCommit || [],
         }
     },
-    6: (state) => {
+    6: (state: any) => {
         return {
             ...state,
             requests: {
@@ -23,7 +23,7 @@ const migrations: MigrationManifest = {
             }
         }
     },
-    7: (state) => {
+    7: (state: any) => {
         const { requests, ...rest} = state;
         return {
             ...rest,
@@ -39,7 +39,7 @@ const migrations: MigrationManifest = {
             }
         }
     },
-    9: (state) => {
+    9: (state: any) => {
         return {
             ...state,
             accounts: {
