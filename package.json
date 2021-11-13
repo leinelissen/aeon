@@ -84,9 +84,9 @@
     },
     "dependencies": {
         "@fast-csv/parse": "4.3.6",
-        "@fortawesome/fontawesome-svg-core": "^1.2.36",
-        "@fortawesome/free-brands-svg-icons": "^5.15.4",
-        "@fortawesome/react-fontawesome": "^0.1.16",
+        "@fortawesome/fontawesome-svg-core": "1.2.36",
+        "@fortawesome/free-brands-svg-icons": "5.15.4",
+        "@fortawesome/react-fontawesome": "0.1.16",
         "@openfonts/ibm-plex-mono_all": "1.44.2",
         "@openfonts/ibm-plex-sans_all": "1.44.2",
         "@popperjs/core": "2.10.2",
