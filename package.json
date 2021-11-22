@@ -21,7 +21,7 @@
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts,.tsx . && tsc --noEmit",
         "test": "playwright test",
-        "postinstall": "node scripts/prepareNodegit.js"
+        "postinstall": "electron-rebuild && node scripts/prepareNodegit.js"
     },
     "keywords": [],
     "author": {
