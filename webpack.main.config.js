@@ -6,20 +6,10 @@ module.exports = {
     * This is the main entry point for your application, it's the first file
     * that runs in the main process.
     */
-    entry: {
-        index: './src/main/index.ts', 
-        preload: './src/app/preload.ts',
-    },
-    output: {
-        filename: '[name].js',
-        devtoolModuleFilenameTemplate: '[absolute-resource-path]'
-    },
+    entry: './src/main/index.ts',
     // Put your normal webpack config below here
     module: {
         rules: require('./webpack.rules'),
-    },
-    optimization: {
-        usedExports: true,
     },
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
@@ -28,8 +18,8 @@ module.exports = {
             main: path.resolve(__dirname, 'src', 'main'),
         }
     },
-    plugins: [
-        Dotenv,
-    ],
-    devtool: 'source-map',
+    // plugins: [
+    //     Dotenv,
+    // ],
+    // devtool: 'source-map',
 };

@@ -38,7 +38,10 @@ const config = {
                         {
                             html: "./src/app/index.ejs",
                             js: "./src/app/index.tsx",
-                            name: "main_window"
+                            name: "main_window",
+                            preload: {
+                                js: "./src/app/preload.ts",
+                            },
                         }
                     ]
                 },

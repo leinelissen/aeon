@@ -24,18 +24,12 @@ module.exports = {
     module: {
         rules,
     },
-    node: { 
-        global: true, 
-    },
     plugins: [
         ...plugins,
         new MiniCssExtractPlugin({
             filename: "assets/[name].css",
         })
     ],
-    optimization: {
-        usedExports: true,
-    },
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
         alias: {
@@ -43,5 +37,5 @@ module.exports = {
             main: path.resolve(__dirname, 'src', 'main'),
         }
     },
-    devtool: 'source-map',
+    // devtool: 'source-map',
 };
