@@ -21,7 +21,7 @@
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts,.tsx . && tsc --noEmit",
         "test": "playwright test",
-        "postinstall": "npm run babel -w nodegit"
+        "postinstall": "node scripts/prepareNodegit.js"
     },
     "keywords": [],
     "author": {
@@ -106,7 +106,7 @@
         "lodash-es": "4.17.21",
         "mailparser": "3.4.0",
         "node-fetch": "3.1.0",
-        "nodegit": "file:vendor/nodegit",
+        "nodegit": "0.28.0-alpha.10",
         "nodemailer": "6.7.1",
         "react": "17.0.2",
         "react-dom": "17.0.2",
@@ -121,8 +121,5 @@
         "stream-chain": "2.2.4",
         "styled-components": "5.3.3",
         "v8-compile-cache": "2.3.0"
-    },
-    "workspaces": [
-        "./vendor/nodegit"
-    ]
+    }
 }

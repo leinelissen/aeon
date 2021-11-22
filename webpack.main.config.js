@@ -14,9 +14,6 @@ module.exports = {
         filename: '[name].js',
         devtoolModuleFilenameTemplate: '[absolute-resource-path]'
     },
-    externals: {
-        'nodegit': 'nodegit'
-    },
     // Put your normal webpack config below here
     module: {
         rules: require('./webpack.rules'),
