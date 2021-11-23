@@ -57,7 +57,8 @@ class Repository extends EventEmitter {
         super();
 
         NodeGitRepository.open(this.dir)
-            .catch(() => {
+            .catch((err) => {
+                console.error(err);
                 return this.initialiseRepository();
             })
             .then(async (repository) => {

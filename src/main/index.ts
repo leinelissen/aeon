@@ -5,11 +5,11 @@ require('source-map-support').install();
 import './lib/map-map';
 import { app, autoUpdater, BrowserWindow } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer';
-import path from 'path';
 import initialise from './initialise';
 import WindowStore from './lib/window-store';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
+declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 // GUARD: Check if auto updates are not flagged to be disabled
 // We use this particularly on macOS when testing so that we don't run into
@@ -37,7 +37,7 @@ const createWindow = (): void => {
         vibrancy: 'menu',
         transparent: true,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
+            preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
             webSecurity: process.env.NODE_ENV === 'production',
         }
     });
