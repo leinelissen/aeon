@@ -1,5 +1,5 @@
-import { ParsedMail } from 'mailparser';
-import { Options } from 'nodemailer/lib/mailer';
+import type { ParsedMail } from 'mailparser';
+import type { Options } from 'nodemailer/lib/mailer';
 
 export interface EmailQuery {
     from?: string;

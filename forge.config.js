@@ -47,14 +47,14 @@ const config = {
                 },
                 loggerPort: 9001
             }
-        ]
+        ],
     ],
 };
 
 /**
- * This function inserts config for notarizing applications.
- * Idea stolen from: https://github.com/electron/fiddle/blob/master/forge.config.js
- */
+* This function inserts config for notarizing applications.
+* Idea stolen from: https://github.com/electron/fiddle/blob/master/forge.config.js
+*/
 function notarizeMaybe() {
     // GUARD: Only notarize macOS-based applications
     if (process.platform !== 'darwin') {
@@ -71,20 +71,20 @@ function notarizeMaybe() {
     if (!process.env.APPLE_ID || !process.env.APPLE_ID_PASSWORD) {
         console.warn(
             'Should be notarizing, but environment variables APPLE_ID or APPLE_ID_PASSWORD are missing!',
-        );
-        return;
+            );
+            return;
+        }
+        
+        // Inject the notarization config if everything is right
+        config.packagerConfig.osxNotarize = {
+            appBundleId: 'nl.leinelissen.aeon',
+            appleId: process.env.APPLE_ID,
+            appleIdPassword: process.env.APPLE_ID_PASSWORD,
+            ascProvider: '238P3C58WC',
+        };
     }
     
-    // Inject the notarization config if everything is right
-    config.packagerConfig.osxNotarize = {
-        appBundleId: 'nl.leinelissen.aeon',
-        appleId: process.env.APPLE_ID,
-        appleIdPassword: process.env.APPLE_ID_PASSWORD,
-        ascProvider: '238P3C58WC',
-    };
-}
-
-notarizeMaybe();
-
-// Finally, export it
-module.exports = config;
+    notarizeMaybe();
+    
+    // Finally, export it
+    module.exports = config;
