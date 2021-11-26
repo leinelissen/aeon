@@ -33,6 +33,8 @@ jobs:
       - name: Compile
         env:
           npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
         run: npm run make
 
       - name: Test
