@@ -5,6 +5,7 @@ const config = {
     packagerConfig: {
         icon: "./src/icon",
         executableName: "aeon",
+        asar: false,
         osxSign: {
             identity: 'Developer ID Application: Bureau Moeilijke Dingen BV (238P3C58WC)',
             "hardened-runtime": true,
