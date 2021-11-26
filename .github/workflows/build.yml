@@ -31,11 +31,18 @@ jobs:
         run: |
           sed -i '.bak' 's/"executableName": "aeon"/"executableName": "Aeon"/' package.json
 
-      - name: Compile
+      - name: Compile and Sign
+        if: startsWith(github.ref, 'refs/tags/')
         env:
           npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+        run: npm run make
+
+      - name: Compile
+        if: startsWith(github.ref, 'refs/tags/') == false
+        env:
+          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
         run: npm run make
 
       - name: Test
