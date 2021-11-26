@@ -4,7 +4,14 @@
 const config = {
     packagerConfig: {
         icon: "./src/icon",
-        executableName: "aeon"
+        executableName: "aeon",
+        osxSign: {
+            identity: 'Developer ID Application: Bureau Moeilijke Dingen BV (238P3C58WC)',
+            "hardened-runtime": true,
+            entitlements: 'entitlements.plist',
+            'entitlements-inherit': 'entitlements.plist',
+            'signature-flags': 'library',
+        },
     },
     makers: [
         {
