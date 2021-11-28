@@ -52,7 +52,7 @@
         "@typescript-eslint/eslint-plugin": "5.4.0",
         "@typescript-eslint/parser": "5.4.0",
         "@vercel/webpack-asset-relocator-loader": "1.7.0",
-        "babel-plugin-styled-components": "1.13.3",
+        "babel-plugin-styled-components": "2.0.2",
         "csp-html-webpack-plugin": "5.1.0",
         "css-loader": "6.5.1",
         "dotenv-webpack": "7.0.3",
