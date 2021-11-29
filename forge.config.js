@@ -79,20 +79,47 @@ function notarizeMaybe() {
     if (!process.env.APPLE_ID || !process.env.APPLE_ID_PASSWORD) {
         console.warn(
             'Should be notarizing, but environment variables APPLE_ID or APPLE_ID_PASSWORD are missing!',
-            );
-            return;
-        }
-        
-        // Inject the notarization config if everything is right
-        config.packagerConfig.osxNotarize = {
-            appBundleId: 'nl.leinelissen.aeon',
-            appleId: process.env.APPLE_ID,
-            appleIdPassword: process.env.APPLE_ID_PASSWORD,
-            ascProvider: '238P3C58WC',
-        };
+        );
+        return;
     }
     
-    notarizeMaybe();
-    
-    // Finally, export it
-    module.exports = config;
+    // Inject the notarization config if everything is right
+    config.packagerConfig.osxNotarize = {
+        appBundleId: 'nl.leinelissen.aeon',
+        appleId: process.env.APPLE_ID,
+        appleIdPassword: process.env.APPLE_ID_PASSWORD,
+        ascProvider: '238P3C58WC',
+    };
+}
+
+notarizeMaybe();
+
+/**
+ * For some reason OpenSSL isn't compiled directly into the NodeGit native module. We
+ * thus have to include manually on Windows only.
+ */
+function bundleOpenSSLMaybe() {
+    if (process.platform !== 'win32') {
+        return;
+    }
+
+    // Add a hook to include the file
+    config.hooks = {
+        postPackage: async () => {
+            const fs = require('fs');
+            const path = require('path');
+
+            await fs.promises.copyFile(            
+                // TODO: It's probably a bad idea to hardcode the DLL location here. Maybe it 
+                // is a good idea to pull it from some side of config or environment variable.
+                'C:\\WINDOWS\\system32\\libcrypto-1_1-x64.dll',
+                path.join(__dirname, 'out', 'Aeon-win32-x64', 'resources', 'app', '.webpack', 'main', 'native_modules', 'build', 'Release', 'libcrypto-1_1-x64.dll'),
+            );
+        }
+    };
+}
+
+bundleOpenSSLMaybe();
+
+// Finally, export it
+module.exports = config;
