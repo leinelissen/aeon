@@ -68,7 +68,7 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Load macOS Developer Certificates
+      - name: Load Developer Certificates (macOS)
         if: startsWith(github.ref, 'refs/tags/') && ${{ matrix.os == 'macOS-11' }}
         env:
           MACOS_CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
