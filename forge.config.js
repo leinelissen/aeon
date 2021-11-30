@@ -3,8 +3,9 @@
 */
 const config = {
     packagerConfig: {
+        name: "Aeon",
         icon: "./src/icon",
-        executableName: "aeon",
+        executableName: "Aeon",
         asar: false,
         osxSign: {
             identity: 'Developer ID Application: Bureau Moeilijke Dingen BV (238P3C58WC)',
