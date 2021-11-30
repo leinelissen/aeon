@@ -3,8 +3,35 @@ name: Build
 on: [push]
 
 jobs:
-  build-macos:
-    runs-on: macos-11
+  build:
+    name: Build (${{ matrix.os }} - ${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # Build for supported platforms
+        # https://github.com/electron/electron-packager/blob/ebcbd439ff3e0f6f92fa880ff28a8670a9bcf2ab/src/targets.js#L9
+        os: [ macOS-11, ubuntu-20.04, windows-2019 ]
+        arch: [ x64, arm64 ]
+        include:
+        - os: ubuntu-20.04
+          arch: armv7l
+        - os: ubuntu-20.04
+          arch: arm64
+        - os: ubuntu-20.04
+          arch: x64
+        - os: macOS-11
+          arch: arm64
+          openssl_dir: '/usr/local/opt/openssl@1.1'
+        - os: macOS-11
+          arch: x64
+          openssl_dir: '/usr/local/opt/openssl@1.1'
+        - os: windows-2019
+          arch: arm64
+          openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
+        - os: windows-2019
+          arch: x64
+          openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
+        
     steps:
       - uses: actions/checkout@v2
         with:
@@ -19,26 +46,32 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ matrix.os }}-${{ matrix.arch }}-modules-${{hashFiles('**/package-lock.json') }}
+          
+      - name: install Build dependencies (Windows)
+        if: ${{ matrix.os == 'windows-2019' }}
+        run: choco install openssl
+
+      - name: Install Build dependencies (Ubuntu)
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
+        run: |
+          sudo apt update
+          sudo apt install libkrb5-dev
 
       - name: Install dependencies
         env:
           JOBS: 'max'
-          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
+          npm_config_openssl_dir: ${{ matrix.openssl_dir }}
         run: |
           npm install
 
       - name: Lint
         run: npm run lint
 
-      - name: 'Capitalise binary'
-        run: |
-          sed -i '.bak' 's/"executableName": "aeon"/"executableName": "Aeon"/' package.json
-
       - name: Compile and Sign
         if: startsWith(github.ref, 'refs/tags/')
         env:
-          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
+          npm_config_openssl_dir: ${{ matrix.openssl_dir }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           MACOS_CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
@@ -50,16 +83,21 @@ jobs:
       - name: Compile
         if: startsWith(github.ref, 'refs/tags/') == false
         env:
-          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
+          npm_config_openssl_dir: ${{ matrix.openssl_dir }}
         run: npm run make
 
       - name: Test
+        if: ${{ matrix.os != 'ubuntu-20.04' }}
         run: npm run test
+
+      - name: Test (Ubuntu)
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
+        run: xvfb-run --auto-servernum -- npm test
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ runner.os }}
+          name: ${{ matrix.os }}-${{ matrix.arch }}
           path: out/make
           
       - name: Release
@@ -69,113 +107,3 @@ jobs:
           files: "out/make/**"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-windows:
-    runs-on: windows-2019
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-          submodules: true
-
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-
-      - uses: ilammy/setup-nasm@v1
-
-      - name: install Build dependencies
-        run: choco install openssl
-
-      - name: Install dependencies
-        env:
-          JOBS: 'max'
-          npm_config_vcvarsall_path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat'
-          npm_config_openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
-        run: |
-          npm install
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Compile
-        env:
-          npm_config_openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
-        run: npm run make
-
-      - name: Test
-        run: npm run test
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ runner.os }}
-          path: out/make
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: "out/make/**"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-linux:
-    runs-on: ubuntu-20.04
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-          submodules: true
-
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install Build dependencies
-        run: |
-          sudo apt update
-          sudo apt install libkrb5-dev
-
-      - name: Install dependencies
-        env:
-          JOBS: 'max'
-        run: |
-          npm install
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Compile
-        run: npm run make
-
-      - name: Test
-        run: xvfb-run --auto-servernum -- npm test
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ runner.os }}
-          path: out/make
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: "out/make/**"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
