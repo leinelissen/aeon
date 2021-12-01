@@ -18,7 +18,7 @@ jobs:
           arch: x64
         - os: macOS-11
           arch: arm64
-          openssl_dir: '/usr/local/opt/openssl@1.1'
+          openssl_dir: '/tmp/openssl@1.1/1.1.1l_1'
         - os: macOS-11
           arch: x64
           openssl_dir: '/usr/local/opt/openssl@1.1'
@@ -47,7 +47,15 @@ jobs:
           path: '**/node_modules'
           key: ${{ matrix.os }}-${{ matrix.arch }}-node_modules-${{hashFiles('**/package-lock.json') }}
           
-      - name: install Build dependencies (Windows)
+      - name: Install Build dependencies (macOS-arm64)
+        if: |
+          matrix.os == 'macOS-11'
+            && matrix.arch == 'arm64'
+        run: |
+          curl -L -H "Authorization: Bearer QQ==" -o /tmp/openssl-1.1.1l_1-arm64.tar.gz https://ghcr.io/v2/homebrew/core/openssl/1.1/blobs/sha256:8f5b0bee61c1570b9f0fc0a21d6c322e904ae7975bdaada5787451d18e9677a6
+          tar -xvf /tmp/openssl-1.1.1l_1-arm64.tar.gz -C /tmp
+          
+      - name: Install Build dependencies (Windows)
         if: matrix.os == 'windows-2019'
         run: choco install openssl
 
