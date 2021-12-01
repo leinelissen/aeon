@@ -11,12 +11,8 @@ jobs:
       matrix:
         # Build for supported platforms
         # https://github.com/electron/electron-packager/blob/ebcbd439ff3e0f6f92fa880ff28a8670a9bcf2ab/src/targets.js#L9
-        os: [ macOS-11, ubuntu-20.04, windows-2019 ]
-        arch: [ x64, arm64 ]
         include:
         - os: ubuntu-20.04
-          arch: armv7l
-        - os: ubuntu-20.04
           arch: arm64
         - os: ubuntu-20.04
           arch: x64
@@ -27,11 +23,13 @@ jobs:
           arch: x64
           openssl_dir: '/usr/local/opt/openssl@1.1'
         - os: windows-2019
-          arch: arm64
-          openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
-        - os: windows-2019
           arch: x64
           openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
+        # - os: ubuntu-20.04
+        #   arch: armv7l
+        # - os: windows-2019
+        #   arch: arm64
+        #   openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
         
     steps:
       - uses: actions/checkout@v2
@@ -47,7 +45,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
-          key: ${{ matrix.os }}-${{ matrix.arch }}-modules-${{hashFiles('**/package-lock.json') }}
+          key: ${{ matrix.os }}-${{ matrix.arch }}-node_modules-${{hashFiles('**/package-lock.json') }}
           
       - name: install Build dependencies (Windows)
         if: matrix.os == 'windows-2019'
