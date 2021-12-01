@@ -71,7 +71,8 @@ jobs:
           JOBS: 'max'
           npm_config_openssl_dir: ${{ matrix.openssl_dir }}
         run: |
-          npx electron-rebuild --arch=${{ matrix.arch }}
+          npm run rebuild:native-modules -- --arch=${{ matrix.arch }}
+          npm run prepare:nodegit
 
       - name: Lint
         run: npm run lint
