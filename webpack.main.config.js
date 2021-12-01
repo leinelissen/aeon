@@ -1,4 +1,4 @@
-const [ Dotenv ] = require('./webpack.plugins');
+// const [ Dotenv ] = require('./webpack.plugins');
 const path = require('path');
 
 module.exports = {
@@ -16,10 +16,14 @@ module.exports = {
         alias: {
             app: path.resolve(__dirname, 'src', 'app'),
             main: path.resolve(__dirname, 'src', 'main'),
+            // We override the call to the debug version of Nodegit, since we are
+            // not building it anyways, and webpack trips over the conditional
+            // require statement in Nodegit.
+            '../build/Debug/nodegit.node': false,
         }
     },
-    // plugins: [
-    //     Dotenv,
-    // ],
+    plugins: [
+        //
+    ],
     // devtool: 'source-map',
 };
