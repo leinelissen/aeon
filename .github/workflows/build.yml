@@ -98,7 +98,7 @@ jobs:
           JOBS: 'max'
           npm_config_openssl_dir: ${{ matrix.openssl_dir }}
         run: |
-          npm install --arch=${{ matrix.arch }}
+          npm install
 
       - name: Rebuild native modules
         env:
