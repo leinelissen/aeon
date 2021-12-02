@@ -138,11 +138,13 @@ jobs:
       - name: Test
         if: |
           matrix.os != 'ubuntu-20.04'
-            && matrix.arch != 'arm64'
+            && matrix.arch == 'x64'
         run: npm run test
 
       - name: Test (Ubuntu)
-        if: matrix.os == 'ubuntu-20.04'
+        if: |
+          matrix.os == 'ubuntu-20.04'
+            && matrix.arch == 'x64'
         run: xvfb-run --auto-servernum -- npm test
 
       - name: Upload artifacts
