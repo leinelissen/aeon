@@ -3,12 +3,13 @@
 */
 const config = {
     packagerConfig: {
-        icon: "./src/icon",
-        executableName: "aeon",
+        name: process.platform === 'linux' ? 'aeon' : 'Aeon',
+        icon: './src/icon',
+        executableName: process.platform === 'linux' ? 'aeon' : 'Aeon',
         asar: false,
         osxSign: {
             identity: 'Developer ID Application: Bureau Moeilijke Dingen BV (238P3C58WC)',
-            "hardened-runtime": true,
+            'hardened-runtime': true,
             entitlements: 'entitlements.plist',
             'entitlements-inherit': 'entitlements.plist',
             'signature-flags': 'library',
@@ -16,39 +17,42 @@ const config = {
     },
     makers: [
         {
-            name: "@electron-forge/maker-squirrel",
+            name: '@electron-forge/maker-squirrel',
             config: {
-                iconUrl: "https://raw.githubusercontent.com/leinelissen/aeon/master/src/icon.ico",
-                setupIcon: "./src/icon.ico"
+                iconUrl: 'https://raw.githubusercontent.com/leinelissen/aeon/master/src/icon.ico',
+                setupIcon: './src/icon.ico'
             }
         },
         {
-            name: "@electron-forge/maker-zip",
-            platforms: [ "darwin" ]
+            name: '@electron-forge/maker-dmg',
+            config: {
+                // background: './assets/dmg-background.png',
+                format: 'ULFO'
+            }
         },
         {
-            name: "@electron-forge/maker-deb",
+            name: '@electron-forge/maker-deb',
             config: {}
         },
         {
-            name: "@electron-forge/maker-rpm",
+            name: '@electron-forge/maker-rpm',
             config: {}
         }
     ],
     plugins: [
         [
-            "@electron-forge/plugin-webpack",
+            '@electron-forge/plugin-webpack',
             {
-                mainConfig: "./webpack.main.config.js",
+                mainConfig: './webpack.main.config.js',
                 renderer: {
-                    config: "./webpack.renderer.config.js",
+                    config: './webpack.renderer.config.js',
                     entryPoints: [
                         {
-                            html: "./src/app/index.ejs",
-                            js: "./src/app/index.tsx",
-                            name: "main_window",
+                            html: './src/app/index.ejs',
+                            js: './src/app/index.tsx',
+                            name: 'main_window',
                             preload: {
-                                js: "./src/app/preload.ts",
+                                js: './src/app/preload.ts',
                             },
                         }
                     ]

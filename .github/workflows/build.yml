@@ -3,8 +3,10 @@ name: Build
 on: [push]
 
 jobs:
-  build-macos:
-    runs-on: macos-11
+  lint:
+    name: 'Lint'
+    runs-on: macos-latest
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -19,47 +21,136 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          key: linter-node_modules-${{hashFiles('**/package-lock.json') }}
 
       - name: Install dependencies
         env:
           JOBS: 'max'
-          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
+        run: npm install
+
+      - name: Run linter
+        run: npm run lint
+
+  build:
+    name: Build (${{ matrix.os }} - ${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Build for supported platforms
+        # https://github.com/electron/electron-packager/blob/ebcbd439ff3e0f6f92fa880ff28a8670a9bcf2ab/src/targets.js#L9
+        include:
+        - os: ubuntu-20.04
+          arch: arm64
+        - os: ubuntu-20.04
+          arch: x64
+        - os: macOS-11
+          arch: arm64
+          openssl_dir: '/tmp/openssl@1.1/1.1.1l_1'
+        - os: macOS-11
+          arch: x64
+          openssl_dir: '/usr/local/opt/openssl@1.1'
+        - os: windows-2019
+          arch: x64
+          openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
+        # - os: ubuntu-20.04
+        #   arch: armv7l
+        # - os: windows-2019
+        #   arch: arm64
+        #   openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
+        
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ matrix.os }}-${{ matrix.arch }}-node_modules-${{hashFiles('**/package-lock.json') }}
+          
+      - name: Install Build dependencies (macOS-arm64)
+        if: |
+          matrix.os == 'macOS-11'
+            && matrix.arch == 'arm64'
+        run: |
+          curl -L -H "Authorization: Bearer QQ==" -o /tmp/openssl-1.1.1l_1-arm64.tar.gz https://ghcr.io/v2/homebrew/core/openssl/1.1/blobs/sha256:8f5b0bee61c1570b9f0fc0a21d6c322e904ae7975bdaada5787451d18e9677a6
+          tar -xvf /tmp/openssl-1.1.1l_1-arm64.tar.gz -C /tmp
+          
+      - name: Install Build dependencies (Windows)
+        if: matrix.os == 'windows-2019'
+        run: choco install openssl
+
+      - name: Install Build dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu-20.04'
+        run: |
+          sudo apt update
+          sudo apt install libkrb5-dev
+
+      - name: Install dependencies
+        env:
+          JOBS: 'max'
+          npm_config_openssl_dir: ${{ matrix.openssl_dir }}
         run: |
           npm install
 
-      - name: Lint
-        run: npm run lint
-
-      - name: 'Capitalise binary'
+      - name: Rebuild native modules
+        env:
+          JOBS: 'max'
+          npm_config_openssl_dir: ${{ matrix.openssl_dir }}
         run: |
-          sed -i '.bak' 's/"executableName": "aeon"/"executableName": "Aeon"/' package.json
+          npm run rebuild:native-modules -- --arch=${{ matrix.arch }}
+          npm run prepare:nodegit
 
+      - name: Load Developer Certificates (macOS)
+        if: |
+          startsWith(github.ref, 'refs/tags/')
+            && matrix.os == 'macOS-11'
+        env:
+          MACOS_CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
+          MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+        run:
+          chmod +x scripts/setupMacOSCertificates.sh && ./scripts/setupMacOSCertificates.sh
+          
       - name: Compile and Sign
         if: startsWith(github.ref, 'refs/tags/')
         env:
-          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
+          npm_config_openssl_dir: ${{ matrix.openssl_dir }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           MACOS_CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
           MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
-        run: |
-          chmod +x scripts/setupMacOSCertificates.sh && ./scripts/setupMacOSCertificates.sh
-          npm run make
+        run:
+          npm run make -- --arch=${{ matrix.arch }}
 
       - name: Compile
         if: startsWith(github.ref, 'refs/tags/') == false
         env:
-          npm_config_openssl_dir: '/usr/local/opt/openssl@1.1'
-        run: npm run make
+          npm_config_openssl_dir: ${{ matrix.openssl_dir }}
+        run: npm run make -- --arch=${{ matrix.arch }}
 
       - name: Test
+        if: |
+          matrix.os != 'ubuntu-20.04'
+            && matrix.arch == 'x64'
         run: npm run test
+
+      - name: Test (Ubuntu)
+        if: |
+          matrix.os == 'ubuntu-20.04'
+            && matrix.arch == 'x64'
+        run: xvfb-run --auto-servernum -- npm test
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ runner.os }}
+          name: ${{ matrix.os }}-${{ matrix.arch }}
           path: out/make
           
       - name: Release
@@ -69,113 +160,3 @@ jobs:
           files: "out/make/**"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-windows:
-    runs-on: windows-2019
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-          submodules: true
-
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-
-      - uses: ilammy/setup-nasm@v1
-
-      - name: install Build dependencies
-        run: choco install openssl
-
-      - name: Install dependencies
-        env:
-          JOBS: 'max'
-          npm_config_vcvarsall_path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat'
-          npm_config_openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
-        run: |
-          npm install
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Compile
-        env:
-          npm_config_openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
-        run: npm run make
-
-      - name: Test
-        run: npm run test
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ runner.os }}
-          path: out/make
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: "out/make/**"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-linux:
-    runs-on: ubuntu-20.04
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-          submodules: true
-
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install Build dependencies
-        run: |
-          sudo apt update
-          sudo apt install libkrb5-dev
-
-      - name: Install dependencies
-        env:
-          JOBS: 'max'
-        run: |
-          npm install
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Compile
-        run: npm run make
-
-      - name: Test
-        run: xvfb-run --auto-servernum -- npm test
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ runner.os }}
-          path: out/make
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: "out/make/**"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
