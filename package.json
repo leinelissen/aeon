@@ -11,8 +11,7 @@
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts,.tsx . && tsc --noEmit",
         "test": "playwright test",
-        "rebuild:native-modules": "electron-rebuild",
-        "postinstall": "npm run prepare:nodegit"
+        "rebuild:native-modules": "electron-rebuild"
     },
     "keywords": [],
     "author": {

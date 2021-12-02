@@ -3,6 +3,29 @@ name: Build
 on: [push]
 
 jobs:
+  lint:
+    name: 'Lint'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: linter-node_modules-${{hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        env:
+          JOBS: 'max'
+        run: npm install
+
+      - name: Run linter
+        run: npm run lint
+
   build:
     name: Build (${{ matrix.os }} - ${{ matrix.arch }})
     runs-on: ${{ matrix.os }}
@@ -78,9 +101,6 @@ jobs:
           npm_config_openssl_dir: ${{ matrix.openssl_dir }}
         run: |
           npm run rebuild:native-modules -- --arch=${{ matrix.arch }}
-
-      - name: Lint
-        run: npm run lint
 
       - name: Load Developer Certificates (macOS)
         if: |
