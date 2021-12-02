@@ -106,6 +106,7 @@ jobs:
           npm_config_openssl_dir: ${{ matrix.openssl_dir }}
         run: |
           npm run rebuild:native-modules -- --arch=${{ matrix.arch }}
+          npm run prepare:nodegit
 
       - name: Load Developer Certificates (macOS)
         if: |
