@@ -70,7 +70,7 @@ jobs:
           JOBS: 'max'
           npm_config_openssl_dir: ${{ matrix.openssl_dir }}
         run: |
-          npm install
+          npm install --arch=${{ matrix.arch }}
 
       - name: Rebuild native modules
         env:
@@ -78,7 +78,6 @@ jobs:
           npm_config_openssl_dir: ${{ matrix.openssl_dir }}
         run: |
           npm run rebuild:native-modules -- --arch=${{ matrix.arch }}
-          npm run prepare:nodegit
 
       - name: Lint
         run: npm run lint
@@ -111,7 +110,9 @@ jobs:
         run: npm run make -- --arch=${{ matrix.arch }}
 
       - name: Test
-        if: matrix.os != 'ubuntu-20.04'
+        if: |
+          matrix.os != 'ubuntu-20.04'
+            && matrix.arch != 'arm64'
         run: npm run test
 
       - name: Test (Ubuntu)
