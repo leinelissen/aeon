@@ -5,14 +5,14 @@ on: [push]
 jobs:
   lint:
     name: 'Lint'
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
           submodules: true
-          
+
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
