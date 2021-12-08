@@ -30,24 +30,10 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
 
     &:hover {
         cursor: pointer;
-
-        @media (prefers-color-scheme: dark) {
-            background-color: #272727;
-        }
-        
-        @media (prefers-color-scheme: light) {
-            background-color: #fcfcfc;
-        }   
     }
 
     &:active {
-        @media (prefers-color-scheme: dark) {
-            background-color: #333333;
-        }
-        
-        @media (prefers-color-scheme: light) {
-            background-color: #f5f5f5;
-        }   
+
     }
 
     &:focus {
@@ -57,7 +43,7 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     ${(props) => props.active && css`
         border-radius: 16px;
         color: inherit;
-        background-color: var(--colors-background) !important; 
+        background-color: var(--color-modal-background) !important; 
     `}
 `
 
@@ -95,7 +81,7 @@ export const TimelineLine = styled.div`
     width: 10px;
     min-height: 100%;
     z-index: 0;
-    background-color: var(--color-gray-200);
+    background-color: var(--color-gray-100);
 `;
 
 class Commit extends Component<Props> {
@@ -110,8 +96,13 @@ class Commit extends Component<Props> {
         return (
             <StyledCommit active={active} onClick={this.handleClick} {...props}>
                 <Dot active={active} />
-                {entry.message.split('\n')[0]}
-                {latestCommit && <PullRight><Badge>Current Identity</Badge></PullRight>}
+                <div>
+                    {entry.message.split('\n')[0]}
+                    {latestCommit && <>
+                        <br /><br />
+                        <Badge>Current Identity</Badge>
+                    </>}
+                </div>
             </StyledCommit>
         )
     }

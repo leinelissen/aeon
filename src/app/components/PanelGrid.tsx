@@ -28,14 +28,8 @@ export const SubHeading = styled(RowHeading)`
     font-family: 'IBM Plex Mono';
     text-transform: uppercase;
     letter-spacing: 0.3px;
-
-    @media (prefers-color-scheme: dark) {
-        color: var(--color-gray-100);
-    }
-    
-    @media (prefers-color-scheme: light) {
-        color: var(--color-gray-700);
-    }
+    background-color: var(--color-background);
+    color: var(--color-gray-700);
 `;
 
 export const PanelGrid = styled.div<{ columns?: number; noTopPadding?: boolean; }>`

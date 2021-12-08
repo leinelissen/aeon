@@ -32,6 +32,7 @@ export const Badge = styled.div`
     background-color: var(--color-primary);
     color: var(--color-white);
     padding: 4px 8px;
+    display: inline-block;
     border-radius: 4px;
     text-transform: uppercase;
     font-size: 12px;

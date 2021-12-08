@@ -14,7 +14,6 @@ import { List, PanelGrid } from 'app/components/PanelGrid';
 import { connect } from 'react-redux';
 import NoData from '../../components/NoData';
 import Tour from 'app/components/Tour';
-import theme from 'app/styles/theme';
 
 interface State {
     log: CommitType[];
