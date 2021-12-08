@@ -14,7 +14,6 @@ import style, { Container, ResetButton, Tooltip } from './style';
 import { faUndo } from 'app/assets/fa-light';
 import Loading from 'app/components/Loading';
 import NoData from 'app/components/NoData';
-import Tour from 'app/components/Tour';
 import useTour from 'app/components/Tour/useTour';
 
 type HoveredNode = {
@@ -184,7 +183,7 @@ function Graph(): JSX.Element {
                 </Tooltip>
             }
             {selectedNode && <DatumOverlay datumId={Number.parseInt(selectedNode)} />}
-            <ResetButton icon={faUndo} backgroundColor="white" color="black" onClick={handleReset}>Reset View</ResetButton>
+            <ResetButton icon={faUndo} backgroundColor="var(--color-gray-200)" color="var(--color-text)" onClick={handleReset}>Reset View</ResetButton>
         </>
     );
 }

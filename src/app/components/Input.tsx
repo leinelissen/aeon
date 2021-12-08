@@ -34,7 +34,7 @@ const Select = styled.select<{ hasPlaceholder?: boolean }>`
     height: 50px;
     padding: 16px;
     border-radius: 4px;
-    border: 1px solid var(--color-gray-500);
+    border: 1px solid var(--color-border);
     color: black;
     appearance: none;
     width: 100%;

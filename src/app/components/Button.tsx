@@ -37,7 +37,7 @@ const StyledButtonStyles = css<ButtonProps>`
     }
 
     &:disabled {
-        background-color: #eee;
+        background-color: var(--color-gray-300);
         cursor: not-allowed;
         opacity: 0.5;
         color: var(--color-gray-600);

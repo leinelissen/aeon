@@ -103,8 +103,7 @@ export const NavigatableListEntryContainer = styled<React.FC<ListButtonProps>>(N
     }
 
     &:hover:not(.active) {
-        background: var(--color-gray-500);
-        opacity: 0.8;
+        background: var(--color-gray-300);
     }
 
     ${props => props.added && css`

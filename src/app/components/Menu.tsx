@@ -38,7 +38,6 @@ const TitleBarContainer = styled.div`
     align-items: center;
     justify-content: center;
     font-family: var(--font-heading);
-    background-color: var(--color-gray-200)33;
     border-bottom: 1px solid var(--color-border);
 
     span {
@@ -95,7 +94,7 @@ const Link = styled(NavLink)`
 
     &.active {
         @media (prefers-color-scheme: dark) {
-            background-color: #FFFFFF18;
+            background-color: #FFFFFF26;
         }
         @media (prefers-color-scheme: light) {
             background-color: #00000018;
@@ -104,7 +103,7 @@ const Link = styled(NavLink)`
 
     &:hover:not(.active) {
         @media (prefers-color-scheme: dark) {
-            background-color: #FFFFFF08;
+            background-color: #FFFFFF12;
         }
         @media (prefers-color-scheme: light) {
             background-color: #00000008;

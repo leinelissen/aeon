@@ -44,3 +44,7 @@ code {
 a {
     color: inherit;
 }
+
+main {
+    border: 1px solid var(--color-border);
+}
