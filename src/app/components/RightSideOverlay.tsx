@@ -5,10 +5,10 @@ import { Transition } from 'react-spring/renderprops'
 import { slideProps, SlideDirection } from 'app/components/SlideIn';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from 'app/assets/fa-light';
-import theme from 'app/styles/theme';
 
 export type RightSideOverlayProps = PropsWithChildren<{
     onClose?: () => void;
+    marginTop?: number;
 }>;
 
 const Container = styled.div`
@@ -36,14 +36,7 @@ const InnerContainer = styled.div`
               0 8px 8px rgba(0,0,0,0.01), 
               0 16px 16px rgba(0,0,0,0.01), 
               0 32px 32px rgba(0,0,0,0.01);
-
-    @media (prefers-color-scheme: dark) {
-        background-color: #272727;
-    }
-    
-    @media (prefers-color-scheme: light) {
-        background-color: ${theme.colors.white};
-    }
+    background-color: var(--color-modal-background);
 
     code {
         margin-bottom: 0;
@@ -59,12 +52,8 @@ export const CloseButton = styled(GhostButton)`
 export const Section = styled.div<{ smallPadding?: boolean}>`
     padding: ${props => props.smallPadding ? 15: 25}px;
 
-    @media (prefers-color-scheme: dark) {
-        border-bottom: 1px solid #373737;
-    }
-    
-    @media (prefers-color-scheme: light) {
-        border-bottom: 1px solid #eee;
+    &:not(:last-child) {
+        border-bottom: 1px solid var(--color-border);
     }
 
     p:first-child {
@@ -90,10 +79,17 @@ export const DetailListItem = styled.div`
     }
 `;
 
+export const RightSideOverlayOffset = styled.div`
+    margin-top: 50px;
+    position: relative;
+    height: 100%;
+`;
+
 const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
     const { 
         onClose: handleClose,
         children,
+        marginTop,
         ...otherProps
     } = props;
 
@@ -104,7 +100,7 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
         >
             {children => children && 
                 (props =>
-                    <Container style={props} {...otherProps}>
+                    <Container style={{ ...props, marginTop }} {...otherProps}>
                         <InnerContainer>
                             {handleClose ? 
                                 <CloseButton onClick={handleClose}>

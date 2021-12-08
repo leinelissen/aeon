@@ -54,14 +54,7 @@ const StyledDialog = styled.div`
     max-width: 700px;
     padding-top: 32px;
     overflow-y: auto;
-  
-    @media (prefers-color-scheme: dark) {
-        background-color: #222222;
-    }
-    
-    @media (prefers-color-scheme: light) {
-        background-color: white;
-    }
+    background-color: var(--color-modal-background);
 `;
 
 type DialogProps = PropsWithChildren<

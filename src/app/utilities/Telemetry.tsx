@@ -8,15 +8,15 @@ import { connect } from 'react-redux';
 import { Event } from 'app/store/telemetry';
 
 const TextArea = styled.textarea`
-    border: 1px solid #eee;
-    background-color: #fafafa;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-modal-background);
     border-radius: 8px;
     width: 50vw;
     height: 50vh;
     margin: 8px;
     padding: 8px;
     font-size: 12px;
-    color: #666;
+    color: var(--color-text);
     font-family: 'IBM Plex Mono';
     font-weight: 300;
 `;

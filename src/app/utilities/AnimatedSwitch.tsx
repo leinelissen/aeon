@@ -20,7 +20,6 @@ const Transitions: Map<TransitionDirection, unknown> = new Map([
 const Animated = styled(animated.div)`
     width: 100%;
     height: 100%;
-    background-color: #FBFBFB;
     grid-area: content;
     overflow: auto;
 `;

@@ -6,7 +6,6 @@ import { faCassetteTape, faClock, faLink, faUser } from 'app/assets/fa-light';
 import { H2 } from 'app/components/Typography';
 import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';
-import theme from 'app/styles/theme';
 import RightSideOverlay, { DetailListItem, Section } from 'app/components/RightSideOverlay';
 import { useHistory, useParams } from 'react-router-dom';
 import { RouteProps } from 'app/screens/types';
@@ -41,11 +40,11 @@ const DatumOverlay = ({ datumId }: Props): JSX.Element => {
     }, [dispatch, datumId]);
 
     return (
-        <RightSideOverlay onClose={handleClose} data-tour="data-datum-overlay">
+        <RightSideOverlay onClose={handleClose} data-tour="data-datum-overlay" marginTop={50}>
             {datum && (
                 <>
                     <Section>
-                        <H2 style={{ color: isDeleted ? theme.colors.red : 'inherit' }}>
+                        <H2 style={{ color: isDeleted ? 'var(--color-red-500)' : 'inherit' }}>
                             <FontAwesomeIcon
                                 icon={DataType.getIcon(datum.type as ProvidedDataTypes)}
                                 style={{ marginRight: 8 }}
@@ -135,7 +134,7 @@ const DatumOverlay = ({ datumId }: Props): JSX.Element => {
                         <Button
                             fullWidth
                             onClick={handleDelete}
-                            backgroundColor={theme.colors.red}
+                            backgroundColor="var(--color-red-500)"
                             data-tour="data-delete-datum-button"
                             data-telemetry-id="datum-overlay-delete-datapoint"
                             disabled={isDeleted}
@@ -145,7 +144,7 @@ const DatumOverlay = ({ datumId }: Props): JSX.Element => {
                         {/* <Button
                             fullWidth
                             onClick={handleModify}
-                            backgroundColor={theme.colors.yellow}
+                            backgroundColor="var(--color-yellow-500)"
                         >
                             Modify this data point
                         </Button> */}

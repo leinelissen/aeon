@@ -6,16 +6,16 @@ import {
     ClickableDataPoint,
 } from './styles';
 import DatumOverlay from './components/DatumOverlay';
-// import CreateNewCommit from './components/CreateNewCommit';
 import { RouteProps } from '../types';
 import { useParams } from 'react-router-dom';
-import { List, PanelGrid, RowHeading } from 'app/components/PanelGrid';
+import { Category, List, PanelGrid } from 'app/components/PanelGrid';
 import NoData from 'app/components/NoData';
-import Tour from 'app/components/Tour';
 import { useSelector } from 'react-redux';
 import { State } from 'app/store';
+import useTour from 'app/components/Tour/useTour';
 
 function Data(): JSX.Element {
+    useTour('/screen/data');
     const { category, datumId } = useParams<RouteProps['data']>();
     const {
         isLoading,
@@ -37,40 +37,39 @@ function Data(): JSX.Element {
     return (
         <PanelGrid>
             <List data-tour="data-categories-list">
-                <RowHeading>Categories</RowHeading>
-                {Object.values(ProvidedDataTypes).map((key) => (
-                    <ClickableCategory
-                        key={key}
-                        type={key}
-                        items={byType[key].length}
-                        active={category === key}
-                        disabled={!(key in byType)}
-                        deleted={deletedByType[key].length > 0}
-                        data-tour="data-category-button"
-                        data-telemetry-id={`new-commit-select-category-${key}`}
-                    />
-                ))}
+                <Category title="Categories">
+                    {Object.values(ProvidedDataTypes).map((key) => (
+                        <ClickableCategory
+                            key={key}
+                            type={key}
+                            items={byType[key].length}
+                            disabled={!(key in byType)}
+                            deleted={deletedByType[key].length > 0}
+                            data-tour={byType[key].length ? "data-category-button" : ""}
+                            data-telemetry-id={`new-commit-select-category-${key}`}
+                        />
+                    ))}
+                </Category>
             </List>
             <List data-tour="data-data-points-list">
-                <RowHeading>Data Points</RowHeading>
-                {category && byType[category].map((datum) => (
-                    <ClickableDataPoint
-                        type={category as ProvidedDataTypes}
-                        datum={byKey[datum]}
-                        index={datum}
-                        active={parsedDatumId === datum}
-                        key={`datum-${datum}`} 
-                        deleted={deleted.includes(datum)}
-                        data-tour="data-data-point-button"
-                        data-telemetry-id={`new-commit-select-data-point-${datum}`}
-                    />
-                ))}
+                <Category title="Data Points">
+                    {category && byType[category].map((datum) => (
+                        <ClickableDataPoint
+                            type={category as ProvidedDataTypes}
+                            datum={byKey[datum]}
+                            index={datum}
+                            key={`datum-${datum}`} 
+                            deleted={deleted.includes(datum)}
+                            data-tour="data-data-point-button"
+                            data-telemetry-id={`new-commit-select-data-point-${datum}`}
+                        />
+                    ))}
+                </Category>
             </List>
             <List>
                 <DatumOverlay datumId={parsedDatumId} />
             </List>
             {/* <CreateNewCommit isModalOpen={false} groupedData={groupedData} deletedData={deletedData} /> */}
-            <Tour tour="/screen/data" />
         </PanelGrid>
     );
 }

@@ -6,7 +6,6 @@ import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
 import { H2 } from 'app/components/Typography';
 import { MarginLeft } from 'app/components/Utility';
 import { State } from 'app/store';
-import theme from 'app/styles/theme';
 import Email from 'app/utilities/Email';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -60,7 +59,7 @@ function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): 
                             </Section>
                             <Section>
                                 <p>By deleting this account, Aeon will no longer have access to it. Requests that are in progress with this e-mail address may be cancelled as a result.</p>
-                                <Button backgroundColor={theme.colors.red} icon={faTimes} fullWidth onClick={deleteAccount}>
+                                <Button backgroundColor="var(--color-red-500)" icon={faTimes} fullWidth onClick={deleteAccount}>
                                     Delete {selectedAccount}
                                 </Button>
                             </Section>

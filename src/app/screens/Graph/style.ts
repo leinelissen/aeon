@@ -3,6 +3,9 @@ import { Stylesheet } from 'cytoscape';
 import styled, { css } from 'styled-components';
 import renderNode from './renderNode';
 
+const bodyStyles = window.getComputedStyle(document.body);
+const cssVar = (name: string) => bodyStyles.getPropertyValue(name);
+
 const style: Stylesheet[] = [
     {
         selector: 'node',
@@ -14,7 +17,8 @@ const style: Stylesheet[] = [
             'text-valign': 'center',
             'text-halign': 'center',
             'text-max-width': '10px',
-            'background-color': '#eee',
+            'background-color': cssVar('--color-gray-200'),
+            'color': cssVar('--color-text'),
             'font-size': '10px',
             'font-family': 'IBM Plex Mono',
         }
@@ -22,21 +26,21 @@ const style: Stylesheet[] = [
     {
         selector: 'node.hover',
         style: {
-            'background-color': '#0000FF',
-            'color': '#fff'
+            'background-color': cssVar('--color-primary'),
+            'color': cssVar('--color-white'),
         }
     },
     {
         selector: 'node[type="provider"]',
         style: {
-            'background-color': '#0000FF',
-            'background-image': renderNode('#FFF', 36),
+            'background-color': cssVar('--color-primary'),
+            'background-image': renderNode(cssVar('--color-white'), 36),
             'background-position-x': '50%',
             'background-position-y': '50%',
             'color': '#FFF',
             'font-size': 16,
             'border-width': 10,
-            'border-color': '#BAD7FF',
+            'border-color': cssVar('--color-blue-300'),
             width: 100,
             height: 100,
         }
@@ -44,7 +48,7 @@ const style: Stylesheet[] = [
     {
         selector: 'node[type="provider"].hover',
         style: {
-            'background-color': '#0000DD',
+            'background-color': cssVar('--color-blue-600'),
         }
     },
     {
@@ -52,7 +56,7 @@ const style: Stylesheet[] = [
         style: {
             width: 75,
             height: 75,
-            'background-color': '#BAD7FF',
+            'background-color': cssVar('--color-blue-300'),
             content: 'data(label)'
         }
     },
@@ -60,7 +64,7 @@ const style: Stylesheet[] = [
         selector: 'node[type="type"]',
         style: {
             shape: 'roundrectangle',
-            'background-image': renderNode('#333', 24),
+            'background-image': renderNode(cssVar('--color-text'), 24),
             'background-position-x': '50%',
             'background-position-y': '50%',
             content: '',
@@ -70,14 +74,13 @@ const style: Stylesheet[] = [
     {
         selector: 'node[type="type"].hover',
         style: {
-            'background-image': renderNode('#fff', 24),
+            'background-image': renderNode(cssVar('--color-white'), 24),
         }
     },
     {
         selector: 'node[type="account"].hover',
         style: {
-            'background-color': '#a9c4e9',
-            'color': '#000',
+            'background-color': cssVar('--color-blue-400'),
         }
     },
     {
@@ -91,13 +94,13 @@ const style: Stylesheet[] = [
     {
         selector: 'node.secondary-hover',
         style: {
-            'background-color': '#0000FF',
+            'background-color': cssVar('--color-primary'),
         }
     },
     {
         selector: 'edge',
         style: {
-            'line-color': '#ddd',
+            'line-color': cssVar('--color-gray-300'),
             width: 2,
             // label: 'data(label)',
             'font-size': '8px',
@@ -107,7 +110,7 @@ const style: Stylesheet[] = [
     {
         selector: 'edge[type="datum_type"]',
         style: {
-            'line-color': '#eee',
+            'line-color': cssVar('--color-gray-300'),
             width: 1,
         }
     },
@@ -120,14 +123,14 @@ const style: Stylesheet[] = [
     {
         selector: 'edge[type="account_provider"]',
         style: {
-            'line-color': '#BAD7FF',
+            'line-color': cssVar('--color-blue-300'),
             width: 10,
         }
     },
     {
         selector: 'edge.secondary-hover',
         style: {
-            'line-color': '#0000FF'
+            'line-color': cssVar('--color-primary')
         }
     }
 ];
@@ -146,7 +149,7 @@ export const Tooltip = styled.div<{ top: number, left: number }>`
     top: ${props => props.top + 15}px;
     left: ${props => props.left}px;
     transform: translateX(-50%);
-    background-color: white;
+    background-color: var(--color-modal-background);
     border-radius: 4px;
     padding: 4px 8px;
     font-size: 12px;

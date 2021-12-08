@@ -1,16 +1,16 @@
 import styled from 'styled-components';
-import theme from 'app/styles/theme';
 
 export const H1 = styled.h1`
     font-weight: 600;
 `;
 
 export const H2 = styled.h2`
-    font-weight: 400;
+    font-weight: 700;
     font-size: 24px;
     margin: 8px 0;
     line-height: 1.3;
     word-break: break-all;
+    font-family: 'Inter';
 `;
 
 export const H3 = styled.h3`
@@ -28,9 +28,13 @@ export const H5 = styled.h5`
 `
 
 export const Badge = styled.div`
-    background-color: ${theme.colors.blue.primary};
-    color: ${theme.colors.white};
+    background-color: var(--color-blue-100);
+    color: var(--color-blue-500);
+    font-weight: 500;
+    font-family: var(--font-heading);
+    letter-spacing: 0.2px;
     padding: 4px 8px;
+    display: inline-block;
     border-radius: 4px;
     text-transform: uppercase;
     font-size: 12px;

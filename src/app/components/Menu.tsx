@@ -3,16 +3,14 @@ import { faChartNetwork, faClock, faCog, faUser, faTable, faTrash } from 'app/as
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import Emblem from 'app/assets/aeon-emblem-dark.svg';
-import theme from 'app/styles/theme';
 import { useSelector } from 'react-redux';
 import { State } from 'app/store';
 import { PullDown } from './Utility';
-import Tour from './Tour';
+import useTour from './Tour/useTour';
 
 export const MenuContainer = styled.div`
     display: grid;
-    grid-template-columns: 225px 1fr;
+    grid-template-columns: 175px 1fr;
     gap: 0px 0px;
     grid-template-areas:
         "menu content";
@@ -27,7 +25,7 @@ const TitleBarContainer = styled.div`
     left: 0;
     z-index: 200;
     width: 100%;
-    height: 40px;
+    height: 50px;
     -webkit-app-region: drag;
     background: transparent;
     opacity: 0;
@@ -37,20 +35,12 @@ const TitleBarContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-
-    @media (prefers-color-scheme: dark) {
-        background-color: #22222233;
-        border-bottom: 1px solid ${theme.colors.borderDarkMode};    
-    }
-    
-    @media (prefers-color-scheme: light) {
-        background-color: ${theme.colors.grey.medium}33;
-        border-bottom: 1px solid ${theme.colors.border};
-    }
+    font-family: var(--font-heading);
+    border-bottom: 1px solid var(--color-border);
 
     span {
-        font-size: 12px;
-        opacity: 0.8;
+        font-size: 14px;
+        font-weight: 600;
     }
 
     &:hover {
@@ -63,16 +53,7 @@ export const ContentContainer = styled.div`
     grid-area: content;
     overflow: auto;
     position: relative;
-
-    @media (prefers-color-scheme: dark) {
-        background-color: #222222;
-        color: ${theme.colors.white};
-    }
-
-    @media (prefers-color-scheme: light) {
-        background-color: #FBFBFB;
-        color: ${theme.colors.black};
-    }
+    background-color: var(--color-gray-50);
 `;
 
 const Container = styled.div`
@@ -81,76 +62,50 @@ const Container = styled.div`
     flex-direction: column;
     padding: 5px 0;
     -webkit-app-region: drag;
-    padding-top: 40px;
-    
-    @media (prefers-color-scheme: dark) {
-        color: ${theme.colors.white};
-        border-right: 1px solid ${theme.colors.borderDarkMode};
-    }
-    
-    @media (prefers-color-scheme: light) {
-        border-right: 1px solid ${theme.colors.border};
-        color: ${theme.colors.black};
-    }
+    padding: 50px 0 10px 0;
+    border-right: 1px solid var(--color-border);
 `;
 
 const Link = styled(NavLink)`
     background: none;
     border: 0;
-    font-family: 'IBM Plex Sans';
-    font-size: 16px;
+    font-family: 'Inter';
     text-align: left;
-    height: 40px;
+    height: 36px;
     display: flex;
     align-items: center;
     padding: 0 6px;
-    margin: 5px 10px;
-    font-weight: 400;
+    margin: 1px 10px;
+    font-weight: 500;
     -webkit-app-region: no-drag;
     color: inherit;
     border-radius: 6px;
 
     span:not(.icon) {
         margin-left: 10px;
-        font-size: 16px;
+        font-size: 14px;
     }
 
     span.icon {
-        font-size: 18px;
-        @media (prefers-color-scheme: dark) {
-            color: ${theme.colors.blue.primaryDarkMode};
-        }
-        @media (prefers-color-scheme: light) {
-            color: ${theme.colors.blue.primary};
-        }
+        font-size: 16px;
     }
 
     &.active {
         @media (prefers-color-scheme: dark) {
-            background-color: ${theme.colors.white}18;
+            background-color: #FFFFFF26;
         }
         @media (prefers-color-scheme: light) {
-            background-color: ${theme.colors.black}18;
+            background-color: #00000018;
         }
     }
 
     &:hover:not(.active) {
         @media (prefers-color-scheme: dark) {
-            background-color: ${theme.colors.white}08;
+            background-color: #FFFFFF12;
         }
         @media (prefers-color-scheme: light) {
-            background-color: ${theme.colors.black}08;
+            background-color: #00000008;
         }
-    }
-`;
-
-const AeonLogo = styled.div`
-    display: flex;
-    justify-content: center;
-    margin: 20px auto;
-
-    img {
-        width: 25px;
     }
 `;
 
@@ -167,6 +122,7 @@ export function TitleBar(): JSX.Element {
 
 export default function Menu(): JSX.Element {
     const deleted = useSelector((state: State) => state.data.deleted);
+    useTour(deleted.length ? '/screen/erasure' : null);
 
     return (
         <Container>
@@ -186,21 +142,19 @@ export default function Menu(): JSX.Element {
                 <span className="icon"><FontAwesomeIcon icon={faChartNetwork} fixedWidth /></span>
                 <span>Graph</span>
             </Link>
-            <Link to="/settings" activeClassName="active">
-                <span className="icon"><FontAwesomeIcon icon={faCog} fixedWidth /></span>
-                <span>Settings</span>
-            </Link>
             {deleted.length ? (
                 <>
                     <Link to="/erasure" activeClassName="active" data-tour="erasure-screen">
                         <span className="icon"><FontAwesomeIcon icon={faTrash} fixedWidth /></span>
                         <span>Erasure ({deleted.length})</span>
                     </Link>
-                    <Tour tour="/screen/erasure" />
                 </>
             ) : null}
             <PullDown>
-                <AeonLogo><img src={Emblem} /></AeonLogo>
+                <Link to="/settings" activeClassName="active">
+                    <span className="icon"><FontAwesomeIcon icon={faCog} fixedWidth /></span>
+                    <span>Settings</span>
+                </Link>            
             </PullDown>
         </Container>
     );

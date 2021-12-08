@@ -13,8 +13,7 @@ import { History } from 'history';
 import { List, PanelGrid } from 'app/components/PanelGrid';
 import { connect } from 'react-redux';
 import NoData from '../../components/NoData';
-import Tour from 'app/components/Tour';
-import theme from 'app/styles/theme';
+import { Tour } from 'app/components/Tour/useTour';
 
 interface State {
     log: CommitType[];
@@ -35,15 +34,8 @@ const CommitContainer = styled.div`
     top: 0;
     flex-shrink: 0;
     overflow-y: auto;
-    padding-top: 40px;
-
-    @media (prefers-color-scheme: dark) {
-        border-right: 1px solid ${theme.colors.borderDarkMode};
-    }
-    
-    @media (prefers-color-scheme: light) {
-        border-right: 1px solid ${theme.colors.border};
-    }
+    padding-top: 55px;
+    border-right: 1px solid var(--color-border);
 `;
 
 class Timeline extends Component<Props, State> {
@@ -137,7 +129,7 @@ class Timeline extends Component<Props, State> {
                         <Diff commit={selectedTree} diff={newCommits.length && commitHash === 'new-commit' && newCommits[0].diff} />
                     </List>
                 </PanelGrid>
-                <Tour tour="/screen/timeline" />
+                <Tour screen="/screen/timeline" />
             </>
         );
     }

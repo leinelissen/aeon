@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { List, NavigatableListEntry, PanelBottomButtons, PanelGrid, RowHeading, SplitPanel, SubHeading } from 'app/components/PanelGrid';
+import { Category, List, NavigatableListEntry, PanelBottomButtons, PanelGrid, RowHeading, SplitPanel } from 'app/components/PanelGrid';
 import Providers from 'app/utilities/Providers';
 import { useParams } from 'react-router-dom';
 import { RouteProps } from '../types';
@@ -13,7 +13,7 @@ import { State, useAppDispatch } from 'app/store';
 import { useSelector } from 'react-redux';
 import { refreshRequests } from 'app/store/accounts/actions';
 import NewAccountModal from './components/NewAccountModal';
-import Tour from 'app/components/Tour';
+import useTour from 'app/components/Tour/useTour';
 
 const StatusDescription = styled.span`
     font-size: 12px;
@@ -35,41 +35,45 @@ function Accounts(): JSX.Element {
     // Callback for refreshing all requests
     const refresh = useCallback(() => dispatch(refreshRequests()), [dispatch]);
 
+    useTour(accounts.length ? '/screen/accounts/has-accounts': '/screen/accounts/no-accounts');
+
     return (
         <>
             <PanelGrid columns={2}>
                 <SplitPanel>
                     <List>
                         <RowHeading>Your Accounts</RowHeading>
-                        <SubHeading>Automated Requests</SubHeading>
-                        {accounts.map((account, i) => 
-                            <NavigatableListEntry
-                                key={account}
-                                to={`/accounts/${account}`}
-                                icon={Providers.getIcon(map[account].provider)}
-                                data-tour={i === 0 ? 'accounts-first-account' : undefined}
-                                large
-                            >
-                                <Rows>
-                                    <span>{map[account].account}</span>
-                                    <StatusDescription>{getDescription(map[account].status)}</StatusDescription>
-                                </Rows>
-                            </NavigatableListEntry>
-                        )}
-                        <SubHeading>Email-based Requests</SubHeading>
-                        {email.all.map(account => (
-                            <NavigatableListEntry
-                                key={account}
-                                to={`/accounts/email_${account}`}
-                                icon={faEnvelope}
-                                large
-                            >
-                                <Rows>
-                                    <span>{email.byKey[account].organisation} ({email.byKey[account].emailAccount})</span>
-                                    <StatusDescription>{getDescription(email.byKey[account].status)}</StatusDescription>
-                                </Rows>
-                            </NavigatableListEntry>
-                        ))}
+                        <Category title="Automated Requests">
+                            {accounts.map((account, i) => 
+                                <NavigatableListEntry
+                                    key={account}
+                                    to={`/accounts/${account}`}
+                                    icon={Providers.getIcon(map[account].provider)}
+                                    data-tour={i === 0 ? 'accounts-first-account' : undefined}
+                                    large
+                                >
+                                    <Rows>
+                                        <span>{map[account].account}</span>
+                                        <StatusDescription>{getDescription(map[account].status)}</StatusDescription>
+                                    </Rows>
+                                </NavigatableListEntry>
+                            )}
+                        </Category>
+                        <Category title="Email-based Requests">
+                            {email.all.map(account => (
+                                <NavigatableListEntry
+                                    key={account}
+                                    to={`/accounts/email_${account}`}
+                                    icon={faEnvelope}
+                                    large
+                                >
+                                    <Rows>
+                                        <span>{email.byKey[account].organisation} ({email.byKey[account].emailAccount})</span>
+                                        <StatusDescription>{getDescription(email.byKey[account].status)}</StatusDescription>
+                                    </Rows>
+                                </NavigatableListEntry>
+                            ))}
+                        </Category>
                     </List>
                     <PanelBottomButtons>
                         <NewAccountModal />
@@ -82,12 +86,6 @@ function Accounts(): JSX.Element {
                     <AccountOverlay selectedAccount={selectedAccount} />
                 </List>
             </PanelGrid>
-            <Tour
-                tour={accounts.length 
-                    ? "/screen/accounts/has-accounts"
-                    : "/screen/accounts/no-accounts"
-                } 
-            />
         </>
     )
 }

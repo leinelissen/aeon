@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import theme from 'app/styles/theme';
 
 const LoadingContainer = styled.div`
     display: flex;
@@ -19,7 +18,7 @@ export const Ball = styled.div<Props>`
     height: ${(props: Props): number => props.size || 20}px;
     width: ${(props: Props): number => props.size || 20}px;
     border-radius: 50px;
-    background-color: ${(props: Props): string => props.color || theme.colors.blue.primary};
+    background-color: ${(props: Props): string => props.color || 'var(--color-primary)'};
     animation: bounce 0.5s alternate infinite cubic-bezier(.5, 0.05, 1, .5),
         fade-in 1s; 
     margin-top: -${(props: Props): number => props.size ? props.size * 2.5 : 40}px;

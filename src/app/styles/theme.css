@@ -1,0 +1,101 @@
+:root {
+    /* Blue */
+    --color-blue-100: #E6E6FF;
+    --color-blue-200: #CCCCFF;
+    --color-blue-300: #9999FF;
+    --color-blue-500: #0000FF;
+    --color-blue-700: #0000b3;
+    --color-blue-900: #00004c;
+
+    /* Grey */
+    --color-gray-50: #FBFBFB;
+    --color-gray-100: #F7F7F7;
+    --color-gray-200: #F2F2F2;
+    --color-gray-300: #EEEEEE;
+    --color-gray-400: #DDDDDD;
+    --color-gray-500: #BBBBBB;
+    --color-gray-600: #AAAAAA;
+    --color-gray-700: #777777;
+    --color-gray-800: #555555;
+    --color-gray-900: #333333;
+
+    /* Black and White */
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+
+    /* Other Colors */
+    --color-green-50: #f9fcf3;
+    --color-green-100: #f3fae7;
+    --color-green-200: #e7f5ce;
+    --color-green-500: #89CC0C;
+    --color-red-50: #fff7f6;
+    --color-red-100: #ffefec;
+    --color-red-200: #ffdfd9;
+    --color-red-500: #FF6142;
+    --color-yellow-50: #fffcf4;
+    --color-yellow-100: #fff9ea;
+    --color-yellow-200: #fff2d4;
+    --color-yellow-500: #FFBE29;
+    
+    /* Specific implementations */
+    --color-primary: var(--color-blue-500);
+    --color-border: var(--color-gray-300);
+    --color-background: var(--color-gray-50);
+    --color-modal-background: var(--color-white);
+    --color-text: var(--color-black);
+
+    /* Typography */
+    --font-body: 'IBM Plex Sans';
+    --font-mono: 'IBM Plex Mono';
+    --font-heading: 'Inter';
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Blue */
+        --color-blue-100: #001f4c;
+        --color-blue-200: #001f4c;
+        --color-blue-300: #003380;
+        --color-blue-500: #0066FF;
+        --color-blue-700: #4d94ff;
+        --color-blue-900: #b3d1ff;
+
+        /* Grey */
+        --color-gray-50: #171717;
+        --color-gray-100: #212121;
+        --color-gray-200: #262626;
+        --color-gray-300: #333333;
+        --color-gray-400: #444444;
+        --color-gray-500: #666666;
+        --color-gray-600: #AAAAAA;
+        --color-gray-700: #DDDDDD;
+        --color-gray-800: #EEEEEE;
+        --color-gray-900: #F7F7F7;
+
+        /* Black and White */
+        --color-white: #FFFFFF;
+        --color-black: #121212;
+
+        /* Other Colors */
+        --color-green-50: #1E2316;
+        --color-green-100: #252E15;
+        --color-green-200: #608f08;
+        --color-green-500: #A6FF00;
+        --color-red-50: #271C1A;
+        --color-red-100: #3A221D;
+        --color-red-200: #803121;
+        --color-red-500: #FF6142;
+        --color-yellow-50: #191304;
+        --color-yellow-100: #332608;
+        --color-yellow-200: #664c10;
+        --color-yellow-500: #FFBE29;
+        
+        
+        /* Specific implementations */
+        /* --color-primary: var(--color-blue-500); */
+        /* --color-border: var(--color-gray-200); */
+        /* --color-background: var(--color-black); */
+        --color-modal-background: var(--color-black);
+        --color-text: var(--color-white);
+    }
+}

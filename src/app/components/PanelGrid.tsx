@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import theme from 'app/styles/theme';
 import { NavLink } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { faChevronRight } from 'app/assets/fa-light';
@@ -14,7 +13,7 @@ export const ListItem = styled.div`
 `;
 
 export const RowHeading = styled(ListItem)`
-    border-bottom: 1px solid ${theme.colors.border};
+    border-bottom: 1px solid var(--color-border);
     font-weight: 400;
     position: sticky;
     top: 0;
@@ -22,14 +21,6 @@ export const RowHeading = styled(ListItem)`
     z-index: 2;
     font-size: 14px;
     width: 100%;
-
-    @media (prefers-color-scheme: dark) {
-        border-bottom: 1px solid ${theme.colors.borderDarkMode};
-    }
-    
-    @media (prefers-color-scheme: light) {
-        border-bottom: 1px solid ${theme.colors.border};
-    }
 `;
 
 export const SubHeading = styled(RowHeading)`
@@ -37,21 +28,15 @@ export const SubHeading = styled(RowHeading)`
     font-family: 'IBM Plex Mono';
     text-transform: uppercase;
     letter-spacing: 0.3px;
-
-    @media (prefers-color-scheme: dark) {
-        color: ${theme.colors.grey.light};
-    }
-    
-    @media (prefers-color-scheme: light) {
-        color: ${theme.colors.grey.dark};
-    }
+    background-color: var(--color-background);
+    color: var(--color-gray-700);
 `;
 
 export const PanelGrid = styled.div<{ columns?: number; noTopPadding?: boolean; }>`
     display: grid;
     grid-auto-columns: auto;
     grid-template-columns: repeat(${props => props.columns || 3}, 1fr);
-    padding-top: ${props => props.noTopPadding ? 0 : 40}px;
+    padding-top: ${props => props.noTopPadding ? 0 : 50}px;
     height: 100%;
     position: relative;
     overflow: hidden;
@@ -63,18 +48,11 @@ export const List = styled.div<{ topMargin?: boolean }>`
     flex-grow: 1;
     overflow-y: auto;
     position: relative;
+    border-right: 1px solid var(--color-border);
 
     ${props => props.topMargin && css`
-        margin-top: 40px;
+        margin-top: 0px;
     `}
-
-    @media (prefers-color-scheme: dark) {
-        border-right: 1px solid ${theme.colors.borderDarkMode};
-    }
-    
-    @media (prefers-color-scheme: light) {
-        border-right: 1px solid ${theme.colors.border};
-    }
 `;
 
 export const SplitPanel = styled.div`
@@ -85,16 +63,8 @@ export const SplitPanel = styled.div`
 export const PanelBottomButtons = styled.div`
     margin-top: auto;
     padding: 16px;
-
-    @media (prefers-color-scheme: dark) {
-        border-top: 1px solid ${theme.colors.borderDarkMode};
-        border-right: 1px solid ${theme.colors.borderDarkMode};
-    }
-
-    @media (prefers-color-scheme: light) {
-        border-top: 1px solid ${theme.colors.border};
-        border-right: 1px solid ${theme.colors.border};
-    }
+    border-top: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
 `;
 
 const IconWrapper = styled.div`
@@ -116,17 +86,10 @@ export const NavigatableListEntryContainer = styled<React.FC<ListButtonProps>>(N
     display: flex;
     align-items: center;
     font-size: 14px;
-    margin: 0;
-    padding: 14px 24px;
+    margin: 1px 8px;
+    padding: 8px 8px;
     font-weight: 400;
-
-    @media (prefers-color-scheme: dark) {
-        color: ${theme.colors.white};
-    }
-    
-    @media (prefers-color-scheme: light) {
-        color: ${theme.colors.black};
-    }
+    border-radius: 8px;
 
     img {
         max-height: 100px;
@@ -135,35 +98,35 @@ export const NavigatableListEntryContainer = styled<React.FC<ListButtonProps>>(N
     }
 
     &.active {
-        background: ${theme.colors.grey.medium};
+        background: var(--color-blue-500);
+        color: var(--color-white);
     }
 
     &:hover:not(.active) {
-        background: ${theme.colors.grey.medium}BB;
-        opacity: 0.8;
+        background: var(--color-gray-300);
     }
 
     ${props => props.added && css`
-        background-color: ${theme.colors.green}22;
+        background-color: var(--color-green-500)22;
 
         &.active {
-            background-color: ${theme.colors.green}33;
+            background-color: var(--color-green-500)33;
         }
     `}
 
     ${props => props.deleted && css`
-        background-color: ${theme.colors.red}22;
+        background-color: var(--color-red-500)22;
 
         &.active {
-            background-color: ${theme.colors.red}33;
+            background-color: var(--color-red-500)33;
         }
     `}
 
     ${props => props.modified && css`
-        background-color: ${theme.colors.yellow}22;
+        background-color: var(--color-yellow-500)22;
 
         &.active {
-            background-color: ${theme.colors.yellow}33;
+            background-color: var(--color-yellow-500)33;
         }
     `}
 
@@ -174,7 +137,33 @@ export const NavigatableListEntryContainer = styled<React.FC<ListButtonProps>>(N
     &:disabled {
         opacity: 0.25;
     }
+
+    ${PullRight} {
+        padding-left: 0.5em;
+    }
 `;
+
+const CategoryContainer = styled.div`
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-border);
+
+    &:last-of-type {
+        border-bottom: none;
+    }
+`;
+
+export function Category({ title, children }: PropsWithChildren<{ title?: string }>) {
+    return (
+        <>
+            {title && <SubHeading>{title}</SubHeading>}
+            {children && (
+                <CategoryContainer>
+                    {children}
+                </CategoryContainer>
+            )}
+        </>
+    );
+}
 
 type NavigatableListEntryProps = PropsWithChildren<{
     to: string,

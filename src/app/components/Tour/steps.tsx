@@ -1,6 +1,6 @@
 import GraphExplainer from 'app/screens/Graph/explainer';
 import React, { useEffect } from 'react';
-import { ReactourStep } from 'reactour';
+import { StepType } from '@reactour/tour';
 
 /**
  * Clicks an element that is targeted by the supplied selector on mount. This is
@@ -9,7 +9,6 @@ import { ReactourStep } from 'reactour';
 const ClickOnMount = ({ selector }: { selector: string }): JSX.Element => {
     useEffect(() => {
         const el = document.querySelector(selector);
-        console.log(el);
         (el as HTMLElement)?.click();
     }, [selector]);
 
@@ -25,9 +24,10 @@ export type TourKeys = '/screen/timeline'
     | '/screen/accounts/new-account'
     | '/screen/erasure';
 
-const steps: Record<TourKeys, ReactourStep[]> = {
+const steps: Record<TourKeys, StepType[]> = {
     '/screen/timeline': [
         {
+            selector: null,
             content: 'This is the timeline! The timeline is where you get a chronological overview of all of your data. Every time Aeon retrieves data from the internet, a new entry is added to this list. Use this screen to get a grip on how your online identity has evolved over time.'
         },
         {
@@ -51,11 +51,13 @@ const steps: Record<TourKeys, ReactourStep[]> = {
             content: 'Here, all data points that were added or removed are gathered.'
         },
         {
+            selector: null,
             content: 'If you find this view a little overwhelming, go over to the Graph screen. There, you\'ll find a slightly more convenient overview.'
         }
     ],
     '/screen/accounts/no-accounts': [
         {
+            selector: null,
             content: 'The accounts screen is all about the accounts you use in your daily life. By adding them, Aeon can automatically gather data from them.'
         },
         {
@@ -65,6 +67,7 @@ const steps: Record<TourKeys, ReactourStep[]> = {
     ],
     '/screen/accounts/new-account': [
         {
+            selector: null,
             content: 'This pop-up will help you create a new account.'
         },
         {
@@ -88,6 +91,7 @@ const steps: Record<TourKeys, ReactourStep[]> = {
     ],
     '/screen/accounts/has-accounts': [
         {
+            selector: null,
             content: 'Now that you\'ve added your first account, you can get started on issuing data requests for this account.'
         },
         {
@@ -110,20 +114,21 @@ const steps: Record<TourKeys, ReactourStep[]> = {
     ],
     '/screen/data': [
         {
+            selector: null,
             content: 'This screen gives you a bit more detailed insight into all of the data that is currently active on the internet.'
         },
         {
             selector: '[data-tour="data-categories-list"]',
             content: <>
                 <p>This list contains every type of data that Aeon is capable of processing. When you click on them, you get a list of all data points of this type that are present.</p>
-                <ClickOnMount selector='button[data-tour="data-category-button"]:not([disabled])' />
+                <ClickOnMount selector='[data-tour="data-category-button"]:not([disabled])' />
             </>
         },
         {
             selector: '[data-tour="data-data-points-list"]',
             content: <>
                 <p>The second column contains all of the data points that exist in this particular category. When you click on a single data point, you can get a closer look.</p>
-                <ClickOnMount selector='button[data-tour="data-data-point-button"]:not([disabled])' />
+                <ClickOnMount selector='[data-tour="data-data-point-button"]:not([disabled])' />
             </>
         },
         {
@@ -137,6 +142,7 @@ const steps: Record<TourKeys, ReactourStep[]> = {
     ],
     '/screen/graph': [
         {
+            selector: null,
             content: 'This screen contains a visualisation of all of your data points. It should help you get an insight.'
         },
         {
