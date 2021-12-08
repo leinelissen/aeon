@@ -24,12 +24,15 @@
     --color-black: #000000;
 
     /* Other Colors */
+    --color-green-50: #f9fcf3;
     --color-green-100: #f3fae7;
     --color-green-200: #e7f5ce;
     --color-green-500: #89CC0C;
+    --color-red-50: #fff7f6;
     --color-red-100: #ffefec;
     --color-red-200: #ffdfd9;
     --color-red-500: #FF6142;
+    --color-yellow-50: #fffcf4;
     --color-yellow-100: #fff9ea;
     --color-yellow-200: #fff2d4;
     --color-yellow-500: #FFBE29;
