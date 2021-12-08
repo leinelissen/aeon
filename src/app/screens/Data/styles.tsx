@@ -35,29 +35,29 @@ export const StyledListButton = styled.button<ListButtonProps>`
 
     ${props => props.active ? css`
         @media (prefers-color-scheme: dark) {
-            background: ${theme.colors.grey.dark};
+            background: var(--color-gray-700);
         }
         
         @media (prefers-color-scheme: light) {
-            background: ${theme.colors.grey.medium};
+            background: var(--color-gray-500);
         }
     ` : css`
         &:hover {
-            background: ${theme.colors.grey.medium}BB;
+            background: var(--color-gray-500)BB;
             opacity: 0.8;
         }
     `}
 
     ${props => props.added && css`
-        background-color: ${theme.colors.green}${props.active ? 33 : 22};;
+        background-color: var(--color-green-500)${props.active ? 33 : 22};;
     `}
 
     ${props => props.deleted && css`
-        background-color: ${theme.colors.red}${props.active ? 33 : 22};;
+        background-color: var(--color-red-500)${props.active ? 33 : 22};;
     `}
 
     ${props => props.modified && css`
-        background-color: ${theme.colors.yellow}${props.active ? 33 : 22};
+        background-color: var(--color-yellow-500)${props.active ? 33 : 22};
     `}
 
     &:disabled {
@@ -75,7 +75,7 @@ function ListButton({ children, ...props }: PropsWithChildren<ListButtonProps>) 
             <>
                 <IconWrapper>
                     {props.deleted ? 
-                        <FontAwesomeIcon icon={faMinus} fixedWidth style={{ color: theme.colors.red }} />
+                        <FontAwesomeIcon icon={faMinus} fixedWidth style={{ color: 'var(--color-red-500)' }} />
                         : <EmptyIcon />}
                 </IconWrapper>
                 {children}

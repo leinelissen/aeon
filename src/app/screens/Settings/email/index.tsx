@@ -60,7 +60,7 @@ function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): 
                             </Section>
                             <Section>
                                 <p>By deleting this account, Aeon will no longer have access to it. Requests that are in progress with this e-mail address may be cancelled as a result.</p>
-                                <Button backgroundColor={theme.colors.red} icon={faTimes} fullWidth onClick={deleteAccount}>
+                                <Button backgroundColor="var(--color-red-500)" icon={faTimes} fullWidth onClick={deleteAccount}>
                                     Delete {selectedAccount}
                                 </Button>
                             </Section>

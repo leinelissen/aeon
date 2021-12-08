@@ -36,14 +36,7 @@ const InnerContainer = styled.div`
               0 8px 8px rgba(0,0,0,0.01), 
               0 16px 16px rgba(0,0,0,0.01), 
               0 32px 32px rgba(0,0,0,0.01);
-
-    @media (prefers-color-scheme: dark) {
-        background-color: #272727;
-    }
-    
-    @media (prefers-color-scheme: light) {
-        background-color: ${theme.colors.white};
-    }
+    background-color: var(--color-modal-background);
 
     code {
         margin-bottom: 0;

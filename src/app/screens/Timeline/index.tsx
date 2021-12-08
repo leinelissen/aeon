@@ -36,14 +36,7 @@ const CommitContainer = styled.div`
     flex-shrink: 0;
     overflow-y: auto;
     padding-top: 40px;
-
-    @media (prefers-color-scheme: dark) {
-        border-right: 1px solid ${theme.colors.borderDarkMode};
-    }
-    
-    @media (prefers-color-scheme: light) {
-        border-right: 1px solid ${theme.colors.border};
-    }
+    border-right: 1px solid var(--color-border);
 `;
 
 class Timeline extends Component<Props, State> {

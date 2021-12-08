@@ -38,7 +38,7 @@ const ResetButton = styled(GhostButton)`
 `;
 
 const ScrollContainer = styled.div`
-    background-color: ${theme.colors.red}10;
+    background-color: var(--color-red-500)10;
     font-family: 'IBM Plex Mono';
     max-height: 25vh;
     overflow: auto;
@@ -95,7 +95,7 @@ function Erasure(): JSX.Element {
                 <p>To actually remove this data from their origins, you must send a request for erasure to the organisation processing it. So long as the organisation is processing this data, it will remain in Aeon.</p>
                 <p>When you&apos;re ready to erase these data-points with their respective providers, click the button below. This will generate a seperate email for each source, which will you need to send out yourself.</p>
                 <PullContainer center>
-                    <Button backgroundColor={theme.colors.red} icon={faTrash} onClick={handleDelete}>
+                    <Button backgroundColor="var(--color-red-500)" icon={faTrash} onClick={handleDelete}>
                         Remove {deleted.length} data {deleted.length > 1 ? 'points' : 'point'}
                     </Button>
                     <ResetButton onClick={handleReset}>

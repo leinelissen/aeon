@@ -1,4 +1,3 @@
-import theme from 'app/styles/theme';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { SimpleButton } from '../Button';
@@ -7,35 +6,22 @@ const MenuContainer = styled.div<{ active?: boolean; }>`
     display: flex;
     justify-content: flex-end;
     margin-top: -25px;
-
-    @media (prefers-color-scheme: dark) {
-        border-bottom: 1px solid ${theme.colors.borderDarkMode};
-    }
-    
-    @media (prefers-color-scheme: light) {
-        border-bottom: 1px solid ${theme.colors.border};
-    }
+    border-bottom: 1px solid var(--color-border);
 
     ${SimpleButton} {
         height: 40px;
         border-bottom: 2px solid transparent;
         margin-right: 16px;
-        color: ${theme.colors.grey.dark};
+        color: var(--color-gray-700);
         text-transform: capitalize;
 
         &.active {
-            @media (prefers-color-scheme: dark) {
-                border-color: ${theme.colors.white};
-            }
-            
-            @media (prefers-color-scheme: light) {
-                border-color: ${theme.colors.black};
-            }
+            border-color: var(--color-text);
             color: inherit;
         }
 
         &:hover:not(.active) {
-            border-color: ${theme.colors.grey.medium};
+            border-color: var(--color-gray-500);
             border-width: 1px;
             padding-bottom: 2px;
         }

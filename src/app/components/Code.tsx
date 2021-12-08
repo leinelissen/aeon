@@ -25,26 +25,26 @@ const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean 
     }
 
     ${props => props.added && css`
-        background-color: ${theme.colors.green}10;
+        background-color: var(--color-red-500)10;
 
         span {
-            color: ${theme.colors.green};
+            color: var(--color-red-500);
         }
     `}
 
     ${props => props.removed && css`
-        background-color: ${theme.colors.red}10;
+        background-color: var(--color-red-500)10;
 
         span {
-            color: ${theme.colors.red};
+            color: var(--color-red-500);
         }
     `}
 
     ${props => props.updated && css`
-        background-color: ${theme.colors.yellow}10;
+        background-color: var(--color-yellow-500)10;
 
         span {
-            color: ${theme.colors.yellow};
+            color: var(--color-yellow-500);
         }
     `}
 `;

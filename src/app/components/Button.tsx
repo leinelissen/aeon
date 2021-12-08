@@ -1,7 +1,6 @@
 import React, { CSSProperties, HTMLAttributes, PropsWithChildren } from 'react';
 import styled, { css } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import theme from 'app/styles/theme';
 import { Ball } from './Loading';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { Link } from 'react-router-dom';
@@ -13,11 +12,11 @@ interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
 }
 
 const StyledButtonStyles = css<ButtonProps>`
-    background-color: ${props => props.backgroundColor || theme.colors.blue.primary};
+    background-color: ${props => props.backgroundColor || 'var(--color-primary)'};
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${props => props.color || theme.colors.white};
+    color: ${props => props.color || 'var(--color-white)'};
     height: 45px;
     font-size: 14px;
     font-weight: 400;
@@ -41,7 +40,7 @@ const StyledButtonStyles = css<ButtonProps>`
         background-color: #eee;
         cursor: not-allowed;
         opacity: 0.5;
-        color: ${theme.colors.black}22;
+        color: var(--color-gray-600);
     }
 
     ${props => props.fullWidth && css`
@@ -97,8 +96,8 @@ interface Props extends ButtonProps {
 const Button = ({ children, loading, onClick, disabled, icon, ...props }: PropsWithChildren<Props>): JSX.Element => {
     return (
         <StyledButton onClick={onClick} disabled={loading || disabled} {...props}>
+            {icon && !loading ? <FontAwesomeIcon icon={icon} style={{ marginRight: 5 }} fixedWidth /> : null}
             {children}
-            {icon && !loading ? <FontAwesomeIcon icon={icon} style={{ marginLeft: 5 }} fixedWidth /> : null}
             {loading ? (<><Margin /><Ball size={10} /></>) : null}
         </StyledButton>
     )

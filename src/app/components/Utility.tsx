@@ -56,6 +56,10 @@ export const MarginLeft = styled.span`
     margin-left: 1em;
 `;
 
+export const MarginRight = styled.span`
+    margin-right: 1em;
+`;
+
 export const Ellipsis = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;

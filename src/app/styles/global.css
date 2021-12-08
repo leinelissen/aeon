@@ -8,11 +8,12 @@ body {
     Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
-    font-size: 15px;
-    /* background-color: white; */
-    line-height: 1.8;
+    font-size: 14px;
+    color: var(--color-text);
+    line-height: 1.7;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    background-color: transparent;
 }
 
 body * {
@@ -37,24 +38,9 @@ code {
     font-family: 'IBM Plex Mono';
     padding: 4px 8px;
     border-radius: 4px;
+    background-color: var(--color-gray-100);
 }
 
-@media (prefers-color-scheme: dark) {
-    body {
-        color: #ffffff;
-    }
-
-    code {
-        background-color: #373737;
-    }
-}
-
-@media (prefers-color-scheme: light) {
-    body {
-        color: #000000;
-    }
-
-    code {
-        background-color: #f6f6f6;
-    }
+a {
+    color: inherit;
 }

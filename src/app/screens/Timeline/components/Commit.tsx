@@ -1,7 +1,6 @@
 
 import styled, { css } from 'styled-components'
 import React, { Component, MouseEventHandler } from 'react';
-import theme from 'app/styles/theme';
 import { Badge } from 'app/components/Typography';
 import { PullRight } from 'app/components/Utility';
 import { Commit as CommitType } from 'main/lib/repository/types';
@@ -58,14 +57,7 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     ${(props) => props.active && css`
         border-radius: 16px;
         color: inherit;
-
-        @media (prefers-color-scheme: dark) {
-            background-color: #333333 !important;
-        }
-        
-        @media (prefers-color-scheme: light) {
-            background-color: ${theme.colors.white} !important;
-        }     
+        background-color: var(--colors-background) !important; 
     `}
 `
 
@@ -84,27 +76,12 @@ const Dot = styled.div<{ active?: boolean }>`
                 0 8px 16px rgba(0,0,0,0.04),
                 0 16px 32px rgba(0,0,0,0.04);
 
-
-    @media (prefers-color-scheme: dark) {
-        border: 4px solid #373737;
-        background-color: #222222;
-    }
-    
-    @media (prefers-color-scheme: light) {
-        border: 4px solid #fcfcfc;
-        background-color: ${theme.colors.white};
-    }    
+    border: 4px solid var(--color-gray-400);
+    background-color: var(--color-background);
 
     ${(props) => props.active && css`
-        @media (prefers-color-scheme: dark) {
-            background-color: ${theme.colors.blue.primaryDarkMode} !important; 
-            border: 4px solid #28465E !important;
-        }
-        
-        @media (prefers-color-scheme: light) {
-            background-color: ${theme.colors.blue.primary} !important; 
-            border: 4px solid ${theme.colors.blue.veryLight} !important;
-        }    
+        background-color: var(--color-blue-500) !important; 
+        border: 4px solid var(--color-blue-200) !important;
         color: inherit;
         transform: scale(1.25);
     `}
@@ -118,14 +95,7 @@ export const TimelineLine = styled.div`
     width: 10px;
     min-height: 100%;
     z-index: 0;
-
-    @media (prefers-color-scheme: dark) {
-        background-color: #272727;
-    }
-    
-    @media (prefers-color-scheme: light) {
-        background-color: ${theme.colors.grey.light};
-    }    
+    background-color: var(--color-gray-200);
 `;
 
 class Commit extends Component<Props> {

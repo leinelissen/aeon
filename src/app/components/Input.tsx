@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from 'app/assets/fa-light';
-import theme from 'app/styles/theme';
 import React, { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -10,44 +9,24 @@ export const TextInput = styled.input`
     font-size: 16px;
     margin-bottom: 16px;
 
-    @media (prefers-color-scheme: dark) {
-        background-color: #222222;
-        border: 1px solid ${theme.colors.borderDarkMode};
-        color: ${theme.colors.white};
+    background-color: var(--color-gray-50);
+    border: 1px solid var(--color-border);
 
-        &::placeholder {
-            color: #cccccc55;
-        }
+    &::placeholder {
+        color: var(--color-gray-500);
     }
-    
-    @media (prefers-color-scheme: light) {
-        background-color: #fbfbfb;
-        border: 1px solid ${theme.colors.border};
-
-        &::placeholder {
-            color: #33333355;
-        }
-    }
-
 `;
 
 export const Label = styled.label`
-    font-size: 12px;
+    font-size: 0.8em;
     display: flex;
     flex-direction: column;
-    font-family: 'IBM Plex Mono';
+    font-family: var(--font-mono);
+    color: var(--color-gray-600);
 
     & > span {
         margin-left: 4px;
         margin-bottom: 2px;
-    }
-
-    @media (prefers-color-scheme: dark) {
-        color: #cccccc55;
-    }
-    
-    @media (prefers-color-scheme: light) {
-        color: #33333355;
     }
 `;
 
@@ -55,7 +34,7 @@ const Select = styled.select<{ hasPlaceholder?: boolean }>`
     height: 50px;
     padding: 16px;
     border-radius: 4px;
-    border: 1px solid ${theme.colors.grey.medium};
+    border: 1px solid var(--color-gray-500);
     color: black;
     appearance: none;
     width: 100%;
@@ -66,8 +45,8 @@ const Select = styled.select<{ hasPlaceholder?: boolean }>`
     `};
 
     &:disabled {
-        background-color: ${theme.colors.grey.medium};
-        color: ${theme.colors.grey.dark};
+        background-color: var(--color-gray-300);
+        color: var(--color-gray-700);
         cursor: not-allowed;
     }
 `;

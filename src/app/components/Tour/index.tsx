@@ -47,7 +47,7 @@ function Tour({ tour }: Props): JSX.Element {
                 steps={steps[tour]}
                 isOpen={isOpen}
                 onRequestClose={handleClose}
-                accentColor={theme.colors.blue.primary}
+                accentColor="var(--color-primary)"
                 lastStepNextButton={<Button icon={faCheck}>Done</Button>}
             />
         </>
