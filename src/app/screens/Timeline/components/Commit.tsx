@@ -62,8 +62,8 @@ const Dot = styled.div<{ active?: boolean }>`
                 0 8px 16px rgba(0,0,0,0.04),
                 0 16px 32px rgba(0,0,0,0.04);
 
-    border: 4px solid var(--color-gray-400);
-    background-color: var(--color-background);
+    border: 4px solid var(--color-gray-300);
+    background-color: var(--color-gray-100);
 
     ${(props) => props.active && css`
         background-color: var(--color-blue-500) !important; 

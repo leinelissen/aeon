@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, NavigatableListEntry, PanelGrid, RowHeading } from 'app/components/PanelGrid';
+import { Category, List, NavigatableListEntry, PanelGrid, RowHeading } from 'app/components/PanelGrid';
 import { faEnvelope } from 'app/assets/fa-light';
 import EmailSettings from './email';
 import { useParams } from 'react-router-dom';
@@ -25,9 +25,11 @@ function Settings(): JSX.Element {
         <PanelGrid>
             <List>
                 <RowHeading>Categories</RowHeading>
-                <NavigatableListEntry to="/settings/email-accounts" icon={faEnvelope}>
-                    Email Accounts
-                </NavigatableListEntry>
+                <Category>
+                    <NavigatableListEntry to="/settings/email-accounts" icon={faEnvelope}>
+                        Email Accounts
+                    </NavigatableListEntry>
+                </Category>
             </List>
             <SettingsPanel settingId={settingId} />
         </PanelGrid>

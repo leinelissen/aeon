@@ -38,7 +38,7 @@ const ResetButton = styled(GhostButton)`
 `;
 
 const ScrollContainer = styled.div`
-    background-color: var(--color-red-500)10;
+    background-color: var(--color-red-50);
     font-family: 'IBM Plex Mono';
     max-height: 25vh;
     overflow: auto;

@@ -34,7 +34,7 @@ const CommitContainer = styled.div`
     top: 0;
     flex-shrink: 0;
     overflow-y: auto;
-    padding-top: 40px;
+    padding-top: 55px;
     border-right: 1px solid var(--color-border);
 `;
 

@@ -5,22 +5,22 @@ const Provider = styled.div`
     width: 25px;
     height: 25px;
     border-radius: 25px;
-    background-color: #0000FF;
-    border: 4px solid #BAD7FF;
+    background-color: var(--color-primary);
+    border: 4px solid var(--color-blue-200);
 `;
 
 const Account = styled.div`
     width: 25px;
     height: 25px;
     border-radius: 25px;
-    background-color: #BAD7FF;
+    background-color: var(--color-blue-200);
 `;
 
 const Type = styled.div`
     width: 25px;
     height: 25px;
     border-radius: 6px;
-    background-color: #eee;
+    background-color: var(--color-gray-300);
 `;
 
 const DataPoint = styled.div`
@@ -29,7 +29,7 @@ const DataPoint = styled.div`
     border-radius: 10px;
     margin-left: 6.5px;
     margin-right: 6.5px;
-    background-color: #eee;
+    background-color: var(--color-gray-300);
 `;
 
 const Line = styled.div`

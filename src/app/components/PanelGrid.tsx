@@ -36,7 +36,7 @@ export const PanelGrid = styled.div<{ columns?: number; noTopPadding?: boolean; 
     display: grid;
     grid-auto-columns: auto;
     grid-template-columns: repeat(${props => props.columns || 3}, 1fr);
-    padding-top: ${props => props.noTopPadding ? 0 : 40}px;
+    padding-top: ${props => props.noTopPadding ? 0 : 50}px;
     height: 100%;
     position: relative;
     overflow: hidden;
@@ -152,10 +152,10 @@ const CategoryContainer = styled.div`
     }
 `;
 
-export function Category({ title, children }: PropsWithChildren<{ title: string }>) {
+export function Category({ title, children }: PropsWithChildren<{ title?: string }>) {
     return (
         <>
-            <SubHeading>{title}</SubHeading>
+            {title && <SubHeading>{title}</SubHeading>}
             {children && (
                 <CategoryContainer>
                     {children}

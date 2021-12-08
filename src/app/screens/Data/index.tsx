@@ -8,9 +8,8 @@ import {
 import DatumOverlay from './components/DatumOverlay';
 import { RouteProps } from '../types';
 import { useParams } from 'react-router-dom';
-import { Category, List, PanelGrid, RowHeading } from 'app/components/PanelGrid';
+import { Category, List, PanelGrid } from 'app/components/PanelGrid';
 import NoData from 'app/components/NoData';
-import Tour from 'app/components/Tour';
 import { useSelector } from 'react-redux';
 import { State } from 'app/store';
 import useTour from 'app/components/Tour/useTour';

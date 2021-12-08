@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import generateEmail from './generateEmail';
 
 const ScrollContainer = styled.div`
-    background-color: #f6f6f6;
+    background-color: var(--color-gray-200);
     font-family: 'IBM Plex Mono';
     max-height: 40vh;
     overflow: auto;
