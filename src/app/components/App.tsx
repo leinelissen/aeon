@@ -7,7 +7,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import 'app/styles';
 import Pages from 'app/screens';
-import Notifications from './Notifications';
 import store, { persistor } from 'app/store';
 import Loading from './Loading';
 import { RepositorySubscription } from 'app/store/data/selectors';
@@ -33,7 +32,6 @@ class App extends Component {
                             <Main>
                                 <Pages />
                             </Main>
-                            <Notifications />
                             {/** Subscription managers */}
                             <ProviderSubscription />
                             <EmailSubscription />
