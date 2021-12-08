@@ -3,11 +3,9 @@ import { faChartNetwork, faClock, faCog, faUser, faTable, faTrash } from 'app/as
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import theme from 'app/styles/theme';
 import { useSelector } from 'react-redux';
 import { State } from 'app/store';
 import { PullDown } from './Utility';
-import Tour from './Tour';
 import useTour from './Tour/useTour';
 
 export const MenuContainer = styled.div`

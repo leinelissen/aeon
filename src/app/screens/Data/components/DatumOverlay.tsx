@@ -6,7 +6,7 @@ import { faCassetteTape, faClock, faLink, faUser } from 'app/assets/fa-light';
 import { H2 } from 'app/components/Typography';
 import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';
-import RightSideOverlay, { DetailListItem, RightSideOverlayOffset, Section } from 'app/components/RightSideOverlay';
+import RightSideOverlay, { DetailListItem, Section } from 'app/components/RightSideOverlay';
 import { useHistory, useParams } from 'react-router-dom';
 import { RouteProps } from 'app/screens/types';
 import { State, useAppDispatch } from 'app/store';

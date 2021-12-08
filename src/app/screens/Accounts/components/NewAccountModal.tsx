@@ -13,7 +13,6 @@ import { Dropdown, Label, TextInput } from 'app/components/Input';
 import { InitOptionalParameters } from 'main/providers/types';
 import isValidUrl from 'app/utilities/isValidUrl';
 import { useHistory, useLocation } from 'react-router-dom';
-import Tour from 'app/components/Tour';
 import EmailProvider from './EmailProvider';
 import useTour from 'app/components/Tour/useTour';
 

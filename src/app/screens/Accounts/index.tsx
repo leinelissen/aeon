@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Category, List, NavigatableListEntry, PanelBottomButtons, PanelGrid, RowHeading, SplitPanel, SubHeading } from 'app/components/PanelGrid';
+import { Category, List, NavigatableListEntry, PanelBottomButtons, PanelGrid, RowHeading, SplitPanel } from 'app/components/PanelGrid';
 import Providers from 'app/utilities/Providers';
 import { useParams } from 'react-router-dom';
 import { RouteProps } from '../types';
@@ -13,7 +13,6 @@ import { State, useAppDispatch } from 'app/store';
 import { useSelector } from 'react-redux';
 import { refreshRequests } from 'app/store/accounts/actions';
 import NewAccountModal from './components/NewAccountModal';
-import Tour from 'app/components/Tour';
 import useTour from 'app/components/Tour/useTour';
 
 const StatusDescription = styled.span`

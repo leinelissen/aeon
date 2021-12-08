@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import theme from 'app/styles/theme';
 
 export const H1 = styled.h1`
     font-weight: 600;

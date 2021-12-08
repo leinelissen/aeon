@@ -5,7 +5,6 @@ import { Transition } from 'react-spring/renderprops'
 import { slideProps, SlideDirection } from 'app/components/SlideIn';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from 'app/assets/fa-light';
-import theme from 'app/styles/theme';
 
 export type RightSideOverlayProps = PropsWithChildren<{
     onClose?: () => void;

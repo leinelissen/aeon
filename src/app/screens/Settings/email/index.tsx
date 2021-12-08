@@ -6,7 +6,6 @@ import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
 import { H2 } from 'app/components/Typography';
 import { MarginLeft } from 'app/components/Utility';
 import { State } from 'app/store';
-import theme from 'app/styles/theme';
 import Email from 'app/utilities/Email';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';

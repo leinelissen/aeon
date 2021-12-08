@@ -2,7 +2,6 @@
 import styled, { css } from 'styled-components'
 import React, { Component, MouseEventHandler } from 'react';
 import { Badge } from 'app/components/Typography';
-import { PullRight } from 'app/components/Utility';
 import { Commit as CommitType } from 'main/lib/repository/types';
 
 interface Props extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'onClick'> {

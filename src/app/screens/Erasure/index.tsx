@@ -6,7 +6,6 @@ import { H3 } from 'app/components/Typography';
 import { MarginSmall, PullContainer } from 'app/components/Utility';
 import { State, useAppDispatch } from 'app/store';
 import { resetDeletedData } from 'app/store/data/actions';
-import theme from 'app/styles/theme';
 import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';
 import { ProvidedDataTypes } from 'main/providers/types/Data';
