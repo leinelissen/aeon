@@ -13,7 +13,7 @@ import { History } from 'history';
 import { List, PanelGrid } from 'app/components/PanelGrid';
 import { connect } from 'react-redux';
 import NoData from '../../components/NoData';
-import Tour from 'app/components/Tour';
+import { Tour } from 'app/components/Tour/useTour';
 
 interface State {
     log: CommitType[];
@@ -129,7 +129,7 @@ class Timeline extends Component<Props, State> {
                         <Diff commit={selectedTree} diff={newCommits.length && commitHash === 'new-commit' && newCommits[0].diff} />
                     </List>
                 </PanelGrid>
-                <Tour tour="/screen/timeline" />
+                <Tour screen="/screen/timeline" />
             </>
         );
     }

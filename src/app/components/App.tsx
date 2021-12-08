@@ -12,6 +12,7 @@ import Loading from './Loading';
 import { RepositorySubscription } from 'app/store/data/selectors';
 import { ProviderSubscription } from 'app/store/accounts/selectors';
 import { EmailSubscription } from 'app/store/email/selectors';
+import Tour from './Tour';
 
 const Main = styled.main`
     position: relative;
@@ -27,17 +28,19 @@ class App extends Component {
             <HashRouter>
                 <StyleSheetManager disableVendorPrefixes>
                     <Provider store={store}>
-                        <PersistGate loading={<Loading />} persistor={persistor}>
-                            {/** Presentational components */}
-                            <Main>
-                                <Pages />
-                            </Main>
-                            {/** Subscription managers */}
-                            <ProviderSubscription />
-                            <EmailSubscription />
-                            <RepositorySubscription />
-                            {/* <Telemetry /> */}
-                        </PersistGate>
+                        <Tour>
+                            <PersistGate loading={<Loading />} persistor={persistor}>
+                                {/** Presentational components */}
+                                <Main>
+                                    <Pages />
+                                </Main>
+                                {/** Subscription managers */}
+                                <ProviderSubscription />
+                                <EmailSubscription />
+                                <RepositorySubscription />
+                                {/* <Telemetry /> */}
+                            </PersistGate>
+                        </Tour>
                     </Provider>
                 </StyleSheetManager>
             </HashRouter>

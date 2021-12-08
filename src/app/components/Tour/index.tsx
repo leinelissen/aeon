@@ -1,56 +1,47 @@
-import { State, useAppDispatch } from 'app/store';
-import { completeTour } from 'app/store/onboarding/actions';
-import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
-import Reactour from 'reactour';
+import React, { PropsWithChildren } from 'react';
+import { TourProvider } from '@reactour/tour';
 import steps, { TourKeys } from './steps';
-import { createGlobalStyle } from 'styled-components';
-import theme from 'app/styles/theme';
 import { faCheck } from 'app/assets/fa-light';
 import Button from '../Button';
 
-const Overrides = createGlobalStyle`
-    #___reactour {
-        .reactour__helper {
-            border-radius: 8px;
-        }
-        [data-tour-elem="controls"] {
-            justify-content: center;
-        }
-    }
-`;
-
-interface Props {
-    tour: TourKeys
-}
-
-function Tour({ tour }: Props): JSX.Element {
-    const dispatch = useAppDispatch();
-    const isTourComplete = useSelector((state: State) => state.onboarding.tour.includes(tour));
-    const [isOpen, setOpen] = useState(!isTourComplete);
-
-    // Handle a close of the window
-    const handleClose = useCallback(() => {
-        // First, we close the Tour overlay
-        setOpen(false);
-
-        // Then we dispatch an action to store the tour state in Redux. We
-        // assume at this point that closing the window means you're done with
-        // it completely.
-        dispatch(completeTour(tour));
-    }, [setOpen]);
-
+function Tour({ children }: PropsWithChildren<unknown>): JSX.Element {
     return (
-        <>
-            <Overrides />
-            <Reactour
-                steps={steps[tour]}
-                isOpen={isOpen}
-                onRequestClose={handleClose}
-                accentColor="var(--color-primary)"
-                lastStepNextButton={<Button icon={faCheck}>Done</Button>}
-            />
-        </>
+        <TourProvider
+            steps={Object.keys(steps).flatMap((key) => steps[key as TourKeys])}
+            nextButton={({
+                Button: BaseButton,
+                currentStep,
+                stepsLength,
+                setIsOpen,
+                setCurrentStep,
+            }) => {
+                const last = currentStep === stepsLength - 1
+                return (
+                    <BaseButton
+                        hideArrow={last}
+                        onClick={() => {
+                            if (last) {
+                                setIsOpen(false)
+                            } else {
+                                setCurrentStep(s => (s === Object.keys(steps).length - 1 ? 0 : s + 1))
+                            }
+                        }}
+                    >
+                        {last ? <Button icon={faCheck}>Done</Button> : null}
+                    </BaseButton>
+                )
+            }}
+            styles={{
+                maskWrapper: base => ({ ...base, color: 'var(--color-gray-400)', opacity: 0.9 }),
+                popover: base => ({ 
+                    ...base, 
+                    borderRadius: 8,
+                    '--reactour-accent': 'var(--color-primary)', 
+                })
+            }}
+        >
+            {children}
+        </TourProvider>
     );
 }
 

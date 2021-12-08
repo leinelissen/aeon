@@ -15,6 +15,7 @@ import isValidUrl from 'app/utilities/isValidUrl';
 import { useHistory, useLocation } from 'react-router-dom';
 import Tour from 'app/components/Tour';
 import EmailProvider from './EmailProvider';
+import useTour from 'app/components/Tour/useTour';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
@@ -47,6 +48,7 @@ function NewAccountButton({ client, children, onComplete, optionalParameters, ..
 }
 
 function NewAccountModal(): JSX.Element {
+    useTour('/screen/accounts/new-account');
     const location = useLocation();
     const history = useHistory();
 
@@ -161,7 +163,6 @@ function NewAccountModal(): JSX.Element {
                             </Margin>
                         ))}
                 </ModalMenu>
-                <Tour tour="/screen/accounts/new-account" />
             </Modal>
         </>
     );

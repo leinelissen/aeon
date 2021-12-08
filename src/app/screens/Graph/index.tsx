@@ -15,6 +15,7 @@ import { faUndo } from 'app/assets/fa-light';
 import Loading from 'app/components/Loading';
 import NoData from 'app/components/NoData';
 import Tour from 'app/components/Tour';
+import useTour from 'app/components/Tour/useTour';
 
 type HoveredNode = {
     position: Position;
@@ -26,6 +27,8 @@ type HoveredNode = {
 type CytoEvent = { target: NodeSingular };
 
 function Graph(): JSX.Element {
+    useTour('/screen/graph');
+
     // Register refs for cytoscape and the container to which it is assigned respectively
     const cy = useRef<cytoscape.Core>();
     const container = useRef<HTMLDivElement>();
@@ -169,7 +172,6 @@ function Graph(): JSX.Element {
                 data-tour="graph-container" 
             />
             {!data && <Loading />}
-            {data && <Tour tour="/screen/graph" />}
             {hoveredNode && 
                 <Tooltip top={hoveredNode.position.y} left={hoveredNode.position.x}>
                     {hoveredNode.label}

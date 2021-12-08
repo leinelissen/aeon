@@ -29,8 +29,11 @@ export const H5 = styled.h5`
 `
 
 export const Badge = styled.div`
-    background-color: var(--color-primary);
-    color: var(--color-white);
+    background-color: var(--color-blue-100);
+    color: var(--color-blue-500);
+    font-weight: 500;
+    font-family: var(--font-heading);
+    letter-spacing: 0.2px;
     padding: 4px 8px;
     display: inline-block;
     border-radius: 4px;

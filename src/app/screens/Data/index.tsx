@@ -13,8 +13,10 @@ import NoData from 'app/components/NoData';
 import Tour from 'app/components/Tour';
 import { useSelector } from 'react-redux';
 import { State } from 'app/store';
+import useTour from 'app/components/Tour/useTour';
 
 function Data(): JSX.Element {
+    useTour('/screen/data');
     const { category, datumId } = useParams<RouteProps['data']>();
     const {
         isLoading,
@@ -44,7 +46,7 @@ function Data(): JSX.Element {
                             items={byType[key].length}
                             disabled={!(key in byType)}
                             deleted={deletedByType[key].length > 0}
-                            data-tour="data-category-button"
+                            data-tour={byType[key].length ? "data-category-button" : ""}
                             data-telemetry-id={`new-commit-select-category-${key}`}
                         />
                     ))}
@@ -69,7 +71,6 @@ function Data(): JSX.Element {
                 <DatumOverlay datumId={parsedDatumId} />
             </List>
             {/* <CreateNewCommit isModalOpen={false} groupedData={groupedData} deletedData={deletedData} /> */}
-            <Tour tour="/screen/data" />
         </PanelGrid>
     );
 }

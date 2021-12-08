@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { State } from 'app/store';
 import { PullDown } from './Utility';
 import Tour from './Tour';
+import useTour from './Tour/useTour';
 
 export const MenuContainer = styled.div`
     display: grid;
@@ -124,6 +125,7 @@ export function TitleBar(): JSX.Element {
 
 export default function Menu(): JSX.Element {
     const deleted = useSelector((state: State) => state.data.deleted);
+    useTour(deleted.length ? '/screen/erasure' : null);
 
     return (
         <Container>
@@ -149,7 +151,6 @@ export default function Menu(): JSX.Element {
                         <span className="icon"><FontAwesomeIcon icon={faTrash} fixedWidth /></span>
                         <span>Erasure ({deleted.length})</span>
                     </Link>
-                    <Tour tour="/screen/erasure" />
                 </>
             ) : null}
             <PullDown>

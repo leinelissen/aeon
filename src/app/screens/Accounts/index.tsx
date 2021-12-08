@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import { refreshRequests } from 'app/store/accounts/actions';
 import NewAccountModal from './components/NewAccountModal';
 import Tour from 'app/components/Tour';
+import useTour from 'app/components/Tour/useTour';
 
 const StatusDescription = styled.span`
     font-size: 12px;
@@ -34,6 +35,8 @@ function Accounts(): JSX.Element {
 
     // Callback for refreshing all requests
     const refresh = useCallback(() => dispatch(refreshRequests()), [dispatch]);
+
+    useTour(accounts.length ? '/screen/accounts/has-accounts': '/screen/accounts/no-accounts');
 
     return (
         <>
@@ -84,12 +87,6 @@ function Accounts(): JSX.Element {
                     <AccountOverlay selectedAccount={selectedAccount} />
                 </List>
             </PanelGrid>
-            <Tour
-                tour={accounts.length 
-                    ? "/screen/accounts/has-accounts"
-                    : "/screen/accounts/no-accounts"
-                } 
-            />
         </>
     )
 }
