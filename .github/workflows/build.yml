@@ -149,6 +149,7 @@ jobs:
         run: xvfb-run --auto-servernum -- npm test
 
       - name: Upload artifacts
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-${{ matrix.arch }}
