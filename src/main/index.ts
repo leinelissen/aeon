@@ -3,23 +3,14 @@ import 'v8-compile-cache';
 require('source-map-support').install();
 
 import './lib/map-map';
-import { app, autoUpdater, BrowserWindow } from 'electron';
+import './updates';
+import { app, BrowserWindow } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer';
 import initialise from './initialise';
 import WindowStore from './lib/window-store';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
-
-// GUARD: Check if auto updates are not flagged to be disabled
-// We use this particularly on macOS when testing so that we don't run into
-// codesigning issues.
-if (!process.argv.includes('--no-auto-updates')
-    && process.env.NODE_ENV === 'production') {
-    const server = "https://updates.aeon.technology";
-    const url = `${server}/update/${process.platform}/${app.getVersion()}`;
-    autoUpdater.setFeedURL({ url })
-}
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require

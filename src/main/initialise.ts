@@ -1,3 +1,4 @@
+import { autoUpdater } from 'electron';
 import EmailManager from './email-client';
 import EmailBridge from './email-client/bridge';
 import Repository from './lib/repository';
@@ -23,6 +24,9 @@ function initialise(): void {
         // And also inject this into its respective bridge
         new ProviderBridge(providerManager);
     });
+
+    // Check for updates when everything is sort of set
+    autoUpdater.checkForUpdates();
 }
 
 export default initialise;
