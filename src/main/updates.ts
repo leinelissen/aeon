@@ -8,7 +8,7 @@ if (!process.argv.includes('--no-auto-updates')
 ) {
     // Generate feed URL
     const server = "https://updates.aeon.technology";
-    const url = `${server}/update/${process.platform}/${app.getVersion()}`;
+    const url = `${server}/update/${process.platform}${process.arch === 'arm64' ? '_arm64' : ''}/${app.getVersion()}`;
     autoUpdater.setFeedURL({ url })
 
     // Periodically check for updates. The default is every six hours.
