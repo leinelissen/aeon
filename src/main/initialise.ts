@@ -25,8 +25,14 @@ function initialise(): void {
         new ProviderBridge(providerManager);
     });
 
-    // Check for updates when everything is sort of set
-    autoUpdater.checkForUpdates();
+    // Check for updates when everything is sort of set.
+    // NOTE: This call may fail for a number of reasons (e.g. when the --no-auto-updates 
+    // flag is set.). Thus we swallow the error and report it out.
+    try {
+        autoUpdater.checkForUpdates();
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 export default initialise;
