@@ -8,7 +8,7 @@ import Modal from 'app/components/Modal';
 import { MarginLeft } from 'app/components/Utility';
 import DataType from 'app/utilities/DataType';
 import { DeletedData, GroupedData } from '../types';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch } from 'app/store';
 import { TransitionDirection } from 'app/utilities/AnimatedSwitch';
 import { Commit, ExtractedDataDiff } from 'main/lib/repository/types';
@@ -23,7 +23,7 @@ interface Props {
 
 function CreateNewCommit({ isModalOpen, deletedData, groupedData }: Props): JSX.Element {
     // Setup dependencies
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation<RouteProps['data']>();
     const dispatch = useAppDispatch();
 
@@ -35,8 +35,8 @@ function CreateNewCommit({ isModalOpen, deletedData, groupedData }: Props): JSX.
 
     // Create handler for closing modal
     const closeModal = useCallback(() => {
-        history.push(`/data/${location.state.category}/${location.state.datumId}`)
-    }, [history, location]);
+        navigate(`/data/${location.state.category}/${location.state.datumId}`)
+    }, [navigate, location]);
 
     // Create handler for creating new commit
     const saveIdentity = useCallback(() => {
@@ -66,7 +66,7 @@ function CreateNewCommit({ isModalOpen, deletedData, groupedData }: Props): JSX.
         dispatch(addNewCommit(commit));
 
         // Lastly, we'll navigate back to the log
-        history.push(`/timeline?transition=${TransitionDirection.left}&newCommit=true`);
+        navigate(`/timeline?transition=${TransitionDirection.left}&newCommit=true`);
     }, [deletedData, groupedData, commitMessage]);
 
     // Determine if there are any changes to the current identity

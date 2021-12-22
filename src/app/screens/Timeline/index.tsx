@@ -7,9 +7,8 @@ import Loading from 'app/components/Loading';
 import { RepositoryEvents, Commit as CommitType } from 'main/lib/repository/types';
 import { IpcRendererEvent } from 'electron';
 import { State as AppState } from 'app/store';
-import { useHistory, useParams } from 'react-router-dom';
+import { NavigateFunction, Location, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RouteProps } from '../types';
-import { History } from 'history';
 import { List, PanelGrid } from 'app/components/PanelGrid';
 import { connect } from 'react-redux';
 import NoData from '../../components/NoData';
@@ -22,7 +21,8 @@ interface State {
 
 interface Props {
     params: RouteProps['timeline'];
-    history: History;
+    navigate: NavigateFunction;
+    location: Location;
     newCommits: AppState['newCommits'];
 }
 
@@ -73,13 +73,13 @@ class Timeline extends Component<Props, State> {
 
                 // Redirect to most recent commit if none is set
                 if (!this.props.params.commitHash) {
-                    this.props.history.push('/timeline/' + log[0].oid);
+                    this.props.navigate('/timeline/' + log[0].oid);
                 }
             });
     }
 
     handleClick = (hash: string): void => {
-        this.props.history.push('/timeline/' + hash);
+        this.props.navigate('/timeline/' + hash);
         // this.setState({ selectedCommit: hash });
     }
 
@@ -137,8 +137,10 @@ class Timeline extends Component<Props, State> {
 
 const RouterWrapper = (props: Pick<Props, 'newCommits'>): JSX.Element => {
     const params = useParams();
-    const history = useHistory();
-    return <Timeline params={params} history={history} {...props} />
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    return <Timeline params={params} navigate={navigate} location={location} {...props} />
 }
 
 const mapStateToProps = (state: AppState) => {

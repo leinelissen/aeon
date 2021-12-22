@@ -24,6 +24,12 @@ module.exports = [
             options: {
                 jsc: {
                     target: "es2020",
+                    transform: {
+                        react: {
+                            runtime: 'automatic',
+                            refresh: process.env.NODE_ENV !== 'production',
+                        }
+                    }
                 },
             }
         }

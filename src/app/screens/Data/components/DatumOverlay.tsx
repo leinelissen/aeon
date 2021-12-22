@@ -7,7 +7,7 @@ import { H2 } from 'app/components/Typography';
 import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';
 import RightSideOverlay, { DetailListItem, Section } from 'app/components/RightSideOverlay';
-import { useHistory, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RouteProps } from 'app/screens/types';
 import { State, useAppDispatch } from 'app/store';
 import { deleteDatum } from 'app/store/data/actions';
@@ -24,14 +24,15 @@ const DatumOverlay = ({ datumId }: Props): JSX.Element => {
 
     // Create handler that redirects the page if the overlay is closed
     const { category } = useParams<RouteProps['data']>();
-    const history = useHistory();
+    const navigate = useNavigate();
+    const location = useLocation();
     const handleClose = useCallback(() => {
-        if (history.location.pathname.startsWith('/data')){
-            history.push(`/data/${category}`);
-        } else if (history.location.pathname.startsWith('/graph')) {
-            history.push('/graph');
+        if (location.pathname.startsWith('/data')){
+            navigate(`/data/${category}`);
+        } else if (location.pathname.startsWith('/graph')) {
+            navigate('/graph');
         }
-    }, [history, category]);
+    }, [navigate, category, location]);
 
     // Create handler for deleting data points
     const dispatch = useAppDispatch();

@@ -9,11 +9,11 @@ import { State } from 'app/store';
 import Email from 'app/utilities/Email';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import NewAccountModal from './components/NewAccountModal';
 
 function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): JSX.Element {
-    const history = useHistory();
+    const navigate = useNavigate();
     const { all, byId } = useSelector((state: State) => state.email.accounts);
     const deleteAccount = useCallback(async () => {
         // GUARD: Double-check the user wants to actually delete the account
@@ -22,7 +22,7 @@ function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): 
             await Email.delete(selectedAccount) 
             
             // Then return to the previous menu
-            history.push('/settings/email-accounts');
+            navigate('/settings/email-accounts');
         }
     }, [selectedAccount]);
 

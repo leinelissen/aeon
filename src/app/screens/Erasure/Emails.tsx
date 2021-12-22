@@ -8,7 +8,7 @@ import { State } from 'app/store';
 import Providers from 'app/utilities/Providers';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import generateEmail from './generateEmail';
 
@@ -23,13 +23,13 @@ const ScrollContainer = styled.div`
 `;
 
 function ErasureEmails(): JSX.Element {
-    const history = useHistory();
+    const navigate = useNavigate();
     const { byKey, deletedByProvider } = useSelector((state: State) => state.data);
 
     // Redirect to timeline on menu item close
     const handleClose = useCallback(() => {
-        history.push('/timeline');
-    }, [history]);
+        navigate('/timeline');
+    }, [navigate]);
 
     return (
         <Modal isOpen onRequestClose={handleClose}>

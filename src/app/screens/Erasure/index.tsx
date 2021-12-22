@@ -11,7 +11,7 @@ import Providers from 'app/utilities/Providers';
 import { ProvidedDataTypes } from 'main/providers/types/Data';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const IconWrapper = styled.div`
@@ -47,19 +47,19 @@ const ScrollContainer = styled.div`
 `;
 
 function Erasure(): JSX.Element {
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { byKey, deleted, deletedByProvider } = useSelector((state: State) => state.data);
 
     // Redirect to timeline on menu item close
     const handleClose = useCallback(() => {
-        history.push('/timeline');
-    }, [history]);
+        navigate('/timeline');
+    }, [navigate]);
 
     // Redirect to next window if the user wants to delete stuff
     const handleDelete = useCallback(() => {
-        history.push('/erasure/emails');
-    }, [history]);
+        navigate('/erasure/emails');
+    }, [navigate]);
 
     // Reset the deleted items, and close the modal
     const handleReset = useCallback(() => {

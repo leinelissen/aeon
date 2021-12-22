@@ -12,7 +12,7 @@ import Providers from 'app/utilities/Providers';
 import { Dropdown, Label, TextInput } from 'app/components/Input';
 import { InitOptionalParameters } from 'main/providers/types';
 import isValidUrl from 'app/utilities/isValidUrl';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import EmailProvider from './EmailProvider';
 import useTour from 'app/components/Tour/useTour';
 
@@ -49,7 +49,7 @@ function NewAccountButton({ client, children, onComplete, optionalParameters, ..
 function NewAccountModal(): JSX.Element {
     useTour('/screen/accounts/new-account');
     const location = useLocation();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     // Selectors
     const { allProviders, availableProviders} = useSelector((state: State) => state.accounts);
@@ -69,11 +69,11 @@ function NewAccountModal(): JSX.Element {
 
     // Handlers
     const closeModal = useCallback(() => {
-        history.push(location.pathname)
+        navigate(location.pathname)
     }, [location]);
 
     const openModal = useCallback(() => { 
-        history.push(location.pathname + '?create-new-account')
+        navigate(location.pathname + '?create-new-account')
     }, [location]);
 
     const handleUrlChange = useCallback((event) => { 
@@ -90,10 +90,10 @@ function NewAccountModal(): JSX.Element {
     // the option from the email accounts dropdown
     useEffect(() => {
         if (selectedEmail === 'Create New Email Account...') {
-            history.push('/settings/email-accounts?create-new-email-account');
+            navigate('/settings/email-accounts?create-new-email-account');
             setSelectedEmail(emailAccounts.length ? emailAccounts[0] : '');
         }
-    }, [selectedEmail, setSelectedEmail, history]);
+    }, [selectedEmail, setSelectedEmail, navigate]);
     
     return (
         <>
