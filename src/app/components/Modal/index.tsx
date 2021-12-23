@@ -1,7 +1,7 @@
 import React, { Component, useRef, useEffect, PropsWithChildren, HTMLAttributes } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
-import { Transition, config } from 'react-spring/renderprops';
+import { Transition, config } from 'react-spring';
 import { GhostButton } from '../Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp } from 'app/assets/fa-light';

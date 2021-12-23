@@ -1,5 +1,5 @@
 import { Manager, Reference, PopperProps, Popper } from 'react-popper';
-import { Transition, config } from 'react-spring/renderprops';
+import { Transition, config } from 'react-spring';
 import React, { PureComponent, ReactNode } from 'react';
 import styled from 'styled-components';
 
@@ -174,7 +174,7 @@ export class Tooltip extends PureComponent<TooltipProps> {
                 leave={{ opacity: 0, top: -20 }}
                 config={config.stiff}
             >
-                {(show) => show && (({ opacity }) => (
+                {({ opacity }, show) => show && (
                     <Popper {...props} modifiers={modifiers}>
                         {({ ref, style: popperStyles, placement, arrowProps }) => (
                             <Container 
@@ -192,7 +192,7 @@ export class Tooltip extends PureComponent<TooltipProps> {
                             </Container>
                         )}
                     </Popper>
-                ))}
+                )}
             </Transition>
         );
     }
