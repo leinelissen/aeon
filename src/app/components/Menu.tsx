@@ -126,32 +126,32 @@ export default function Menu(): JSX.Element {
 
     return (
         <Container>
-            <Link to="/timeline" activeClassName="active">
+            <Link to="/timeline" className={({ isActive }) => isActive ? 'active' : ''}>
                 <span className="icon"><FontAwesomeIcon icon={faClock} fixedWidth /></span>
                 <span>Timeline</span>
             </Link>
-            <Link to="/accounts" activeClassName="active">
+            <Link to="/accounts" className={({ isActive }) => isActive ? 'active' : ''}>
                 <span className="icon"><FontAwesomeIcon icon={faUser} fixedWidth /></span>
                 <span>Accounts</span>
             </Link>
-            <Link to="/data" activeClassName="active">
+            <Link to="/data" className={({ isActive }) => isActive ? 'active' : ''}>
                 <span className="icon"><FontAwesomeIcon icon={faTable} fixedWidth /></span>
                 <span>Data</span>
             </Link>
-            <Link to="/graph" activeClassName="active">
+            <Link to="/graph" className={({ isActive }) => isActive ? 'active' : ''}>
                 <span className="icon"><FontAwesomeIcon icon={faChartNetwork} fixedWidth /></span>
                 <span>Graph</span>
             </Link>
             {deleted.length ? (
                 <>
-                    <Link to="/erasure" activeClassName="active" data-tour="erasure-screen">
+                    <Link to="/erasure" className={({ isActive }) => isActive ? 'active' : ''} data-tour="erasure-screen">
                         <span className="icon"><FontAwesomeIcon icon={faTrash} fixedWidth /></span>
                         <span>Erasure ({deleted.length})</span>
                     </Link>
                 </>
             ) : null}
             <PullDown>
-                <Link to="/settings" activeClassName="active">
+                <Link to="/settings" className={({ isActive }) => isActive ? 'active' : ''}>
                     <span className="icon"><FontAwesomeIcon icon={faCog} fixedWidth /></span>
                     <span>Settings</span>
                 </Link>            

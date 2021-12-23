@@ -8,7 +8,7 @@ import { Margin, MarginLeft, PullCenter, PullContainer } from 'app/components/Ut
 import { useAppDispatch } from 'app/store';
 import { createEmailAccount } from 'app/store/email/actions';
 import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
@@ -39,14 +39,14 @@ function NewAccountButton({ client, children, onComplete, ...props }: NewAccount
 
 function NewAccountModal(): JSX.Element {
     const location = useLocation();
-    const history = useHistory();
+    const navigate = useNavigate();
     const [modalIsOpen, setModal] = useState(false);
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         setModal(params.has('create-new-email-account'));
     }, [location, setModal]);
-    const closeModal = useCallback(() => history.push(location.pathname), [location]);
-    const openModal = useCallback(() => history.push(location.pathname + '?create-new-email-account'), [location]);
+    const closeModal = useCallback(() => navigate(location.pathname), [location]);
+    const openModal = useCallback(() => navigate(location.pathname + '?create-new-email-account'), [location]);
     
     return (
         <>

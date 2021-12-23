@@ -3,7 +3,7 @@ import { InitialisedAccount } from "main/providers/types";
 import { DataRequestCompleted, ProviderEvents, UpdateComplete } from 'main/providers/types/Events';
 import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { State, useAppDispatch } from '..';
 import { fetchAvailableProviders, fetchProviderAccounts } from './actions';
 
@@ -41,7 +41,7 @@ export function useProvider(key: string): InitialisedAccount {
  */
 export function ProviderSubscription(): null {
     const dispatch = useAppDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     // Callback that fetches all requests and providers
     const refreshProviders = useCallback(() => {
@@ -64,7 +64,7 @@ export function ProviderSubscription(): null {
                         body: `There's a new update for ${event.account} on ${event.provider}${event.url && ` (${event.url})`}`,
                     }
                 );
-                notification.onclick = () => history.push(`/timeline/${event.commitHash}`);
+                notification.onclick = () => navigate(`/timeline/${event.commitHash}`);
                 break;
             }
             case ProviderEvents.DATA_REQUEST_COMPLETED: {
@@ -75,7 +75,7 @@ export function ProviderSubscription(): null {
                         body: `A data request for ${event.account} on ${event.provider}${event.url && ` (${event.url})`} was just completed`,
                     }
                 );
-                notification.onclick = () => history.push(`/timeline/${event.commitHash}`);
+                notification.onclick = () => navigate(`/timeline/${event.commitHash}`);
                 break;
             }
         }

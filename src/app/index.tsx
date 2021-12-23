@@ -1,4 +1,3 @@
-import 'react-hot-loader';
 import './polyfill';
 import React from 'react'
 import { render } from 'react-dom';

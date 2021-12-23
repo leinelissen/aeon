@@ -1,6 +1,6 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { debounce } from 'lodash-es';
 import cytoscape, { NodeSingular, Position } from 'cytoscape';
 import fcose from 'cytoscape-fcose';
@@ -33,7 +33,7 @@ function Graph(): JSX.Element {
     const container = useRef<HTMLDivElement>();
 
     // Retrieve the params for selected nodes
-    const history = useHistory();
+    const navigate = useNavigate();
     const selectedNode = useParams<RouteProps['graph']>().datumId;
 
     // Assign state for hovered nodes and all data
@@ -93,7 +93,7 @@ function Graph(): JSX.Element {
         // Retrieve the particular datum
         const i = event.target.data('i');
         if (i) {
-            history.push(`/graph/${i}`);
+            navigate(`/graph/${i}`);
         }
     }, []);
 

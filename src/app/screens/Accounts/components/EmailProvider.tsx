@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import Button from 'app/components/Button';
 import { faEnvelope } from 'app/assets/fa-light';
 import { createEmailAccount } from 'app/store/accounts/actions';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export interface APIResponse {
     count: number;
@@ -63,7 +63,7 @@ const Select = styled(AsyncSelect)`
 
 function EmailProvider(): JSX.Element {
     const dispatch = useAppDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const emailAccounts = useSelector((state: State) => state.email.accounts.all);
 
@@ -105,17 +105,17 @@ function EmailProvider(): JSX.Element {
             status: {},
             provider: 'email',
         }));
-        history.push('/accounts');
-    }, [selectedOrganisation, selectedEmail, history]);
+        navigate('/accounts');
+    }, [selectedOrganisation, selectedEmail, navigate]);
     
     // Redirect a user to the Create New Email Account modal, when they select
     // the option from the email accounts dropdown
     useEffect(() => {
         if (selectedEmail === 'Create New Email Account...') {
-            history.push('/settings/email-accounts?create-new-email-account');
+            navigate('/settings/email-accounts?create-new-email-account');
             setSelectedEmail(emailAccounts.length ? emailAccounts[0] : '');
         }
-    }, [selectedEmail, setSelectedEmail, history]);
+    }, [selectedEmail, setSelectedEmail, navigate]);
 
     return (
         <Margin>

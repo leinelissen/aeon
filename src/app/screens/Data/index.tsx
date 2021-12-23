@@ -69,7 +69,6 @@ function Data(): JSX.Element {
             <List>
                 <DatumOverlay datumId={parsedDatumId} />
             </List>
-            {/* <CreateNewCommit isModalOpen={false} groupedData={groupedData} deletedData={deletedData} /> */}
         </PanelGrid>
     );
 }

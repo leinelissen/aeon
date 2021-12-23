@@ -2,6 +2,9 @@ const path = require('path');
 const rules = require('./webpack.rules');
 const plugins = require('./webpack.plugins');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 rules.push({
     test: /\.(woff|woff2|svg)$/,
@@ -24,10 +27,16 @@ module.exports = {
     module: {
         rules,
     },
+    devServer: {
+        hot: true,
+    },
     plugins: [
         ...plugins,
         new MiniCssExtractPlugin({
             filename: "assets/[name].css",
+        }),
+        isDevelopment && new ReactRefreshWebpackPlugin({
+            esModule: true,
         })
     ],
     resolve: {

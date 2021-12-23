@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { NavLink } from 'react-router-dom';
+import { NavLink, NavLinkProps } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { faChevronRight } from 'app/assets/fa-light';
 import { PullRight } from './Utility';
@@ -76,10 +76,10 @@ type ListButtonProps = {
     modified?: boolean;
     added?: boolean;
     large?: boolean;
-};
+} & NavLinkProps & React.RefAttributes<HTMLAnchorElement>;
 
-export const NavigatableListEntryContainer = styled<React.FC<ListButtonProps>>(NavLink).withConfig({
-    shouldForwardProp: (prop) => !['deleted', 'modified', 'added', 'large'].includes(prop)
+export const NavigatableListEntryContainer = styled<React.ForwardRefExoticComponent<ListButtonProps>>(NavLink).withConfig({
+    shouldForwardProp: (prop) => typeof prop === 'string' && !['deleted', 'modified', 'added', 'large'].includes(prop)
 })`
     border: 0;
     background: transparent;
