@@ -37,7 +37,6 @@ class App extends Component {
                                 <ProviderSubscription />
                                 <EmailSubscription />
                                 <RepositorySubscription />
-                                {/* <Telemetry /> */}
                             </PersistGate>
                         </Tour>
                     </Provider>

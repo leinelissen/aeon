@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Ellipsis } from 'app/components/Utility';
 import { NavigatableListEntry } from 'app/components/PanelGrid';
 
-interface ListButtonProps extends HTMLAttributes<HTMLButtonElement> {
+interface ListButtonProps extends HTMLAttributes<HTMLAnchorElement> {
     disabled?: boolean;
     deleted?: boolean;
     modified?: boolean;
