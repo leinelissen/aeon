@@ -27,6 +27,9 @@ module.exports = {
     module: {
         rules,
     },
+    devServer: {
+        hot: true,
+    },
     plugins: [
         ...plugins,
         new MiniCssExtractPlugin({

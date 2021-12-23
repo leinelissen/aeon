@@ -47,6 +47,10 @@ const config = {
         [
             '@electron-forge/plugin-webpack',
             {
+                // HMR Woes: https://github.com/electron-userland/electron-forge/issues/2560
+                devServer: {
+                    liveReload: false,
+                },
                 mainConfig: './webpack.main.config.js',
                 renderer: {
                     config: './webpack.renderer.config.js',

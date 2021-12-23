@@ -26,7 +26,7 @@ module.exports = [
                     target: "es2020",
                     transform: {
                         react: {
-                            runtime: 'automatic',
+                            development: process.env.NODE_ENV !== 'production',
                             refresh: process.env.NODE_ENV !== 'production',
                         }
                     }
