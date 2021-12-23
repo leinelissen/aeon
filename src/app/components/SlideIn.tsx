@@ -1,6 +1,5 @@
 import React from 'react';
-import { useTransition, animated } from 'react-spring'
-import { config, SpringConfig, TransitionProps } from 'react-spring/renderprops';
+import { config, useTransition, animated, UseTransitionProps } from 'react-spring';
 
 export enum SlideDirection {
     UP,
@@ -14,7 +13,7 @@ const defaultAnimation = {
     opacity: 1,
 }
 
-const Transitions: Map<SlideDirection, unknown> = new Map([
+const Transitions: Map<SlideDirection, Record<string, unknown>> = new Map([
     [SlideDirection.LEFT, {
         opacity: 0,
         transform: 'translate3d(-100%,0,0)',
@@ -40,16 +39,16 @@ interface Props {
 }
 
 const SlideIn  = ({ visible, direction, children }: Props): JSX.Element => {
-    const transitions = useTransition(visible, null, slideProps(direction) as SpringConfig);
+    const transitions = useTransition(visible, slideProps(direction));
 
     return <>
-        {transitions.map(({ item, key, props }) =>
+        {transitions(({ item, key, props }) =>
             item && <animated.div key={key} style={props}>{children}</animated.div>
         )}
     </>;
 }
 
-export function slideProps(direction: SlideDirection): Omit<TransitionProps<unknown>, 'items'> {
+export function slideProps(direction: SlideDirection): Omit<UseTransitionProps<unknown>, 'items'> {
     return {
         enter: defaultAnimation,
         from: Transitions.get(direction),

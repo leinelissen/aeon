@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { GhostButton } from 'app/components/Button';
 import styled from 'styled-components';
-import { Transition } from 'react-spring/renderprops'
+import { Transition } from 'react-spring'
 import { slideProps, SlideDirection } from 'app/components/SlideIn';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from 'app/assets/fa-light';
@@ -98,20 +98,18 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
             items={children}
             {...slideProps(SlideDirection.RIGHT)}
         >
-            {children => children && 
-                (props =>
-                    <Container style={{ ...props, marginTop }} {...otherProps}>
-                        <InnerContainer>
-                            {handleClose ? 
-                                <CloseButton onClick={handleClose}>
-                                    <FontAwesomeIcon icon={faChevronRight} />
-                                </CloseButton>
-                                : null}
-                            {children}
-                        </InnerContainer>
-                    </Container>
-                )
-            }
+            {(props, item) => item && (
+                <Container style={{ ...props, marginTop }} {...otherProps}>
+                    <InnerContainer>
+                        {handleClose ? 
+                            <CloseButton onClick={handleClose}>
+                                <FontAwesomeIcon icon={faChevronRight} />
+                            </CloseButton>
+                            : null}
+                        {children}
+                    </InnerContainer>
+                </Container>
+            )}
         </Transition>
     );
 };
