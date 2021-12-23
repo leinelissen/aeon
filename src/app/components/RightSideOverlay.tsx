@@ -1,8 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { GhostButton } from 'app/components/Button';
 import styled from 'styled-components';
-import { Transition } from 'react-spring'
-import { slideProps, SlideDirection } from 'app/components/SlideIn';
+import { animated, Transition } from 'react-spring'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from 'app/assets/fa-light';
 
@@ -11,7 +10,7 @@ export type RightSideOverlayProps = PropsWithChildren<{
     marginTop?: number;
 }>;
 
-const Container = styled.div`
+const Container = styled(animated.div)`
     position: absolute;
     z-index: 2;
     height: 100%;
@@ -96,20 +95,28 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
     return (
         <Transition
             items={children}
-            {...slideProps(SlideDirection.RIGHT)}
+            from={{ opacity: 0 }}
+            enter={{ opacity: 1 }}
         >
-            {(props, item) => item && (
-                <Container style={{ ...props, marginTop }} {...otherProps}>
+            {({ opacity }, items) => items ? (
+                <Container
+                    style={{ 
+                        opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1]}),
+                        transform: opacity.to((x: number) => `translateX(${-x * 20 + 20}%)`),
+                        marginTop,
+                    }}
+                    {...otherProps}
+                >
                     <InnerContainer>
                         {handleClose ? 
                             <CloseButton onClick={handleClose}>
                                 <FontAwesomeIcon icon={faChevronRight} />
                             </CloseButton>
                             : null}
-                        {children}
+                        {items || ''}
                     </InnerContainer>
                 </Container>
-            )}
+            ) : null}
         </Transition>
     );
 };
