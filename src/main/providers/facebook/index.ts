@@ -5,6 +5,7 @@ import { DataRequestProvider } from "../types/Provider";
 import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
+import logger from 'main/lib/logger';
 
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
@@ -108,7 +109,6 @@ class Facebook extends DataRequestProvider {
 
                     // Then parse the params that are sent to the GraphQL API
                     const params = new URLSearchParams(data);
-                    console.log(Array.from(params.keys()));
 
                     // Check if we're capturing the right call
                     if (params && params.get('fb_api_req_friendly_name') === 'DYISectionsCreateJobMutation') {

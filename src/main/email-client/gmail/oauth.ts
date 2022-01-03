@@ -5,6 +5,7 @@ import { URLSearchParams } from 'url';
 import { Socket } from 'net';
 import { shell } from 'electron';
 import { TokenResponse } from './types';
+import logger from 'main/lib/logger';
 
 // Pull the Gmail config variables from the environment
 const GMAIL_OAUTH_CLIENT_ID = process.env.GMAIL_OAUTH_CLIENT_ID;
@@ -100,7 +101,7 @@ async function setupRedirectListener(callback: CodeCallback): Promise<string> {
                 for(const socket of sockets) {
                     socket.destroy();
                 }
-                console.log(`Received authentication code, ${redirect_uri} destroyed.`)
+                logger.email.info(`Received authentication code, ${redirect_uri} destroyed.`)
 
                 // Lastly, we'll pass along the code and redirect uri to the
                 // callback handler
@@ -128,7 +129,7 @@ async function setupRedirectListener(callback: CodeCallback): Promise<string> {
             resolve(redirect_uri);
 
             // Also log it
-            console.log('A gmail authentication server is listening at: ', redirect_uri);
+            logger.email.info('A gmail authentication server is listening at: ' + redirect_uri);
         });
 
         // Store any sockets, so that we can delete them when the server is done

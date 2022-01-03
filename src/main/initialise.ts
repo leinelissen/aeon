@@ -1,6 +1,7 @@
 import { autoUpdater } from 'electron';
 import EmailManager from './email-client';
 import EmailBridge from './email-client/bridge';
+import cliArguments from './lib/cli-args';
 import Repository from './lib/repository';
 import RepositoryBridge from './lib/repository/bridge';
 import ProviderManager from './providers';
@@ -8,7 +9,7 @@ import ProviderBridge from './providers/bridge';
 
 function initialise(): void {
     // Initialise the Git repository handler
-    const repository = new Repository();
+    const repository = new Repository(cliArguments.repositoryDirectory);
     // Inject the repository handler into the bridge for communication with the rendered
     new RepositoryBridge(repository);
 

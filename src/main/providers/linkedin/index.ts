@@ -5,6 +5,7 @@ import { DataRequestProvider } from "../types/Provider";
 import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
+import logger from 'main/lib/logger';
 
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
@@ -107,8 +108,6 @@ class LinkedIn extends DataRequestProvider {
                 window.webContents.session.webRequest.onCompleted({
                     urls: [ 'https://*.linkedin.com/*' ]
                 }, (details: Electron.OnCompletedListenerDetails) => {
-                    console.log('NEW REQUEST', details);
-
                     if (details.url === 'https://www.linkedin.com/psettings/member-data/export'
                         && details.statusCode === 200) {
                         resolve();

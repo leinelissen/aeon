@@ -16,7 +16,6 @@ class Spotify extends EmailDataRequestProvider {
     }
 
     async initialise(): Promise<string> {
-        console.log('Initialising new spotify account');
         await this.verifyLoggedInStatus();
         return this.accountName;
     }
@@ -111,7 +110,6 @@ class Spotify extends EmailDataRequestProvider {
             const reference = subHours(new Date, 2);
             if (reference < message.date) {
                 // If so, we find the link and click it
-                console.log(message)
                 const [link] = message.text.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/confirm\/[a-f\d]+/);
 
                 // GUARD: Check if the link is correctly extracted, else we

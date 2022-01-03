@@ -1,4 +1,5 @@
 import { EventEmitter2 } from 'eventemitter2';
+import logger from 'main/lib/logger';
 import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
 import GmailEmailClient from './gmail';
@@ -38,7 +39,7 @@ export default class EmailManager extends EventEmitter2 {
      * assigned to an emailadress entered as part of its initialisation logic.
      */
     async initialiseNewAddress(clientKey: string): Promise<string> {
-        console.log('Initialising new email client: ', clientKey);
+        logger.email.info('Initialising new email client: ' + clientKey);
         
         // Retrieve the correct client
         const Client = clients.get(clientKey);
@@ -67,7 +68,7 @@ export default class EmailManager extends EventEmitter2 {
      * @param address The email address to be deleted
      */
     deleteAccount(address: string): void {
-        console.log('Deleting email account: ' + address);
+        logger.email.info('Deleting email account: ' + address);
 
         // GUARD: Check if the address actually exists
         if (!this.emailClients.has(address)) {

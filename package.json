@@ -50,6 +50,7 @@
         "@types/source-map-support": "0.5.4",
         "@types/stream-chain": "2.0.1",
         "@types/styled-components": "5.1.16",
+        "@types/yargs": "^17.0.8",
         "@typescript-eslint/eslint-plugin": "5.5.0",
         "@typescript-eslint/parser": "5.5.0",
         "@vercel/webpack-asset-relocator-loader": "1.7.0",
@@ -106,6 +107,8 @@
         "redux-persist": "6.0.0",
         "stream-chain": "2.2.4",
         "styled-components": "5.3.3",
-        "v8-compile-cache": "2.3.0"
+        "v8-compile-cache": "2.3.0",
+        "winston": "^3.3.3",
+        "yargs": "^17.3.1"
     }
 }

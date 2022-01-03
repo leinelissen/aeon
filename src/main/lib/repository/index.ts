@@ -18,10 +18,11 @@ import diffMapFunction from './utilities/diff-map';
 import generateParsedCommit from './utilities/generate-parsed-commit';
 import { ProviderDatum } from "main/providers/types/Data";
 import RepositoryBridge from './bridge';
+import { APP_DATA_PATH } from '../app-path';
+import logger from '../logger';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
-export const APP_DATA_PATH = process.env.NODE_ENV === 'production' ? app.getPath('userData') : app.getAppPath();
 export const REPOSITORY_PATH = path.resolve(APP_DATA_PATH, 'data', 'repository');
 export const EMPTY_REPO_HASH = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 
@@ -53,8 +54,12 @@ class Repository extends EventEmitter {
     repository: NodeGitRepository = null;
     index: Index = null;
 
-    constructor() {
+    constructor(directory?: string) {
         super();
+
+        if (directory) {
+            this.dir = directory;
+        }
 
         NodeGitRepository.open(this.dir)
             .catch((err) => {
@@ -66,7 +71,7 @@ class Repository extends EventEmitter {
                 this.index = await repository.refreshIndex();
                 this.isInitialised= true;
                 this.emit('ready');
-                console.log('Repository was succesfully initiated at ', REPOSITORY_PATH);
+                logger.repository.info(`Repository was succesfully initiated at ${REPOSITORY_PATH}`);
             })
             .catch(console.error);
     }
@@ -76,7 +81,7 @@ class Repository extends EventEmitter {
      * files and commit, so that we can work from there.
      */
     private async initialiseRepository(): Promise<NodeGitRepository> {
-        console.log('Repository was not found, creating a new one');
+        logger.repository.info('Repository was not found, creating a new one');
 
         // First we'll initiate the repository
         await fs.promises.mkdir(this.dir, { recursive: true });
@@ -93,7 +98,7 @@ class Repository extends EventEmitter {
         const oid = await index.writeTree();
         await repository.createCommit('HEAD', this.author, this.author, 'Initial Commit', oid, []);
         
-        console.log('Initiated new repository at ', REPOSITORY_PATH);
+        logger.repository.info('Initiated new repository at ' + REPOSITORY_PATH);
 
         // Then we return the commit log
         return repository;

@@ -34,6 +34,7 @@ import LinkedIn from './linkedin';
 import Spotify from './spotify';
 import Instagram from './instagram';
 import OpenDataRights from './open-data-rights';
+import logger from 'main/lib/logger';
 
 export const providers: Array<UninstatiatedProvider> = [
     Instagram,
@@ -133,7 +134,7 @@ class ProviderManager extends EventEmitter2 {
      * @param key 
      */
     initialise = async (provider: string, optional: InitOptionalParameters): Promise<string> => {
-        console.log(`Attempting to initialise a new ${provider} (${optional.accountName})`);
+        logger.provider.info(`Attempting to initialise a new ${provider} (${optional.accountName})`);
         // Generate a random string that is used to refer to the sessions for
         // this particular account
         const windowKey = crypto.randomBytes(32).toString('hex');
@@ -257,7 +258,7 @@ class ProviderManager extends EventEmitter2 {
         message: string,
         updateType: ProviderUpdateType
     ): Promise<{ changedFiles: number; commitHash: string; }> => {
-        console.log(`Saving and committing files for ${key}...`);
+        logger.provider.info(`Saving and committing files for ${key}...`);
         const account = this.accounts.get(key);
 
         // Then store all files using the repositor save and add handler
@@ -280,12 +281,12 @@ class ProviderManager extends EventEmitter2 {
         // GUARD: We must check if the changed files have been added to the
         // index, as they will not be part of a commit when it is made.
         const changedFiles = status.filter((file) => file.inIndex());
-        console.log('Files changed: ', changedFiles);
+        logger.provider.info('Files changed: ' + JSON.stringify(changedFiles));
 
         // GUARD: If no files have changed, it is no longer neccessary to create
         // a new commit.
         if (!changedFiles.length) {
-            console.log('No files have changed since last data request, skipping commit.')
+            logger.provider.info('No files have changed since last data request, skipping commit.')
             return;
         }
 
@@ -308,7 +309,7 @@ class ProviderManager extends EventEmitter2 {
         }, message);
 
         // Acutally create the commit
-        console.log('Creating commit: ', message);
+        logger.provider.info('Creating commit: ' + message);
         const commit = await this.repository.commit(augmentedMessage);
 
         return {
@@ -355,7 +356,7 @@ class ProviderManager extends EventEmitter2 {
         this.accounts.set(key, account);
 
         this.emit(ProviderEvents.DATA_REQUEST_DISPATCHED, account as DataRequestDispatched);
-        console.log('Dispatched data request for ', key);
+        logger.provider.info('Dispatched data request for ' + key);
     }
 
     /**
@@ -371,7 +372,7 @@ class ProviderManager extends EventEmitter2 {
         // Send out an event so the front-end knows we are busy checking
         // outstanding data requests
         ProviderBridge.send(ProviderEvents.CHECKING_DATA_REQUESTS);
-        console.log('Checking for completed data requests...');
+        logger.provider.info('Checking for completed data requests...');
 
         const dataRequests = Promise.all(this.accounts.map(async (account, key): Promise<void> => {
             const instance = this.instances.get(key);
@@ -395,7 +396,7 @@ class ProviderManager extends EventEmitter2 {
                 // it has been completed for x days
                 const ProviderClass: typeof DataRequestProvider = Object.getPrototypeOf(instance).constructor;
                 if (differenceInDays(new Date(), new Date(account.status.completed)) > ProviderClass.dataRequestIntervalDays) {
-                    console.log(`Data request for ${key} was completed long enough to be purged`);
+                    logger.provider.info(`Data request for ${key} was completed long enough to be purged`);
                     account.status = {};
                     this.accounts.set(key, account);
                 } 
@@ -405,7 +406,7 @@ class ProviderManager extends EventEmitter2 {
 
             // If it is uncompleted, we need to check upon it
             if (await instance.isDataRequestComplete(account.status.requestId).catch(() => false)) {
-                console.log('A data request has completed! Starting to parse...')
+                logger.provider.info('A data request has completed! Starting to parse...')
 
                 // If it is complete now, we'll fetch the data and parse it
                 const dirPath = account.url && account.hostname
@@ -436,7 +437,7 @@ class ProviderManager extends EventEmitter2 {
         // Also dispatch regular update requests
         await(Promise.allSettled([dataRequests, await this.updateAll()]));
         this.lastDataRequestCheck = new Date();
-        console.log('Check completed.')
+        logger.provider.info('Check completed.')
     }
 
 }

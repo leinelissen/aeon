@@ -8,6 +8,7 @@ import scrapingUrls from './urls.json';
 import AdmZip from 'adm-zip';
 import fs from 'fs';
 import { withSecureWindow } from 'main/lib/create-secure-window';
+import logger from 'main/lib/logger';
 
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
@@ -168,7 +169,7 @@ class Instagram extends DataRequestProvider {
         await this.verifyLoggedInStatus();
 
         return withSecureWindow<boolean>(this.windowParams, async (window) => {
-            console.log('Verified login status');
+            logger.provider.info('Verified login status');
 
             // Load page URL
             await new Promise((resolve) => {
@@ -176,7 +177,7 @@ class Instagram extends DataRequestProvider {
                 window.loadURL('https://www.instagram.com/download/request/');
             });
 
-            console.log('Verification page is loaded');
+            logger.provider.info('Verification page is loaded');
             
             // Find a heading that reads 'Your Download is Ready'
             return window.webContents.executeJavaScript(`
@@ -188,7 +189,7 @@ class Instagram extends DataRequestProvider {
 
     async parseDataRequest(extractionPath: string): Promise<ProviderFile[]> {
         return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
-            console.log('Started parsing request');
+            logger.provider.info('Started parsing request');
 
             // Load page URL
             await new Promise((resolve) => {
@@ -206,7 +207,7 @@ class Instagram extends DataRequestProvider {
                 `);
             });
 
-            console.log('Page navigated after button press');
+            logger.provider.info('Page navigated after button press');
 
             // We can now show the window for the login screen
             window.show();
@@ -217,7 +218,7 @@ class Instagram extends DataRequestProvider {
                 window.webContents.once('will-navigate', resolve); 
             });
 
-            console.log('Credentials were successfully entered');
+            logger.provider.info('Credentials were successfully entered');
 
             // We can now close the window
             window.hide();

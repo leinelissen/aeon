@@ -1,4 +1,5 @@
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
+import logger from 'main/lib/logger';
 import WindowStore from 'main/lib/window-store';
 import EmailManager from '.';
 import { EmailCommands } from './types';
@@ -21,7 +22,7 @@ class EmailBridge {
         // Subscribe to manager-initated events
         this.manager.addListener('*', function() {
             // Log the event
-            console.log('[EMAIL-EVENT]: ', this.event);
+            logger.email.info(`New event: ${JSON.stringify(this.event)}`);
 
             // And pass them on to the app
             EmailBridge.send(this.event);

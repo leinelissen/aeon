@@ -3,6 +3,7 @@ import { ProviderCommands, ProviderEvents } from "./types/Events";
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import WindowStore from 'main/lib/window-store';
 import { ProviderUnion } from './types/Provider';
+import logger from 'main/lib/logger';
 
 const channelName = 'providers';
 
@@ -20,7 +21,7 @@ class ProviderBridge {
         // Subscribe to manager-initated events
         this.providers.addListener('*', function(...props) {
             // Log the event
-            console.log('[PROVIDER-EVENT]: ', this.event);
+            logger.provider.info('New event: ' + JSON.stringify(this.event));
 
             // And pass them on to the app
             ProviderBridge.send(this.event, ...props);
