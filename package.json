@@ -7,7 +7,7 @@
     "scripts": {
         "start": "electron-forge start",
         "package": "electron-forge package",
-        "make": "electron-forge make",
+        "make": "cross-env NODE_ENV=production electron-forge make",
         "publish": "electron-forge publish",
         "lint": "eslint --ext .ts,.tsx . && tsc --noEmit",
         "test": "playwright test",
@@ -54,6 +54,7 @@
         "@typescript-eslint/eslint-plugin": "5.5.0",
         "@typescript-eslint/parser": "5.5.0",
         "@vercel/webpack-asset-relocator-loader": "1.7.0",
+        "cross-env": "^7.0.3",
         "csp-html-webpack-plugin": "5.1.0",
         "css-loader": "6.5.1",
         "dotenv-webpack": "7.0.3",

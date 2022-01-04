@@ -2,7 +2,6 @@ const path = require('path');
 const rules = require('./webpack.rules');
 const plugins = require('./webpack.plugins');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -23,22 +22,26 @@ rules.push({
     }, 'css-loader'],
 });
 
+plugins.push(new MiniCssExtractPlugin({
+    filename: "assets/[name].css",
+}));
+
+if (isDevelopment) {
+    const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+
+    plugins.push(new ReactRefreshWebpackPlugin({
+        esModule: true,
+    }));
+}
+
 module.exports = {
     module: {
         rules,
     },
     devServer: {
-        hot: true,
+        hot: isDevelopment,
     },
-    plugins: [
-        ...plugins,
-        new MiniCssExtractPlugin({
-            filename: "assets/[name].css",
-        }),
-        isDevelopment && new ReactRefreshWebpackPlugin({
-            esModule: true,
-        })
-    ],
+    plugins,
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
         alias: {
@@ -46,5 +49,5 @@ module.exports = {
             main: path.resolve(__dirname, 'src', 'main'),
         }
     },
-    // devtool: 'source-map',
+    devtool: isDevelopment ? 'source-map' : false,
 };
