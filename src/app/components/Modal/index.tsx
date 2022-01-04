@@ -125,21 +125,19 @@ class Modal extends Component<Props> {
                 leave={{ transform: 'translate3d(0,-40px,0)', opacity: 0, backgroundOpacity: 0 }}
                 config={config.wobbly}
             >
-                {isOpen => isOpen &&
-                    (({ backgroundOpacity, ...props }: SpringProps) => 
-                        <Container style={{ opacity: backgroundOpacity }} onClick={this.handleContainerClick}>
-                            <Dialog 
-                                style={props}
-                                // onBlur={this.handleBlur}
-                            >
-                                {children}
-                                <CloseButton onClick={onRequestClose} data-telemetry-id="modal-close">
-                                    <FontAwesomeIcon icon={faArrowUp} fixedWidth />
-                                </CloseButton>
-                            </Dialog>
-                        </Container>
-                    )
-                }
+                {({ backgroundOpacity, ...props }, isOpen) => isOpen && (
+                    <Container style={{ opacity: backgroundOpacity }} onClick={this.handleContainerClick}>
+                        <Dialog 
+                            style={props}
+                            // onBlur={this.handleBlur}
+                        >
+                            {children}
+                            <CloseButton onClick={onRequestClose} data-telemetry-id="modal-close">
+                                <FontAwesomeIcon icon={faArrowUp} fixedWidth />
+                            </CloseButton>
+                        </Dialog>
+                    </Container>
+                )}
             </Transition>
         ), this.element);
     }
