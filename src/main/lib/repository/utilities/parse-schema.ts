@@ -1,3 +1,4 @@
+import logger from "main/lib/logger";
 import { ProviderDatum, ProviderParser } from "main/providers/types/Data";
 
 const decoder = new TextDecoder('utf-8');
@@ -147,7 +148,7 @@ function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderPar
                 data,
             }));
         } catch (e) {
-            console.error(`An error occurred while trying to parse a schema (key: '${key}', type: '${type}', file: '${source})'`, e);
+            logger.provider.error(`An error occurred while trying to parse a schema (key: '${key}', type: '${type}', file: '${source})'`, e);
         }
     }).flat();
 }

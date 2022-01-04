@@ -8,9 +8,9 @@ import {
     PostSeen
 } from "../types/Data";
 import { objectToKeyValueTransformer } from 'main/lib/map-object-to-key-value';
-import { REPOSITORY_PATH } from 'main/lib/repository';
 import path from 'path';
 import Instagram from '.';
+import { repositoryPath } from "main/lib/constants";
 
 /**
  * This specifies an input object in which the data is structured in an object,
@@ -124,7 +124,7 @@ const parsers: ProviderParser[] = [
                 transformer: (obj: { caption: string; taken_at: string; path: string }[]): Partial<Photo>[] => {
                     return obj.map((photo): Partial<Photo> => ({
                         data: {
-                            url: 'file://' + path.join(REPOSITORY_PATH, Instagram.key, photo.path),
+                            url: 'file://' + path.join(repositoryPath, Instagram.key, photo.path),
                             description: photo.caption
                         },
                         timestamp: photo.taken_at
@@ -137,7 +137,7 @@ const parsers: ProviderParser[] = [
                 transformer: (obj: { caption: string; taken_at: string; path: string }[]): Partial<Photo>[] => {
                     return obj.map((photo): Partial<Photo> => ({
                         data: {
-                            url: 'file://' + path.join(REPOSITORY_PATH, Instagram.key, photo.path),
+                            url: 'file://' + path.join(repositoryPath, Instagram.key, photo.path),
                             description: photo.caption
                         },
                         timestamp: photo.taken_at

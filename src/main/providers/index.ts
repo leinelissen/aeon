@@ -26,7 +26,7 @@ import {
 import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
 import EmailManager from 'main/email-client';
-import Repository, { REPOSITORY_PATH } from '../lib/repository';
+import Repository from '../lib/repository';
 import ProviderBridge from './bridge';
 
 import Facebook from './facebook';
@@ -35,6 +35,7 @@ import Spotify from './spotify';
 import Instagram from './instagram';
 import OpenDataRights from './open-data-rights';
 import logger from 'main/lib/logger';
+import { repositoryPath } from 'main/lib/constants';
 
 export const providers: Array<UninstatiatedProvider> = [
     Instagram,
@@ -273,7 +274,7 @@ class ProviderManager extends EventEmitter2 {
                 await this.repository.save(location, file.data);
             }
             await this.repository.add(location);
-        })).catch(console.error);
+        })).catch(logger.repository.error);
 
         // Retrieve repository status and check if any files have actually changed
         const status = await this.repository.status();
@@ -410,8 +411,8 @@ class ProviderManager extends EventEmitter2 {
 
                 // If it is complete now, we'll fetch the data and parse it
                 const dirPath = account.url && account.hostname
-                    ? path.join(REPOSITORY_PATH, account.provider, account.hostname,  account.account)
-                    : path.join(REPOSITORY_PATH, account.provider, account.account);
+                    ? path.join(repositoryPath, account.provider, account.hostname,  account.account)
+                    : path.join(repositoryPath, account.provider, account.account);
                 const files = await instance.parseDataRequest(dirPath, account.status.requestId);
                 const commit = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
                 

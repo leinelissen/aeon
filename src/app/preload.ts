@@ -3,10 +3,12 @@ import {
     ipcRenderer,
     shell
 } from 'electron';
+import ElectronStore from 'electron-store';
 // eslint-disable-next-line
 import sourceMapSupport from 'source-map-support';
-import store from 'main/store';
 import type { State } from './store';
+
+const store = new ElectronStore();
 
 declare global {
     interface Window {

@@ -1,11 +1,11 @@
 import { app, autoUpdater, dialog } from "electron";
-import cliArguments from "./lib/cli-args";
+import { autoUpdates } from "./lib/constants";
 import logger from "./lib/logger";
 
 // GUARD: Check if auto updates are not flagged to be disabled
 // We use this particularly on macOS when testing so that we don't run into
 // codesigning issues.
-if (!cliArguments.noAutoUpdates
+if (autoUpdates
     && process.env.NODE_ENV === 'production'
 ) {
     // Generate feed URL

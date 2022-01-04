@@ -1,5 +1,4 @@
 import path from 'path';
-import { app } from 'electron';
 import { EventEmitter } from 'events';
 import {
     TreeEntry,
@@ -18,12 +17,11 @@ import diffMapFunction from './utilities/diff-map';
 import generateParsedCommit from './utilities/generate-parsed-commit';
 import { ProviderDatum } from "main/providers/types/Data";
 import RepositoryBridge from './bridge';
-import { APP_DATA_PATH } from '../app-path';
 import logger from '../logger';
+import { repositoryPath } from '../constants';
 
 // Define a location where the repository will be saved
 // TODO: Encrypt this filesystem
-export const REPOSITORY_PATH = path.resolve(APP_DATA_PATH, 'data', 'repository');
 export const EMPTY_REPO_HASH = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 
 const ENABLE_ENCRYPTION = process.env.ENABLE_ENCRYPTION === 'true';
@@ -33,7 +31,7 @@ class Repository extends EventEmitter {
     /**
      * The repository path for nodegit
      */
-    dir = path.join(REPOSITORY_PATH, '.git').replace(/\\/g, '/');
+    dir = path.join(repositoryPath, '.git').replace(/\\/g, '/');
 
     /**
      * Whether the git repository is ready for querying
@@ -54,26 +52,22 @@ class Repository extends EventEmitter {
     repository: NodeGitRepository = null;
     index: Index = null;
 
-    constructor(directory?: string) {
+    constructor() {
         super();
-
-        if (directory) {
-            this.dir = directory;
-        }
 
         NodeGitRepository.open(this.dir)
             .catch((err) => {
-                console.error(err);
+                logger.repository.error(err);
                 return this.initialiseRepository();
             })
             .then(async (repository) => {
                 this.repository = repository;
                 this.index = await repository.refreshIndex();
-                this.isInitialised= true;
+                this.isInitialised = true;
                 this.emit('ready');
-                logger.repository.info(`Repository was succesfully initiated at ${REPOSITORY_PATH}`);
+                logger.repository.info(`Repository was succesfully opened at ${repositoryPath}`);
             })
-            .catch(console.error);
+            .catch(logger.repository.error);
     }
 
     /**
@@ -89,7 +83,7 @@ class Repository extends EventEmitter {
 
         // Then we'll write a file to disk so that the repository is populated
         const readmePath = 'README.md';
-        await fs.promises.writeFile(path.resolve(REPOSITORY_PATH, readmePath), Buffer.from('# Aeon Repository', 'utf8'));
+        await fs.promises.writeFile(path.resolve(repositoryPath, readmePath), Buffer.from('# Aeon Repository', 'utf8'));
 
         // And create a first commit with the file
         const index = await repository.refreshIndex();
@@ -98,7 +92,7 @@ class Repository extends EventEmitter {
         const oid = await index.writeTree();
         await repository.createCommit('HEAD', this.author, this.author, 'Initial Commit', oid, []);
         
-        logger.repository.info('Initiated new repository at ' + REPOSITORY_PATH);
+        logger.repository.info('Initialised new repository at ' + repositoryPath);
 
         // Then we return the commit log
         return repository;
@@ -169,7 +163,7 @@ class Repository extends EventEmitter {
      * @param data The data that needs to be written to disk
      */
     public async save(filepath: string, data: string | Buffer): Promise<void> {
-        const absolutePath = path.resolve(REPOSITORY_PATH, filepath);
+        const absolutePath = path.resolve(repositoryPath, filepath);
         const dirPath = path.dirname(absolutePath);
 
         // Check if the directory already exists

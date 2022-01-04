@@ -1,6 +1,6 @@
-import { ElectronApplication, _electron as electron, ConsoleMessage } from "playwright";
-import { expect, test } from "@playwright/test";
-import path from "path";
+import { ElectronApplication, _electron as electron, ConsoleMessage } from 'playwright';
+import { expect, test } from '@playwright/test';
+import path from 'path';
 
 // Store the Electron app so we can use it in tests
 let app: ElectronApplication;
@@ -10,7 +10,7 @@ test.beforeAll(async () => {
     const mainJsPath = path.resolve('.webpack', 'main', 'index.js');
 
     app = await electron.launch({
-        args: [mainJsPath, '--no-auto-updates'],
+        args: [mainJsPath, '--auto-updates=false'],
     });
 });
 

@@ -1,6 +1,7 @@
 import { BrowserWindow } from 'electron';
 import { URL } from 'url';
 import crypto from 'crypto';
+import logger from './logger';
 
 export interface SecureWindowParameters {
     key?: string;
@@ -56,7 +57,7 @@ function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
         const parsedUrl = new URL(navigationUrl); 
 
         if (!parsedUrl.origin.endsWith(origin) && parsedUrl.protocol !== 'aeon:') {
-            console.error(`[BROWSER-WINDOW] A request for ${navigationUrl} was blocked because it did not match the predefined domain (${origin}, read ${parsedUrl.origin})`);
+            logger.provider.error(`A request for ${navigationUrl} was blocked because it did not match the predefined domain (${origin}, read ${parsedUrl.origin})`);
             event.preventDefault();
         }
     });
