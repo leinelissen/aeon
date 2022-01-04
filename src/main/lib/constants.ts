@@ -1,6 +1,6 @@
 import path from 'path';
 import yargs from 'yargs';
-import { app } from 'electron';
+import { app, ipcMain } from 'electron';
 import { hideBin } from 'yargs/helpers';
 
 // Determine the default appData path
@@ -21,6 +21,8 @@ export interface CommandLineArguments {
     logPath: string;
     /* The path where the store should be saved */
     storePath: string;
+    /* Whether the product-tour should be enabled or not */
+    tour: boolean;
 }
 
 // Set defaults for the command-line arguments
@@ -37,6 +39,7 @@ function setDefaults(cliArgs: Partial<CommandLineArguments>): CommandLineArgumen
         repositoryPath: path.join(cliArgs.appDataPath || defaultAppDataPath, 'repository'),
         logPath: path.join(cliArgs.appDataPath || defaultAppDataPath, 'logs'),
         storePath: path.join(cliArgs.appDataPath || defaultAppDataPath, 'store'),
+        tour: false,
         ...cliArgs,
     };
 }
@@ -66,8 +69,13 @@ const cliArguments = yargs(hideBin(process.argv))
         type: 'string',
         conflicts: ['appDataPath'],
     })
+    .option('tour', {
+        desc: 'Indicate whether the applications should include a tour highlighting available features',
+        type: 'boolean'
+    })
     .parserConfiguration({
         'camel-case-expansion': true,
+        'boolean-negation': true,
     })
     .help()
     .parseSync() as CommandLineArguments;
@@ -82,6 +90,10 @@ export const {
     repositoryPath,
     logPath,
     storePath,
+    tour,
 } = constants;
+
+// Register handler for retrieving constants on app
+ipcMain.on('env', (event) => { event.returnValue = constants });
     
 export default constants;

@@ -15,6 +15,7 @@ import isValidUrl from 'app/utilities/isValidUrl';
 import { useNavigate, useLocation } from 'react-router-dom';
 import EmailProvider from './EmailProvider';
 import useTour from 'app/components/Tour/useTour';
+import { demoMode } from 'app/utilities/env';
 
 type NewAccountProps = PropsWithChildren<{ 
     client: string, 
@@ -58,7 +59,7 @@ function NewAccountModal(): JSX.Element {
     // If demo mode is activated, we insert a dummy 'email' provider option,
     // which theoretically can be used to automatically send emails to
     // providers, but as of yet is not working. Lets call it Wizard of Oz.
-    const all = window.api.env.DEMO_MODE
+    const all = demoMode
         ? [...allProviders, 'email']
         : allProviders;
 

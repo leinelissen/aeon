@@ -21,7 +21,8 @@ test.beforeAll(async () => {
     app = await electron.launch({
         args: [
             mainJsPath,
-            '--auto-updates=false',
+            '--no-auto-updates',
+            '--no-tour',
             `--app-data-path=${tempDirectory}`
         ],
     });
