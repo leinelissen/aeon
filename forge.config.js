@@ -7,13 +7,6 @@ const config = {
         icon: './src/icon',
         executableName: process.platform === 'linux' ? 'aeon' : 'Aeon',
         asar: false,
-        osxSign: {
-            identity: 'Developer ID Application: Bureau Moeilijke Dingen BV (238P3C58WC)',
-            'hardened-runtime': true,
-            entitlements: 'entitlements.plist',
-            'entitlements-inherit': 'entitlements.plist',
-            'signature-flags': 'library',
-        },
     },
     makers: [
         {
@@ -101,6 +94,15 @@ function notarizeMaybe() {
         appleId: process.env.APPLE_ID,
         appleIdPassword: process.env.APPLE_ID_PASSWORD,
         ascProvider: '238P3C58WC',
+    };
+
+    // Also inject signing config
+    config.packagerConfig.osxSign = {
+        identity: 'Developer ID Application: Bureau Moeilijke Dingen BV (238P3C58WC)',
+        'hardened-runtime': true,
+        entitlements: 'entitlements.plist',
+        'entitlements-inherit': 'entitlements.plist',
+        'signature-flags': 'library',
     };
 }
 
