@@ -40,4 +40,5 @@ test('it renders the window', async () => {
 
     // Check if there aren't any console errors
     expect(consoleMessages.filter((msg) => msg.type() === 'error').length).toBe(0);
+    expect(pageErrors.length).toBe(0);
 });
