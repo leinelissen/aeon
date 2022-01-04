@@ -115,6 +115,11 @@ function Graph(): JSX.Element {
             // Retrieved all data for this commit from the repository
             const data = await Repository.parsedCommit() as ProviderDatum<string, ProvidedDataTypes>[];
             setData(data);
+
+            // GUARD: Don't render anything if no data is present. It will crash cytoscape
+            if (data.length === 0) {
+                return;
+            }
             
             // Add the fcose layout to cytoscape
             // eslint-disable-next-line

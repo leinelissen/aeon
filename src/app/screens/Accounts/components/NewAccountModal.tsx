@@ -103,8 +103,8 @@ function NewAccountModal(): JSX.Element {
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
                 <ModalMenu labels={all.map((key) =>
                     <PullContainer verticalAlign key={key} data-tour={`accounts-create-account-${key}`}>
-                        <FontAwesomeIcon icon={Providers.getIcon(key)} />
-                        <MarginLeft>{key.replace(/(-|_)/g, ' ')}</MarginLeft>
+                        <FontAwesomeIcon icon={Providers.getIcon(key)} style={{ marginRight: '1em'}} />
+                        {key.replace(/(-|_)/g, ' ')}
                     </PullContainer>
                 )}>
                     {all.map((key) => key === 'email' ? 

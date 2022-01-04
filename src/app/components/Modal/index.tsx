@@ -1,7 +1,7 @@
 import React, { Component, useRef, useEffect, PropsWithChildren, HTMLAttributes } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
-import { Transition, config } from 'react-spring';
+import { Transition, config, animated } from 'react-spring';
 import { GhostButton } from '../Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp } from 'app/assets/fa-light';
@@ -18,7 +18,7 @@ interface Props {
     onRequestClose?: () => void;
 }
 
-const Container = styled.div`
+const Container = styled(animated.div)`
     position: fixed;
     left: 0;
     top: 0;
@@ -40,7 +40,7 @@ const Container = styled.div`
     }
 `;
 
-const StyledDialog = styled.div`
+const StyledDialog = styled(animated.div)`
     border-radius: 8px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.07), 
                 0 2px 4px rgba(0,0,0,0.07), 
@@ -125,19 +125,21 @@ class Modal extends Component<Props> {
                 leave={{ transform: 'translate3d(0,-40px,0)', opacity: 0, backgroundOpacity: 0 }}
                 config={config.wobbly}
             >
-                {({ backgroundOpacity, ...props }, isOpen) => isOpen && (
-                    <Container style={{ opacity: backgroundOpacity }} onClick={this.handleContainerClick}>
-                        <Dialog 
-                            style={props}
-                            // onBlur={this.handleBlur}
-                        >
-                            {children}
-                            <CloseButton onClick={onRequestClose} data-telemetry-id="modal-close">
-                                <FontAwesomeIcon icon={faArrowUp} fixedWidth />
-                            </CloseButton>
-                        </Dialog>
-                    </Container>
-                )}
+                {({ backgroundOpacity, ...props }, isOpen) => {
+                    return isOpen && (
+                        <Container style={{ opacity: backgroundOpacity }} onClick={this.handleContainerClick}>
+                            <Dialog 
+                                style={props}
+                                // onBlur={this.handleBlur}
+                            >
+                                {children}
+                                <CloseButton onClick={onRequestClose} data-telemetry-id="modal-close">
+                                    <FontAwesomeIcon icon={faArrowUp} fixedWidth />
+                                </CloseButton>
+                            </Dialog>
+                        </Container>
+                    );
+                }}
             </Transition>
         ), this.element);
     }

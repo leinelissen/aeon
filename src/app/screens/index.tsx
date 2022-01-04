@@ -14,7 +14,7 @@ function Router(): JSX.Element {
     return (
         <MenuContainer>
             <Menu />
-            <ContentContainer>
+            <ContentContainer id="content">
                 <TitleBar />
                 <Routes>
                     <Route path="/timeline">

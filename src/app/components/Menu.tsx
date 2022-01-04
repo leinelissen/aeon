@@ -125,33 +125,33 @@ export default function Menu(): JSX.Element {
     useTour(deleted.length ? '/screen/erasure' : null);
 
     return (
-        <Container>
-            <Link to="/timeline" className={({ isActive }) => isActive ? 'active' : ''}>
+        <Container id="menu">
+            <Link to="/timeline" id="timeline" className={({ isActive }) => isActive ? 'active' : ''}>
                 <span className="icon"><FontAwesomeIcon icon={faClock} fixedWidth /></span>
                 <span>Timeline</span>
             </Link>
-            <Link to="/accounts" className={({ isActive }) => isActive ? 'active' : ''}>
+            <Link to="/accounts" id="accounts" className={({ isActive }) => isActive ? 'active' : ''}>
                 <span className="icon"><FontAwesomeIcon icon={faUser} fixedWidth /></span>
                 <span>Accounts</span>
             </Link>
-            <Link to="/data" className={({ isActive }) => isActive ? 'active' : ''}>
+            <Link to="/data" id="data" className={({ isActive }) => isActive ? 'active' : ''}>
                 <span className="icon"><FontAwesomeIcon icon={faTable} fixedWidth /></span>
                 <span>Data</span>
             </Link>
-            <Link to="/graph" className={({ isActive }) => isActive ? 'active' : ''}>
+            <Link to="/graph" id="graph" className={({ isActive }) => isActive ? 'active' : ''}>
                 <span className="icon"><FontAwesomeIcon icon={faChartNetwork} fixedWidth /></span>
                 <span>Graph</span>
             </Link>
             {deleted.length ? (
                 <>
-                    <Link to="/erasure" className={({ isActive }) => isActive ? 'active' : ''} data-tour="erasure-screen">
+                    <Link to="/erasure" id="erasure" className={({ isActive }) => isActive ? 'active' : ''} data-tour="erasure-screen">
                         <span className="icon"><FontAwesomeIcon icon={faTrash} fixedWidth /></span>
                         <span>Erasure ({deleted.length})</span>
                     </Link>
                 </>
             ) : null}
             <PullDown>
-                <Link to="/settings" className={({ isActive }) => isActive ? 'active' : ''}>
+                <Link to="/settings" id="settings" className={({ isActive }) => isActive ? 'active' : ''}>
                     <span className="icon"><FontAwesomeIcon icon={faCog} fixedWidth /></span>
                     <span>Settings</span>
                 </Link>            

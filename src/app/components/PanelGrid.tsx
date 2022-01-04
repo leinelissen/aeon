@@ -152,12 +152,12 @@ const CategoryContainer = styled.div`
     }
 `;
 
-export function Category({ title, children }: PropsWithChildren<{ title?: string }>) {
+export function Category({ title, children, id }: PropsWithChildren<{ title?: string, id?: string }>) {
     return (
         <>
             {title && <SubHeading>{title}</SubHeading>}
             {children && (
-                <CategoryContainer>
+                <CategoryContainer id={id}>
                     {children}
                 </CategoryContainer>
             )}

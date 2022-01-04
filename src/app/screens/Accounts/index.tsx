@@ -43,7 +43,7 @@ function Accounts(): JSX.Element {
                 <SplitPanel>
                     <List>
                         <RowHeading>Your Accounts</RowHeading>
-                        <Category title="Automated Requests">
+                        <Category title="Automated Requests" id="automated-accounts">
                             {accounts.map((account, i) => 
                                 <NavigatableListEntry
                                     key={account}
@@ -59,7 +59,7 @@ function Accounts(): JSX.Element {
                                 </NavigatableListEntry>
                             )}
                         </Category>
-                        <Category title="Email-based Requests">
+                        <Category title="Email-based Requests" id="email-accounts">
                             {email.all.map(account => (
                                 <NavigatableListEntry
                                     key={account}
