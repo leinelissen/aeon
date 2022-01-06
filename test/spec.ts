@@ -4,6 +4,7 @@ import path from 'path';
 import { mkdtemp, rm } from 'fs/promises';
 import { tmpdir } from 'os';
 import getRoute from './utilities/getRoute';
+import rimraf from 'rimraf';
 
 // Store the Electron app so we can use it in tests
 let app: ElectronApplication;
@@ -62,7 +63,9 @@ test.afterEach(async () => {
 
 // Remove the temporary directory after the tests finish
 test.afterAll(async () => {
-    await rm(tempDirectory, { recursive: true });
+    await new Promise<void>((resolve, reject) => {
+        rimraf(tempDirectory, (e) => e ? reject(e) : resolve());
+    });
 });
 
 // Close the app after running all the tests
