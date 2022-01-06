@@ -249,7 +249,7 @@ test('it can successfully show data for a completed request', async () => {
     // Check the data points and find a random one
     const data = page.locator('a[data-tour=data-data-point-button]');
     const datum = await getRandomNode(data);
-    await expect(await datum.count()).toBeGreaterThan(0);
+    await expect(await data.count()).toBeGreaterThan(0);
     await expect(datum).toBeEnabled();
     await datum.click();
 
