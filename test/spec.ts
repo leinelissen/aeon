@@ -83,9 +83,6 @@ test.afterAll(async () => {
     }
 });
 
-// Close the app after running all the tests
-test.afterAll(() => app.close());
-
 test('it renders all pages', async () => {
     await page.click('a >> text=Timeline');
     await page.click('a >> text=Accounts');
