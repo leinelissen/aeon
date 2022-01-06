@@ -38,17 +38,20 @@ function Data(): JSX.Element {
         <PanelGrid>
             <List data-tour="data-categories-list">
                 <Category title="Categories">
-                    {Object.values(ProvidedDataTypes).map((key) => (
-                        <ClickableCategory
-                            key={key}
-                            type={key}
-                            items={byType[key].length}
-                            disabled={!(key in byType)}
-                            deleted={deletedByType[key].length > 0}
-                            data-tour={byType[key].length ? "data-category-button" : ""}
-                            data-telemetry-id={`new-commit-select-category-${key}`}
-                        />
-                    ))}
+                    {Object.values(ProvidedDataTypes)
+                        .filter((k) => byType[k].length > 0)
+                        .map((key) => (
+                            <ClickableCategory
+                                key={key}
+                                type={key}
+                                items={byType[key].length}
+                                disabled={byType[key].length > 0}
+                                deleted={deletedByType[key].length > 0}
+                                data-tour={byType[key].length ? "data-category-button" : ""}
+                                data-telemetry-id={`new-commit-select-category-${key}`}
+                            />
+                        ))
+                    }
                 </Category>
             </List>
             <List data-tour="data-data-points-list">
