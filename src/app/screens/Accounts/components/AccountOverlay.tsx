@@ -113,7 +113,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                             }
                         </span>
                     </Section>
-                    {account.status?.dispatched ? 
+                    {account.status?.dispatched && !account.status.completed ? 
                         <Section>
                             <p>The data request you issued has not been completed yet. We&apos;ll let you know as soon as it&apos;s completed. We&apos;ll notify you if the request exceeds the legal limit of thirty days.</p>
                             {account.provider !== 'email'
@@ -149,7 +149,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                                 fullWidth
                                 icon={faPlus}
                                 onClick={handleNewRequest}
-                                disabled={!!account.status?.dispatched}
+                                disabled={account.status?.dispatched && !account.status.completed}
                                 loading={isLoading}
                             >
                                 Start Data Request

@@ -344,7 +344,7 @@ class ProviderManager extends EventEmitter2 {
         }
 
         // GUARD: Check if a data request hasn't already been dispatched
-        if (account.status.dispatched) {
+        if (account.status.dispatched && !account.status.completed) {
             throw new Error('DataRequestAlreadyInProgress');
         }
 
@@ -352,6 +352,7 @@ class ProviderManager extends EventEmitter2 {
         const requestId = await instance.dispatchDataRequest();
 
         // Then store the update time
+        account.status = {};
         account.status.dispatched = new Date().toString();
         if (requestId) account.status.requestId = requestId;
         this.accounts.set(key, account);
