@@ -5,7 +5,7 @@
 # NOTE: This is necessary as husky will run checks on pushing,
 # while there might be changes that are not yet committed interfering
 # with the tests and linter
-npx husky-init && npm install
+git diff HEAD --quiet
 
 npm run lint
 npm run make
