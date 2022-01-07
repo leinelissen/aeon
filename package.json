@@ -13,7 +13,8 @@
         "test": "playwright test",
         "prepare:nodegit": "node scripts/prepareNodegit.js",
         "rebuild:native-modules": "electron-rebuild",
-        "postinstall": "npm run prepare:nodegit"
+        "postinstall": "npm run prepare:nodegit",
+        "prepare": "husky install"
     },
     "keywords": [],
     "author": {
@@ -64,6 +65,7 @@
         "eslint-import-resolver-typescript": "2.5.0",
         "eslint-plugin-import": "2.25.3",
         "eslint-plugin-react": "7.27.1",
+        "husky": "7.0.4",
         "mini-css-extract-plugin": "2.4.5",
         "node-loader": "2.0.0",
         "playwright": "1.17.1",

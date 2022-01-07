@@ -1,0 +1,12 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Check if there are any outstanding changes
+# NOTE: This is necessary as husky will run checks on pushing,
+# while there might be changes that are not yet committed interfering
+# with the tests and linter
+npx husky-init && npm install
+
+npm run lint
+npm run make
+npm test
