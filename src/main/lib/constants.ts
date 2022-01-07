@@ -3,6 +3,8 @@ import yargs from 'yargs';
 import { app, ipcMain } from 'electron';
 import { hideBin } from 'yargs/helpers';
 
+export const isDevelopment = process.env.NODE_ENV !== 'production';
+
 // Determine the default appData path
 const defaultAppDataPath = process.env.NODE_ENV === 'production' 
     // Default to the default userData directory for production usage
@@ -19,10 +21,15 @@ export interface CommandLineArguments {
     repositoryPath: string;
     /** The path where the logs should be saved */
     logPath: string;
-    /* The path where the store should be saved */
+    /** The path where the store should be saved */
     storePath: string;
-    /* Whether the product-tour should be enabled or not */
+    /** Whether the product-tour should be enabled or not */
     tour: boolean;
+    /** Whether the parser inspector (for inspecting the parsers and parsed data)
+    should be enabled */
+    parserInspector: boolean;
+    /** Whether the application was started in development mode or not */
+    isDevelopment: boolean;
 }
 
 // Set defaults for the command-line arguments
@@ -32,10 +39,11 @@ export interface CommandLineArguments {
 // the CLI arguments takes precendence over any defaults. Secondly, if
 // appDataPath is set and none of the dependent variables are set, appDataPath
 // from the CLI takes precendence over the default appDataPath.
-function setDefaults(cliArgs: Partial<CommandLineArguments>): CommandLineArguments {
+function setDefaults(cliArgs: Partial<CommandLineArguments>): Omit<CommandLineArguments, 'isDevelopment'> {
     return {
-        appDataPath: defaultAppDataPath,
         autoUpdates: true,
+        parserInspector: isDevelopment,
+        appDataPath: defaultAppDataPath,
         repositoryPath: path.join(cliArgs.appDataPath || defaultAppDataPath, 'repository'),
         logPath: path.join(cliArgs.appDataPath || defaultAppDataPath, 'logs'),
         storePath: path.join(cliArgs.appDataPath || defaultAppDataPath, 'store'),
@@ -73,12 +81,16 @@ const cliArguments = yargs(hideBin(process.argv))
         desc: 'Indicate whether the applications should include a tour highlighting available features',
         type: 'boolean'
     })
+    .option('parserInspector', {
+        desc: 'Enable the parser inspector, which helps to find unparsed data',
+        type: 'boolean',
+    })
     .parserConfiguration({
         'camel-case-expansion': true,
         'boolean-negation': true,
     })
     .help()
-    .parseSync() as CommandLineArguments;
+    .parseSync() as Omit<CommandLineArguments, 'isDevelopment'>;
 
 // Assign the defaults
 const constants = setDefaults(cliArguments);
@@ -94,6 +106,11 @@ export const {
 } = constants;
 
 // Register handler for retrieving constants on app
-ipcMain.on('env', (event) => { event.returnValue = constants });
+ipcMain.on('env', (event) => { 
+    event.returnValue = {
+        ...constants,
+        isDevelopment,
+    };
+});
     
 export default constants;

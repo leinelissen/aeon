@@ -9,6 +9,8 @@ export const {
     logPath,
     storePath,
     tour,
+    parserInspector,
+    isDevelopment,
 } = env;
 
 // DEPRECATED: Support the legacy demoMode variable
