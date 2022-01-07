@@ -9,6 +9,8 @@ import Settings from "./Settings";
 import Graph from "./Graph";
 import Erasure from "./Erasure";
 import ErasureEmails from "./Erasure/Emails";
+import ParserInspector from "./ParserInspector";
+import { parserInspector } from "app/utilities/env";
 
 function Router(): JSX.Element {
     return (
@@ -44,6 +46,12 @@ function Router(): JSX.Element {
                         <Route index element={<Erasure />} />
                         <Route path="emails" element={<ErasureEmails />} />
                     </Route>
+                    {parserInspector && (
+                        <Route path="/parser-inspector">
+                            <Route index element={<ParserInspector />} />
+                            <Route path=":provider" element={<ParserInspector />} />
+                        </Route>
+                    )}
                     <Route path="/" element={<Onboarding />} />
                 </Routes>
             </ContentContainer>

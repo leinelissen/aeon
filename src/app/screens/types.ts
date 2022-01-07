@@ -17,5 +17,8 @@ export interface RouteProps {
     },
     graph: {
         datumId?: string;
+    },
+    'parser-inspector': {
+        provider?: string;
     }
 }

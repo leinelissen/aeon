@@ -66,3 +66,8 @@ export const Ellipsis = styled.div`
     overflow: hidden;
     margin-right: 5px;
 `;
+
+export const FlexRow = styled.div`
+    display: flex;
+    align-items: center;
+`;

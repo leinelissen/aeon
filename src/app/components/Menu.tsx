@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartNetwork, faClock, faCog, faUser, faTable, faTrash } from 'app/assets/fa-light';
+import { faChartNetwork, faClock, faCog, faUser, faTable, faTrash, faSearch } from 'app/assets/fa-light';
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -7,10 +7,11 @@ import { useSelector } from 'react-redux';
 import { State } from 'app/store';
 import { PullDown } from './Utility';
 import useTour from './Tour/useTour';
+import { parserInspector } from 'app/utilities/env';
 
 export const MenuContainer = styled.div`
     display: grid;
-    grid-template-columns: 175px 1fr;
+    grid-template-columns: 200px 1fr;
     gap: 0px 0px;
     grid-template-areas:
         "menu content";
@@ -151,6 +152,12 @@ export default function Menu(): JSX.Element {
                 </>
             ) : null}
             <PullDown>
+                {parserInspector && (
+                    <Link to="/parser-inspector" id="parser-inspector" className={({ isActive }) => isActive ? 'active' : ''}>
+                        <span className="icon"><FontAwesomeIcon icon={faSearch} fixedWidth /></span>
+                        <span>Parser Inspector</span>
+                    </Link>            
+                )}
                 <Link to="/settings" id="settings" className={({ isActive }) => isActive ? 'active' : ''}>
                     <span className="icon"><FontAwesomeIcon icon={faCog} fixedWidth /></span>
                     <span>Settings</span>
