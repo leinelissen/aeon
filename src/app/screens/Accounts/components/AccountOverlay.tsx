@@ -53,6 +53,12 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
         }
     }, [selectedAccount, dispatch, setLoading]);
 
+    // GUARD: If there is no account data available (sometimes the data hasn't
+    // yet been retrieved from the back-end), don't render anything.
+    if (!account) {
+        return null;
+    }
+
     return (
         <RightSideOverlay data-tour="accounts-account-overlay">
             {selectedAccount && (
