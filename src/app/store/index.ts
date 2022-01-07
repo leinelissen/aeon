@@ -44,7 +44,11 @@ const persistConfig: PersistConfig<State> = {
     migrate: createMigrate(migrations),
     serialize: false,
     deserialize: false,
-    blacklist: ['data']
+    blacklist: [
+        'data',
+        'accounts',
+        'email',
+    ],
 }
 
 // Create a persisted reducer
