@@ -52,15 +52,29 @@ function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
     // Deny any request for extra permissions in this handler
     window.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => callback(false));
     
-    // Restrict navigation to a particular origin
-    window.webContents.on('will-navigate', (event, navigationUrl: string): void => {
+    // Create a generic navigation handler so we can assign it to both will-navigate and will-redirect
+    const navigationHandler = (event: Electron.Event, navigationUrl: string): void => {
         const parsedUrl = new URL(navigationUrl); 
 
         if (!parsedUrl.origin.endsWith(origin) && parsedUrl.protocol !== 'aeon:') {
             logger.provider.error(`A request for ${navigationUrl} was blocked because it did not match the predefined domain (${origin}, read ${parsedUrl.origin})`);
             event.preventDefault();
         }
+    }
+
+    // Restrict navigation to a particular origin
+    window.webContents.on('will-navigate', navigationHandler);
+    window.webContents.on('will-redirect', navigationHandler);
+
+    // Log navigated URLs
+    window.webContents.on('did-navigate', (event, url) => {
+        logger.provider.info(`Secure window navigating to ${url}`);
     });
+
+    // Open the devtools on development builds
+    if (process.env.NODE_ENV !== 'production') {
+        window.webContents.openDevTools();
+    }
     
     return window;
 } 
@@ -88,7 +102,7 @@ export function withSecureWindow<U>(
     // Create a timeout promise, in order to ensure we don't leavy any zombie
     // windows open in the background
     const timeoutPromise = new Promise((resolve, reject) => {
-        setTimeout(() => reject(new Error('SecureWindowTimeout')), 120_000);
+        setTimeout(() => reject(new Error('SecureWindowTimeout')), 18_000_000);
     });
 
     // Race the function against the other promises, so that the whole function is
