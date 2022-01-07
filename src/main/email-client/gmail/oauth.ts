@@ -27,6 +27,10 @@ export default async function authenticateGmailUser(): Promise<TokenResponse> {
 }
 
 async function retrieveAuthenticationCode(verifier: string): Promise<CodeAndRedirectUri> {
+    if (!GMAIL_OAUTH_CLIENT_ID || !GMAIL_OAUTH_CLIENT_SECRET) {
+        throw new Error('GMAIL_OAUTH_CLIENT_ID and/or GMAIL_OAUTH_CLIENT_SECRET wasn\'t set in the environment');
+    }
+
     // eslint-disable-next-line
     return new Promise(async (resolve) => {
         // Create server and retrieve redirect URI

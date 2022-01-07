@@ -1,4 +1,4 @@
-// const [ Dotenv ] = require('./webpack.plugins');
+const [ Dotenv ] = require('./webpack.plugins');
 const path = require('path');
 
 module.exports = {
@@ -23,7 +23,7 @@ module.exports = {
         }
     },
     plugins: [
-        //
+        Dotenv,
     ],
     // devtool: 'source-map',
 };
