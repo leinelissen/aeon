@@ -67,8 +67,8 @@ class Spotify extends EmailDataRequestProvider {
             await new Promise<void>((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
                     urls: [ 
-                        'https://www.spotify.com/us/account/privacy/download/*',
-                        'https://www.spotify.com/us/account/privacy/resend-confirmation-email/*'
+                        'https://www.spotify.com/us/account/privacy/download/',
+                        'https://www.spotify.com/api/accountprivacy-api/v1/data-download/resend-confirmation-email/'
                     ]
                 }, (details: Electron.OnCompletedListenerDetails) => {
                     if (details.statusCode === 200) {
@@ -78,10 +78,10 @@ class Spotify extends EmailDataRequestProvider {
 
                 // Ensure that the data request is in JSON format
                 window.webContents.executeJavaScript(`
-                    const rqst = document.querySelector('button#privacy-open-request-download-modal-button');
+                    const rqst = document.querySelector('button[data-testid="download-step-1-button"]');
                     rqst?.offsetParent 
                         ? rqst.click()
-                        : document.querySelector('button.resend-email-button')?.click();
+                        : document.querySelector('button[data-testid="resend-confirmation-email"]')?.click();
                 `);
 
                 window.show();
@@ -110,7 +110,7 @@ class Spotify extends EmailDataRequestProvider {
             const reference = subHours(new Date, 2);
             if (reference < message.date) {
                 // If so, we find the link and click it
-                const [link] = message.text.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/confirm\/[a-f\d]+/);
+                const link = message.text.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/confirm\/([a-f=\d\n]+)/)[0].replace('=', '');
 
                 // GUARD: Check if the link is correctly extracted, else we
                 // might be in the wrong email
@@ -140,8 +140,7 @@ class Spotify extends EmailDataRequestProvider {
 
             // Check if the third div is grayed out
             return window.webContents.executeJavaScript(`
-                !Array.from(document.querySelector('.privacy-download-step-3').classList)
-                    .includes('privacy-grayed-step')
+                document.querySelector('button[data-testid="resend-download-email"]').disabled !== true
             `);
         });
     }
@@ -157,10 +156,10 @@ class Spotify extends EmailDataRequestProvider {
             throw new Error('Failed to find email text for Spotify');
         }
 
-        const [downloadLink] = message.text.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/retrieve\/[a-f\d]+/);
-        
+        const link = message.text.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/retrieve\/([a-f=\d\n]+)/)[0].replace('=', '');
+
         // GUARD: Check if the download link was successfully retrieved
-        if (!message || !downloadLink) {
+        if (!message || !link) {
             throw new Error('Could not find download link in email for Spotify');
         }
 
@@ -177,7 +176,7 @@ class Spotify extends EmailDataRequestProvider {
 
                 // And then open the URL and show the window
                 // TODO: Check if an additional click is necessary
-                window.loadURL(downloadLink);
+                window.loadURL(link);
                 window.show();
             });
 

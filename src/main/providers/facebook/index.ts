@@ -39,9 +39,7 @@ class Facebook extends DataRequestProvider {
             await new Promise((resolve) => setTimeout(resolve, 2000));
 
             return window.webContents.executeJavaScript(`
-                Array.from(document.querySelectorAll('iframe')).reduce((sum, iframe) => {
-                    return sum || iframe.contentWindow.document.body.querySelector('a[href="/settings?tab=account&section=email"]')
-                }, null)?.querySelector('strong')?.textContent;
+                document.body.querySelector('a[href="/settings?tab=account&section=email"]');
             `); 
         });
     }
@@ -82,7 +80,7 @@ class Facebook extends DataRequestProvider {
         await this.verifyLoggedInStatus();
 
         return withSecureWindow<void>(this.windowParams, async (window) => {
-            window.hide();
+            window.show();
 
             await new Promise((resolve) => {
                 window.webContents.on('did-finish-load', resolve)
@@ -97,12 +95,13 @@ class Facebook extends DataRequestProvider {
             return new Promise((resolve) => {
                 window.webContents.session.webRequest.onBeforeRequest({
                     urls: [ 'https://www.facebook.com/api/graphql/' ]
-                }, (details: Electron.OnBeforeRequestListenerDetails) => {
+                }, (details, callback) => {
                     // Parse the upload object that is passed to the GraphQL API
                     const data = details.uploadData[0]?.bytes?.toString('utf8');
 
                     // GUARD: If there is not data, we're parsing the wrong requests
                     if (!data) {
+                        callback({});
                         return;
                     }
 
@@ -110,27 +109,30 @@ class Facebook extends DataRequestProvider {
                     const params = new URLSearchParams(data);
 
                     // Check if we're capturing the right call
-                    if (params && params.get('fb_api_req_friendly_name') === 'DYISectionsCreateJobMutation') {
+                    if (params && params.get('fb_api_req_friendly_name') === 'DYISubmitRequestMutation') {
                         // If so, setup a listener to check if the request is
                         // completed correctly.
                         resolve();
                     }
+
+                    callback({});
                 });
 
                 // Ensure that the data request is in JSON format
                 window.webContents.executeJavaScript(`
-                    Array.from(document.querySelectorAll('iframe')).forEach(iframe => {
-                        Array.from(iframe.contentWindow.document.body.querySelectorAll('label'))
-                            ?.find(e => e.textContent.startsWith('Format'))
-                            ?.querySelector('a')
-                            ?.click();
-                        Array.from(iframe.contentWindow.document.body.querySelectorAll('a[role="menuitemcheckbox"]'))
-                            ?.find(e => e.textContent === 'JSON')
-                            ?.click();
-                        Array.from(iframe.contentWindow.document.body.querySelectorAll('button'))
-                            ?.find(el => el.textContent === 'Create File')
-                            ?.click?.()
-                    });
+                    (async function() {
+                        document.body.querySelector('label[aria-label=Format]').click();
+                        await new Promise((resolve) => setTimeout(resolve, 50));
+                        Array.from(document.querySelectorAll('[role=menuitemradio]'))
+                            .find((el) => el.textContent === 'JSON')?.click();
+                        await new Promise((resolve) => setTimeout(resolve, 50));
+                        document.body.querySelector('label[aria-label="Date range (required)"]').click();
+                        await new Promise((resolve) => setTimeout(resolve, 50));
+                        Array.from(document.querySelectorAll('[role=menuitemradio]'))
+                            .find((el) => el.textContent === 'All time')?.click();
+                        await new Promise((resolve) => setTimeout(resolve, 50));
+                        document.body.querySelector('[aria-label="Request a download"]').click();
+                    })()
                 `);
             });     
         });
@@ -146,17 +148,10 @@ class Facebook extends DataRequestProvider {
                 window.loadURL('https://www.facebook.com/dyi/?referrer=yfi_settings&tab=all_archives');
             });
 
-            // Find a div that reads 'A copy of your information is
-            // being created'
-            // 1. Retrieve all iframes in the website, as the right view is
-            //    embedded in it
-            // 2. Check if there is a span with "pending" in it
+            // Find a download button and make sure no *Pending* spans exist
             return window.webContents.executeJavaScript(`
-                !Array.from(document.querySelectorAll('iframe')).reduce((sum, iframe) => {
-                    const spans = Array.from(iframe.contentWindow.document.body.querySelectorAll('span'));
-                    const pending = spans.find(span => span.textContent === 'Pending');
-                    return pending ? true : sum;
-                }, false);
+                document.querySelector('div[aria-label="Download"]')
+                    && !Array.from(document.querySelectorAll('span')).map((el) => el.textContent).includes('Pending');
             `);
         });
     }
@@ -180,11 +175,7 @@ class Facebook extends DataRequestProvider {
 
                 // And then trigger the button click
                 window.webContents.executeJavaScript(`
-                    Array.from(document.querySelectorAll('iframe')).reduce((sum, iframe) => {
-                        const buttons = Array.from(iframe.contentWindow.document.body.querySelectorAll('button'));
-                        const button = buttons.find(button => button.textContent === 'Download' || button.textContent === 'Download Again');
-                        return button || sum;
-                    }, null)?.click();
+                    document.querySelector('div[aria-label="Download"]').click();
                 `);
 
                 window.show();
