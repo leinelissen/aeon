@@ -1,4 +1,4 @@
-import { ElectronApplication, _electron as electron, ConsoleMessage, Page } from 'playwright';
+import { ElectronApplication, _electron as electron, ConsoleMessage, Page, BrowserContext } from 'playwright';
 import { expect, test } from '@playwright/test';
 import path from 'path';
 import { mkdtemp, rm } from 'fs/promises';
@@ -10,6 +10,7 @@ import getRandomNode from './utilities/getRandomNode';
 let app: ElectronApplication;
 let tempDirectory: string;
 let page: Page;
+let context: BrowserContext;
 
 let pageErrors: Error[] = [];
 let consoleMessages: ConsoleMessage[] = [];
@@ -27,6 +28,9 @@ test.beforeAll(async () => {
             `--app-data-path=${tempDirectory}`
         ],
     });
+
+    context = app.context();
+    await context.tracing.start({ screenshots: true, snapshots: true });
 });
 
 test.beforeEach(async () => {
@@ -46,6 +50,8 @@ test.beforeEach(async () => {
 });
 
 test.afterEach(async () => {
+    await page.screenshot();
+
     // Check if there aren't any console errors
     expect(consoleMessages.filter((msg) => msg.type() === 'error').length).toBe(0);
     expect(pageErrors.length).toBe(0);
@@ -62,7 +68,10 @@ test.afterEach(async () => {
 });
 
 // Remove the temporary directory after the tests finish
-test.afterAll(async () => {
+test.afterAll(async ({ locale }, testInfo) => {
+    const tracePath = testInfo.outputPath('trace.zip');
+    await context.tracing.stop({ path: tracePath });
+
     // Close the app first
     await app.close();
 
