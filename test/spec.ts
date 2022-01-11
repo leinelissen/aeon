@@ -173,10 +173,7 @@ test('it can successfully create an open data request account', async () => {
     const proceedButton = odrPage.locator('a >> text=Give Aeon access');
     await expect(proceedButton).toBeVisible();
     await expect(proceedButton).toBeEnabled();
-    await Promise.all([
-        odrPage.waitForEvent('close'),
-        proceedButton.click(),
-    ]);
+    await proceedButton.click();
     await page.waitForLoadState();
 
     // The account should now exist and be ready to go
