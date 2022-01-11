@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
-import { Category, List, NavigatableListEntry, PanelBottomButtons, PanelGrid, RowHeading, SplitPanel } from 'app/components/PanelGrid';
+import { Category, List, NavigatableListEntry, PanelBottomButtons, PanelGrid, SplitPanel } from 'app/components/PanelGrid';
 import Providers from 'app/utilities/Providers';
 import { useParams } from 'react-router-dom';
 import { RouteProps } from '../types';
 import AccountOverlay from './components/AccountOverlay';
 import getDescription from './getDescription';
 import styled from 'styled-components';
-import Button from 'app/components/Button';
+import { GhostButton } from 'app/components/Button';
 import { faEnvelope, faSync } from 'app/assets/fa-light';
 import { useAccounts } from 'app/store/accounts/selectors';
 import { State, useAppDispatch } from 'app/store';
@@ -42,7 +42,6 @@ function Accounts(): JSX.Element {
             <PanelGrid columns={2}>
                 <SplitPanel>
                     <List>
-                        <RowHeading>Your Accounts</RowHeading>
                         <Category title="Automated Requests" id="automated-accounts">
                             {accounts.map((account, i) => 
                                 <NavigatableListEntry
@@ -77,9 +76,9 @@ function Accounts(): JSX.Element {
                     </List>
                     <PanelBottomButtons>
                         <NewAccountModal />
-                        <Button fullWidth icon={faSync} loading={isLoadingRefresh} onClick={refresh}>
+                        <GhostButton fullWidth icon={faSync} loading={isLoadingRefresh} onClick={refresh}>
                             Refresh requests
-                        </Button>
+                        </GhostButton>
                     </PanelBottomButtons>
                 </SplitPanel>
                 <List>

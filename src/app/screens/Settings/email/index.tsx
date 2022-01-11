@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from 'app/assets/fa-light';
 import Button from 'app/components/Button';
-import { List, NavigatableListEntry, PanelBottomButtons, RowHeading, SplitPanel } from 'app/components/PanelGrid';
+import { List, NavigatableListEntry, PanelBottomButtons, RowDescription, SplitPanel } from 'app/components/PanelGrid';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
 import { H2 } from 'app/components/Typography';
 import { MarginLeft } from 'app/components/Utility';
@@ -30,9 +30,9 @@ function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): 
         <>
             <SplitPanel>
                 <List>
-                    <RowHeading>
+                    <RowDescription>
                         Email accounts are necessary for some providers that do not have an automated way of processing data requests. By linking an email-address associated with your accounts, Aeon can send emails and track responses to help make it easy for you.
-                    </RowHeading>
+                    </RowDescription>
                     {all.map(account => (
                         <NavigatableListEntry key={account} to={`/settings/email-accounts/${account}`}>
                             <FontAwesomeIcon icon={Email.getIcon(byId[account])} />
@@ -59,7 +59,7 @@ function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): 
                             </Section>
                             <Section>
                                 <p>By deleting this account, Aeon will no longer have access to it. Requests that are in progress with this e-mail address may be cancelled as a result.</p>
-                                <Button backgroundColor="var(--color-red-500)" icon={faTimes} fullWidth onClick={deleteAccount}>
+                                <Button backgroundColor="red" icon={faTimes} fullWidth onClick={deleteAccount}>
                                     Delete {selectedAccount}
                                 </Button>
                             </Section>

@@ -1,6 +1,6 @@
-import Button from 'app/components/Button';
+import { GhostButton } from 'app/components/Button';
 import { Stylesheet } from 'cytoscape';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import renderNode from './renderNode';
 
 const bodyStyles = window.getComputedStyle(document.body);
@@ -138,10 +138,6 @@ const style: Stylesheet[] = [
 export const Container = styled.div<{ isHovered?: boolean }>`
     width: 100%;
     height: 100%;
-
-    ${props => props.isHovered && css`
-        cursor: pointer;
-    `}
 `;
 
 export const Tooltip = styled.div<{ top: number, left: number }>`
@@ -168,7 +164,7 @@ export const Tooltip = styled.div<{ top: number, left: number }>`
     }
 `;
 
-export const ResetButton = styled(Button)`
+export const ResetButton = styled(GhostButton)`
     position: fixed;
     bottom: 25px;
     left: 250px;

@@ -1,41 +1,17 @@
 import React, { PropsWithChildren } from 'react';
 import { GhostButton } from 'app/components/Button';
 import styled from 'styled-components';
-import { animated, Transition } from 'react-spring'
+import { Transition } from 'react-spring'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from 'app/assets/fa-light';
+import { faChevronLeft } from 'app/assets/fa-light';
 
 export type RightSideOverlayProps = PropsWithChildren<{
     onClose?: () => void;
     marginTop?: number;
 }>;
 
-const Container = styled(animated.div)`
-    position: absolute;
-    z-index: 2;
-    height: 100%;
-    width: 100%;
-    max-width: 500px;
-    right: 0;
-    top: 0;
-    pointer-events: none;
-`;
-
-const InnerContainer = styled.div`
-    position: relative;
-    margin: 10px;
-    border-radius: 16px;
-    padding-top: 16px;
-    overflow-y: auto;
-    max-height: calc(100% - 20px);
+const Container = styled.div`
     pointer-events: all;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.01), 
-              0 2px 2px rgba(0,0,0,0.01), 
-              0 4px 4px rgba(0,0,0,0.01), 
-              0 8px 8px rgba(0,0,0,0.01), 
-              0 16px 16px rgba(0,0,0,0.01), 
-              0 32px 32px rgba(0,0,0,0.01);
-    background-color: var(--color-modal-background);
 
     code {
         margin-bottom: 0;
@@ -107,14 +83,12 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
                     }}
                     {...otherProps}
                 >
-                    <InnerContainer>
-                        {handleClose ? 
-                            <CloseButton onClick={handleClose}>
-                                <FontAwesomeIcon icon={faChevronRight} />
-                            </CloseButton>
-                            : null}
-                        {items || ''}
-                    </InnerContainer>
+                    {handleClose ? 
+                        <CloseButton onClick={handleClose}>
+                            <FontAwesomeIcon icon={faChevronLeft} />
+                        </CloseButton>
+                        : null}
+                    {items || ''}
                 </Container>
             ) : null}
         </Transition>

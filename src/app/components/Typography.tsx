@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const H1 = styled.h1`
     font-weight: 600;
+    color: var(--color-header);
 `;
 
 export const H2 = styled.h2`
@@ -11,12 +12,14 @@ export const H2 = styled.h2`
     line-height: 1.3;
     word-break: break-all;
     font-family: 'Inter';
+    color: var(--color-header);
 `;
 
 export const H3 = styled.h3`
     font-weight: 400;
     font-size: 16px;
     margin: 8px 0;
+    color: var(--color-header);
 `;
 
 export const H5 = styled.h5`
@@ -40,4 +43,8 @@ export const Badge = styled.div`
     font-size: 12px;
     flex-shrink: 0;
     white-space: nowrap;
+`;
+
+export const FontLarge = styled.span`
+    font-size: 14px;
 `;

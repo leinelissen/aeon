@@ -10,7 +10,7 @@ import useTour from './Tour/useTour';
 
 export const MenuContainer = styled.div`
     display: grid;
-    grid-template-columns: 175px 1fr;
+    grid-template-columns: 200px 1fr;
     gap: 0px 0px;
     grid-template-areas:
         "menu content";
@@ -28,7 +28,6 @@ const TitleBarContainer = styled.div`
     height: 50px;
     -webkit-app-region: drag;
     background: transparent;
-    opacity: 0;
     transition: all 0.3s ease;
     backdrop-filter: blur(25px) brightness(1.1);
     text-transform: capitalize;
@@ -42,10 +41,6 @@ const TitleBarContainer = styled.div`
         font-size: 14px;
         font-weight: 600;
     }
-
-    &:hover {
-        opacity: 1;
-    }
 `;
 
 export const ContentContainer = styled.div`
@@ -53,7 +48,7 @@ export const ContentContainer = styled.div`
     grid-area: content;
     overflow: auto;
     position: relative;
-    background-color: var(--color-gray-50);
+    background-color: var(--color-background);
 `;
 
 const Container = styled.div`
@@ -74,12 +69,13 @@ const Link = styled(NavLink)`
     height: 36px;
     display: flex;
     align-items: center;
-    padding: 0 6px;
-    margin: 1px 10px;
-    font-weight: 500;
+    padding: 0 12px;
+    margin: 0px 10px;
+    font-weight: 400;
     -webkit-app-region: no-drag;
-    color: inherit;
+    color: var(--color-header);
     border-radius: 6px;
+    cursor: default;
 
     span:not(.icon) {
         margin-left: 10px;

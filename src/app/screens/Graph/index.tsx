@@ -188,7 +188,7 @@ function Graph(): JSX.Element {
                 </Tooltip>
             }
             {selectedNode && <DatumOverlay datumId={Number.parseInt(selectedNode)} />}
-            <ResetButton icon={faUndo} backgroundColor="var(--color-gray-200)" color="var(--color-text)" onClick={handleReset}>Reset View</ResetButton>
+            <ResetButton icon={faUndo} onClick={handleReset}>Reset View</ResetButton>
         </>
     );
 }

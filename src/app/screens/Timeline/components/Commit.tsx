@@ -18,31 +18,36 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     margin: 5px;
     text-align: left;
     border: 0;
-    font-size: 12pt;
+    font-size: 14px;
     font-weight: 400;
     max-width: 100%;
     display: flex;
     align-items: center;
     position: relative;
-    color: inherit;
     background-color: transparent;
-
-    &:hover {
-        cursor: pointer;
-    }
-
-    &:active {
-
-    }
+    color: var(--color-gray-700);
+    font-family: var(--font-heading);
 
     &:focus {
         outline: 0;
     }
 
-    ${(props) => props.active && css`
-        border-radius: 16px;
-        color: inherit;
-        background-color: var(--color-modal-background) !important; 
+    ${(props) => props.active ? css`
+        border-radius: 12px;
+        color: var(--color-blue-500);
+        font-weight: 600;
+        background-color: var(--color-background);
+        border: 1px solid var(--color-gray-100);
+        box-shadow: 0 1px 1px rgba(0,0,0,0.02), 
+              0 2px 2px rgba(0,0,0,0.02), 
+              0 4px 4px rgba(0,0,0,0.02), 
+              0 8px 8px rgba(0,0,0,0.02), 
+              0 16px 16px rgba(0,0,0,0.02), 
+              0 32px 32px rgba(0,0,0,0.02);
+    ` : css`
+        &:hover {
+            background-color: var(--color-background);
+        }
     `}
 `
 
@@ -61,7 +66,7 @@ const Dot = styled.div<{ active?: boolean }>`
                 0 8px 16px rgba(0,0,0,0.04),
                 0 16px 32px rgba(0,0,0,0.04);
 
-    border: 4px solid var(--color-gray-300);
+    border: 4px solid var(--color-gray-200);
     background-color: var(--color-gray-100);
 
     ${(props) => props.active && css`
@@ -80,7 +85,7 @@ export const TimelineLine = styled.div`
     width: 10px;
     min-height: 100%;
     z-index: 0;
-    background-color: var(--color-gray-100);
+    background-color: var(--color-gray-50);
 `;
 
 class Commit extends Component<Props> {

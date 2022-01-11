@@ -6,7 +6,7 @@ import DataType from 'app/utilities/DataType';
 import Loading from 'app/components/Loading';
 import { ProviderDatum } from "main/providers/types/Data";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { H2, H5 } from 'app/components/Typography';
+import { FontLarge, H2, H5 } from 'app/components/Typography';
 import { formatDistanceToNow } from 'date-fns';
 import Code from 'app/components/Code';
 import RightSideOverlay, { RightSideOverlayOffset, Section } from 'app/components/RightSideOverlay';
@@ -109,26 +109,28 @@ class Diff extends PureComponent<Props, State> {
                             </H2>
                         </Section>
                         <Section data-tour="timeline-diff-info">
-                            <PullContainer verticalAlign>
-                                <FontAwesomeIcon icon={faPlus} />
-                                <MarginLeft>Committed {formatDistanceToNow(new Date(commit.author.when))} ago</MarginLeft>
-                            </PullContainer>
-                            {meta.provider && <PullContainer verticalAlign>
-                                <FontAwesomeIcon icon={Providers.getIcon(meta.provider)} />
-                                <MarginLeft>{meta.provider}</MarginLeft>
-                            </PullContainer>}
-                            {meta.account && <PullContainer verticalAlign>
-                                <FontAwesomeIcon icon={faUser} />
-                                <MarginLeft>{meta.account}</MarginLeft>
-                            </PullContainer>}
-                            {meta.updateType && <PullContainer verticalAlign>
-                                <FontAwesomeIcon icon={faSync} />
-                                <MarginLeft>{meta.updateType}</MarginLeft>
-                            </PullContainer>}
-                            {meta.url && <PullContainer verticalAlign>
-                                <FontAwesomeIcon icon={faLink} />
-                                <MarginLeft>{meta.url}</MarginLeft>
-                            </PullContainer>}
+                            <FontLarge>
+                                <PullContainer verticalAlign>
+                                    <FontAwesomeIcon icon={faPlus} />
+                                    <MarginLeft>Committed {formatDistanceToNow(new Date(commit.author.when))} ago</MarginLeft>
+                                </PullContainer>
+                                {meta.provider && <PullContainer verticalAlign>
+                                    <FontAwesomeIcon icon={Providers.getIcon(meta.provider)} />
+                                    <MarginLeft>{meta.provider}</MarginLeft>
+                                </PullContainer>}
+                                {meta.account && <PullContainer verticalAlign>
+                                    <FontAwesomeIcon icon={faUser} />
+                                    <MarginLeft>{meta.account}</MarginLeft>
+                                </PullContainer>}
+                                {meta.updateType && <PullContainer verticalAlign>
+                                    <FontAwesomeIcon icon={faSync} />
+                                    <MarginLeft>{meta.updateType}</MarginLeft>
+                                </PullContainer>}
+                                {meta.url && <PullContainer verticalAlign>
+                                    <FontAwesomeIcon icon={faLink} />
+                                    <MarginLeft>{meta.url}</MarginLeft>
+                                </PullContainer>}
+                            </FontLarge>
                         </Section>
                         <CodeRectifier data-tour="timeline-diff-data">
                             {(diff.added.length || diff.updated.length || diff.deleted.length) ?

@@ -1,48 +1,51 @@
 :root {
     /* Blue */
-    --color-blue-100: #E6E6FF;
-    --color-blue-200: #CCCCFF;
-    --color-blue-300: #9999FF;
-    --color-blue-500: #0000FF;
-    --color-blue-700: #0000b3;
-    --color-blue-900: #00004c;
+    --color-blue-100: hsl(223, 100%, 95%);
+    --color-blue-200: hsl(223, 100%, 85%);
+    --color-blue-300: hsl(223, 100%, 70%);
+    --color-blue-500: hsl(223, 100%, 50%);
+    --color-blue-600: hsl(223, 100%, 40%);
+    --color-blue-700: hsl(223, 100%, 30%);
+    --color-blue-800: hsl(223, 100%, 20%);
+    --color-blue-900: hsl(223, 100%, 10%);
 
     /* Grey */
-    --color-gray-50: #FBFBFB;
-    --color-gray-100: #F7F7F7;
-    --color-gray-200: #F2F2F2;
-    --color-gray-300: #EEEEEE;
-    --color-gray-400: #DDDDDD;
-    --color-gray-500: #BBBBBB;
-    --color-gray-600: #AAAAAA;
-    --color-gray-700: #777777;
-    --color-gray-800: #555555;
-    --color-gray-900: #333333;
+    --color-gray-50: hsl(223, 10%, 98%);
+    --color-gray-100: hsl(223, 10%, 97%);
+    --color-gray-200: hsl(223, 10%, 95%);
+    --color-gray-300: hsl(223, 10%, 90%);
+    --color-gray-400: hsl(223, 10%, 87%);
+    --color-gray-500: hsl(223, 10%, 73%);
+    --color-gray-600: hsl(223, 10%, 67%);
+    --color-gray-700: hsl(223, 10%, 47%);
+    --color-gray-800: hsl(223, 10%, 33%);
+    --color-gray-900: hsl(223, 10%, 20%);
 
     /* Black and White */
     --color-white: #FFFFFF;
     --color-black: #000000;
 
     /* Other Colors */
-    --color-green-50: #f9fcf3;
-    --color-green-100: #f3fae7;
-    --color-green-200: #e7f5ce;
-    --color-green-500: #89CC0C;
-    --color-red-50: #fff7f6;
-    --color-red-100: #ffefec;
-    --color-red-200: #ffdfd9;
-    --color-red-500: #FF6142;
-    --color-yellow-50: #fffcf4;
-    --color-yellow-100: #fff9ea;
-    --color-yellow-200: #fff2d4;
-    --color-yellow-500: #FFBE29;
+    --color-green-50: hsl(81, 90%, 97%);
+    --color-green-100: hsl(81, 90%, 95%);
+    --color-green-200: hsl(81, 90%, 80%);
+    --color-green-500: hsl(81, 90%, 42%);
+    --color-red-50: hsl(10, 100%, 98%);
+    --color-red-100: hsl(10, 100%, 95%);
+    --color-red-200: hsl(10, 100%, 80%);
+    --color-red-500: hsl(10, 100%, 65%);
+    --color-yellow-50: hsl(42, 100%, 97%);
+    --color-yellow-100: hsl(42, 100%, 95%);
+    --color-yellow-200: hsl(42, 100%, 80%);
+    --color-yellow-500: hsl(42, 100%, 58%);
     
     /* Specific implementations */
     --color-primary: var(--color-blue-500);
     --color-border: var(--color-gray-300);
-    --color-background: var(--color-gray-50);
+    --color-background: var(--color-white);
     --color-modal-background: var(--color-white);
-    --color-text: var(--color-black);
+    --color-text: var(--color-gray-800);
+    --color-header: var(--color-black);
 
     /* Typography */
     --font-body: 'IBM Plex Sans';
@@ -53,49 +56,51 @@
 @media (prefers-color-scheme: dark) {
     :root {
         /* Blue */
-        --color-blue-100: #001f4c;
-        --color-blue-200: #001f4c;
-        --color-blue-300: #003380;
-        --color-blue-500: #0066FF;
-        --color-blue-700: #4d94ff;
-        --color-blue-900: #b3d1ff;
+        --color-blue-100: hsl(216, 100%, 5%);
+        --color-blue-200: hsl(216, 100%, 15%);
+        --color-blue-300: hsl(216, 100%, 25%);
+        --color-blue-500: hsl(216, 100%, 50%);
+        --color-blue-600: hsl(216, 100%, 57%);
+        --color-blue-700: hsl(216, 100%, 65%);
+        --color-blue-800: hsl(216, 100%, 75%);
+        --color-blue-900: hsl(216, 100%, 85%);
 
         /* Grey */
-        --color-gray-50: #171717;
-        --color-gray-100: #212121;
-        --color-gray-200: #262626;
-        --color-gray-300: #333333;
-        --color-gray-400: #444444;
-        --color-gray-500: #666666;
-        --color-gray-600: #AAAAAA;
-        --color-gray-700: #DDDDDD;
-        --color-gray-800: #EEEEEE;
-        --color-gray-900: #F7F7F7;
+        --color-gray-50: hsl(216, 8%, 9%);
+        --color-gray-100: hsl(216, 8%, 13%);
+        --color-gray-200: hsl(216, 8%, 15%);
+        --color-gray-300: hsl(216, 8%, 20%);
+        --color-gray-400: hsl(216, 8%, 27%);
+        --color-gray-500: hsl(216, 8%, 40%);
+        --color-gray-600: hsl(216, 8%, 67%);
+        --color-gray-700: hsl(216, 8%, 87%);
+        --color-gray-800: hsl(216, 8%, 93%);
+        --color-gray-900: hsl(216, 8%, 97%);
 
         /* Black and White */
         --color-white: #FFFFFF;
         --color-black: #121212;
 
         /* Other Colors */
-        --color-green-50: #1E2316;
-        --color-green-100: #252E15;
-        --color-green-200: #608f08;
-        --color-green-500: #A6FF00;
-        --color-red-50: #271C1A;
-        --color-red-100: #3A221D;
-        --color-red-200: #803121;
-        --color-red-500: #FF6142;
-        --color-yellow-50: #191304;
-        --color-yellow-100: #332608;
-        --color-yellow-200: #664c10;
-        --color-yellow-500: #FFBE29;
-        
+        --color-green-50: hsl(81, 50%, 10%);
+        --color-green-100: hsl(81, 75%, 13%);
+        --color-green-200: hsl(81, 100%, 30%);
+        --color-green-500: hsl(81, 100%, 50%);
+        --color-red-50: hsl(10, 50%, 13%);
+        --color-red-100: hsl(10, 75%, 17%);
+        --color-red-200: hsl(10, 100%, 30%);
+        --color-red-500: hsl(10, 100%, 63%);
+        --color-yellow-50: hsl(42, 75%, 6%);
+        --color-yellow-100: hsl(42, 100%, 12%);
+        --color-yellow-200: hsl(42, 100%, 23%);
+        --color-yellow-500: hsl(42, 100%, 58%);
         
         /* Specific implementations */
         /* --color-primary: var(--color-blue-500); */
         /* --color-border: var(--color-gray-200); */
-        /* --color-background: var(--color-black); */
+        --color-background: var(--color-black);
         --color-modal-background: var(--color-black);
-        --color-text: var(--color-white);
+        /* --color-text: var(--color-white); */
+        --color-header: var(--color-black);
     }
 }

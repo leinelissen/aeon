@@ -13,7 +13,6 @@ export const ListItem = styled.div`
 `;
 
 export const RowHeading = styled(ListItem)`
-    border-bottom: 1px solid var(--color-border);
     font-weight: 400;
     position: sticky;
     top: 0;
@@ -21,15 +20,28 @@ export const RowHeading = styled(ListItem)`
     z-index: 2;
     font-size: 14px;
     width: 100%;
+    border-bottom: 1px solid var(--color-border);
+    padding: 16px 32px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+`;
+
+export const RowDescription = styled(RowHeading)`
+    font-weight: 400;
+    font-size: 11px;
+    margin-bottom: 8px;
 `;
 
 export const SubHeading = styled(RowHeading)`
     font-size: 10px;
     font-family: 'IBM Plex Mono';
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
     background-color: var(--color-background);
     color: var(--color-gray-700);
+    border: 0;
+    padding: 16px 32px 8px 32px;
 `;
 
 export const PanelGrid = styled.div<{ columns?: number; noTopPadding?: boolean; }>`
@@ -69,6 +81,12 @@ export const PanelBottomButtons = styled.div`
 
 const IconWrapper = styled.div`
     margin: 0 8px;
+    font-size: 1.25em;
+`;
+
+const ChevronWrapper = styled(PullRight)`
+    opacity: 0.25;
+    font-size: 0.7em;
 `;
 
 type ListButtonProps = {
@@ -87,14 +105,22 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
     align-items: center;
     font-size: 14px;
     margin: 1px 8px;
-    padding: 8px 8px;
+    padding: 8px 12px;
     font-weight: 400;
-    border-radius: 8px;
+    border-radius: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+    color: var(--color-header);
 
     img {
         max-height: 100px;
         width: auto;
         border-radius: 5px;
+    }
+
+    svg {
+        flex: 0 0 auto;
     }
 
     &.active {
@@ -103,30 +129,30 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
     }
 
     &:hover:not(.active) {
-        background: var(--color-gray-300);
+        background: var(--color-blue-100);
     }
 
     ${props => props.added && css`
-        background-color: var(--color-green-500)22;
+        background-color: var(--color-green-100);
 
         &.active {
-            background-color: var(--color-green-500)33;
+            background-color: var(--color-green-500);
         }
     `}
 
     ${props => props.deleted && css`
-        background-color: var(--color-red-500)22;
+        background-color: var(--color-red-100);
 
         &.active {
-            background-color: var(--color-red-500)33;
+            background-color: var(--color-red-500);
         }
     `}
 
     ${props => props.modified && css`
-        background-color: var(--color-yellow-500)22;
+        background-color: var(--color-yellow-100);
 
         &.active {
-            background-color: var(--color-yellow-500)33;
+            background-color: var(--color-yellow-500);
         }
     `}
 
@@ -144,12 +170,7 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
 `;
 
 const CategoryContainer = styled.div`
-    padding: 8px 0;
-    border-bottom: 1px solid var(--color-border);
-
-    &:last-of-type {
-        border-bottom: none;
-    }
+    margin-bottom: 16px;
 `;
 
 export function Category({ title, children, id }: PropsWithChildren<{ title?: string, id?: string }>) {
@@ -183,9 +204,9 @@ export function NavigatableListEntry({
                 </IconWrapper>
                 : null}
             {children}
-            <PullRight>
+            <ChevronWrapper>
                 <FontAwesomeIcon fixedWidth icon={faChevronRight} />
-            </PullRight>
+            </ChevronWrapper>
         </NavigatableListEntryContainer>
     )
 }

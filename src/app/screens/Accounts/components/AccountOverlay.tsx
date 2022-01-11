@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAlarmExclamation, faCheck, faClock, faLink, faPlus, faQuestion, faUpload } from 'app/assets/fa-light';
 import faOpenDataRights from 'app/assets/open-data-rights';
-import Button from 'app/components/Button';
+import Button, { GhostButton } from 'app/components/Button';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
-import { H2 } from 'app/components/Typography';
+import { FontLarge, H2 } from 'app/components/Typography';
 import { State, useAppDispatch } from 'app/store';
 import { dispatchEmailRequest } from 'app/store/accounts/actions';
 import { EmailProvider } from 'app/store/accounts/types';
@@ -73,7 +73,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                         </H2>
                     </Section>
                     <Section>
-                        <span>
+                        <FontLarge>
                             {hasUrl(account) && 
                                 <>
                                     <FontAwesomeIcon
@@ -117,7 +117,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                                     Completed: <i>{formatDistanceToNow(new Date(account.status?.completed))} ago</i>
                                 </>
                             }
-                        </span>
+                        </FontLarge>
                     </Section>
                     {account.status?.dispatched && !account.status.completed ? 
                         <Section>
@@ -151,7 +151,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                                 ? <p>When you click the button, a new window will appear, in which you will asked to enter your credentials. Aeon does not store any of your credentials. Rather, the window is used to perform actions on your behalf.</p>
                                 : <p>When you click the button, we will send out an email on your behalf on the account {(account as EmailProvider).emailAccount}. You have to check if the request is completed yourself, and then upload the resulting archive here.</p>
                             }
-                            <Button
+                            <GhostButton
                                 fullWidth
                                 icon={faPlus}
                                 onClick={handleNewRequest}
@@ -159,7 +159,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                                 loading={isLoading}
                             >
                                 Start Data Request
-                            </Button>
+                            </GhostButton>
                         </Section>
                     }
                 </>
