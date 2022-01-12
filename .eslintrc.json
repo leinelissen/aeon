@@ -11,7 +11,8 @@
         "plugin:import/errors",
         "plugin:import/warnings",
         "plugin:import/typescript",
-        "plugin:react/recommended"
+        "plugin:react/recommended",
+        "airbnb-typescript"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -25,7 +26,11 @@
     "rules": {
         "indent": ["error", 4, {
             "SwitchCase": 1
-        }]
+        }],
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4],
+        "@typescript-eslint/indent": ["error", 4],
+        "arrow-parens": "error"
     },
     "settings": {
         "import/resolver": {
