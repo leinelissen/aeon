@@ -1,11 +1,11 @@
-import { Locator } from "playwright";
+import { Locator } from 'playwright';
 
 /**
  * Retrieve a random child from a locator.
  */
 async function getRandomNode(locator: Locator): Promise<Locator> {
     // Count the number of nodes
-    const numberOfNodes = await locator.count()
+    const numberOfNodes = await locator.count();
 
     // GUARD: Check that the call did not match any nodes
     if (numberOfNodes === 0) {

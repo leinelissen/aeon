@@ -20,8 +20,8 @@ class CryptoFs {
                 ...fs.promises,
                 writeFile: this.writeFile,
                 readFile: this.readFile as typeof fs.promises.readFile,
-            }
-        }
+            },
+        };
     }
 
     public writeFile = (filepath: string, data: Uint8Array): Promise<void> => {
@@ -36,10 +36,10 @@ class CryptoFs {
             const cipheredContents = Buffer.concat([ initVect, cipher.update(data), cipher.final() ]);
     
             // Pipe output to file
-            stream.write(cipheredContents, (error) => { error ? reject(error) : resolve() });
+            stream.write(cipheredContents, (error) => { return error ? reject(error) : resolve(); });
             stream.end();
-        })
-    }
+        });
+    };
 
     public readFile = (filepath: string, opts: { encoding?: BufferEncoding } = {}): Promise<string | Buffer> => {
         return fs.promises.readFile(filepath)
@@ -55,7 +55,7 @@ class CryptoFs {
                 return opts.encoding ? result.toString(opts.encoding) : result;
             });
 
-    }
+    };
 }
 
 export default CryptoFs;

@@ -4,16 +4,17 @@ import AdmZip from 'adm-zip';
 import { subHours } from 'date-fns';
 import { withSecureWindow } from 'main/lib/create-secure-window';
 import { ProviderFile } from '../types';
-import { EmailDataRequestProvider } from "../types/Provider";
+import { EmailDataRequestProvider } from '../types/Provider';
 
 class Spotify extends EmailDataRequestProvider {
     public static key = 'spotify';
+
     public static dataRequestIntervalDays = 5;
 
     windowParams = {
         key: this.windowKey,
-        origin: 'spotify.com'
-    }
+        origin: 'spotify.com',
+    };
 
     async initialise(): Promise<string> {
         await this.verifyLoggedInStatus();
@@ -26,7 +27,7 @@ class Spotify extends EmailDataRequestProvider {
             window.loadURL(settingsUrl);
 
             return new Promise((resolve) => {
-                const eventHandler = async(): Promise<void> => {
+                const eventHandler = async (): Promise<void> => {
                     // Check if we ended up at the page in an authenticated form
                     if (settingsUrl === window.webContents.getURL()) {
                         // If so, we retrieve the cookies
@@ -44,12 +45,12 @@ class Spotify extends EmailDataRequestProvider {
                 window.webContents.once('did-finish-load', eventHandler);
             });
         });
-    }
+    };
 
     update = async (): Promise<false> => {
         // NOTE: Updating is not supported by Spotify at this point
         return false;
-    }
+    };
 
     dispatchDataRequest = async (): Promise<void> => {
         await this.verifyLoggedInStatus();
@@ -58,7 +59,7 @@ class Spotify extends EmailDataRequestProvider {
             window.hide();
 
             await new Promise((resolve) => {
-                window.webContents.on('did-finish-load', resolve)
+                window.webContents.on('did-finish-load', resolve);
                 window.loadURL('https://www.spotify.com/us/account/privacy/');
             });
 
@@ -68,8 +69,8 @@ class Spotify extends EmailDataRequestProvider {
                 window.webContents.session.webRequest.onCompleted({
                     urls: [ 
                         'https://www.spotify.com/us/account/privacy/download/',
-                        'https://www.spotify.com/api/accountprivacy-api/v1/data-download/resend-confirmation-email/'
-                    ]
+                        'https://www.spotify.com/api/accountprivacy-api/v1/data-download/resend-confirmation-email/',
+                    ],
                 }, (details: Electron.OnCompletedListenerDetails) => {
                     if (details.statusCode === 200) {
                         resolve();
@@ -91,7 +92,7 @@ class Spotify extends EmailDataRequestProvider {
         // Then, we'll poll for a particular email from Spotify coming in
         // that we have to click a link from
         return this.recursivelyWaitForConfirmationEmail();
-    }
+    };
 
     /**
      * A function that will poll the email account linked to this provider, to
@@ -101,7 +102,7 @@ class Spotify extends EmailDataRequestProvider {
     async recursivelyWaitForConfirmationEmail(): Promise<void> {
         // Retrieve all messages from Spotify from the server
         const [ message ] = await this.email.findMessages({
-            from: 'noreply@spotify.com'
+            from: 'noreply@spotify.com',
         });
 
         // Check if there is a message and that it has a date
@@ -116,7 +117,7 @@ class Spotify extends EmailDataRequestProvider {
                 // might be in the wrong email
                 if (link) {
                     // If so, we open a new window in which we open the link
-                    return withSecureWindow(this.windowParams, window => {
+                    return withSecureWindow(this.windowParams, (window) => {
                         return window.loadURL(link);
                     });
                 }
@@ -124,7 +125,7 @@ class Spotify extends EmailDataRequestProvider {
         }
 
         // If the mail was not found, wait 15 seconds and execute this method again.
-        await new Promise(resolve => setTimeout(resolve, 15_000));
+        await new Promise((resolve) => setTimeout(resolve, 15_000));
         return this.recursivelyWaitForConfirmationEmail();
     }
 
@@ -134,7 +135,7 @@ class Spotify extends EmailDataRequestProvider {
         return withSecureWindow<boolean>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
-                window.webContents.once('did-finish-load', resolve)
+                window.webContents.once('did-finish-load', resolve);
                 window.loadURL('https://www.spotify.com/us/account/privacy/');
             });
 
@@ -152,7 +153,7 @@ class Spotify extends EmailDataRequestProvider {
         });
         
         // GUARD: Double-check that message.text exists
-        if(!message.text) {
+        if (!message.text) {
             throw new Error('Failed to find email text for Spotify');
         }
 
@@ -184,7 +185,7 @@ class Spotify extends EmailDataRequestProvider {
             // the repository
             const zip = new AdmZip(filePath);
             await new Promise((resolve) => 
-                zip.extractAllToAsync(extractionPath, true, resolve)
+                zip.extractAllToAsync(extractionPath, true, resolve),
             );
 
             // Translate this into a form that is readable for the ParserManager

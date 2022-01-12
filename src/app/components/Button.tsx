@@ -14,11 +14,11 @@ interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
 }
 
 const StyledButtonStyles = css<ButtonProps>`
-    background-color: var(--color-${props => props.backgroundColor || 'blue'}-500);
+    background-color: var(--color-${(props) => props.backgroundColor || 'blue'}-500);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${props => props.color || 'var(--color-white)'};
+    color: ${(props) => props.color || 'var(--color-white)'};
     height: 40px;
     font-size: 14px;
     font-weight: 500;
@@ -30,14 +30,14 @@ const StyledButtonStyles = css<ButtonProps>`
     border: 0;
     padding: 0 16px;
     text-transform: capitalize;
-    border: 1px solid var(--color-${props => props.backgroundColor || 'blue'}-600);
+    border: 1px solid var(--color-${(props) => props.backgroundColor || 'blue'}-600);
     text-overflow: ellipsis;
     overflow-wrap: break-word;
     letter-spacing: -0.3px;
 
     &:hover&:not(:disabled) {
         cursor: default;
-        background-color: var(--color-${props => props.backgroundColor || 'blue'}-600);
+        background-color: var(--color-${(props) => props.backgroundColor || 'blue'}-600);
         box-shadow: 0 1px 2px rgba(0,0,0,0.09), 
                 0 2px 4px rgba(0,0,0,0.09), 
                 0 4px 8px rgba(0,0,0,0.09), 
@@ -50,7 +50,7 @@ const StyledButtonStyles = css<ButtonProps>`
         border-color: var(--color-gray-400);
     }
 
-    ${props => props.fullWidth && css`
+    ${(props) => props.fullWidth && css`
         width: 100%;
     `}
 `;
@@ -76,7 +76,7 @@ export const SimpleButton = styled.button`
 `;
 
 export const StyledGhostButton = styled(StyledButton)`
-    color: ${props => props.backgroundColor && props.backgroundColor !== 'blue' 
+    color: ${(props) => props.backgroundColor && props.backgroundColor !== 'blue' 
         ? `var(--color-${props.backgroundColor}-500)`
         : 'var(--color-header)'};
     font-size: 14px;
@@ -86,11 +86,11 @@ export const StyledGhostButton = styled(StyledButton)`
     font-weight: 500;
 
     &:hover&:not(:disabled) {
-        background-color: var(--color-${props => props.backgroundColor || 'blue'}-50);
+        background-color: var(--color-${(props) => props.backgroundColor || 'blue'}-50);
     }
 
     &:active {
-        background-color: var(--color-${props => props.backgroundColor || 'blue'}-100);
+        background-color: var(--color-${(props) => props.backgroundColor || 'blue'}-100);
     }
 `;
 
@@ -110,8 +110,8 @@ const Button = ({ children, loading, onClick, disabled, icon, ...props }: PropsW
             {children}
             {loading ? (<><Margin /><Ball size={10} /></>) : null}
         </StyledButton>
-    )
-}
+    );
+};
 
 export const GhostButton = ({ children, loading, onClick, disabled, icon, ...props }: PropsWithChildren<Props>): JSX.Element => {
     return (
@@ -120,7 +120,7 @@ export const GhostButton = ({ children, loading, onClick, disabled, icon, ...pro
             {children}
             {loading ? (<><Margin /><Ball size={10} /></>) : null}
         </StyledGhostButton>
-    )
-}
+    );
+};
 
 export default Button;

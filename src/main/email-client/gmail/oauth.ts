@@ -17,42 +17,6 @@ interface CodeAndRedirectUri {
 }
 
 /**
- * Starts the authentication workflow for a Gmail-based email API
- */
-export default async function authenticateGmailUser(): Promise<TokenResponse> {
-    const verifier = generateVerifier();
-    const response = await retrieveAuthenticationCode(verifier);
-    const tokens = await exchangeAccessCode(response, verifier);
-    return tokens;
-}
-
-async function retrieveAuthenticationCode(verifier: string): Promise<CodeAndRedirectUri> {
-    if (!GMAIL_OAUTH_CLIENT_ID || !GMAIL_OAUTH_CLIENT_SECRET) {
-        throw new Error('GMAIL_OAUTH_CLIENT_ID and/or GMAIL_OAUTH_CLIENT_SECRET wasn\'t set in the environment');
-    }
-
-    // eslint-disable-next-line
-    return new Promise(async (resolve) => {
-        // Create server and retrieve redirect URI
-        const redirect_uri = await setupRedirectListener(resolve);
-
-        // POST parameters for the redirect URI request
-        const data: Record<string, string> = {
-            scope: 'https://mail.google.com/',
-            response_type: 'code',
-            code_challenge: verifier,
-            redirect_uri,
-            client_id: GMAIL_OAUTH_CLIENT_ID,
-        };
-        const params = objectToUrlParams(data);
-        const uri = new URL('https://accounts.google.com/o/oauth2/v2/auth' + params);
-
-        // Then open the generated URL in the OS-default browser
-        shell.openExternal(uri.href);
-    });
-}
-
-/**
  * Exchange a received authorization code for a full blown access token
  * @param response 
  * @param verifier 
@@ -71,7 +35,7 @@ async function exchangeAccessCode(response: CodeAndRedirectUri, verifier: string
     return fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         body: formData,
-    }).then(response => response.json() as Promise<TokenResponse>);
+    }).then((res) => res.json() as Promise<TokenResponse>);
 }
 
 type CodeCallback = (code: CodeAndRedirectUri) => void;
@@ -83,7 +47,7 @@ type CodeCallback = (code: CodeAndRedirectUri) => void;
 async function setupRedirectListener(callback: CodeCallback): Promise<string> {
     return new Promise((resolve, reject) => {
         // Store the redirect_uri for use
-        let redirect_uri: string = null;
+        let redirectUri: string = null;
 
         // Store any sockets so that we can forcibly delete them
         const sockets = new Set<Socket>();
@@ -102,16 +66,16 @@ async function setupRedirectListener(callback: CodeCallback): Promise<string> {
                 // First, we'll shutdown the server, by closing it and forcibly
                 // destroying all sockets.
                 server.close();
-                for(const socket of sockets) {
+                for (const socket of sockets) {
                     socket.destroy();
                 }
-                logger.email.info(`Received authentication code, ${redirect_uri} destroyed.`)
+                logger.email.info(`Received authentication code, ${redirectUri} destroyed.`);
 
                 // Lastly, we'll pass along the code and redirect uri to the
                 // callback handler
                 callback({
                     code: params.get('code'),
-                    redirect_uri,
+                    redirect_uri: redirectUri,
                 });
             }
         });
@@ -127,23 +91,23 @@ async function setupRedirectListener(callback: CodeCallback): Promise<string> {
             }
 
             // Assign the redirect_uri for later use
-            redirect_uri = new URL(`http://127.0.0.1:${address.port}`).toString();
+            redirectUri = new URL(`http://127.0.0.1:${address.port}`).toString();
             
             // Then resolve it
-            resolve(redirect_uri);
+            resolve(redirectUri);
 
             // Also log it
-            logger.email.info('A gmail authentication server is listening at: ' + redirect_uri);
+            logger.email.info('A gmail authentication server is listening at: ' + redirectUri);
         });
 
         // Store any sockets, so that we can delete them when the server is done
-        server.on('connection', socket => {
+        server.on('connection', (socket) => {
             sockets.add(socket);
 
             // Also auto-remove them when the socket gets closed
             socket.on('close', () => {
                 sockets.delete(socket);
-            })
+            });
         });
 
         server.on('error', reject);
@@ -165,10 +129,10 @@ export function refreshGmailTokens(refresh_token: string): Promise<TokenResponse
     return fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         body: formData,
-    }).then(response => response.json() as Promise<TokenResponse>)
-        .then(response => ({
+    }).then((response) => response.json() as Promise<TokenResponse>)
+        .then((response) => ({
             ...response,
-            refresh_token
+            refresh_token,
         }));
 }
 
@@ -198,4 +162,40 @@ function generateVerifier(): string {
         .replace(/\//g, '-');
 
     return verifier;
+}
+
+async function retrieveAuthenticationCode(verifier: string): Promise<CodeAndRedirectUri> {
+    if (!GMAIL_OAUTH_CLIENT_ID || !GMAIL_OAUTH_CLIENT_SECRET) {
+        throw new Error('GMAIL_OAUTH_CLIENT_ID and/or GMAIL_OAUTH_CLIENT_SECRET wasn\'t set in the environment');
+    }
+
+    // eslint-disable-next-line
+    return new Promise(async (resolve) => {
+        // Create server and retrieve redirect URI
+        const redirectUri = await setupRedirectListener(resolve);
+
+        // POST parameters for the redirect URI request
+        const data: Record<string, string> = {
+            scope: 'https://mail.google.com/',
+            response_type: 'code',
+            code_challenge: verifier,
+            redirect_uri: redirectUri,
+            client_id: GMAIL_OAUTH_CLIENT_ID,
+        };
+        const params = objectToUrlParams(data);
+        const uri = new URL('https://accounts.google.com/o/oauth2/v2/auth' + params);
+
+        // Then open the generated URL in the OS-default browser
+        shell.openExternal(uri.href);
+    });
+}
+
+/**
+ * Starts the authentication workflow for a Gmail-based email API
+ */
+export default async function authenticateGmailUser(): Promise<TokenResponse> {
+    const verifier = generateVerifier();
+    const response = await retrieveAuthenticationCode(verifier);
+    const tokens = await exchangeAccessCode(response, verifier);
+    return tokens;
 }

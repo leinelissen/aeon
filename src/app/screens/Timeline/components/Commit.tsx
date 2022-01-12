@@ -1,5 +1,5 @@
 
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components';
 import React, { Component, MouseEventHandler } from 'react';
 import { Badge } from 'app/components/Typography';
 import { Commit as CommitType } from 'main/lib/repository/types';
@@ -49,7 +49,7 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
             background-color: var(--color-background);
         }
     `}
-`
+`;
 
 const Dot = styled.div<{ active?: boolean }>`
     width: 24px;
@@ -91,7 +91,7 @@ export const TimelineLine = styled.div`
 class Commit extends Component<Props> {
     handleClick: MouseEventHandler<HTMLButtonElement> = () => {
         this.props.onClick(this.props.entry.oid);
-    }
+    };
 
     render(): JSX.Element {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -108,7 +108,7 @@ class Commit extends Component<Props> {
                     </>}
                 </div>
             </StyledCommit>
-        )
+        );
     }
 }
 

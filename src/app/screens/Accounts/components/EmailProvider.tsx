@@ -75,7 +75,7 @@ function EmailProvider(): JSX.Element {
     const handleSearch: AsyncProps<unknown, false, GroupBase<unknown>>['loadOptions'] = useCallback(async (inputValue: string) => {
         // Retrieve a set of organisations from the MyDataDone right API
         const response = await fetch(`https://api.mydatadoneright.eu/api/v1/organizations.json?limit=5&q=${inputValue}`)
-            .then(response => response.json()) as APIResponse;
+            .then((res) => res.json()) as APIResponse;
 
         // Translate the response to a react-select readable set of options
         const options = response.results.map((organisation) => {
@@ -91,8 +91,8 @@ function EmailProvider(): JSX.Element {
     }, []);
 
     // Also create a handler for an organisation being selected
-    const handleSelect = useCallback(({ value }: { value: number}) => {
-        const organisation = organisations.find(d => d.id === value);
+    const handleSelect = useCallback(({ value }: { value: number }) => {
+        const organisation = organisations.find((d) => d.id === value);
         setSelectedOrganisation(organisation);
     }, [setSelectedOrganisation, organisations]);
 

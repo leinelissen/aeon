@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import { withSecureWindow } from 'main/lib/create-secure-window';
 import { ProviderFile } from '../types';
-import { DataRequestProvider } from "../types/Provider";
+import { DataRequestProvider } from '../types/Provider';
 import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
@@ -10,7 +10,9 @@ const requestSavePath = path.join(app.getAppPath(), 'data');
 
 class LinkedIn extends DataRequestProvider {
     public static key = 'linkedin';
+
     public static dataRequestIntervalDays = 14;
+
     public static requiresEmailAccount = false;
 
     /**
@@ -26,7 +28,7 @@ class LinkedIn extends DataRequestProvider {
         return this.getAccountName();
     }
 
-    getAccountName = async(): Promise<string> => {
+    getAccountName = async (): Promise<string> => {
         return withSecureWindow<string>(this.windowParams, async (window) => {
             // Go to /me and wait for LinkedIn to redirect
             await window.loadURL('https://www.linkedin.com/psettings/email');
@@ -36,7 +38,7 @@ class LinkedIn extends DataRequestProvider {
                 document.querySelector('.email-container p.email-address').textContent
             `);
         });
-    }
+    };
 
     verifyLoggedInStatus = async (): Promise<Electron.Cookie[]> => {
         return withSecureWindow<Electron.Cookie[]>(this.windowParams, (window) => {
@@ -44,7 +46,7 @@ class LinkedIn extends DataRequestProvider {
             window.loadURL(settingsUrl);
 
             return new Promise((resolve) => {
-                const eventHandler = async(): Promise<void> => {
+                const eventHandler = async (): Promise<void> => {
                     // Check if we ended up at the page in an authenticated form
                     if (settingsUrl === window.webContents.getURL()) {
                         // If so, we retrieve the cookies
@@ -52,7 +54,7 @@ class LinkedIn extends DataRequestProvider {
                         
                         // Do a check if the language is set to English, and if not,
                         // change it to English
-                        const lang = cookies.find(cookie => cookie.name === 'lang');
+                        const lang = cookies.find((cookie) => cookie.name === 'lang');
                         if (lang?.value !== 'v=2&lang=en-us') {
                             await window.webContents.session.cookies.set({ 
                                 url: 'https://linkedin.com',
@@ -83,12 +85,12 @@ class LinkedIn extends DataRequestProvider {
                 window.webContents.once('did-finish-load', eventHandler);
             });
         });
-    }
+    };
 
     update = async (): Promise<false> => {
         // NOTE: LinkedIn has not accessible Privacy APIs at this point.
         return false;
-    }
+    };
 
     dispatchDataRequest = async (): Promise<void> => {
         await this.verifyLoggedInStatus();
@@ -97,7 +99,7 @@ class LinkedIn extends DataRequestProvider {
             window.hide();
 
             await new Promise((resolve) => {
-                window.webContents.on('did-finish-load', resolve)
+                window.webContents.on('did-finish-load', resolve);
                 window.loadURL('https://www.linkedin.com/psettings/member-data');
             });
 
@@ -105,7 +107,7 @@ class LinkedIn extends DataRequestProvider {
             // password. We then listen for a succesfull AJAX call 
             return new Promise((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
-                    urls: [ 'https://*.linkedin.com/*' ]
+                    urls: [ 'https://*.linkedin.com/*' ],
                 }, (details: Electron.OnCompletedListenerDetails) => {
                     if (details.url === 'https://www.linkedin.com/psettings/member-data/export'
                         && details.statusCode === 200) {
@@ -126,7 +128,7 @@ class LinkedIn extends DataRequestProvider {
                 window.show();
             });
         });
-    }
+    };
 
     async isDataRequestComplete(): Promise<boolean> {
         await this.verifyLoggedInStatus();
@@ -134,7 +136,7 @@ class LinkedIn extends DataRequestProvider {
         return withSecureWindow<boolean>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
-                window.webContents.once('did-finish-load', resolve)
+                window.webContents.once('did-finish-load', resolve);
                 window.loadURL('https://www.linkedin.com/psettings/member-data');
             });
 
@@ -154,7 +156,7 @@ class LinkedIn extends DataRequestProvider {
         return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
-                window.webContents.once('did-finish-load', resolve)
+                window.webContents.once('did-finish-load', resolve);
                 window.loadURL('https://www.linkedin.com/psettings/member-data');
             });
 
@@ -179,7 +181,7 @@ class LinkedIn extends DataRequestProvider {
             // Firstly, we'll save all files in a JSON format
             const zip = new AdmZip(filePath);
             await new Promise((resolve) => 
-                zip.extractAllToAsync(extractionPath, true, resolve)
+                zip.extractAllToAsync(extractionPath, true, resolve),
             );
 
             // Then, we'll structure the returned data

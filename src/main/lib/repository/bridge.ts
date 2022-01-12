@@ -26,7 +26,7 @@ class RepositoryBridge {
             return;
         }
         
-        switch(command) {
+        switch (command) {
             case RepositoryCommands.LOG:
                 return this.repository.log();
             case RepositoryCommands.DIFF:
@@ -37,12 +37,12 @@ class RepositoryBridge {
                 return this.repository.getParsedCommit(...args);
             }
         }
-    }
+    };
 
     private clearMessageCache = (): void => {
-        this.messageCache.forEach(args => this.handleMessage(...args));
+        this.messageCache.forEach((args) => this.handleMessage(...args));
         this.messageCache = [];
-    }
+    };
 
     /**
      * Send an event to the renderer

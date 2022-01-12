@@ -28,7 +28,7 @@ export const H5 = styled.h5`
     text-transform: uppercase;
     font-weight: 400;
     margin: 8px 0;
-`
+`;
 
 export const Badge = styled.div`
     background-color: var(--color-blue-100);

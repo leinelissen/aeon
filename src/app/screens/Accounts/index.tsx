@@ -36,7 +36,7 @@ function Accounts(): JSX.Element {
     // Callback for refreshing all requests
     const refresh = useCallback(() => dispatch(refreshRequests()), [dispatch]);
 
-    useTour(accounts.length ? '/screen/accounts/has-accounts': '/screen/accounts/no-accounts');
+    useTour(accounts.length ? '/screen/accounts/has-accounts' : '/screen/accounts/no-accounts');
 
     return (
         <>
@@ -56,11 +56,11 @@ function Accounts(): JSX.Element {
                                         <span>{map[account].account}</span>
                                         <StatusDescription>{getDescription(map[account].status)}</StatusDescription>
                                     </Rows>
-                                </NavigatableListEntry>
+                                </NavigatableListEntry>,
                             )}
                         </Category>
                         <Category title="Email-based Requests" id="email-accounts">
-                            {email.all.map(account => (
+                            {email.all.map((account) => (
                                 <NavigatableListEntry
                                     key={account}
                                     to={`/accounts/email_${account}`}
@@ -87,7 +87,7 @@ function Accounts(): JSX.Element {
                 </List>
             </PanelGrid>
         </>
-    )
+    );
 }
 
 export default Accounts;

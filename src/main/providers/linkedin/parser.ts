@@ -1,8 +1,8 @@
 import {
     ProviderParser,
     ProvidedDataTypes,
-    ProviderDatum
-} from "../types/Data";
+    ProviderDatum,
+} from '../types/Data';
 
 /**
  * Will transform a string of values seperated by semicolons into an array of strings
@@ -11,8 +11,8 @@ import {
 function semiColonSeperatedTransformer(object: string): Partial<ProviderDatum<unknown>>[] {
     return object.split('; ').map((data) => {
         return {
-            data
-        }
+            data,
+        };
     });
 }
 
@@ -23,7 +23,7 @@ const parsers: ProviderParser[] = [
             {
                 type: ProvidedDataTypes.AD_INTEREST,
                 key: 'Company Names',
-                transformer: semiColonSeperatedTransformer
+                transformer: semiColonSeperatedTransformer,
             },
             {
                 type: ProvidedDataTypes.AD_INTEREST,
@@ -53,9 +53,9 @@ const parsers: ProviderParser[] = [
                 type: ProvidedDataTypes.AD_INTEREST,
                 key: 'Member Skills',
                 transformer: semiColonSeperatedTransformer,
-            }
-        ]
-    }
+            },
+        ],
+    },
 ];
 
 export default parsers;

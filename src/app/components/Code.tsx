@@ -25,17 +25,17 @@ const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean 
         height: 1em;
     }
 
-    ${props => props.added && css`
+    ${(props) => props.added && css`
         background-color: var(--color-green-100);
         color: var(--color-green-500);
     `}
 
-    ${props => props.removed && css`
+    ${(props) => props.removed && css`
         background-color: var(--color-red-100);
         color: var(--color-red-500);
     `}
 
-    ${props => props.updated && css`
+    ${(props) => props.updated && css`
         background-color: var(--color-yellow-100);
         color: var(--color-yellow-500);
     `}

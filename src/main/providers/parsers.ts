@@ -2,7 +2,7 @@ import Facebook from './facebook/parser';
 import Instagram from './instagram/parser';
 import LinkedIn from './linkedin/parser';
 import Spotify from './spotify/parser';
-import { ProviderParser } from "./types/Data";
+import { ProviderParser } from './types/Data';
 
 // Contains an overview of parsers, sorted by their provider
 const providerParsers: [ ProviderParser[], string ][] = [
@@ -29,7 +29,7 @@ export const parsersByFile: Map<string, ProviderParser> = new Map(
                 parser,
             ];
         });
-    })
+    }),
 );
 
 // First map all the providers, then show only the paths that are part of a
@@ -41,11 +41,11 @@ export const parsersByProvider: Map<string, Map<string, ProviderParser>> = new M
             new Map(parsers.map((parser) => {
                 return [
                     parser.source,
-                    parser
+                    parser,
                 ];
-            }))
+            })),
         ];
-    })
+    }),
 );
 
 /**

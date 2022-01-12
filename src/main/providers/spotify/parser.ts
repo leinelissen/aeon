@@ -1,12 +1,12 @@
 import path from 'path';
-import { Address, PlayedSong, ProvidedDataTypes, ProviderParser } from "../types/Data";
+import { Address, PlayedSong, ProvidedDataTypes, ProviderParser } from '../types/Data';
 
 type SpotifyStreamHistorySong = {
     endTime: string;
     artistName: string;
     trackName: string;
     msPlayed: number;
-}
+};
 
 type SpotifyUserData = {
     username: string;
@@ -21,7 +21,7 @@ type SpotifyUserData = {
     mobileOperator?: string;
     mobileBrand?: string;
     creationTime: string;
-}
+};
 
 const parsers: ProviderParser[] = [
     {
@@ -29,31 +29,31 @@ const parsers: ProviderParser[] = [
         schemas: [
             {
                 key: 'followingArtists',
-                type: ProvidedDataTypes.ACCOUNT_FOLLOWING
+                type: ProvidedDataTypes.ACCOUNT_FOLLOWING,
             },
-        ]
+        ],
     },
     {
         source: path.join('MyData', 'Identity.json'),
         schemas: [
             {
                 key: 'firstName',
-                type: ProvidedDataTypes.FIRST_NAME
+                type: ProvidedDataTypes.FIRST_NAME,
             },
             {
                 key: 'lastName',
-                type: ProvidedDataTypes.LAST_NAME
+                type: ProvidedDataTypes.LAST_NAME,
             },
-        ]
+        ],
     },
     {
         source: path.join('MyData', 'Inferences.json'),
         schemas: [
             {
                 key: 'inferences',
-                type: ProvidedDataTypes.INFERENCE
-            }
-        ]
+                type: ProvidedDataTypes.INFERENCE,
+            },
+        ],
     },
     {
         source: path.join('MyData', 'StreamingHistory0.json'),
@@ -69,9 +69,9 @@ const parsers: ProviderParser[] = [
                         },
                         timestamp: new Date(song.endTime).toString(),
                     };
-                }
-            }
-        ]
+                },
+            },
+        ],
     },
     {
         source: path.join('MyData', 'Userdata.json'),
@@ -94,7 +94,7 @@ const parsers: ProviderParser[] = [
             },
             {
                 key: 'gender',
-                type: ProvidedDataTypes.GENDER
+                type: ProvidedDataTypes.GENDER,
             },
             {
                 key: 'postcalCode',
@@ -102,8 +102,8 @@ const parsers: ProviderParser[] = [
                 transformer: (data: SpotifyUserData['postalCode']): Partial<Address>[] => {
                     return [{
                         data: {
-                            zipCode: data
-                        }
+                            zipCode: data,
+                        },
                     }];
                 },
             },
@@ -115,7 +115,7 @@ const parsers: ProviderParser[] = [
                 key: 'creationTime',
                 type: ProvidedDataTypes.REGISTRATION_DATE,
             },
-        ]
+        ],
     },
 ];
 

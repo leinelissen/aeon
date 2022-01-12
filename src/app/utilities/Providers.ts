@@ -1,5 +1,5 @@
-import { InitOptionalParameters , InitialisedAccount } from 'main/providers/types';
-import { ProviderCommands, ProviderEvents } from "main/providers/types/Events";
+import { InitOptionalParameters, InitialisedAccount } from 'main/providers/types';
+import { ProviderCommands, ProviderEvents } from 'main/providers/types/Events';
 import { faFacebookF, faInstagram, faLinkedinIn, faSpotify, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faSquare } from '@fortawesome/free-solid-svg-icons';
 import { IpcRendererEvent } from 'electron';
@@ -10,7 +10,7 @@ const channel = 'providers';
 type DataRequestReturnType = {
     lastChecked: Date;
     accounts: Record<string, InitialisedAccount>;
-}
+};
 
 type SubscriptionHandler = (event: IpcRendererEvent, type: ProviderEvents, ...props: unknown[]) => void;
 

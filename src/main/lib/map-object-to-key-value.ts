@@ -1,4 +1,4 @@
-import { ProviderDatum } from "main/providers/types/Data";
+import { ProviderDatum } from 'main/providers/types/Data';
 
 /**
  * Maps an object that is written as { key: value } to an object that is written
@@ -7,7 +7,7 @@ import { ProviderDatum } from "main/providers/types/Data";
  */
 // eslint-disable-next-line
 function mapObjectToKeyValue(obj: { [key: string]: any }): { key: any, value: any }[] {
-    return Object.keys(obj).map(key => ({
+    return Object.keys(obj).map((key) => ({
         key,
         value: obj[key],
     }));

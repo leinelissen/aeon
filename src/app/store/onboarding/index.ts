@@ -20,8 +20,8 @@ export const onboardingSlice = createSlice({
         },
         completeTour(state, action: PayloadAction<TourKeys>) {
             state.tour.push(action.payload);
-        }
-    }
+        },
+    },
 });
 
 export default onboardingSlice.reducer;

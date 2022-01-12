@@ -46,7 +46,7 @@ function Onboarding(): JSX.Element {
             if (!isOnboardingComplete) {
                 dispatch(completeOnboarding('initialisation'));
             }
-        }
+        };
     }, []);
 
     return (

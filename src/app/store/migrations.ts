@@ -10,7 +10,7 @@ const migrations: MigrationManifest = {
             onboarding: state.onboardingComplete,
             telemetry: state.telemetry,
             newCommits: state.newCommit || [],
-        }
+        };
     },
     6: (state: any) => {
         return {
@@ -20,15 +20,15 @@ const migrations: MigrationManifest = {
                 all: [],
                 byKey: {},
                 isLoading: state.accounts.isLoading,
-            }
-        }
+            },
+        };
     },
     7: (state: any) => {
-        const { requests, ...rest} = state;
+        const { requests, ...rest } = state;
         return {
             ...rest,
             accounts: requests,
-        }
+        };
     },
     8: (state) => {
         return {
@@ -36,8 +36,8 @@ const migrations: MigrationManifest = {
             onboarding: {
                 initialisation: false,
                 tour: [],
-            }
-        }
+            },
+        };
     },
     9: (state: any) => {
         return {
@@ -47,10 +47,10 @@ const migrations: MigrationManifest = {
                 emailProviders: {
                     all: [],
                     byKey: {},
-                }
-            }
-        }
-    }
-}
+                },
+            },
+        };
+    },
+};
 
 export default migrations;

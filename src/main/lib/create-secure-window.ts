@@ -60,7 +60,7 @@ function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
             logger.provider.error(`A request for ${navigationUrl} was blocked because it did not match the predefined domain (${origin}, read ${parsedUrl.origin})`);
             event.preventDefault();
         }
-    }
+    };
 
     // Restrict navigation to a particular origin
     window.webContents.on('will-navigate', navigationHandler);

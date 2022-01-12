@@ -1,7 +1,7 @@
 import {
     contextBridge,
     ipcRenderer,
-    shell
+    shell,
 } from 'electron';
 import ElectronStore from 'electron-store';
 import type { CommandLineArguments } from 'main/lib/constants';
@@ -65,11 +65,11 @@ const windowApi: WindowApi = {
         },
         clear: () => {
             return store.clear();
-        }
+        },
     },
     sourceMapSupport: sourceMapSupport,
     openEmailClient: (email, subject, body) => shell.openExternal(
-        `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+        `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
     ),
     env: ipcRenderer.sendSync('env') as CommandLineArguments,
 };

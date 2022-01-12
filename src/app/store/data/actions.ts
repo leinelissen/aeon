@@ -3,7 +3,7 @@ import Repository from 'app/utilities/Repository';
 
 export const fetchParsedCommit = createAsyncThunk(
     'data/fetch/parsed-commit',
-    () => Repository.parsedCommit()
+    Repository.parsedCommit,
 );
 
 export const deleteDatum = createAction<number>(
@@ -11,5 +11,5 @@ export const deleteDatum = createAction<number>(
 );
 
 export const resetDeletedData = createAction(
-    '/data/datum/reset-deleted'
-)
+    '/data/datum/reset-deleted',
+);

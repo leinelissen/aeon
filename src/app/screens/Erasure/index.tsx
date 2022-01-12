@@ -71,7 +71,7 @@ function Erasure(): JSX.Element {
         <Modal isOpen onRequestClose={handleClose}>
             <MarginSmall><p>You have selected the following data point{deleted.length > 1 ? 's' : ''} for removal</p></MarginSmall>
             <ScrollContainer>
-                {Object.keys(deletedByProvider).map(provider => (
+                {Object.keys(deletedByProvider).map((provider) => (
                     <Provider key={provider}>
                         <Heading>
                             <IconWrapper>
@@ -79,14 +79,14 @@ function Erasure(): JSX.Element {
                             </IconWrapper>
                             {provider}
                         </Heading>
-                        {deletedByProvider[provider].map(key =>
+                        {deletedByProvider[provider].map((key) => (
                             <Datum key={key}>
                                 <IconWrapper>
                                     <FontAwesomeIcon icon={DataType.getIcon(byKey[key].type as ProvidedDataTypes)} fixedWidth />
                                 </IconWrapper>
                                 {DataType.toString(byKey[key])} [{byKey[key].type}]
-                            </Datum>    
-                        )}
+                            </Datum>
+                        ))}
                     </Provider>
                 ))}
             </ScrollContainer>

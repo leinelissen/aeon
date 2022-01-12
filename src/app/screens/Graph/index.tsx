@@ -5,7 +5,7 @@ import { debounce } from 'lodash-es';
 import cytoscape, { NodeSingular, Position } from 'cytoscape';
 import fcose from 'cytoscape-fcose';
 
-import { ProvidedDataTypes, ProviderDatum } from "main/providers/types/Data";
+import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types/Data';
 import Repository from 'app/utilities/Repository';
 import calculateGraph from './calculateGraph';
 import DatumOverlay from '../Data/components/DatumOverlay';
@@ -21,7 +21,7 @@ type HoveredNode = {
     type: string;
     datumType?: string;
     label: string;
-}
+};
 
 type CytoEvent = { target: NodeSingular };
 
@@ -78,7 +78,7 @@ function Graph(): JSX.Element {
         // Remove class from the unhovered node, but also all elements that have
         // been assigned a secondary hover previously
         node.removeClass('hover');
-        cy.current.elements('.secondary-hover').removeClass('secondary-hover')
+        cy.current.elements('.secondary-hover').removeClass('secondary-hover');
     }, [setHoveredNode, cy]);
 
     /**
@@ -113,11 +113,11 @@ function Graph(): JSX.Element {
          */
         async function createCytoInstance() {
             // Retrieved all data for this commit from the repository
-            const data = await Repository.parsedCommit() as ProviderDatum<string, ProvidedDataTypes>[];
-            setData(data);
+            const commit = await Repository.parsedCommit() as ProviderDatum<string, ProvidedDataTypes>[];
+            setData(commit);
 
             // GUARD: Don't render anything if no data is present. It will crash cytoscape
-            if (data.length === 0) {
+            if (commit.length === 0) {
                 return;
             }
             
@@ -131,10 +131,10 @@ function Graph(): JSX.Element {
                 minZoom: 0.5,
                 maxZoom: 2,
                 layout: {
-                    name: 'fcose'
+                    name: 'fcose',
                 },
-                elements: calculateGraph(data),
-                style
+                elements: calculateGraph(commit),
+                style,
             });
 
             // Initialise the hover handlers

@@ -4,7 +4,7 @@ import Repository from 'app/utilities/Repository';
 import styled from 'styled-components';
 import DataType from 'app/utilities/DataType';
 import Loading from 'app/components/Loading';
-import { ProviderDatum } from "main/providers/types/Data";
+import { ProviderDatum } from 'main/providers/types/Data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FontLarge, H2, H5 } from 'app/components/Typography';
 import { formatDistanceToNow } from 'date-fns';
@@ -50,7 +50,7 @@ const CodeRectifier = styled.div`
 class Diff extends PureComponent<Props, State> {
     state: State = {
         diff: null,
-    }
+    };
 
     componentDidMount(): void {
         this.fetchDiff();
@@ -66,7 +66,7 @@ class Diff extends PureComponent<Props, State> {
         this.setState({ diff: null });
         const diff = await Repository.diff(this.props.commit?.oid) as DiffResult<ExtractedDataDiff>[];
         this.setState({ diff: this.filterAndSortExtractedData(diff) });
-    }
+    };
 
     filterAndSortExtractedData(diff: DiffResult<ExtractedDataDiff>[]): ExtractedDataDiff {
         const sortingFunction = (a: ProviderDatum<unknown>, b: ProviderDatum<unknown>): number => {
@@ -80,7 +80,7 @@ class Diff extends PureComponent<Props, State> {
         return {
             added,
             updated,
-            deleted
+            deleted,
         };
     }
 
@@ -179,7 +179,7 @@ class Diff extends PureComponent<Props, State> {
                     </>
                 </RightSideOverlay>
             </RightSideOverlayOffset>
-        )
+        );
     }
 }
 

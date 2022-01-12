@@ -2,6 +2,7 @@ import { BrowserWindow } from 'electron';
 
 class WindowStore {
     private static instance: WindowStore;
+
     private _window: BrowserWindow;
 
     static getInstance(): WindowStore {

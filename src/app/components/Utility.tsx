@@ -17,15 +17,15 @@ interface PullContainerProps {
 export const PullContainer = styled.div<PullContainerProps>`
     display: flex;
 
-    ${props => props.vertical && css`
+    ${(props) => props.vertical && css`
         flex-direction: column;
     `}
 
-    ${props => props.verticalAlign && css`
+    ${(props) => props.verticalAlign && css`
         align-items: center;
     `}
 
-    ${props => props.center && css`
+    ${(props) => props.center && css`
         justify-content: center;
     `}
 `;

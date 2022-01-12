@@ -1,5 +1,5 @@
 import { ProviderFile } from '../types';
-import { DataRequestProvider } from "../types/Provider";
+import { DataRequestProvider } from '../types/Provider';
 import crypto from 'crypto';
 import path from 'path';
 import fetch from 'node-fetch';
@@ -14,7 +14,9 @@ const requestSavePath = path.join(app.getAppPath(), 'data');
 
 class Instagram extends DataRequestProvider {
     public static key = 'instagram';
+
     public static dataRequestIntervalDays = 5;
+
     public static requiresEmailAccount = false;
 
     /**
@@ -22,7 +24,7 @@ class Instagram extends DataRequestProvider {
      */
     windowParams = {
         key: this.windowKey,
-        origin: 'instagram.com'
+        origin: 'instagram.com',
     };
 
     async initialise(): Promise<string> {
@@ -64,7 +66,7 @@ class Instagram extends DataRequestProvider {
                         
                         // Do a check if the language is set to English, and if not,
                         // change it to English
-                        const lang = cookies.find(cookie => cookie.name === 'ig_lang');
+                        const lang = cookies.find((cookie) => cookie.name === 'ig_lang');
                         if (lang?.value !== 'en') {
                             await window.webContents.session.cookies.set({ 
                                 url: 'https://instagram.com',
@@ -89,14 +91,14 @@ class Instagram extends DataRequestProvider {
                 window.webContents.once('did-finish-load', eventHandler);
             });
         });
-    }
+    };
 
     update = async (): Promise<ProviderFile[]> => {
         const cookies = await this.verifyLoggedInStatus();
 
         // We extract the right cookies, and create a config we can then
         // use for successive requests
-        const sessionid = cookies.find(cookie => cookie.name === 'sessionid').value;
+        const sessionid = cookies.find((cookie) => cookie.name === 'sessionid').value;
         // const shbid = this.cookies.find(cookie => cookie.name === 'shbid').value;
         const fetchConfig =  {
             method: 'GET',
@@ -104,15 +106,15 @@ class Instagram extends DataRequestProvider {
                 Accept: 'application/json',
                 Referer: 'https://www.instagram.com/accounts/access_tool/ads_interests',
                 'X-CSRFToken': crypto.randomBytes(20).toString('hex'),
-                cookie: `sessionid=${sessionid}; shbid=${''}`
+                cookie: `sessionid=${sessionid}; shbid=${''}`,
             },
         };
 
         // Now we do all API requests in order to retrieve the data
         const responses = await Promise.all(
-            scrapingUrls.map(url => 
-                fetch(url, fetchConfig).then(response => response.json())
-            )
+            scrapingUrls.map((url) => 
+                fetch(url, fetchConfig).then((response) => response.json()),
+            ),
         );
 
         // We then transform the data so that we can return it to the handler
@@ -122,7 +124,7 @@ class Instagram extends DataRequestProvider {
                 data: JSON.stringify(response.data.data, null, 4),
             };
         });
-    }
+    };
 
     async dispatchDataRequest(): Promise<void> {
         await this.verifyLoggedInStatus();
@@ -138,7 +140,7 @@ class Instagram extends DataRequestProvider {
             // Load the dispatched window
             window.hide();
             await new Promise((resolve) => {
-                window.webContents.on('did-finish-load', resolve)
+                window.webContents.on('did-finish-load', resolve);
                 window.loadURL('https://www.instagram.com/download/request/');
             });
 
@@ -155,7 +157,7 @@ class Instagram extends DataRequestProvider {
             // password. We then listen for a succesfull AJAX call 
             return new Promise((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
-                    urls: [ 'https://www.instagram.com/download/request_download_data_ajax/' ]
+                    urls: [ 'https://www.instagram.com/download/request_download_data_ajax/' ],
                 }, (details: Electron.OnCompletedListenerDetails) => {
                     if (details.statusCode === 200) {
                         resolve();
@@ -173,7 +175,7 @@ class Instagram extends DataRequestProvider {
 
             // Load page URL
             await new Promise((resolve) => {
-                window.webContents.once('did-finish-load', resolve)
+                window.webContents.once('did-finish-load', resolve);
                 window.loadURL('https://www.instagram.com/download/request/');
             });
 
@@ -193,7 +195,7 @@ class Instagram extends DataRequestProvider {
 
             // Load page URL
             await new Promise((resolve) => {
-                window.webContents.once('did-finish-load', resolve)
+                window.webContents.once('did-finish-load', resolve);
                 window.loadURL('https://www.instagram.com/download/request/');
             });
 
@@ -246,7 +248,7 @@ class Instagram extends DataRequestProvider {
             // the repository
             const zip = new AdmZip(filePath);
             await new Promise((resolve) => 
-                zip.extractAllToAsync(extractionPath, true, resolve)
+                zip.extractAllToAsync(extractionPath, true, resolve),
             );
 
             // Translate this into a form that is readable for the ParserManager

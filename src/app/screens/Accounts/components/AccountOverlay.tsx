@@ -34,7 +34,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
 
         return selectedAccount.startsWith('email_')
             ? state.accounts.emailProviders.byKey[selectedAccount.split('email_')[1]]
-            : state.accounts.byKey[selectedAccount]
+            : state.accounts.byKey[selectedAccount];
     });
     const [isLoading, setLoading] = useState(false);
 

@@ -47,7 +47,7 @@ const Line = styled.div`
     }
 `;
 
-function GraphExplainer (): JSX.Element {
+function GraphExplainer(): JSX.Element {
     return (
         <div>
             <Line>

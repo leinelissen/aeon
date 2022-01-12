@@ -13,8 +13,8 @@ export const newCommitsSlice = createSlice({
     reducers: {
         add(state, action: PayloadAction<NewCommit>) {
             state.unshift(action.payload);
-        }
-    }
+        },
+    },
 });
 
 export default newCommitsSlice.reducer;

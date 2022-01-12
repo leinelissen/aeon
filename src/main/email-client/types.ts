@@ -52,7 +52,7 @@ export enum EmailCommands {
     ADD_ACCOUNT,
     DELETE_ACCOUNT,
     GET_ACCOUNTS,
-    GET_CLIENTS
+    GET_CLIENTS,
 }
 
 export enum EmailEvents {

@@ -26,7 +26,7 @@ if (!existsSync(logPath)) {
  */
 type Logger = {
     [K in typeof loggerCategories[number]]: WinstonLogger;
-}
+};
 
 // This container will hold all the loggers.
 export const container = new Container();
@@ -65,7 +65,7 @@ const logger = loggerCategories.reduce<Logger>((loggers, categoryName) => {
                     format.label({ label: categoryName }),
                     customFormatter,
                 ),
-            })
+            }),
         ],
     });
     return loggers;

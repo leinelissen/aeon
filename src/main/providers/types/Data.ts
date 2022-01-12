@@ -91,7 +91,7 @@ export enum ProvidedDataTypes {
     // An inference about an individual
     INFERENCE = 'inference',
     // A song that has been played by the user
-    PLAYED_SONG = 'played_song'
+    PLAYED_SONG = 'played_song',
 }
 
 export interface ProviderDatum<D, T = ProvidedDataTypes> {
@@ -158,7 +158,7 @@ type SessionData = {
 };
 export type Session = ProviderDatum<SessionData, ProvidedDataTypes.SESSION>;
 export type PeerGroup = ProviderDatum<string, ProvidedDataTypes.PEER_GROUP>;
-export type Employment = ProviderDatum<{ job_title: string; company: string; }, ProvidedDataTypes.EMPLOYMENT>;
+export type Employment = ProviderDatum<{ jobTitle: string; company: string; }, ProvidedDataTypes.EMPLOYMENT>;
 export type VisitedPage = ProviderDatum<{ name: string; uri?: string; }, ProvidedDataTypes.VISITED_PAGE>;
 export type OffSiteActivity = ProviderDatum<{ type?: string; website: string; }, ProvidedDataTypes.OFF_SITE_ACTIVITY>;
 export type EventResponse = ProviderDatum<{ name?: string; response?: string; }, ProvidedDataTypes.EVENT_RESPONSE>;

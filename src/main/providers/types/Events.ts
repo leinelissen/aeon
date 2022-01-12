@@ -8,7 +8,7 @@ export enum ProviderCommands {
     REFRESH,
     INITIALISE,
     GET_ACCOUNTS,
-    GET_AVAILABLE_PROVIDERS
+    GET_AVAILABLE_PROVIDERS,
 }
 
 export enum ProviderEvents {
@@ -19,7 +19,7 @@ export enum ProviderEvents {
     UPDATE_COMPLETE = 'update_complete',
     ACCOUNT_CREATED = 'account_created',
     ACCOUNT_DELETED = 'account_deleted',
-    READY = 'ready'
+    READY = 'ready',
 }
 
 export type CheckingDataRequests = Record<string, never>;

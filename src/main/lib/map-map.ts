@@ -1,9 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Map<K, V> {
     // eslint-disable-next-line
     map(callback: (value: V, key: K, index: number) => any): any
 }
 
-Map.prototype.map = function(callback) {
+Map.prototype.map = function (callback) {
     // Retrieve all keys from the Map
     const entries = Array.from(this.entries());
 
@@ -12,4 +13,4 @@ Map.prototype.map = function(callback) {
         // Then call the callback for each item
         return callback(value, key, index);
     });
-}
+};

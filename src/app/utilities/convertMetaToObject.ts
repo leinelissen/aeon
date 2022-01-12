@@ -24,7 +24,7 @@ function convertMetaToObject(message: string): CommitMetadata {
 
         // Then, switch on the key and then add the values to the sum object
         // based on any hits
-        switch(key) {
+        switch (key) {
             case 'Aeon-Update-Type': {
                 // Access the type on the enum
                 const type = ProviderUpdateType[value as keyof typeof ProviderUpdateType];

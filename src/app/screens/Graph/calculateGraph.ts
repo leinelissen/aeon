@@ -1,7 +1,7 @@
 import DataType from 'app/utilities/DataType';
 import { EdgeDefinition, ElementsDefinition, NodeDefinition } from 'cytoscape';
 import { uniqBy } from 'lodash-es';
-import { ProviderDatum } from "main/providers/types/Data";
+import { ProviderDatum } from 'main/providers/types/Data';
 
 /**
  * Transforms an incoming set of ProivderDatums into a graph that can be
@@ -11,7 +11,7 @@ import { ProviderDatum } from "main/providers/types/Data";
 export default function calculateGraph(data: ProviderDatum<unknown, unknown>[]): ElementsDefinition {
     // Retrieve all unique providers, accounts and sources that are present on the data
     const uniqueProviders = uniqBy(data, 'provider');
-    const uniqueAccounts = uniqBy(data, datum => `${datum.provider}_${datum.account}`);
+    const uniqueAccounts = uniqBy(data, (datum) => `${datum.provider}_${datum.account}`);
     // const uniqueSources = uniqBy(data, 'source');
     const uniqueTypes = uniqBy(data, 'type');
 
@@ -29,7 +29,7 @@ export default function calculateGraph(data: ProviderDatum<unknown, unknown>[]):
                 id: `account_${datum.provider}_${datum.account}`,
                 label: datum.account,
                 type: 'account',
-            }
+            },
         })),
         ...uniqueTypes.map((datum): NodeDefinition => ({
             data: {
@@ -37,7 +37,7 @@ export default function calculateGraph(data: ProviderDatum<unknown, unknown>[]):
                 label: datum.type,
                 type: 'type',
                 datumType: datum.type,
-            }
+            },
         })),
         ...data.map((datum, i): NodeDefinition => ({
             data: {
@@ -46,9 +46,9 @@ export default function calculateGraph(data: ProviderDatum<unknown, unknown>[]):
                 type: 'datum',
                 datumType: datum.type,
                 parent: `parent_type_${datum.type}`,
-                i
-            }
-        }))
+                i,
+            },
+        })),
     ];
 
     // Create a variable that will hold all future edges
@@ -57,15 +57,15 @@ export default function calculateGraph(data: ProviderDatum<unknown, unknown>[]):
             data: {
                 source: `account_${datum.provider}_${datum.account}`,
                 target: `provider_${datum.provider}`,
-                type: 'account_provider'
-            }
+                type: 'account_provider',
+            },
         })),
         ...data.flatMap((datum, i): EdgeDefinition[] => ([
             {
                 data: {
                     source: `datum_${i}`,
                     target: `account_${datum.provider}_${datum.account}`,
-                    type: 'datum_account'
+                    type: 'datum_account',
                 },
             },
             {
@@ -75,11 +75,11 @@ export default function calculateGraph(data: ProviderDatum<unknown, unknown>[]):
                     type: 'datum_type',
                 },
             },
-        ]))
+        ])),
     ];
 
     return {
         nodes,
         edges,
-    }
+    };
 }

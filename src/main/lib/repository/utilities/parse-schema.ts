@@ -1,5 +1,5 @@
-import logger from "main/lib/logger";
-import { ProviderDatum, ProviderParser } from "main/providers/types/Data";
+import logger from 'main/lib/logger';
+import { ProviderDatum, ProviderParser } from 'main/providers/types/Data';
 
 const decoder = new TextDecoder('utf-8');
 
@@ -129,7 +129,7 @@ function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderPar
                     // We also introduce another loop so that we can deal
                     // with the case where multiple items are returned per
                     // original item
-                    return (Array.isArray(data) ? data : [data]).flatMap(item => ({
+                    return (Array.isArray(data) ? data : [data]).flatMap((item) => ({
                         type,
                         provider,
                         source,

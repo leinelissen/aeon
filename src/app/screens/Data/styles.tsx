@@ -1,5 +1,5 @@
 import React, { HTMLAttributes } from 'react';
-import { ProvidedDataTypes, ProviderDatum } from "main/providers/types/Data";
+import { ProvidedDataTypes, ProviderDatum } from 'main/providers/types/Data';
 import styled, { css } from 'styled-components';
 import DataType from 'app/utilities/DataType';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,7 +20,7 @@ export const StyledListButton = styled(NavigatableListEntry)<ListButtonProps>`
         border-radius: 5px;
     }
 
-    ${props => props.added && css`
+    ${(props) => props.added && css`
     background-color: var(--color-green-100);
 
         &:hover:not(.active) {
@@ -32,7 +32,7 @@ export const StyledListButton = styled(NavigatableListEntry)<ListButtonProps>`
         }
     `}
 
-    ${props => props.deleted && css`
+    ${(props) => props.deleted && css`
         background-color: var(--color-red-100);
 
         &:hover:not(.active) {
@@ -44,7 +44,7 @@ export const StyledListButton = styled(NavigatableListEntry)<ListButtonProps>`
         }
     `}
 
-    ${props => props.modified && css`
+    ${(props) => props.modified && css`
         background-color: var(--color-yellow-100);
 
         &:hover:not(.active) {

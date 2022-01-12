@@ -48,8 +48,8 @@ export const SubHeading = styled(RowHeading)`
 export const PanelGrid = styled.div<{ columns?: number; noTopPadding?: boolean; }>`
     display: grid;
     grid-auto-columns: auto;
-    grid-template-columns: repeat(${props => props.columns || 3}, 1fr);
-    padding-top: ${props => props.noTopPadding ? 0 : 50}px;
+    grid-template-columns: repeat(${(props) => props.columns || 3}, 1fr);
+    padding-top: ${(props) => props.noTopPadding ? 0 : 50}px;
     height: 100%;
     position: relative;
     overflow: hidden;
@@ -69,7 +69,7 @@ export const List = styled.div<{ topMargin?: boolean }>`
     position: relative;
     border-right: 1px solid var(--color-border);
 
-    ${props => props.topMargin && css`
+    ${(props) => props.topMargin && css`
         margin-top: 0px;
     `}
 `;
@@ -77,7 +77,7 @@ export const List = styled.div<{ topMargin?: boolean }>`
 export const SplitPanel = styled.div`
     display: flex;
     flex-direction: column;
-`
+`;
 
 export const PanelBottomButtons = styled.div`
     margin-top: auto;
@@ -104,7 +104,7 @@ type ListButtonProps = {
 } & NavLinkProps & React.RefAttributes<HTMLAnchorElement>;
 
 export const NavigatableListEntryContainer = styled<React.ForwardRefExoticComponent<ListButtonProps>>(NavLink).withConfig({
-    shouldForwardProp: (prop) => typeof prop === 'string' && !['deleted', 'modified', 'added', 'large'].includes(prop)
+    shouldForwardProp: (prop) => typeof prop === 'string' && !['deleted', 'modified', 'added', 'large'].includes(prop),
 })`
     border: 0;
     background: transparent;
@@ -150,7 +150,7 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
         background: var(--color-blue-100);
     }
 
-    ${props => props.added && css`
+    ${(props) => props.added && css`
         background-color: var(--color-green-100);
 
         &.active {
@@ -158,7 +158,7 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
         }
     `}
 
-    ${props => props.deleted && css`
+    ${(props) => props.deleted && css`
         background-color: var(--color-red-100);
 
         &.active {
@@ -166,7 +166,7 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
         }
     `}
 
-    ${props => props.modified && css`
+    ${(props) => props.modified && css`
         background-color: var(--color-yellow-100);
 
         &.active {
@@ -174,7 +174,7 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
         }
     `}
 
-    ${props => props.large && css`
+    ${(props) => props.large && css`
         font-size: 16px;
         font-weight: 500;
     `}
@@ -227,5 +227,5 @@ export function NavigatableListEntry({
                 <FontAwesomeIcon fixedWidth icon={faChevronRight} />
             </ChevronWrapper>
         </NavigatableListEntryContainer>
-    )
+    );
 }

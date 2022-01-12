@@ -29,7 +29,7 @@ function IconBadge({ icon }: IconBadgeProps) {
                 fixedWidth
             />
         </Container>
-    )
+    );
 }
 
 export default IconBadge;

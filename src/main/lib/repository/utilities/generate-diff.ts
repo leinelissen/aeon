@@ -1,6 +1,6 @@
 import { DiffType, DiffResult } from '../types';
 import generateParsedCommit from './generate-parsed-commit';
-import { ProviderDatum } from "main/providers/types/Data";
+import { ProviderDatum } from 'main/providers/types/Data';
 import { isEqual } from 'lodash-es';
 import { TreeEntry } from 'nodegit';
 
@@ -19,7 +19,7 @@ interface DataArrayDiff {
  */
 function diffDataArray(
     before: ProviderDatum<unknown, unknown>[], 
-    after: ProviderDatum<unknown, unknown>[]
+    after: ProviderDatum<unknown, unknown>[],
 ): DataArrayDiff {
     // GUARD: If any of the two diffs is empty, return the whole object as diff
     if (!before.length) {
@@ -35,7 +35,7 @@ function diffDataArray(
             added: [],
             deleted: before,
             updated: [],
-        }
+        };
     }
 
     // Initialise sorted arrays
@@ -51,10 +51,10 @@ function diffDataArray(
     // Loop through the before array to see if any of its elements have been deleted
     for (const dBefore of before) {
         // Find any object on the after array that matches this datapoint
-        const match = after.find(dAfter => {
+        const match = after.find((dAfter) => {
             return typeof dAfter.data === 'object' && dAfter.data !== null
                 ? isEqual(dBefore.data, dAfter.data)
-                : dBefore.data === dAfter.data
+                : dBefore.data === dAfter.data;
         });
 
         // If a match is found, we can exit the loop. No change has been made to
@@ -69,10 +69,10 @@ function diffDataArray(
     // Now we'll sort through the after array and see if any elements have been added
     for (const dAfter of after) {
         // Find any object on the after array that matches this datapoint
-        const match = before.find(dBefore => {
+        const match = before.find((dBefore) => {
             return typeof dAfter.data === 'object' && dAfter.data !== null
                 ? isEqual(dAfter.data, dBefore.data)
-                : dAfter.data === dBefore.data
+                : dAfter.data === dBefore.data;
         });
 
         // If a match is found, we can exit the loop. No change has been made to
@@ -100,7 +100,7 @@ function diffDataArray(
 async function generateDiff(
     filepath: string, 
     ref: TreeEntry, 
-    compared: TreeEntry
+    compared: TreeEntry,
 ): Promise<DiffResult<DataArrayDiff>> {
     // Parse all the data from the files for both commits
     const [ refData, comparedData ] = await Promise.all([
@@ -122,8 +122,8 @@ async function generateDiff(
         diff,
         type: DiffType.EXTRACTED_DATA,
         hasChanges: Object.keys(diff.added).length > 0
-            || Object.keys(diff.deleted).length > 0
-    }
+            || Object.keys(diff.deleted).length > 0,
+    };
 }
 
 export default generateDiff;

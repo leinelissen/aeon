@@ -21,14 +21,14 @@ const style: Stylesheet[] = [
             'color': cssVar('--color-text'),
             'font-size': '10px',
             'font-family': 'IBM Plex Mono',
-        }
+        },
     },
     {
         selector: 'node.hover',
         style: {
             'background-color': cssVar('--color-primary'),
             'color': cssVar('--color-white'),
-        }
+        },
     },
     {
         selector: 'node[type="provider"]',
@@ -43,13 +43,13 @@ const style: Stylesheet[] = [
             'border-color': cssVar('--color-blue-300'),
             width: 100,
             height: 100,
-        }
+        },
     },
     {
         selector: 'node[type="provider"].hover',
         style: {
             'background-color': cssVar('--color-blue-600'),
-        }
+        },
     },
     {
         selector: 'node[type="account"]',
@@ -57,8 +57,8 @@ const style: Stylesheet[] = [
             width: 75,
             height: 75,
             'background-color': cssVar('--color-blue-300'),
-            content: 'data(label)'
-        }
+            content: 'data(label)',
+        },
     },
     {
         selector: 'node[type="type"]',
@@ -69,19 +69,19 @@ const style: Stylesheet[] = [
             'background-position-y': '50%',
             content: '',
             color: '#ccc',
-        }
+        },
     },
     {
         selector: 'node[type="type"].hover',
         style: {
             'background-image': renderNode(cssVar('--color-white'), 24),
-        }
+        },
     },
     {
         selector: 'node[type="account"].hover',
         style: {
             'background-color': cssVar('--color-blue-400'),
-        }
+        },
     },
     {
         selector: 'node[type="datum"]',
@@ -89,13 +89,13 @@ const style: Stylesheet[] = [
             width: 10,
             height: 10,
             label: '',
-        }
+        },
     },
     {
         selector: 'node.secondary-hover',
         style: {
             'background-color': cssVar('--color-primary'),
-        }
+        },
     },
     {
         selector: 'edge',
@@ -105,34 +105,34 @@ const style: Stylesheet[] = [
             // label: 'data(label)',
             'font-size': '8px',
             'font-family': 'IBM Plex Mono',
-        }
+        },
     },
     {
         selector: 'edge[type="datum_type"]',
         style: {
             'line-color': cssVar('--color-gray-300'),
             width: 1,
-        }
+        },
     },
     {
         selector: 'edge[type="datum_account"]',
         style: {
             
-        }
+        },
     },
     {
         selector: 'edge[type="account_provider"]',
         style: {
             'line-color': cssVar('--color-blue-300'),
             width: 10,
-        }
+        },
     },
     {
         selector: 'edge.secondary-hover',
         style: {
-            'line-color': cssVar('--color-primary')
-        }
-    }
+            'line-color': cssVar('--color-primary'),
+        },
+    },
 ];
 
 export const Container = styled.div<{ isHovered?: boolean }>`
@@ -142,8 +142,8 @@ export const Container = styled.div<{ isHovered?: boolean }>`
 
 export const Tooltip = styled.div<{ top: number, left: number }>`
     position: absolute;
-    top: ${props => props.top + 15}px;
-    left: ${props => props.left}px;
+    top: ${(props) => props.top + 15}px;
+    left: ${(props) => props.left}px;
     transform: translateX(-50%);
     background-color: var(--color-modal-background);
     border-radius: 4px;

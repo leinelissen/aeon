@@ -20,7 +20,7 @@ class EmailBridge {
         ipcMain.handle(channelName, this.handleMessage);
 
         // Subscribe to manager-initated events
-        this.manager.addListener('*', function() {
+        this.manager.addListener('*', function () {
             // Log the event
             logger.email.info(`New event: ${JSON.stringify(this.event)}`);
 
@@ -31,7 +31,7 @@ class EmailBridge {
 
     // eslint-disable-next-line
     private handleMessage = (event: IpcMainInvokeEvent, command: number, ...args: any[]): Promise<any> => {
-        switch(command) {
+        switch (command) {
             case EmailCommands.GET_CLIENTS:
                 return Promise.resolve(this.manager.emailClients.keys());
             case EmailCommands.GET_ACCOUNTS:
@@ -41,7 +41,7 @@ class EmailBridge {
             case EmailCommands.DELETE_ACCOUNT:
                 return Promise.resolve(this.manager.deleteAccount(args[0]));
         }
-    }
+    };
 
     /**
      * Send an event to the renderer

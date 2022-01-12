@@ -1,5 +1,5 @@
 import { ProviderFile } from '../types';
-import { OpenDataRightsProvider } from "../types/Provider";
+import { OpenDataRightsProvider } from '../types/Provider';
 import fetch, { RequestInit } from 'node-fetch';
 import store from 'main/store';
 import AdmZip from 'adm-zip';
@@ -8,15 +8,16 @@ import { withSecureWindow } from 'main/lib/create-secure-window';
 type Token = {
     access_token: string;
     refresh_token: string;
-}
+};
 
 class OpenDataRights extends OpenDataRightsProvider {
     public static key = 'open-data-rights';
+
     public static dataRequestIntervalDays = 1;
 
     private token: Token | null;
 
-    constructor (windowKey: string, accountName?: string) {
+    constructor(windowKey: string, accountName?: string) {
         super(windowKey, accountName);
         this.token = store.get(this.windowKey, null) as Token | null;
     }
@@ -24,10 +25,10 @@ class OpenDataRights extends OpenDataRightsProvider {
     getInit = (): RequestInit => {
         return {
             headers: {
-                'Authorization': `Bearer ${this.token.access_token}`
-            }
-        }
-    }
+                'Authorization': `Bearer ${this.token.access_token}`,
+            },
+        };
+    };
 
     async initialise(): Promise<string> {
         const code = await withSecureWindow<string>(this.windowParams, async (window) => {
@@ -40,8 +41,8 @@ class OpenDataRights extends OpenDataRightsProvider {
             return new Promise((resolve) => {
                 const eventHandler = () => {
                     if (window.webContents.getURL().startsWith('aeon://odr-callback')) {
-                        const url = window.webContents.getURL().replace('aeon://odr-callback', '');
-                        const token = new URLSearchParams(url).get('token');
+                        const replacedUrl = window.webContents.getURL().replace('aeon://odr-callback', '');
+                        const token = new URLSearchParams(replacedUrl).get('token');
                         resolve(token);
                     }
                 };
@@ -59,15 +60,15 @@ class OpenDataRights extends OpenDataRightsProvider {
         this.token = await fetch(`${this.url}/oauth/token`, {
             method: 'POST',
             body: formData,
-        }).then(response => response.json() as Promise<Token>);
+        }).then((response) => response.json() as Promise<Token>);
 
         // Also save it to disk
         store.set(this.windowKey, this.token);
 
         // Now we just need to fetch the account
         return fetch(`${this.url}/data/me`, this.getInit())
-            .then(response => response.json() as Promise<{ account: string }>)
-            .then(response => response.account);
+            .then((response) => response.json() as Promise<{ account: string }>)
+            .then((response) => response.account);
     }
 
     async update(): Promise<false> {
@@ -76,29 +77,29 @@ class OpenDataRights extends OpenDataRightsProvider {
         return false;
     }
 
-    dispatchDataRequest = async(): Promise<string> => {
+    dispatchDataRequest = async (): Promise<string> => {
         return fetch(`${this.url}/requests`, {
             ...this.getInit(),
             method: 'POST',
-        }).then(response => response.json() as Promise<{ requestId: string }>)
-            .then(response => response.requestId);
-    }
+        }).then((response) => response.json() as Promise<{ requestId: string }>)
+            .then((response) => response.requestId);
+    };
 
     isDataRequestComplete = (identifier: string): Promise<boolean> => {
         return fetch(`${this.url}/requests/${identifier}/complete`, this.getInit())
-            .then(response => response.text())
-            .then(response => response === '1');
-    }
+            .then((response) => response.text())
+            .then((response) => response === '1');
+    };
 
     parseDataRequest = async (extractionPath: string, identifier: string): Promise<ProviderFile[]> => {
         // Retrieve the archive from the API
         const archive = await fetch(`${this.url}/requests/${identifier}/download`, this.getInit())
-            .then(response => response.buffer());
+            .then((response) => response.buffer());
 
         // Then pass it over to adm-zip
         const zip = new AdmZip(archive);
         await new Promise((resolve) => 
-            zip.extractAllToAsync(extractionPath, true, resolve)
+            zip.extractAllToAsync(extractionPath, true, resolve),
         );
 
         // Translate this into a form that is readable for the ParserManager
@@ -111,7 +112,7 @@ class OpenDataRights extends OpenDataRightsProvider {
         });
 
         return files;
-    }
+    };
 }
 
 export default OpenDataRights;

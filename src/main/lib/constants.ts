@@ -71,7 +71,7 @@ const cliArguments = yargs(hideBin(process.argv))
     })
     .option('tour', {
         desc: 'Indicate whether the applications should include a tour highlighting available features',
-        type: 'boolean'
+        type: 'boolean',
     })
     .parserConfiguration({
         'camel-case-expansion': true,
@@ -94,6 +94,6 @@ export const {
 } = constants;
 
 // Register handler for retrieving constants on app
-ipcMain.on('env', (event) => { event.returnValue = constants });
+ipcMain.on('env', (event) => { event.returnValue = constants; });
     
 export default constants;

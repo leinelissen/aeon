@@ -1,4 +1,4 @@
-import { EducationExperience, Employment, EventResponse, MobileDevice, OffSiteActivity, ProvidedDataTypes, ProviderParser, SearchQuery, VisitedPage } from "../types/Data";
+import { EducationExperience, Employment, EventResponse, MobileDevice, OffSiteActivity, ProvidedDataTypes, ProviderParser, SearchQuery, VisitedPage } from '../types/Data';
 import path from 'path';
 
 const parsers: ProviderParser[] = [
@@ -7,14 +7,14 @@ const parsers: ProviderParser[] = [
         schemas: [{
             type: ProvidedDataTypes.PEER_GROUP,
             key: 'friend_peer_group',
-        }]
+        }],
     },
     {
         source: path.join('about_you', 'messenger.json'),
         schemas: [
             {
                 key: 'CITY',
-                type: ProvidedDataTypes.PLACE_OF_RESIDENCE
+                type: ProvidedDataTypes.PLACE_OF_RESIDENCE,
             },
             {
                 key: 'COUNTRY',
@@ -22,22 +22,22 @@ const parsers: ProviderParser[] = [
             },
             {
                 key: 'GENDER',
-                type: ProvidedDataTypes.GENDER
+                type: ProvidedDataTypes.GENDER,
             },
             {
                 key: 'EMAIL',
-                type: ProvidedDataTypes.EMAIL
+                type: ProvidedDataTypes.EMAIL,
             },
             {
                 type: ProvidedDataTypes.EMPLOYMENT,
                 transformer: (data: any): Partial<Employment>[] => {
                     return [{
                         data: {
-                            job_title: data?.messenger?.autofill_information?.JOB_TITLE,
+                            jobTitle: data?.messenger?.autofill_information?.JOB_TITLE,
                             company: data?.messenger?.autofill_information?.COMPANY_NAME,
-                        }
+                        },
                     }];
-                }
+                },
             },
         ],
     },
@@ -46,9 +46,9 @@ const parsers: ProviderParser[] = [
         schemas: [
             {
                 type: ProvidedDataTypes.USER_LANGUAGE,
-                key: 'value'
+                key: 'value',
             },
-        ]
+        ],
     },
     {
         source: path.join('about_you', 'visited.json'),
@@ -62,20 +62,20 @@ const parsers: ProviderParser[] = [
                             name: entry?.data?.name,
                             uri: entry?.data?.uri,
                         },
-                        timestamp: entry.timestamp && new Date(entry.timestamp * 1000).toString()
+                        timestamp: entry.timestamp && new Date(entry.timestamp * 1000).toString(),
                     };
-                }
-            }
-        ]
+                },
+            },
+        ],
     },
     {
         source: path.join('ads_and_businesses', 'ads_interests.json'),
         schemas: [
             {
                 key: 'topics',
-                type: ProvidedDataTypes.AD_INTEREST
-            }
-        ]
+                type: ProvidedDataTypes.AD_INTEREST,
+            },
+        ],
     },
     {
         source: path.join('ads_and_businesses', 'your_off-facebook_activity.json'),
@@ -93,9 +93,9 @@ const parsers: ProviderParser[] = [
                             timestamp: new Date(event.timestamp * 1000).toString(),
                         };
                     });
-                }
-            }
-        ]
+                },
+            },
+        ],
     },
     {
         source: path.join('events', 'your_event_responses.json'),
@@ -107,67 +107,67 @@ const parsers: ProviderParser[] = [
                     return {
                         data: {
                             name: data.name,
-                            response: 'interested'
-                        }
+                            response: 'interested',
+                        },
                     };
-                }
-            }
-        ]
+                },
+            },
+        ],
     },
     {
         source: path.join('likes_and_reactions', 'pages.json'),
         schemas: [
             {
                 key: 'name',
-                type: ProvidedDataTypes.LIKE
-            }
-        ]
+                type: ProvidedDataTypes.LIKE,
+            },
+        ],
     },
     {
         source: path.join('location', 'primary_location.json'),
         schemas: [
             {
                 key: 'city_region_pairs',
-                type: ProvidedDataTypes.PLACE_OF_RESIDENCE
+                type: ProvidedDataTypes.PLACE_OF_RESIDENCE,
             },
             {
                 key: 'zipcode',
-                type: ProvidedDataTypes.PLACE_OF_RESIDENCE
-            }
-        ]
+                type: ProvidedDataTypes.PLACE_OF_RESIDENCE,
+            },
+        ],
     },
     {
         source: path.join('location', 'timezone.json'),
         schemas: [
             {
                 key: 'timezone',
-                type: ProvidedDataTypes.TIMEZONE
-            }
-        ]
+                type: ProvidedDataTypes.TIMEZONE,
+            },
+        ],
     },
     {
         source: path.join('payment_history', 'payment_history.json'),
         schemas: [
             {
                 key: 'preferred_currency',
-                type: ProvidedDataTypes.CURRENCY
-            }
-        ]
+                type: ProvidedDataTypes.CURRENCY,
+            },
+        ],
     },
     {
         source: path.join('profile_information', 'profile_information.json'),
         schemas: [
             {
                 key: 'full_name',
-                type: ProvidedDataTypes.FULL_NAME
+                type: ProvidedDataTypes.FULL_NAME,
             },
             {
                 key: 'first_name',
-                type: ProvidedDataTypes.FIRST_NAME
+                type: ProvidedDataTypes.FIRST_NAME,
             },
             {
                 key: 'last_name',
-                type: ProvidedDataTypes.LAST_NAME
+                type: ProvidedDataTypes.LAST_NAME,
             },
             {
                 key: 'emails',
@@ -178,10 +178,10 @@ const parsers: ProviderParser[] = [
                         return emails;
                     }, []).map((email) => {
                         return {
-                            data: email
+                            data: email,
                         };
                     });
-                }
+                },
             },
             {
                 key: ['current_city', 'hometown'],
@@ -190,7 +190,7 @@ const parsers: ProviderParser[] = [
                     return [{
                         data: data.name,
                     }];
-                }
+                },
             },
             {
                 key: ['gender_option', 'pronoun'],
@@ -205,9 +205,9 @@ const parsers: ProviderParser[] = [
                             institution: experience.name,
                             type: experience.school_type,
                             graduated: experience.graduated,
-                        }
+                        },
                     };
-                }
+                },
             },
             {
                 key: 'work_experiences',
@@ -215,18 +215,18 @@ const parsers: ProviderParser[] = [
                 transformer: (experience: any): Partial<Employment>  => {
                     return {
                         data: {
-                            job_title: experience.title,
+                            jobTitle: experience.title,
                             company: experience.employer,
-                        }
+                        },
                     };
-                }
+                },
             },
             {
                 key: 'registration_timestamp',
                 type: ProvidedDataTypes.REGISTRATION_DATE,
                 transformer: (timestamp: number) => [{ data: new Date(timestamp * 1000).toString() }],
             },
-        ]
+        ],
     },
     {
         source: path.join('search_history', 'your_search_history.json'),
@@ -238,8 +238,8 @@ const parsers: ProviderParser[] = [
                     data: query.data.reduce((sum: string, q: any) => sum + q.text, ''),
                     timestamp: new Date(query.timestamp * 1000).toString(),
                 };
-            }
-        }]
+            },
+        }],
     },
     {
         source: path.join('security_and_login_information', 'mobile_devices.json'),
@@ -255,9 +255,9 @@ const parsers: ProviderParser[] = [
                         device_locale: device.device_locale,
                     },
                     timestamp: new Date(device.update_time * 1000).toString(),
-                }
-            }
-        }]
+                };
+            },
+        }],
     },
     {
         source: path.join('security_and_login_information', 'user_ip_addresses.json'),
@@ -268,10 +268,10 @@ const parsers: ProviderParser[] = [
                 return {
                     data: entry.ip,
                     timestamp: new Date(entry.timestamp * 1000).toString(),
-                }
-            }
-        }]
-    }
+                };
+            },
+        }],
+    },
 ];
 
 export default parsers;

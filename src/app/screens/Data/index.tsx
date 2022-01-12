@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProvidedDataTypes } from "main/providers/types/Data";
+import { ProvidedDataTypes } from 'main/providers/types/Data';
 import Loading from 'app/components/Loading';
 import {
     ClickableCategory,
@@ -22,7 +22,7 @@ function Data(): JSX.Element {
         byKey,
         byType,
         deleted,
-        deletedByType
+        deletedByType,
     } = useSelector((state: State) => state.data);
     const parsedDatumId = Number.parseInt(datumId);
 
@@ -47,7 +47,7 @@ function Data(): JSX.Element {
                                 items={byType[key].length}
                                 disabled={byType[key].length > 0}
                                 deleted={deletedByType[key].length > 0}
-                                data-tour={byType[key].length ? "data-category-button" : ""}
+                                data-tour={byType[key].length ? 'data-category-button' : ''}
                                 data-telemetry-id={`new-commit-select-category-${key}`}
                             />
                         ))

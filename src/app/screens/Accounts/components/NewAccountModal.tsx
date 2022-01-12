@@ -44,7 +44,7 @@ function NewAccountButton({ client, children, onComplete, optionalParameters, ..
 
     return (
         <Button icon={faPlus} {...props} onClick={handleClick} loading={isActive}>{children}</Button>
-    )
+    );
 }
 
 function NewAccountModal(): JSX.Element {
@@ -53,7 +53,7 @@ function NewAccountModal(): JSX.Element {
     const navigate = useNavigate();
 
     // Selectors
-    const { allProviders, availableProviders} = useSelector((state: State) => state.accounts);
+    const { allProviders, availableProviders } = useSelector((state: State) => state.accounts);
     const emailAccounts = useSelector((state: State) => state.email.accounts.all);
     
     // If demo mode is activated, we insert a dummy 'email' provider option,
@@ -70,15 +70,15 @@ function NewAccountModal(): JSX.Element {
 
     // Handlers
     const closeModal = useCallback(() => {
-        navigate(location.pathname)
+        navigate(location.pathname);
     }, [location]);
 
     const openModal = useCallback(() => { 
-        navigate(location.pathname + '?create-new-account')
+        navigate(location.pathname + '?create-new-account');
     }, [location]);
 
     const handleUrlChange = useCallback((event) => { 
-        setSelectedUrl(event.target.value)
+        setSelectedUrl(event.target.value);
     }, [setSelectedUrl]);
     
     // Make whether the modal is open dependent on the query parameters
@@ -104,9 +104,9 @@ function NewAccountModal(): JSX.Element {
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
                 <ModalMenu labels={all.map((key) =>
                     <PullContainer verticalAlign key={key} data-tour={`accounts-create-account-${key}`}>
-                        <FontAwesomeIcon icon={Providers.getIcon(key)} style={{ marginRight: '1em'}} />
+                        <FontAwesomeIcon icon={Providers.getIcon(key)} style={{ marginRight: '1em' }} />
                         {key.replace(/(-|_)/g, ' ')}
-                    </PullContainer>
+                    </PullContainer>,
                 )}>
                     {all.map((key) => key === 'email' ? 
                         <EmailProvider key="email" />
@@ -149,7 +149,7 @@ function NewAccountModal(): JSX.Element {
                                         client={key}
                                         optionalParameters={{
                                             accountName: availableProviders[key].requiresEmail ? selectedEmail : undefined,
-                                            apiUrl: availableProviders[key].requiresUrl ? selectedUrl : undefined
+                                            apiUrl: availableProviders[key].requiresUrl ? selectedUrl : undefined,
                                         }}
                                         onComplete={closeModal}
                                         disabled={
@@ -157,7 +157,7 @@ function NewAccountModal(): JSX.Element {
                                         || availableProviders[key].requiresUrl && !isValidUrl(selectedUrl)
                                         }
                                     >
-                                    Add new {key.replace(/(-|_)/g, ' ')} account
+                                        Add new {key.replace(/(-|_)/g, ' ')} account
                                     </NewAccountButton>
                                 </PullCenter>
                             </Margin>

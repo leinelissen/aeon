@@ -5,12 +5,12 @@ import {
     AccountFollowing,
     Photo,
     PrivacySetting,
-    PostSeen
-} from "../types/Data";
+    PostSeen,
+} from '../types/Data';
 import { objectToKeyValueTransformer } from 'main/lib/map-object-to-key-value';
 import path from 'path';
 import Instagram from '.';
-import { repositoryPath } from "main/lib/constants";
+import { repositoryPath } from 'main/lib/constants';
 
 /**
  * This specifies an input object in which the data is structured in an object,
@@ -38,8 +38,8 @@ const parsers: ProviderParser[] = [
         schemas: [
             {
                 key: 'text',
-                type: ProvidedDataTypes.FOLLOWER
-            }
+                type: ProvidedDataTypes.FOLLOWER,
+            },
         ],
     },
     {
@@ -47,8 +47,8 @@ const parsers: ProviderParser[] = [
         schemas: [
             {
                 key: 'text',
-                type: ProvidedDataTypes.FOLLOWER
-            }
+                type: ProvidedDataTypes.FOLLOWER,
+            },
         ],
     },
     {
@@ -56,8 +56,8 @@ const parsers: ProviderParser[] = [
         schemas: [
             {
                 key: 'text',
-                type: ProvidedDataTypes.ACCOUNT_FOLLOWING
-            }
+                type: ProvidedDataTypes.ACCOUNT_FOLLOWING,
+            },
         ],
     },
     {
@@ -65,8 +65,8 @@ const parsers: ProviderParser[] = [
         schemas: [
             {
                 key: 'text',
-                type: ProvidedDataTypes.AD_INTEREST
-            }
+                type: ProvidedDataTypes.AD_INTEREST,
+            },
         ],
     },
     {
@@ -74,8 +74,8 @@ const parsers: ProviderParser[] = [
         schemas: [
             {
                 key: 'text',
-                type: ProvidedDataTypes.AD_INTEREST
-            }
+                type: ProvidedDataTypes.AD_INTEREST,
+            },
         ],
     },
     {
@@ -91,7 +91,7 @@ const parsers: ProviderParser[] = [
                             timestamp: obj[key],
                         };
                     });
-                }
+                },
             }, {
                 key: 'following',
                 type: ProvidedDataTypes.ACCOUNT_FOLLOWING,
@@ -102,18 +102,18 @@ const parsers: ProviderParser[] = [
                             timestamp: obj[key],
                         };
                     });
-                }
-            }
+                },
+            },
         ],
     },
     {
-        source: "information_about_you.json",
+        source: 'information_about_you.json',
         schemas: [
             {
                 key: 'city_name',
-                type: ProvidedDataTypes.PLACE_OF_RESIDENCE
-            }
-        ]
+                type: ProvidedDataTypes.PLACE_OF_RESIDENCE,
+            },
+        ],
     },
     {
         source: 'media.json',
@@ -125,11 +125,11 @@ const parsers: ProviderParser[] = [
                     return obj.map((photo): Partial<Photo> => ({
                         data: {
                             url: 'file://' + path.join(repositoryPath, Instagram.key, photo.path),
-                            description: photo.caption
+                            description: photo.caption,
                         },
-                        timestamp: photo.taken_at
-                    }))
-                }
+                        timestamp: photo.taken_at,
+                    }));
+                },
             },
             {
                 key: 'photos',
@@ -138,13 +138,13 @@ const parsers: ProviderParser[] = [
                     return obj.map((photo): Partial<Photo> => ({
                         data: {
                             url: 'file://' + path.join(repositoryPath, Instagram.key, photo.path),
-                            description: photo.caption
+                            description: photo.caption,
                         },
-                        timestamp: photo.taken_at
-                    }))
-                }
-            }
-        ]
+                        timestamp: photo.taken_at,
+                    }));
+                },
+            },
+        ],
     }, 
     {
         source: 'profile.json',
@@ -157,7 +157,7 @@ const parsers: ProviderParser[] = [
             }, 
             {
                 key: 'email',
-                type: ProvidedDataTypes.EMAIL
+                type: ProvidedDataTypes.EMAIL,
             }, 
             {
                 key: 'gender',
@@ -170,12 +170,12 @@ const parsers: ProviderParser[] = [
                     data: {
                         key: 'private_account',
                         value,
-                    }
-                })
+                    },
+                }),
             },
             {
                 key: 'name',
-                type: ProvidedDataTypes.FULL_NAME
+                type: ProvidedDataTypes.FULL_NAME,
             },
             {
                 key: 'profile_pic_url',
@@ -183,13 +183,13 @@ const parsers: ProviderParser[] = [
             },
             {
                 key: 'username',
-                type: ProvidedDataTypes.USERNAME
+                type: ProvidedDataTypes.USERNAME,
             },
             {
                 key: 'date_of_birth',
-                type: ProvidedDataTypes.DATE_OF_BIRTH
+                type: ProvidedDataTypes.DATE_OF_BIRTH,
             },
-        ]
+        ],
     },
     {
         source: 'seen_content.json',
@@ -200,20 +200,20 @@ const parsers: ProviderParser[] = [
                 transformer: (obj: { timestamp: string; author: string }[]): Partial<PostSeen>[] => {
                     return obj.map((post): Partial<PostSeen> => ({
                         data: post.author,
-                        timestamp: post.timestamp
+                        timestamp: post.timestamp,
                     }));
-                }
-            }
-        ]
+                },
+            },
+        ],
     },
     {
         source: 'settings.json',
         schemas: [
             {
                 type: ProvidedDataTypes.PRIVACY_SETTING,
-                transformer: objectToKeyValueTransformer
-            }
-        ]
+                transformer: objectToKeyValueTransformer,
+            },
+        ],
     },
     {
         source: 'logins.json',
@@ -221,9 +221,9 @@ const parsers: ProviderParser[] = [
             {
                 type: ProvidedDataTypes.LOGIN_INSTANCE,
                 key: 'timestamp',
-            }
-        ]
-    }
+            },
+        ],
+    },
 ];
 
 export default parsers;

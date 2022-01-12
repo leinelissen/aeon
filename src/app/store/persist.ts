@@ -10,6 +10,6 @@ export default function ElectronStorage(): Storage {
         },
         removeItem: () => {
             return Promise.resolve(window.api.store.clear());
-        }
+        },
     };
 }

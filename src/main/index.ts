@@ -5,6 +5,7 @@ require('source-map-support').install();
 import './lib/map-map';
 import './updates';
 import { app, BrowserWindow } from 'electron';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer';
 import initialise from './initialise';
 import WindowStore from './lib/window-store';
@@ -30,7 +31,7 @@ const createWindow = (): void => {
         webPreferences: {
             preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
             webSecurity: process.env.NODE_ENV === 'production',
-        }
+        },
     });
 
     // Hide menu bar on windows

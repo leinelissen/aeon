@@ -9,7 +9,7 @@ const config: PlaywrightTestConfig = {
     use: {
         screenshot: 'on',
         trace: 'on',
-    }
-}
+    },
+};
 
 export default config;

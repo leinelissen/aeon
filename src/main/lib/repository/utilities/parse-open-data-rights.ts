@@ -1,8 +1,8 @@
-import { ProviderDatum } from "main/providers/types/Data";
+import { ProviderDatum } from 'main/providers/types/Data';
 
 export type OpenDataRightsDatum = Pick<
-    ProviderDatum<unknown, unknown>,
-    'data' | 'timestamp' | 'type'
+ProviderDatum<unknown, unknown>,
+'data' | 'timestamp' | 'type'
 >;
 
 /**
@@ -21,8 +21,8 @@ function parseOpenDataRights(
             hostname,
             account,
             provider: 'open-data-rights',
-            source
-        }
+            source,
+        };
     });
 }
 

@@ -6,7 +6,7 @@ import GmailEmailClient from './gmail';
 import { EmailClient, EmailEvents } from './types';
 
 const clients = new Map([
-    ['gmail', GmailEmailClient]
+    ['gmail', GmailEmailClient],
 ]);
 
 export default class EmailManager extends EventEmitter2 {
@@ -72,7 +72,7 @@ export default class EmailManager extends EventEmitter2 {
 
         // GUARD: Check if the address actually exists
         if (!this.emailClients.has(address)) {
-            throw new Error('Email account not found')
+            throw new Error('Email account not found');
         }
 
         // Delete the account

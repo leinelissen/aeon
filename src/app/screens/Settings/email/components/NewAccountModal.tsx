@@ -30,11 +30,11 @@ function NewAccountButton({ client, children, onComplete, ...props }: NewAccount
         // Set new activity flag, and let parent component know we're done
         setActive(false);
         onComplete();
-    }, [dispatch, client, setActive])
+    }, [dispatch, client, setActive]);
 
     return (
         <Button icon={faPlus} {...props} onClick={handleClick} loading={isActive}>{children}</Button>
-    )
+    );
 }
 
 function NewAccountModal(): JSX.Element {

@@ -8,18 +8,23 @@ import { ProviderFile } from '.';
 export abstract class Provider {
     /* The account name for the account this provider provides */
     protected accountName?: string;
+
     /* A key that is used by withSecureWindow to keep all windows that are
     opened from the provider safe and secure from other. */
     protected windowKey: string;
+
     /* Wehther this provider requires email to operate. May be overriden by
     other abstract classes */
     public static requiresEmail = false;
+
     /* Wehther this provider requires a URL to operate. May be overriden by
     other abstract classes */
     public static requiresUrl = false;
+
     /** The key under which all files will be stored. Should be filesystem-safe
      * (no spaces, all-lowercase) */
     public static key: string;
+
     /** Update the data that is retrieved by this Provider. Should return an
      * object with all new files, so they can be saved to disk. Alternatively,
      * should return false to indicate that no update was carried out. */
@@ -72,9 +77,11 @@ export abstract class DataRequestProvider extends Provider {
 export abstract class EmailDataRequestProvider extends DataRequestProvider {
     /* Set a flag that email is required for this provider */
     public static requiresEmail = true;
+
     /* An email client that is available for use in this provider. This will
     automatically be set by Aeon when constructing the class. */
     protected email: EmailClient;
+
     setEmailClient(email: EmailClient): void {
         this.email = email;
     }
@@ -93,13 +100,16 @@ export abstract class EmailDataRequestProvider extends DataRequestProvider {
 export abstract class OpenDataRightsProvider extends DataRequestProvider {
     /* Set a flag that email is required for this provider */
     public static requiresUrl = true;
+
     /* The Open Data Rights API URL, for use in the class */
     protected url: string;
+
     /* A convenience method to pass to withSecureWindow */
     protected windowParams: {
         key: string;
         origin: string;
     };
+
     setUrl(url: string): void {
         this.url = url;
         this.windowParams = {

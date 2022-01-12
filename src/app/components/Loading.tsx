@@ -39,7 +39,7 @@ export const Ball = styled.div<Props>`
             opacity: 1;
         } 
     } 
-`
+`;
 
 const Loading = (): JSX.Element => (
     <LoadingContainer>

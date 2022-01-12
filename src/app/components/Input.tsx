@@ -40,7 +40,7 @@ const Select = styled.select<{ hasPlaceholder?: boolean }>`
     width: 100%;
     margin-bottom: 16px;
 
-    ${props => props.hasPlaceholder && css`
+    ${(props) => props.hasPlaceholder && css`
         color: #00000066;
     `};
 
@@ -96,12 +96,12 @@ export function Dropdown(props: DropdownProps): JSX.Element {
                     // hasPlaceholder={value === ''}
                 >
                     <option key="" disabled={value !== ''}>{placeholder || 'Please select an option'}</option>
-                    {availableOptions.map(option =>
-                        <option key={option.key}>{option.value}</option>    
+                    {availableOptions.map((option) =>
+                        <option key={option.key}>{option.value}</option>,    
                     )}
                 </Select>
                 <FontAwesomeIcon icon={faChevronDown} />
             </SelectContainer>
         </Label>
-    )
+    );
 }

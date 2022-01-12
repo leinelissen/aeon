@@ -5,16 +5,16 @@ import { EmailProvider } from './types';
 
 export const fetchProviderAccounts = createAsyncThunk(
     'requests/fetch/accounts',
-    () => Providers.getAccounts()
-)
+    Providers.getAccounts,
+);
 
 export const refreshRequests = createAsyncThunk(
     'requests/refresh',
     async (arg, { dispatch }) => {
         await Providers.refresh();
         await dispatch(fetchProviderAccounts());
-    }
-)
+    },
+);
 
 export const addProviderAccount = createAsyncThunk(
     'requests/new-account',
@@ -22,18 +22,18 @@ export const addProviderAccount = createAsyncThunk(
         const value = Providers.initialise(client, optionalParameters);
         dispatch(fetchProviderAccounts());
         return value;
-    }
-)
+    },
+);
 
 export const fetchAvailableProviders = createAsyncThunk(
     'requests/fetch/providers',
-    () => Providers.getAvailableProviders(),
-)
+    Providers.getAvailableProviders,
+);
 
 export const createEmailAccount = createAction<EmailProvider>(
-    'requests/new-email-account'
-)
+    'requests/new-email-account',
+);
 
 export const dispatchEmailRequest = createAction<string>(
-    'requests/email/dispatch'
-)
+    'requests/email/dispatch',
+);

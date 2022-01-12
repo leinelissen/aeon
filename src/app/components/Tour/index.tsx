@@ -16,29 +16,29 @@ function Tour({ children }: PropsWithChildren<unknown>): JSX.Element {
                 setIsOpen,
                 setCurrentStep,
             }) => {
-                const last = currentStep === stepsLength - 1
+                const last = currentStep === stepsLength - 1;
                 return (
                     <BaseButton
                         hideArrow={last}
                         onClick={() => {
                             if (last) {
-                                setIsOpen(false)
+                                setIsOpen(false);
                             } else {
-                                setCurrentStep(s => (s === Object.keys(steps).length - 1 ? 0 : s + 1))
+                                setCurrentStep((s) => (s === Object.keys(steps).length - 1 ? 0 : s + 1));
                             }
                         }}
                     >
                         {last ? <Button icon={faCheck}>Done</Button> : null}
                     </BaseButton>
-                )
+                );
             }}
             styles={{
-                maskWrapper: base => ({ ...base, color: 'var(--color-gray-400)', opacity: 0.9 }),
-                popover: base => ({ 
+                maskWrapper: (base) => ({ ...base, color: 'var(--color-gray-400)', opacity: 0.9 }),
+                popover: (base) => ({ 
                     ...base, 
                     borderRadius: 8,
                     '--reactour-accent': 'var(--color-primary)', 
-                })
+                }),
             }}
         >
             {children}

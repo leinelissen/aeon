@@ -1,4 +1,4 @@
-import { ProviderDatum } from "main/providers/types/Data";
+import { ProviderDatum } from 'main/providers/types/Data';
 
 export enum DiffType {
     // An object DiffType is the diff of an regular object
@@ -34,7 +34,7 @@ export interface DiffResult<D> {
 }
 
 export type ObjectDiff = ObjectChange<unknown>;
-export type ExtractedDataDiff = ObjectChange<ProviderDatum<unknown>[]>
+export type ExtractedDataDiff = ObjectChange<ProviderDatum<unknown>[]>;
 // export type BlobDiff = Change[];
 // export type TextDiff = Change[];
 
@@ -49,7 +49,7 @@ export enum RepositoryCommands {
     LOG,
     DIFF,
     STATUS,
-    PARSED_COMMIT
+    PARSED_COMMIT,
 } 
 
 export enum RepositoryArguments {

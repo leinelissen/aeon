@@ -1,5 +1,5 @@
 import Providers from 'app/utilities/Providers';
-import { InitialisedAccount } from "main/providers/types";
+import { InitialisedAccount } from 'main/providers/types';
 import { DataRequestCompleted, ProviderEvents, UpdateComplete } from 'main/providers/types/Events';
 import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ type RequestState = {
     map: State['accounts']['byKey']
     isLoading: State['accounts']['isLoading']['requests'];
     email: State['accounts']['emailProviders'];
-}
+};
 
 /**
  * Retrieve all currently active requests
@@ -62,7 +62,7 @@ export function ProviderSubscription(): null {
                     'Update Complete',
                     { 
                         body: `There's a new update for ${event.account} on ${event.provider}${event.url && ` (${event.url})`}`,
-                    }
+                    },
                 );
                 notification.onclick = () => navigate(`/timeline/${event.commitHash}`);
                 break;
@@ -73,7 +73,7 @@ export function ProviderSubscription(): null {
                     'Data Request Complete',
                     {
                         body: `A data request for ${event.account} on ${event.provider}${event.url && ` (${event.url})`} was just completed`,
-                    }
+                    },
                 );
                 notification.onclick = () => navigate(`/timeline/${event.commitHash}`);
                 break;

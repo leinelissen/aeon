@@ -19,7 +19,9 @@ interface MessageResponse {
 
 export default class GmailEmailClient implements EmailClient {
     tokens: TokenResponse | null;
+
     isInitialized: boolean;
+
     emailAddress?: string;
 
     /**
@@ -84,7 +86,7 @@ export default class GmailEmailClient implements EmailClient {
     async findMessages(query: EmailQuery): Promise<Email[]> {
         // First we'll need to convert the query object
         const q = Object.keys(query).reduce((sum, key: keyof EmailQuery) => {
-            return `${sum} ${key}:${query[key]}`
+            return `${sum} ${key}:${query[key]}`;
         }, '');
 
         // Then we'll retrieve all emails
@@ -96,7 +98,7 @@ export default class GmailEmailClient implements EmailClient {
         }
         
         // Then, we'll gather all the parsed email queries
-        const emails = response.messages.map(message => {
+        const emails = response.messages.map((message) => {
             return this.getMessage(message.id);
         });
 
@@ -131,7 +133,7 @@ export default class GmailEmailClient implements EmailClient {
             method: 'POST',
             body: JSON.stringify({
                 raw: mail.toString('base64'),
-            })
+            }),
         };
 
         await this.get('https://gmail.googleapis.com/upload/gmail/v1/users/me/messages/send', params); 
@@ -158,15 +160,15 @@ export default class GmailEmailClient implements EmailClient {
 
         const options = {
             headers: {
-                'Authorization': `Bearer ${this.tokens.access_token}`
+                'Authorization': `Bearer ${this.tokens.access_token}`,
             },
-            ...init
+            ...init,
         };
 
         return fetch(url, options)
             .then(this.tokenMiddleware(url, options))
             .then(this.errorMiddleware)
-            .then(response => response.json());
+            .then((response) => response.json());
     }
 
     /**
@@ -185,14 +187,14 @@ export default class GmailEmailClient implements EmailClient {
                 return fetch(url, {
                     ...init,
                     headers: {
-                        'Authorization': `Bearer ${this.tokens.access_token}`
+                        'Authorization': `Bearer ${this.tokens.access_token}`,
                     },
                 });
             }
     
             return response;
-        }
-    }
+        };
+    };
 
     /**
      * Will pick off any responses that result in errors
@@ -200,7 +202,7 @@ export default class GmailEmailClient implements EmailClient {
     async errorMiddleware(response: Response): Promise<Response> {
         if (response.status > 400) {
             const text = await response.text();
-            throw new Error(`Error while sending request: ${text}`)
+            throw new Error(`Error while sending request: ${text}`);
         }
 
         return response;

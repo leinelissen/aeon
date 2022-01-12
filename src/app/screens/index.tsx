@@ -1,14 +1,14 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
-import Menu, { ContentContainer, MenuContainer, TitleBar } from "app/components/Menu";
-import Onboarding from "./Onboarding";
-import Timeline from "./Timeline";
-import Data from "./Data";
-import Accounts from "./Accounts";
-import Settings from "./Settings";
-import Graph from "./Graph";
-import Erasure from "./Erasure";
-import ErasureEmails from "./Erasure/Emails";
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import Menu, { ContentContainer, MenuContainer, TitleBar } from 'app/components/Menu';
+import Onboarding from './Onboarding';
+import Timeline from './Timeline';
+import Data from './Data';
+import Accounts from './Accounts';
+import Settings from './Settings';
+import Graph from './Graph';
+import Erasure from './Erasure';
+import ErasureEmails from './Erasure/Emails';
 
 function Router(): JSX.Element {
     return (

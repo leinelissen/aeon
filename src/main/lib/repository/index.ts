@@ -8,14 +8,14 @@ import {
     Revwalk,
     Commit as NodeGitCommit,
     Reference,
-    StatusFile
+    StatusFile,
 } from 'nodegit';
 import { DiffResult, RepositoryEvents, Commit } from './types';
 import CryptoFs from '../crypto-fs';
 import nonCryptoFs from 'fs';
 import diffMapFunction from './utilities/diff-map';
 import generateParsedCommit from './utilities/generate-parsed-commit';
-import { ProviderDatum } from "main/providers/types/Data";
+import { ProviderDatum } from 'main/providers/types/Data';
 import RepositoryBridge from './bridge';
 import logger from '../logger';
 import { repositoryPath } from '../constants';
@@ -50,6 +50,7 @@ class Repository extends EventEmitter {
      * A reference to an instance of Nodegit's repository class
      */
     repository: NodeGitRepository = null;
+
     index: Index = null;
 
     constructor() {
@@ -107,7 +108,7 @@ class Repository extends EventEmitter {
     public async diff(
         ref = 'HEAD', 
         compared: string = null,
-        options: { showUnchangedFiles?: boolean } = {}
+        options: { showUnchangedFiles?: boolean } = {},
     ): Promise<DiffResult<unknown>[]> {
         // Retrieve the commit based on either a supplied OID or otherwise HEAD
         const refCommit = ref === 'HEAD' 
@@ -140,21 +141,21 @@ class Repository extends EventEmitter {
                 // Then retrieve the actual files
                 const [oldEntry, newEntry] = await Promise.all([
                     await comparedTree.getEntry(oldFile).catch((): null => null),
-                    await refTree.getEntry(newFile).catch((): null => null)
-                ])
+                    await refTree.getEntry(newFile).catch((): null => null),
+                ]);
 
                 return diffMapFunction(newFile, [newEntry, oldEntry]);
-            })
+            }),
         )).flat();
 
         // Optionally remove all files from the diff without changes
         if (!options.showUnchangedFiles) {
             // Loop through all files one-by-one
-            return diffs.filter(file => file && file.hasChanges);
+            return diffs.filter((file) => file && file.hasChanges);
         }
 
         // Lastly, remove any of the diffs that are empty
-        return diffs.filter(file => !!file);
+        return diffs.filter((file) => !!file);
     }
 
     /**
@@ -210,18 +211,18 @@ class Repository extends EventEmitter {
             
                         const parsedCommit = await generateParsedCommit(
                             entry.path(),
-                            entry
+                            entry,
                         );
         
                         // GUARD: Only push data if the file is successfully parsed
                         if (parsedCommit?.length) {
                             return parsedCommit;
                         }
-                    })
+                    }),
                 );
 
                 // Flatten array and filter any undefined values
-                const filteredData = data.flat().filter(d => !!d);
+                const filteredData = data.flat().filter((d) => !!d);
 
                 // Sort data by type, so that we can render it more easily in
                 // the UI
@@ -269,9 +270,9 @@ class Repository extends EventEmitter {
                         name: author.name(),
                         when: commit.time() * 1000,
                     },
-                    parents: commit.parents().map(oid => oid.tostrS()),
+                    parents: commit.parents().map((oid) => oid.tostrS()),
                 };
-            })
+            }),
         );
     }
     

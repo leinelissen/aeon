@@ -31,11 +31,11 @@ export interface InitialisedAccount {
 
 export enum ProviderUpdateType {
     UPDATE = 'update',
-    DATA_REQUEST = 'data_request'
+    DATA_REQUEST = 'data_request',
 }
 
 export type InitOptionalParameters = {
     accountName?: string;
     apiUrl?: string;
-}
+};
 

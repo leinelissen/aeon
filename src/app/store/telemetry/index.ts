@@ -15,8 +15,8 @@ export const telemetrySlice = createSlice({
     reducers: {
         log(state, action: PayloadAction<Event>) {
             state.push(action.payload);
-        }
-    }
+        },
+    },
 });
 
 export default telemetrySlice.reducer;

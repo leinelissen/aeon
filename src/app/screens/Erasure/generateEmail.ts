@@ -12,7 +12,7 @@ function generateEmail(data: ProviderDatum<unknown, unknown>[], provider: string
         To Whom It May Concern:
 
         I am invoking my right to erasure as specified in Article 17 of the General Data Protection Regulation. I am requesting ${provider} to erase the following personal data it processes about me without undue delay:
-        ${data.map(datum => `* ${datum.type}: ${DataType.toString(datum)} (found in: ${datum.source})`).join('\n')}
+        ${data.map((datum) => `* ${datum.type}: ${DataType.toString(datum)} (found in: ${datum.source})`).join('\n')}
 
         The reason for my removal request is that I withdraw my prior given consent. This request relates to any processing of my personal data by ${provider}, including any processors processing personal data on behalf of ${provider}.
 

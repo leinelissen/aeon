@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { GhostButton } from 'app/components/Button';
-import { ProvidedDataTypes } from "main/providers/types/Data";
+import { ProvidedDataTypes } from 'main/providers/types/Data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile, faClock, faLink, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontLarge, H2 } from 'app/components/Typography';

@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import { withSecureWindow } from 'main/lib/create-secure-window';
 import { ProviderFile } from '../types';
-import { DataRequestProvider } from "../types/Provider";
+import { DataRequestProvider } from '../types/Provider';
 import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
@@ -10,7 +10,9 @@ const requestSavePath = path.join(app.getAppPath(), 'data');
 
 class Facebook extends DataRequestProvider {
     public static key = 'facebook';
+
     public static dataRequestIntervalDays = 5;
+
     public static requiresEmailAccount = false;
 
     /**
@@ -18,7 +20,7 @@ class Facebook extends DataRequestProvider {
      */
     windowParams = {
         key: this.windowKey,
-        origin: 'facebook.com'
+        origin: 'facebook.com',
     };
 
     async initialise(): Promise<string> {
@@ -29,7 +31,7 @@ class Facebook extends DataRequestProvider {
     /**
      * Get the account name for the logged-in Facebook account
      */
-    getAccountName = async(): Promise<string> => {
+    getAccountName = async (): Promise<string> => {
         return withSecureWindow<string>(this.windowParams, async (window) => {
             await window.loadURL('https://www.facebook.com/settings?tab=account&view');
 
@@ -42,7 +44,7 @@ class Facebook extends DataRequestProvider {
                 document.body.querySelector('a[href="/settings?tab=account&section=email"]');
             `); 
         });
-    }
+    };
 
     verifyLoggedInStatus = async (): Promise<Electron.Cookie[]> => {
         return withSecureWindow<Electron.Cookie[]>(this.windowParams, (window) => {
@@ -50,7 +52,7 @@ class Facebook extends DataRequestProvider {
             window.loadURL('https://www.facebook.com/login.php?next=https%3A%2F%2Fwww.facebook.com%2Fsettings');
 
             return new Promise((resolve) => {
-                const eventHandler = async(): Promise<void> => {
+                const eventHandler = async (): Promise<void> => {
                     // Check if we ended up at the page in an authenticated form
                     if (window.webContents.getURL().startsWith(settingsUrl)) {
                         // If so, we retrieve the cookies
@@ -68,13 +70,13 @@ class Facebook extends DataRequestProvider {
                 window.webContents.once('did-finish-load', eventHandler);
             });
         });
-    }
+    };
 
     update = async (): Promise<false> => {
         // NOTE: Updating is not supported by Facebook since it's internal API
         // is a enormous clusterfuck and cannot be trusted.
         return false;
-    }
+    };
 
     dispatchDataRequest = async (): Promise<void> => {
         await this.verifyLoggedInStatus();
@@ -83,18 +85,18 @@ class Facebook extends DataRequestProvider {
             window.show();
 
             await new Promise((resolve) => {
-                window.webContents.on('did-finish-load', resolve)
+                window.webContents.on('did-finish-load', resolve);
                 window.loadURL('https://www.facebook.com/dyi/?referrer=yfi_settings&tab=new_archive');
             });
 
             // Wait for all the iframes to load
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise((resolve) => setTimeout(resolve, 2000));
 
             // Now we must defer the page to the user, so that they can enter their
             // password. We then listen for a succesfull AJAX call 
             return new Promise((resolve) => {
                 window.webContents.session.webRequest.onBeforeRequest({
-                    urls: [ 'https://www.facebook.com/api/graphql/' ]
+                    urls: [ 'https://www.facebook.com/api/graphql/' ],
                 }, (details, callback) => {
                     // Parse the upload object that is passed to the GraphQL API
                     const data = details.uploadData[0]?.bytes?.toString('utf8');
@@ -136,7 +138,7 @@ class Facebook extends DataRequestProvider {
                 `);
             });     
         });
-    }
+    };
 
     async isDataRequestComplete(): Promise<boolean> {
         await this.verifyLoggedInStatus();
@@ -144,7 +146,7 @@ class Facebook extends DataRequestProvider {
         return withSecureWindow<boolean>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
-                window.webContents.once('did-finish-load', resolve)
+                window.webContents.once('did-finish-load', resolve);
                 window.loadURL('https://www.facebook.com/dyi/?referrer=yfi_settings&tab=all_archives');
             });
 
@@ -160,7 +162,7 @@ class Facebook extends DataRequestProvider {
         return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
             // Load page URL
             await new Promise((resolve) => {
-                window.webContents.once('dom-ready', resolve)
+                window.webContents.once('dom-ready', resolve);
                 window.loadURL('https://www.facebook.com/dyi/?referrer=yfi_settings&tab=all_archives');
             });
 
@@ -185,7 +187,7 @@ class Facebook extends DataRequestProvider {
             // the repository
             const zip = new AdmZip(filePath);
             await new Promise((resolve) => 
-                zip.extractAllToAsync(extractionPath, true, resolve)
+                zip.extractAllToAsync(extractionPath, true, resolve),
             );
 
             // Translate this into a form that is readable for the ParserManager

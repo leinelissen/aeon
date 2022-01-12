@@ -6,20 +6,20 @@ import { EventEmitter2 } from 'eventemitter2';
 import { ProviderFile, 
     ProviderUpdateType, 
     InitOptionalParameters, 
-    InitialisedAccount 
+    InitialisedAccount, 
 } from './types';
 import { Provider, 
     DataRequestProvider, 
     EmailDataRequestProvider, 
     OpenDataRightsProvider, 
-    UninstatiatedProvider
+    UninstatiatedProvider,
 } from './types/Provider';
 import {
     AccountCreated,
     DataRequestCompleted,
     DataRequestDispatched,
     ProviderEvents, 
-    UpdateComplete
+    UpdateComplete,
 } from './types/Events';
 
 
@@ -42,7 +42,7 @@ export const providers: Array<UninstatiatedProvider> = [
     Facebook,
     LinkedIn,
     Spotify,
-    OpenDataRights
+    OpenDataRights,
 ];
 
 const mapProviderToKey = providers.reduce<Record<string, UninstatiatedProvider>>((sum, provider) => {
@@ -53,6 +53,7 @@ const mapProviderToKey = providers.reduce<Record<string, UninstatiatedProvider>>
 class ProviderManager extends EventEmitter2 {
     // Refers to the repository obejct
     repository: Repository;
+
     // The email manager
     email: EmailManager;
 
@@ -77,17 +78,17 @@ class ProviderManager extends EventEmitter2 {
 
         // Construct the initialised providers from the store
         const retrievedAccounts = store.get('provider-accounts', []) as [string, InitialisedAccount][];
-        this.accounts = new PersistedMap(retrievedAccounts, map => {
+        this.accounts = new PersistedMap(retrievedAccounts, (map) => {
             store.set('provider-accounts', Array.from(map));
         });
 
         // Then create instances for each provider that is retrieved from the store
         this.accounts.forEach((account, key) => {
-            const Provider = mapProviderToKey[account.provider];
+            const ProviderClass = mapProviderToKey[account.provider];
 
             // GUARD: If the provider hinges on email, we must inject the client
             // into the class
-            const instance = new Provider(account.windowKey, account.account);
+            const instance = new ProviderClass(account.windowKey, account.account);
             if (instance instanceof EmailDataRequestProvider) {
                 const emailAccount = this.email.emailClients.get(account.account);
                 
@@ -125,9 +126,9 @@ class ProviderManager extends EventEmitter2 {
     updateAll = async (): Promise<void> => {
         // Loop through all registered providers and execute their updates
         await Promise.allSettled(this.instances.map((provider, key) => 
-            this.update(key)
+            this.update(key),
         ));
-    }
+    };
 
     /**
      * Initialise a new provider account. This will return the unique key for
@@ -196,8 +197,8 @@ class ProviderManager extends EventEmitter2 {
             windowKey,
             url: optional.apiUrl && optional.apiUrl.replace(/\/+$/, ''),
             hostname,
-            status: {}
-        }
+            status: {},
+        };
 
         // Save the instance as well
         this.accounts.set(key, newAccount);
@@ -207,7 +208,7 @@ class ProviderManager extends EventEmitter2 {
         this.emit(ProviderEvents.ACCOUNT_CREATED, newAccount as AccountCreated);
 
         return key;
-    }
+    };
 
     /**
      * Update a single service, either by key (ie `instagram`) or index
@@ -245,10 +246,10 @@ class ProviderManager extends EventEmitter2 {
             const event: UpdateComplete = {
                 ...this.accounts.get(key),
                 ...commit,
-            }
+            };
             this.emit(ProviderEvents.UPDATE_COMPLETE, event);
         }
-    }
+    };
 
     /**
      * Save a bunch of files and auto-commit the result
@@ -257,7 +258,7 @@ class ProviderManager extends EventEmitter2 {
         files: ProviderFile[],
         key: string, 
         message: string,
-        updateType: ProviderUpdateType
+        updateType: ProviderUpdateType,
     ): Promise<{ changedFiles: number; commitHash: string; }> => {
         logger.provider.info(`Saving and committing files for ${key}...`);
         const account = this.accounts.get(key);
@@ -287,7 +288,7 @@ class ProviderManager extends EventEmitter2 {
         // GUARD: If no files have changed, it is no longer neccessary to create
         // a new commit.
         if (!changedFiles.length) {
-            logger.provider.info('No files have changed since last data request, skipping commit.')
+            logger.provider.info('No files have changed since last data request, skipping commit.');
             return;
         }
 
@@ -305,8 +306,8 @@ class ProviderManager extends EventEmitter2 {
         }
 
         // Parse the object as a series of "key: value \n" statements
-        const augmentedMessage = Object.keys(messageData).reduce((sum, key) => {
-            return `${sum}\n${key}: ${messageData[key]}`
+        const augmentedMessage = Object.keys(messageData).reduce((sum, k) => {
+            return `${sum}\n${k}: ${messageData[key]}`;
         }, message);
 
         // Acutally create the commit
@@ -317,7 +318,7 @@ class ProviderManager extends EventEmitter2 {
             changedFiles: changedFiles.length,
             commitHash: commit,
         };
-    }
+    };
 
     /**
      * Do a data request for a single instance
@@ -359,16 +360,16 @@ class ProviderManager extends EventEmitter2 {
 
         this.emit(ProviderEvents.DATA_REQUEST_DISPATCHED, account as DataRequestDispatched);
         logger.provider.info('Dispatched data request for ' + key);
-    }
+    };
 
     /**
      * Dispatch data requests for all instances that support it
      */
     dispatchDataRequestToAll = async (): Promise<void> => {
         await Promise.allSettled(this.instances.map((instance, key) =>
-            this.dispatchDataRequest(key)
+            this.dispatchDataRequest(key),
         ));
-    }
+    };
 
     refresh = async (): Promise<void> => {
         // Send out an event so the front-end knows we are busy checking
@@ -408,7 +409,7 @@ class ProviderManager extends EventEmitter2 {
 
             // If it is uncompleted, we need to check upon it
             if (await instance.isDataRequestComplete(account.status.requestId).catch(() => false)) {
-                logger.provider.info('A data request has completed! Starting to parse...')
+                logger.provider.info('A data request has completed! Starting to parse...');
 
                 // If it is complete now, we'll fetch the data and parse it
                 const dirPath = account.url && account.hostname
@@ -426,7 +427,7 @@ class ProviderManager extends EventEmitter2 {
                 const event: DataRequestCompleted = {
                     ...account,
                     ...commit,
-                }
+                };
                 this.emit(ProviderEvents.DATA_REQUEST_COMPLETED, event);
 
                 return;
@@ -439,8 +440,8 @@ class ProviderManager extends EventEmitter2 {
         // Also dispatch regular update requests
         await(Promise.allSettled([dataRequests, await this.updateAll()]));
         this.lastDataRequestCheck = new Date();
-        logger.provider.info('Check completed.')
-    }
+        logger.provider.info('Check completed.');
+    };
 
 }
 

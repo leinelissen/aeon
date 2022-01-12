@@ -25,15 +25,15 @@ const initialState: DataState = {
     deletedByProvider: {},
     deleted: [],
     isLoading: false,
-}
+};
 
 const data = createSlice({
     name: 'data',
     initialState,
     reducers: {},
-    extraReducers: builder => {
-        builder.addCase(fetchParsedCommit.pending, state => { state.isLoading = true; });
-        builder.addCase(fetchParsedCommit.rejected, state => { state.isLoading = false; });
+    extraReducers: (builder) => {
+        builder.addCase(fetchParsedCommit.pending, (state) => { state.isLoading = true; });
+        builder.addCase(fetchParsedCommit.rejected, (state) => { state.isLoading = false; });
         builder.addCase(fetchParsedCommit.fulfilled, (state, action) => { 
             state.isLoading = false;
 
@@ -73,12 +73,12 @@ const data = createSlice({
             }
             state.deletedByProvider[datum.provider].push(action.payload);
         });
-        builder.addCase(resetDeletedData, state => {
+        builder.addCase(resetDeletedData, (state) => {
             state.deleted = [];
             state.deletedByType = initialState.deletedByType;
             state.deletedByProvider = {};
         });
-    }
+    },
 });
 
 export default data.reducer;

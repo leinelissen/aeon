@@ -75,7 +75,7 @@ function Tooltip({ title, children, placement = 'auto' }: TooltipProps) {
         modifiers: [
             { name: 'offset', options: { offset: [0, 8] } },
             { name: 'hide' },
-        ]
+        ],
     });
 
     // Define callback handlers for hover events

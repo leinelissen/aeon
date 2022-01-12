@@ -1,6 +1,6 @@
-import { app, autoUpdater, dialog } from "electron";
-import { autoUpdates } from "./lib/constants";
-import logger from "./lib/logger";
+import { app, autoUpdater, dialog } from 'electron';
+import { autoUpdates } from './lib/constants';
+import logger from './lib/logger';
 
 // GUARD: Check if auto updates are not flagged to be disabled
 // We use this particularly on macOS when testing so that we don't run into
@@ -9,9 +9,9 @@ if (autoUpdates
     && process.env.NODE_ENV === 'production'
 ) {
     // Generate feed URL
-    const server = "https://updates.aeon.technology";
+    const server = 'https://updates.aeon.technology';
     const url = `${server}/update/${process.platform}${process.arch === 'arm64' ? '_arm64' : ''}/${app.getVersion()}`;
-    autoUpdater.setFeedURL({ url })
+    autoUpdater.setFeedURL({ url });
 
     // Periodically check for updates. The default is every six hours.
     setInterval(() => {
@@ -25,11 +25,11 @@ if (autoUpdates
             buttons: ['Restart', 'Later'],
             title: 'Application Update',
             message: process.platform === 'win32' ? releaseNotes : releaseName,
-            detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+            detail: 'A new version has been downloaded. Restart the application to apply the updates.',
         };
     
         dialog.showMessageBox(dialogOpts).then((returnValue) => {
-            if (returnValue.response === 0) autoUpdater.quitAndInstall()
+            if (returnValue.response === 0) autoUpdater.quitAndInstall();
         });
     });
 

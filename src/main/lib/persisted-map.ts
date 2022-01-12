@@ -5,7 +5,7 @@
 class PersistedMap<K, V> extends Map<K, V> {
     private callback: (map: PersistedMap<K, V>) => void;
 
-    constructor(rows: [K,V][], callback: (map: PersistedMap<K, V>) => void) {
+    constructor(rows: [K, V][], callback: (map: PersistedMap<K, V>) => void) {
         super(rows);
         
         // Bind the callback to the instance of this class

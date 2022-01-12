@@ -7,8 +7,8 @@ import {
     PrivacySetting,
     LoginInstance,
     ProfilePicture,
-    Session, Employment, EventResponse, VisitedPage, OffSiteActivity, EducationExperience, MobileDevice, RegistrationDate, PlayedSong
-} from "main/providers/types/Data";
+    Session, Employment, EventResponse, VisitedPage, OffSiteActivity, EducationExperience, MobileDevice, RegistrationDate, PlayedSong,
+} from 'main/providers/types/Data';
 import {
     IconDefinition,
     faSquare,
@@ -53,7 +53,7 @@ import {
     faUserPlus,
     faMobile,
     faMusic,
-    faRobot
+    faRobot,
 } from '@fortawesome/free-solid-svg-icons';
 
 class DataType {
@@ -62,7 +62,7 @@ class DataType {
      * @param type 
      */
     static getIcon(type: ProvidedDataTypes): IconDefinition {
-        switch(type) {
+        switch (type) {
             case ProvidedDataTypes.EMAIL:
                 return faEnvelope;
             case ProvidedDataTypes.FIRST_NAME:
@@ -195,8 +195,8 @@ class DataType {
                 return `${session?.user_agent}, ${session?.ip_address} at ${session?.timestamp}`;
             }
             case ProvidedDataTypes.EMPLOYMENT: {
-                const { data: { job_title, company } } = datum as Employment;
-                return `${job_title} at ${company}`;
+                const { data: { jobTitle, company } } = datum as Employment;
+                return `${jobTitle} at ${company}`;
             }
             case ProvidedDataTypes.EVENT_RESPONSE: {
                 const { data: { name, response } } = datum as EventResponse;
@@ -259,7 +259,7 @@ class DataType {
      * @param datum 
      */
     static getDescription(datum: ProviderDatum<unknown, unknown>): string {
-        switch(datum.type) {
+        switch (datum.type) {
             case ProvidedDataTypes.EMAIL:
                 return 'A email adress';
             case ProvidedDataTypes.FIRST_NAME:

@@ -19,7 +19,7 @@ function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): 
         // GUARD: Double-check the user wants to actually delete the account
         if (window.confirm(`Are you sure you want to delete ${selectedAccount}?`)) {
             // Delete the account
-            await Email.delete(selectedAccount) 
+            await Email.delete(selectedAccount); 
             
             // Then return to the previous menu
             navigate('/settings/email-accounts');
@@ -33,7 +33,7 @@ function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): 
                     <RowDescription>
                         Email accounts are necessary for some providers that do not have an automated way of processing data requests. By linking an email-address associated with your accounts, Aeon can send emails and track responses to help make it easy for you.
                     </RowDescription>
-                    {all.map(account => (
+                    {all.map((account) => (
                         <NavigatableListEntry key={account} to={`/settings/email-accounts/${account}`}>
                             <FontAwesomeIcon icon={Email.getIcon(byId[account])} />
                             <MarginLeft>{account}</MarginLeft>

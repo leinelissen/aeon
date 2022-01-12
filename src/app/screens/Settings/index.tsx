@@ -12,8 +12,8 @@ type CategoryPanel = (props: { settingId?: string }) => JSX.Element;
  * that all settings are seperated out into their own components.
  */
 const mapCategoryToPanel: Record<string, CategoryPanel> = {
-    'email-accounts': EmailSettings
-}
+    'email-accounts': EmailSettings,
+};
 
 function Settings(): JSX.Element {
     const { category, settingId } = useParams<RouteProps['settings']>();

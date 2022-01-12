@@ -37,10 +37,10 @@ function ErasureEmails(): JSX.Element {
                 <PullContainer verticalAlign key={key}>
                     <FontAwesomeIcon icon={Providers.getIcon(key)} />
                     <MarginLeft>{key.replace(/(-|_)/g, ' ')}</MarginLeft>
-                </PullContainer>
+                </PullContainer>,
             )}>
-                {Object.keys(deletedByProvider).map(provider => {
-                    const data = deletedByProvider[provider].map(key => byKey[key]);
+                {Object.keys(deletedByProvider).map((provider) => {
+                    const data = deletedByProvider[provider].map((key) => byKey[key]);
                     const email = generateEmail(data, provider);
 
                     return (
@@ -62,7 +62,7 @@ function ErasureEmails(): JSX.Element {
                 })}
             </ModalMenu>
         </Modal>
-    )
+    );
 }
 
 export default ErasureEmails;

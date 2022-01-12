@@ -62,11 +62,11 @@ class Timeline extends Component<Props, State> {
         if (type === RepositoryEvents.NEW_COMMIT) {
             this.fetchLog();
         }
-    }
+    };
 
     fetchLog = (): Promise<void> => {
         return Repository.log()
-            .then(log => {
+            .then((log) => {
                 // Save log to state
                 this.setState({ log });
 
@@ -75,12 +75,12 @@ class Timeline extends Component<Props, State> {
                     this.props.navigate('/timeline/' + log[0].oid);
                 }
             });
-    }
+    };
 
     handleClick = (hash: string): void => {
         this.props.navigate('/timeline/' + hash);
         // this.setState({ selectedCommit: hash });
-    }
+    };
 
     render(): JSX.Element {
         const { log } = this.state;
@@ -96,7 +96,7 @@ class Timeline extends Component<Props, State> {
         
         const selectedTree = commitHash === 'new-commit'
             ? newCommits[0]
-            : log.find(d => d.oid === commitHash);
+            : log.find((d) => d.oid === commitHash);
 
         return (
             <>
@@ -139,13 +139,13 @@ const RouterWrapper = (props: Pick<Props, 'newCommits'>): JSX.Element => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    return <Timeline params={params} navigate={navigate} location={location} {...props} />
-}
+    return <Timeline params={params} navigate={navigate} location={location} {...props} />;
+};
 
 const mapStateToProps = (state: AppState) => {
     return {
-        newCommits: state.newCommits
+        newCommits: state.newCommits,
     };
-}
+};
 
 export default connect(mapStateToProps)(RouterWrapper);

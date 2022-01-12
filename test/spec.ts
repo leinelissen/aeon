@@ -25,7 +25,7 @@ test.beforeAll(async () => {
             mainJsPath,
             '--no-auto-updates',
             '--no-tour',
-            `--app-data-path=${tempDirectory}`
+            `--app-data-path=${tempDirectory}`,
         ],
     });
 
@@ -78,7 +78,7 @@ test.afterAll(async ({ locale }, testInfo) => {
     // Then attempt to remove the temporary directory
     try {
         await rm(tempDirectory, { recursive: true, force: true });
-    } catch(err) {
+    } catch (err) {
         // GUARD: Check for EPERM and ENOTEMPTY errors. These pop up from time
         // to time on Windows. Since most tests are conducted on CI anyway, if
         // removing the directory fails, we just assume someone else will clean
@@ -143,8 +143,8 @@ test('it can successfully create an open data request account', async () => {
     await page.waitForLoadState();
 
     // Define locators for accounts
-    const emailAccounts = page.locator('#email-accounts > *')
-    const automatedAccounts = page.locator('#automated-accounts > *')
+    const emailAccounts = page.locator('#email-accounts > *');
+    const automatedAccounts = page.locator('#automated-accounts > *');
 
     // There should not be any accounts
     await expect(await emailAccounts.count()).toBe(0);
@@ -153,9 +153,9 @@ test('it can successfully create an open data request account', async () => {
     // Attempt to create a new account
     const input = page.locator('#modal input[type=url]');
     const submitButton = page.locator('#modal button >> text=Add new open data rights account');
-    const odrDemoUrl = 'https://demo.open-data-rights.org'
+    const odrDemoUrl = 'https://demo.open-data-rights.org';
     await page.click('button >> text=Add New Account');
-    await page.click('button >> text=open data rights')
+    await page.click('button >> text=open data rights');
     await expect(input).toBeVisible();
     await expect(input).toBeEditable();
     await expect(submitButton).toBeVisible();
@@ -177,7 +177,7 @@ test('it can successfully create an open data request account', async () => {
     await page.waitForLoadState();
 
     // The account should now exist and be ready to go
-    await page.waitForSelector('#automated-accounts > *:first-child')
+    await page.waitForSelector('#automated-accounts > *:first-child');
     await expect(await emailAccounts.count()).toBe(0);
     await expect(await automatedAccounts.count()).toBe(1);
 
@@ -189,7 +189,7 @@ test('it can successfully initiate an open data requests request', async () => {
     await page.waitForLoadState();
     
     // First, open the account
-    const automatedAccounts = page.locator('#automated-accounts > *')
+    const automatedAccounts = page.locator('#automated-accounts > *');
     const startRequest = page.locator('button >> text=Start Data Request');
     const completeRequest = page.locator('button >> text=Complete Data Request');
     await expect(await automatedAccounts.first().textContent()).toContain('No data requested yet');
@@ -219,7 +219,7 @@ test('it can successfully complete an open data rights requests request', async 
     // Then click it
     await Promise.all([
         refresh.click(),
-        page.waitForSelector('span >> text=Received data less than a minute ago')
+        page.waitForSelector('span >> text=Received data less than a minute ago'),
     ]);
 });
 

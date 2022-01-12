@@ -10,7 +10,7 @@ import {
     PAUSE,
     PERSIST,
     PURGE,
-    REGISTER
+    REGISTER,
 } from 'redux-persist';
 import { useDispatch } from 'react-redux';
 import ElectronStorage from './persist';
@@ -30,7 +30,7 @@ const rootReducer = combineReducers({
     telemetry,
     accounts,
     email,
-    data
+    data,
 });
 
 // Export types for later inclusion
@@ -49,7 +49,7 @@ const persistConfig: PersistConfig<State> = {
         'accounts',
         'email',
     ],
-}
+};
 
 // Create a persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -61,9 +61,9 @@ const store = configureStore({
     middleware: getDefaultMiddleware({
         // We need to ignore all redux-persist actions
         serializableCheck: {
-            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
-        }
-    })
+            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+    }),
 });
 
 // Create a persisted store

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { GhostButton } from 'app/components/Button';
 import styled, { css } from 'styled-components';
-import { Transition } from 'react-spring'
+import { Transition } from 'react-spring';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
@@ -95,7 +95,7 @@ const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
             {({ opacity }, items) => items ? (
                 <Container
                     style={{ 
-                        opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1]}),
+                        opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1] }),
                         transform: opacity.to((x: number) => `translateX(${-x * 20 + 20}%)`),
                         marginTop,
                     }}

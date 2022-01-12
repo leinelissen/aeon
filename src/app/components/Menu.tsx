@@ -118,7 +118,7 @@ export function TitleBar(): JSX.Element {
         <TitleBarContainer>
             <span>{title}</span>
         </TitleBarContainer>
-    )
+    );
 }
 
 export default function Menu(): JSX.Element {

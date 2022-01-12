@@ -13,7 +13,7 @@ function useTour(screen: TourKeys) {
 
     useEffect(() => {
         // GUARD: Check if tours are enabled application-wide
-        if(!tour) {
+        if (!tour) {
             return;
         }
 
@@ -23,7 +23,7 @@ function useTour(screen: TourKeys) {
             setIsOpen(true);
             dispatch(completeTour(screen));
         }
-    }, [setIsOpen, setSteps, isTourComplete, screen])
+    }, [setIsOpen, setSteps, isTourComplete, screen]);
 }
 
 export function Tour({ screen }: { screen: TourKeys }): null {

@@ -1,5 +1,5 @@
 import Providers, { providers as availableProviders }  from '.';
-import { ProviderCommands, ProviderEvents } from "./types/Events";
+import { ProviderCommands, ProviderEvents } from './types/Events';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import WindowStore from 'main/lib/window-store';
 import { ProviderUnion } from './types/Provider';
@@ -19,7 +19,7 @@ class ProviderBridge {
         ipcMain.handle(channelName, this.handleMessage);
 
         // Subscribe to manager-initated events
-        this.providers.addListener('*', function(...props) {
+        this.providers.addListener('*', function (...props) {
             // Log the event
             logger.provider.info('New event: ' + JSON.stringify(this.event));
 
@@ -37,7 +37,7 @@ class ProviderBridge {
             return;
         }
         
-        switch(command) {
+        switch (command) {
             case ProviderCommands.INITIALISE:
                 return this.providers.initialise(args[0], args[1]);
             case ProviderCommands.UPDATE:
@@ -55,7 +55,7 @@ class ProviderBridge {
                     sum[(Client as unknown as ProviderUnion).key] = {
                         requiresEmail: (Client as unknown as ProviderUnion).requiresEmail,
                         requiresUrl: (Client as unknown as ProviderUnion).requiresUrl,
-                    }
+                    };
                     return sum;
                 }, {});
             case ProviderCommands.GET_ACCOUNTS:
@@ -64,12 +64,12 @@ class ProviderBridge {
                     accounts: Object.fromEntries(this.providers.accounts),
                 };
         }
-    }
+    };
 
     private clearMessageCache = (): void => {
-        this.messageCache.forEach(args => this.handleMessage(...args));
+        this.messageCache.forEach((args) => this.handleMessage(...args));
         this.messageCache = [];
-    }
+    };
 
     /**
      * Send an event to the renderer

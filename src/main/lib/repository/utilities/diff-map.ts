@@ -8,7 +8,7 @@ import { TreeEntry } from 'nodegit';
  * @param filepath The filepath for the currently handled file
  * @param entries The references to the walker functions for the individual trees
  */
-const diffMapFunction = async function(filepath: string, entries: Array<TreeEntry>): Promise<DiffResult<unknown>> {
+const diffMapFunction = async function (filepath: string, entries: Array<TreeEntry>): Promise<DiffResult<unknown>> {
     // Extract entries and file contents
     const [ refTree, comparedTree ] = entries;
 
@@ -22,6 +22,6 @@ const diffMapFunction = async function(filepath: string, entries: Array<TreeEntr
 
     // Then return the data as expected
     return diff;
-}
+};
 
 export default diffMapFunction;

@@ -1,7 +1,7 @@
 import path from 'path';
 import { getParserByFileName } from 'main/providers/parsers';
 import parseSchema from './parse-schema';
-import { ProviderDatum } from "main/providers/types/Data";
+import { ProviderDatum } from 'main/providers/types/Data';
 import { Blob, TreeEntry } from 'nodegit';
 import parseCsv from './parse-csv';
 import parseOpenDataRights, { OpenDataRightsDatum } from './parse-open-data-rights';
@@ -24,7 +24,7 @@ type ParsedExtension = typeof parsedExtensions[number];
  * @param blob The nodegit-provided blob object that is referencing the actual data
  */
 function getObjectByExtension(extension: ParsedExtension, blob: Blob) {
-    switch(extension) {
+    switch (extension) {
         case '.json': {
             return JSON.parse(utfDecoder.decode(blob.content()));
         }
@@ -69,7 +69,7 @@ async function generateParsedCommit(
             object as OpenDataRightsDatum[],
             hostname,
             account,
-            rest.join('/')
+            rest.join('/'),
         );
     }
     

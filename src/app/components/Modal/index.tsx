@@ -58,7 +58,7 @@ const StyledDialog = styled(animated.div)`
 `;
 
 type DialogProps = PropsWithChildren<
-    HTMLAttributes<HTMLDivElement>
+HTMLAttributes<HTMLDivElement>
 >;
 
 function Dialog(props: DialogProps): JSX.Element {
@@ -100,7 +100,7 @@ class Modal extends Component<Props> {
         if (event.key === 'Escape') {
             this.props.onRequestClose();
         }
-    }
+    };
 
     handleContainerClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
         // GUARD: Check if the currenttarget is the parent where the events
@@ -108,7 +108,7 @@ class Modal extends Component<Props> {
         if (event.currentTarget === event.target) {
             this.props.onRequestClose();
         }   
-    }
+    };
 
     render(): JSX.Element {
         const { isOpen, onRequestClose, children } = this.props;
@@ -118,15 +118,15 @@ class Modal extends Component<Props> {
                 items={isOpen}
                 from={{ transform: 'translate3d(0,-40px,0)', opacity: 0, backgroundOpacity: 0 }}
                 enter={() => async (next: NextFunc) => {
-                    next({ backgroundOpacity: 1 })
-                    await new Promise((resolve) => setTimeout(resolve, 200))
-                    await next({ transform: 'translate3d(0,0px,0)', opacity: 1 })
+                    next({ backgroundOpacity: 1 });
+                    await new Promise((resolve) => setTimeout(resolve, 200));
+                    await next({ transform: 'translate3d(0,0px,0)', opacity: 1 });
                 }}
                 leave={{ transform: 'translate3d(0,-40px,0)', opacity: 0, backgroundOpacity: 0 }}
                 config={config.wobbly}
             >
-                {({ backgroundOpacity, ...props }, isOpen) => {
-                    return isOpen && (
+                {({ backgroundOpacity, ...props }, item) => {
+                    return item && (
                         <Container style={{ opacity: backgroundOpacity }} onClick={this.handleContainerClick}>
                             <Dialog 
                                 style={props}
