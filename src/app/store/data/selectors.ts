@@ -8,12 +8,12 @@ export function RepositorySubscription(): JSX.Element {
 
     // A handler for when a new commit is made by the repository
     const handleRepositoryEvent = useCallback(() => {
-        dispatch(fetchParsedCommit());
+        dispatch(fetchParsedCommit(undefined));
     }, [dispatch]);
 
     useEffect(() => {
         // Fetch the parsed commit on application mount
-        dispatch(fetchParsedCommit());
+        dispatch(fetchParsedCommit(undefined));
 
         // Then listen for any new commits
         Repository.subscribe(handleRepositoryEvent);
