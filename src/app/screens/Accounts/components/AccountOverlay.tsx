@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAlarmExclamation, faCheck, faClock, faLink, faPlus, faQuestion, faUpload } from 'app/assets/fa-light';
+import { faBell, faCheck, faClock, faLink, faPlus, faQuestion, faUpload } from '@fortawesome/free-solid-svg-icons';
 import faOpenDataRights from 'app/assets/open-data-rights';
 import Button, { GhostButton } from 'app/components/Button';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
@@ -12,6 +12,9 @@ import { formatDistanceToNow } from 'date-fns';
 import { InitialisedAccount } from 'main/providers/types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import IconBadge from 'app/components/IconBadge';
+import { PullContainer } from 'app/components/Utility';
 
 interface Props {
     selectedAccount: string;
@@ -23,6 +26,7 @@ function hasUrl(account: InitialisedAccount | EmailProvider): account is Initial
 
 function AccountOverlay({ selectedAccount }: Props): JSX.Element {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const account = useSelector((state: State) => {
         if (!selectedAccount) {
             return;
@@ -53,6 +57,10 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
         }
     }, [selectedAccount, dispatch, setLoading]);
 
+    const handleClose = useCallback(() => {
+        navigate('/accounts');
+    }, [navigate]);
+
     // GUARD: If there is no account data available (sometimes the data hasn't
     // yet been retrieved from the back-end), don't render anything.
     if (!account) {
@@ -60,32 +68,29 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
     }
 
     return (
-        <RightSideOverlay data-tour="accounts-account-overlay">
+        <RightSideOverlay data-tour="accounts-account-overlay" onClose={handleClose}>
             {selectedAccount && (
                 <>
                     <Section>
-                        <H2>
-                            <FontAwesomeIcon
-                                icon={Providers.getIcon(account.provider)}
-                                style={{ marginRight: 8 }}
-                            />
-                            {account.account}
-                        </H2>
+                        <PullContainer>
+                            <IconBadge icon={Providers.getIcon(account.provider)} />
+                            <H2>{account.account}</H2>
+                        </PullContainer>
                     </Section>
-                    <Section>
+                    <Section well>
                         <FontLarge>
                             {hasUrl(account) && 
                                 <>
                                     <FontAwesomeIcon
                                         icon={faOpenDataRights}
-                                        style={{ marginRight: 8 }}
+                                        style={{ marginRight: 12 }}
                                         fixedWidth
                                     />
                                     Open Data Rights API-based
                                     <br />
                                     <FontAwesomeIcon
                                         icon={faLink}
-                                        style={{ marginRight: 8 }}
+                                        style={{ marginRight: 12 }}
                                         fixedWidth
                                     />
                                     Host: <i>{account.url}</i>
@@ -95,14 +100,14 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                             }
                             <FontAwesomeIcon
                                 icon={faQuestion}
-                                style={{ marginRight: 8 }}
+                                style={{ marginRight: 12 }}
                                 fixedWidth
                             />
                             Data requested: <i>{account.status?.dispatched ? formatDistanceToNow(new Date(account.status.dispatched)) + ' ago' : 'never'}</i>
                             <br />
                             <FontAwesomeIcon
                                 icon={faClock}
-                                style={{ marginRight: 8 }}
+                                style={{ marginRight: 12 }}
                                 fixedWidth
                             />
                             Last check: <i>{account.status?.lastCheck ? formatDistanceToNow(new Date(account.status.lastCheck)) + ' ago' : 'never'}</i>
@@ -111,7 +116,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                                     <br />
                                     <FontAwesomeIcon
                                         icon={faCheck}
-                                        style={{ marginRight: 8 }}
+                                        style={{ marginRight: 12 }}
                                         fixedWidth
                                     />
                                     Completed: <i>{formatDistanceToNow(new Date(account.status?.completed))} ago</i>
@@ -137,7 +142,7 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                                         <Button icon={faUpload} fullWidth>
                                             Upload archive
                                         </Button>
-                                        <Button icon={faAlarmExclamation} disabled fullWidth>
+                                        <Button icon={faBell} disabled fullWidth>
                                             Send reminder
                                         </Button>
                                     </>

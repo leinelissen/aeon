@@ -11,7 +11,7 @@ import calculateGraph from './calculateGraph';
 import DatumOverlay from '../Data/components/DatumOverlay';
 import { RouteProps } from '../types';
 import style, { Container, ResetButton, Tooltip } from './style';
-import { faUndo } from 'app/assets/fa-light';
+import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import Loading from 'app/components/Loading';
 import NoData from 'app/components/NoData';
 import useTour from 'app/components/Tour/useTour';

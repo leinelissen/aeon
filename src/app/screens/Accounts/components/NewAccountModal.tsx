@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import { faPlus } from 'app/assets/fa-light';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Button from 'app/components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Modal from 'app/components/Modal';

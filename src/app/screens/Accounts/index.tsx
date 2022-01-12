@@ -7,7 +7,7 @@ import AccountOverlay from './components/AccountOverlay';
 import getDescription from './getDescription';
 import styled from 'styled-components';
 import { GhostButton } from 'app/components/Button';
-import { faEnvelope, faSync } from 'app/assets/fa-light';
+import { faEnvelope, faSync } from '@fortawesome/free-solid-svg-icons';
 import { useAccounts } from 'app/store/accounts/selectors';
 import { State, useAppDispatch } from 'app/store';
 import { useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ import useTour from 'app/components/Tour/useTour';
 const StatusDescription = styled.span`
     font-size: 12px;
     opacity: 0.5;
+    font-weight: 400;
 `;
 
 const Rows = styled.div`

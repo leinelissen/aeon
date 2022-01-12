@@ -3,8 +3,9 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NavLink, NavLinkProps } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { faChevronRight } from 'app/assets/fa-light';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { PullRight } from './Utility';
+import { Section } from './RightSideOverlay';
 
 export const ListItem = styled.div`
     padding: 8px 32px;
@@ -41,7 +42,7 @@ export const SubHeading = styled(RowHeading)`
     background-color: var(--color-background);
     color: var(--color-gray-700);
     border: 0;
-    padding: 16px 32px 8px 32px;
+    padding: 16px 32px 8px 16px;
 `;
 
 export const PanelGrid = styled.div<{ columns?: number; noTopPadding?: boolean; }>`
@@ -52,6 +53,12 @@ export const PanelGrid = styled.div<{ columns?: number; noTopPadding?: boolean; 
     height: 100%;
     position: relative;
     overflow: hidden;
+
+    ${(props) => (!props.columns || props.columns === 3) && css`
+        & ${Section} {
+            margin: 24px;
+        }
+    `}
 `;
 
 export const List = styled.div<{ topMargin?: boolean }>`
@@ -112,6 +119,7 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
     text-overflow: ellipsis;
     white-space: nowrap; 
     color: var(--color-header);
+    font-family: var(--font-heading);
 
     img {
         max-height: 100px;
@@ -121,14 +129,24 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
 
     svg {
         flex: 0 0 auto;
+        color: var(--color-gray-700);
     }
 
     &.active {
         background: var(--color-blue-500);
         color: var(--color-white);
+
+        svg {
+            flex: 0 0 auto;
+            color: var(--color-white);
+        }
     }
 
     &:hover:not(.active) {
+        background: var(--color-blue-50);
+    }
+
+    &:active {
         background: var(--color-blue-100);
     }
 
@@ -158,6 +176,7 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
 
     ${props => props.large && css`
         font-size: 16px;
+        font-weight: 500;
     `}
 
     &:disabled {

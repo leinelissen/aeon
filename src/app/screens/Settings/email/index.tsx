@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from 'app/assets/fa-light';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import Button from 'app/components/Button';
 import { List, NavigatableListEntry, PanelBottomButtons, RowDescription, SplitPanel } from 'app/components/PanelGrid';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';

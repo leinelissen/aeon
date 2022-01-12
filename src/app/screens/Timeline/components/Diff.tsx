@@ -10,7 +10,7 @@ import { FontLarge, H2, H5 } from 'app/components/Typography';
 import { formatDistanceToNow } from 'date-fns';
 import Code from 'app/components/Code';
 import RightSideOverlay, { RightSideOverlayOffset, Section } from 'app/components/RightSideOverlay';
-import { faCodeCommit, faLink, faPlus, faSync, faUser } from 'app/assets/fa-light';
+import { faCodeBranch, faLink, faPlus, faSync, faUser } from '@fortawesome/free-solid-svg-icons';
 import { MarginLeft, PullContainer } from 'app/components/Utility';
 import convertMetaToObject from 'app/utilities/convertMetaToObject';
 import Providers from 'app/utilities/Providers';
@@ -103,7 +103,7 @@ class Diff extends PureComponent<Props, State> {
                         <Section>
                             <H2>
                                 <PullContainer verticalAlign>
-                                    <FontAwesomeIcon icon={faCodeCommit} fixedWidth />
+                                    <FontAwesomeIcon icon={faCodeBranch} fixedWidth />
                                     <MarginLeft>{meta.title}</MarginLeft>
                                 </PullContainer>
                             </H2>
@@ -134,7 +134,7 @@ class Diff extends PureComponent<Props, State> {
                         </Section>
                         <CodeRectifier data-tour="timeline-diff-data">
                             {(diff.added.length || diff.updated.length || diff.deleted.length) ?
-                                <Section smallPadding>
+                                <Section>
                                     {diff.added.length ? (
                                         <Code added>
                                             <H5>DATA ADDED</H5>

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from 'app/assets/fa-light';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Button, { GhostButton } from 'app/components/Button';
 import Modal from 'app/components/Modal';
 import { H3 } from 'app/components/Typography';

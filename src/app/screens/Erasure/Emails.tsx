@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope } from 'app/assets/fa-light';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import Button from 'app/components/Button';
 import Modal from 'app/components/Modal';
 import ModalMenu from 'app/components/Modal/Menu';

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown } from 'app/assets/fa-light';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import React, { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 

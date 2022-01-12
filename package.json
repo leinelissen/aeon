@@ -80,6 +80,7 @@
         "@fontsource/inter": "4.5.1",
         "@fortawesome/fontawesome-svg-core": "1.2.36",
         "@fortawesome/free-brands-svg-icons": "5.15.4",
+        "@fortawesome/free-solid-svg-icons": "^5.15.4",
         "@fortawesome/react-fontawesome": "0.1.16",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
         "@popperjs/core": "2.11.0",

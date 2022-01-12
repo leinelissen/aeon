@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartNetwork, faClock, faCog, faUser, faTable, faTrash } from 'app/assets/fa-light';
+import { faProjectDiagram, faClock, faCog, faUser, faTable, faTrash } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -84,9 +84,14 @@ const Link = styled(NavLink)`
 
     span.icon {
         font-size: 16px;
+        color: var(--color-gray-700);
     }
 
     &.active {
+        span.icon {
+            color: var(--color-blue-500);
+        }
+
         @media (prefers-color-scheme: dark) {
             background-color: #FFFFFF26;
         }
@@ -135,7 +140,7 @@ export default function Menu(): JSX.Element {
                 <span>Data</span>
             </Link>
             <Link to="/graph" id="graph" className={({ isActive }) => isActive ? 'active' : ''}>
-                <span className="icon"><FontAwesomeIcon icon={faChartNetwork} fixedWidth /></span>
+                <span className="icon"><FontAwesomeIcon icon={faProjectDiagram} fixedWidth /></span>
                 <span>Graph</span>
             </Link>
             {deleted.length ? (

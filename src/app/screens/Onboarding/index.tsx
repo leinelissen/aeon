@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from 'app/assets/fa-light';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { LinkButton } from 'app/components/Button';
 import { H2 } from 'app/components/Typography';
 import { MarginLeft } from 'app/components/Utility';

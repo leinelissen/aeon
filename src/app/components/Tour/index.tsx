@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { TourProvider } from '@reactour/tour';
 import steps, { TourKeys } from './steps';
-import { faCheck } from 'app/assets/fa-light';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import Button from '../Button';
 
 function Tour({ children }: PropsWithChildren<unknown>): JSX.Element {

@@ -22,8 +22,8 @@ import {
     faAddressCard,
     faFlag,
     faHeart,
-    faSignIn,
-    faSignOut,
+    faSignInAlt,
+    faSignOutAlt,
     faImage,
     faComments,
     faVenusMars,
@@ -33,7 +33,7 @@ import {
     faCalendar,
     faSearch,
     faEye,
-    faBlinds,
+    faUserCog,
     faAddressBook,
     faEnvelope,
     faNetworkWired,
@@ -41,7 +41,7 @@ import {
     faUserCircle,
     faUserFriends,
     faShoePrints,
-    faBookAlt, 
+    faBook, 
     faUsers, 
     faBriefcase, 
     faFile, 
@@ -54,7 +54,7 @@ import {
     faMobile,
     faMusic,
     faRobot
-} from 'app/assets/fa-light';
+} from '@fortawesome/free-solid-svg-icons';
 
 class DataType {
     /**
@@ -96,9 +96,9 @@ class DataType {
             case ProvidedDataTypes.LIKE:
                 return faHeart;
             case ProvidedDataTypes.LOGIN_INSTANCE:
-                return faSignIn;
+                return faSignInAlt;
             case ProvidedDataTypes.LOGOUT_INSTANCE:
-                return faSignOut;
+                return faSignOutAlt;
             case ProvidedDataTypes.PHOTO:
                 return faImage;
             case ProvidedDataTypes.MESSAGE:
@@ -114,7 +114,7 @@ class DataType {
             case ProvidedDataTypes.POST_SEEN:
                 return faEye;
             case ProvidedDataTypes.PRIVACY_SETTING:
-                return faBlinds;
+                return faUserCog;
             case ProvidedDataTypes.UPLOADED_CONTACT:
                 return faAddressBook;
             case ProvidedDataTypes.IP_ADDRESS:
@@ -130,7 +130,7 @@ class DataType {
             case ProvidedDataTypes.USERNAME:
                 return faIdBadge;
             case ProvidedDataTypes.SESSION:
-                return faBookAlt;
+                return faBook;
             case ProvidedDataTypes.PEER_GROUP:
                 return faUsers;
             case ProvidedDataTypes.EMPLOYMENT:
@@ -297,7 +297,7 @@ class DataType {
             case ProvidedDataTypes.PLACE_OF_RESIDENCE:
                 return 'A place (city, town, village, etc.) where the user resides';
             case ProvidedDataTypes.ADDRESS:
-                return 'A full adress, including street, number, ZIP-code and eventual state';
+                return 'A full adress, including street, number, ZIP-code and optionally state';
             case ProvidedDataTypes.COUNTRY:
                 return 'The country where a user resides';
             case ProvidedDataTypes.LIKE:

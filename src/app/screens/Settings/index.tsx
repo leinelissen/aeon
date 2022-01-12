@@ -1,6 +1,6 @@
 import React from 'react';
 import { Category, List, NavigatableListEntry, PanelGrid } from 'app/components/PanelGrid';
-import { faEnvelope } from 'app/assets/fa-light';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import EmailSettings from './email';
 import { useParams } from 'react-router-dom';
 import { RouteProps } from '../types';

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Transition, config, animated } from 'react-spring';
 import { GhostButton } from '../Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp } from 'app/assets/fa-light';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 interface SpringProps {
     transform?: string;

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { GhostButton } from 'app/components/Button';
 import { ProvidedDataTypes } from "main/providers/types/Data";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCassetteTape, faClock, faLink, faTrash, faUser } from 'app/assets/fa-light';
+import { faFile, faClock, faLink, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontLarge, H2 } from 'app/components/Typography';
 import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';
@@ -12,6 +12,8 @@ import { RouteProps } from 'app/screens/types';
 import { State, useAppDispatch } from 'app/store';
 import { deleteDatum } from 'app/store/data/actions';
 import { useSelector } from 'react-redux';
+import IconBadge from 'app/components/IconBadge';
+import { PullContainer } from 'app/components/Utility';
 
 interface Props {
     datumId: number;
@@ -41,22 +43,19 @@ const DatumOverlay = ({ datumId }: Props): JSX.Element => {
     }, [dispatch, datumId]);
 
     return (
-        <RightSideOverlay onClose={handleClose} data-tour="data-datum-overlay" marginTop={50}>
+        <RightSideOverlay onClose={handleClose} data-tour="data-datum-overlay">
             {datum && (
                 <>
                     <Section>
-                        <H2 style={{ color: isDeleted ? 'var(--color-red-500)' : 'inherit' }}>
-                            <FontAwesomeIcon
-                                icon={DataType.getIcon(datum.type as ProvidedDataTypes)}
-                                style={{ marginRight: 8 }}
-                            />
-                            {DataType.toString(datum)}
-                        </H2>
+                        <PullContainer verticalAlign>
+                            <IconBadge icon={DataType.getIcon(datum.type as ProvidedDataTypes)} />
+                            <H2>{DataType.toString(datum)}</H2>
+                        </PullContainer>
                         {isDeleted && <p>
                             This data point is marked for erasure    
                         </p>}
                     </Section>
-                    <Section>
+                    <Section well>
                         <FontLarge>
 
                             <DetailListItem>
@@ -94,7 +93,7 @@ const DatumOverlay = ({ datumId }: Props): JSX.Element => {
                             }
                             <DetailListItem>
                                 <span>
-                                    <FontAwesomeIcon icon={faCassetteTape} fixedWidth />
+                                    <FontAwesomeIcon icon={faFile} fixedWidth />
                                 </span>
                                 <span style={{ textTransform: 'uppercase' }}>
                                     {datum.type}

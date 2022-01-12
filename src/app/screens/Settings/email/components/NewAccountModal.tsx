@@ -1,6 +1,6 @@
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from 'app/assets/fa-light';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Button from 'app/components/Button';
 import Modal from 'app/components/Modal';
 import ModalMenu from 'app/components/Modal/Menu';

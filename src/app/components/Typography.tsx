@@ -6,11 +6,11 @@ export const H1 = styled.h1`
 `;
 
 export const H2 = styled.h2`
-    font-weight: 700;
+    font-weight: 600;
     font-size: 24px;
     margin: 8px 0;
     line-height: 1.3;
-    word-break: break-all;
+    /* word-break: break-all; */
     font-family: 'Inter';
     color: var(--color-header);
 `;

@@ -1,7 +1,7 @@
 import { InitOptionalParameters , InitialisedAccount } from 'main/providers/types';
 import { ProviderCommands, ProviderEvents } from "main/providers/types/Events";
 import { faFacebookF, faInstagram, faLinkedinIn, faSpotify, IconDefinition } from '@fortawesome/free-brands-svg-icons';
-import { faEnvelope, faSquare } from 'app/assets/fa-light';
+import { faEnvelope, faSquare } from '@fortawesome/free-solid-svg-icons';
 import { IpcRendererEvent } from 'electron';
 import faOpenDataRights from 'app/assets/open-data-rights';
 

@@ -1,5 +1,5 @@
 import { faGoogle, IconDefinition } from '@fortawesome/free-brands-svg-icons';
-import { faEnvelope } from 'app/assets/fa-light';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { IpcRendererEvent } from 'electron';
 import { EmailCommands, EmailEvents } from 'main/email-client/types';
 

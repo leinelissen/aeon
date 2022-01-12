@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { GroupBase } from 'react-select';
 import styled from 'styled-components';
 import Button from 'app/components/Button';
-import { faEnvelope } from 'app/assets/fa-light';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { createEmailAccount } from 'app/store/accounts/actions';
 import { useNavigate } from 'react-router-dom';
 

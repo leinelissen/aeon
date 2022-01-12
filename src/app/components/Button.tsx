@@ -33,10 +33,11 @@ const StyledButtonStyles = css<ButtonProps>`
     border: 1px solid var(--color-${props => props.backgroundColor || 'blue'}-600);
     text-overflow: ellipsis;
     overflow-wrap: break-word;
+    letter-spacing: -0.3px;
 
     &:hover&:not(:disabled) {
         cursor: default;
-        opacity: 0.9;
+        background-color: var(--color-${props => props.backgroundColor || 'blue'}-600);
         box-shadow: 0 1px 2px rgba(0,0,0,0.09), 
                 0 2px 4px rgba(0,0,0,0.09), 
                 0 4px 8px rgba(0,0,0,0.09), 
@@ -45,7 +46,6 @@ const StyledButtonStyles = css<ButtonProps>`
     &:disabled {
         background-color: var(--color-gray-300);
         cursor: not-allowed;
-        opacity: 0.5;
         color: var(--color-gray-600);
         border-color: var(--color-gray-400);
     }
@@ -86,11 +86,11 @@ export const StyledGhostButton = styled(StyledButton)`
     font-weight: 500;
 
     &:hover&:not(:disabled) {
-        background-color: var(--color-${props => props.backgroundColor || 'blue'}-100);
+        background-color: var(--color-${props => props.backgroundColor || 'blue'}-50);
     }
 
     &:active {
-        background-color: var(--color-${props => props.backgroundColor || 'blue'}-200);
+        background-color: var(--color-${props => props.backgroundColor || 'blue'}-100);
     }
 `;
 

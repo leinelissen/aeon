@@ -1,8 +1,10 @@
 :root {
     /* Blue */
+    --color-blue-50: hsl(223, 100%, 97%);
     --color-blue-100: hsl(223, 100%, 95%);
     --color-blue-200: hsl(223, 100%, 85%);
     --color-blue-300: hsl(223, 100%, 70%);
+    --color-blue-400: hsl(223, 100%, 60%);
     --color-blue-500: hsl(223, 100%, 50%);
     --color-blue-600: hsl(223, 100%, 40%);
     --color-blue-700: hsl(223, 100%, 30%);

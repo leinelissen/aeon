@@ -1,9 +1,9 @@
 import React, { PropsWithChildren } from 'react';
 import { GhostButton } from 'app/components/Button';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Transition } from 'react-spring'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft } from 'app/assets/fa-light';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 export type RightSideOverlayProps = PropsWithChildren<{
     onClose?: () => void;
@@ -19,17 +19,16 @@ const Container = styled.div`
 `;
 
 export const CloseButton = styled(GhostButton)`
-    position: absolute;
-    left: 16px;
-    top: 8px;
+    margin-left: 8px;
+    color: var(--color-gray-400);
+    
+    &:hover {
+        color: var(--color-gray-800);
+    }
 `;
 
-export const Section = styled.div<{ smallPadding?: boolean}>`
-    padding: ${props => props.smallPadding ? 15: 25}px;
-
-    &:not(:last-child) {
-        border-bottom: 1px solid var(--color-border);
-    }
+export const Section = styled.div<{ well?: boolean }>`
+    margin: 24px 36px;
 
     p:first-child {
         margin-top: 0;
@@ -44,13 +43,27 @@ export const Section = styled.div<{ smallPadding?: boolean}>`
         height: auto;
         border-radius: 5px;
     }
+
+    ${(props) => props.well && css`
+        background-color: var(--color-gray-100);
+        padding: 16px;
+        border-radius: 8px;
+        margin: 8px 16px;
+        overflow: hidden;
+        font-family: var(--font-heading);
+    `}
 `;
 
 export const DetailListItem = styled.div`
     display: flex;
 
+    & > * {
+       flex: 0 0 auto; 
+       color: var(--color-gray-800);
+    }
+
     & > *:first-child {
-        margin-right: 8px;
+        margin-right: 12px;
     }
 `;
 
