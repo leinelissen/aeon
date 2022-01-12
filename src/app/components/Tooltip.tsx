@@ -1,199 +1,121 @@
-import { Manager, Reference, PopperProps, Popper } from 'react-popper';
-import { Transition, config } from 'react-spring';
-import React, { PureComponent, ReactNode } from 'react';
+import { Placement } from '@popperjs/core';
+import React, { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
+import { usePopper } from 'react-popper';
+import { animated, useTransition } from 'react-spring';
 import styled from 'styled-components';
 
-interface State {
-    isHovered: boolean;
-}
-
-interface TooltipContainerProps {
-    children: (props: {
-        handleChange: (isHovered: boolean) => void;
-        isHovered: boolean;
-    }) => ReactNode;
-}
-
-export class TooltipContainer extends PureComponent<TooltipContainerProps, State> {
-    state = {
-        isHovered: false
-    }
-
-    handleChange = (isHovered: boolean): void => this.setState({ isHovered });
-
-    render(): ReactNode {
-        return (
-            <Manager>
-                {this.props.children({
-                    handleChange: this.handleChange,
-                    isHovered: this.state.isHovered,
-                })}
-            </Manager>
-        );
-    }
-}
-
-interface HoverAreaProps {
-    onChange: (isHovered: boolean) => void;
-}
-
-export class HoverArea extends PureComponent<HoverAreaProps, State> {
-    state = {
-        isHovered: true
-    }
-
-    handleMouseEnter = (): void => {
-        this.setState({ isHovered: true });
-        this.props.onChange(true);
-    }
-
-    handleMouseLeave = (): void => {
-        this.setState({ isHovered: false });
-        this.props.onChange(false);
-    }
-
-    render(): JSX.Element {
-        return (
-            <Reference>
-                {({ ref }) => (
-                    <div ref={ref} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
-                        {this.props.children}
-                    </div>
-                )}
-            </Reference>
-        )
-    }
-}
-
-interface TooltipProps extends Omit<PopperProps<typeof modifiers>, 'children'> {
-    active: boolean;
-    children: JSX.Element;
-}
-
-const Container = styled.div`
-    border: 1px solid #eee;
-    background-color: white;
-    padding: 16px;
-    max-width: 200px;
-    border-radius: 10px;
-    transform-origin: bottom center;
-    font-size: 12px;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.02), 
-              0 2px 2px rgba(0,0,0,0.02), 
-              0 4px 4px rgba(0,0,0,0.02), 
-              0 8px 8px rgba(0,0,0,0.02), 
-              0 16px 16px rgba(0,0,0,0.02), 
-              0 32px 32px rgba(0,0,0,0.02);
+const StyledTooltip = styled(animated.div)`
+    background-color: var(--color-background);
+    border-radius: 4px;
+    padding: 4px 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 
+                0 2px 4px rgba(0,0,0,0.04), 
+                0 4px 8px rgba(0,0,0,0.04), 
+                0 8px 16px rgba(0,0,0,0.04);
 `;
 
+function getTransitionConfig(placement: Placement) {
+    switch (placement) {
+        case 'left':
+        case 'left-end':
+        case 'left-start':
+            return {
+                from: { opacity: 0, pos: [-25, 0] },
+                enter: { opacity: 1, pos: [0, 0] },
+                leave: { opacity: 0, pos: [-25, 0] },
+            };
+        case 'right':
+        case 'right-end':
+        case 'right-start':
+            return {
+                from: { opacity: 0, pos: [25, 0] },
+                enter: { opacity: 1, pos: [0, 0] },
+                leave: { opacity: 0, pos: [25, 0] },
+            };
+        case 'bottom':
+        case 'bottom-end':
+        case 'bottom-start':
+        default:
+            return {
+                from: { opacity: 0, pos: [0, -25] },
+                enter: { opacity: 1, pos: [0, 0] },
+                leave: { opacity: 0, pos: [0, -25] },
+            };
+        case 'top':
+        case 'top-end':
+        case 'top-start':
+            return {
+                from: { opacity: 0, pos: [0, 25] },
+                enter: { opacity: 1, pos: [0, 0] },
+                leave: { opacity: 0, pos: [0, 25] },
+            };
+    }
+}
 
-export const Arrow = styled('div')`
-    position: absolute;
-    width: 1em;
-    height: 1em;
+type TooltipProps = PropsWithChildren<{
+    title: ReactNode;
+    placement?: Placement;
+}>;
 
-    &[data-placement*='bottom'] {
-        top: 0;
-        left: 0;
-        margin-top: -0.9em;
+/**
+ * This component will render a tooltip (passed as `title`) when hovering over a
+ * component (passed as `children`). The implementation is deliberately simple.
+ */
+function Tooltip({ title, children, placement = 'auto' }: TooltipProps) {
+    // Track whether the child components are being hovered
+    const [isHovered, setHovered] = useState(false);
 
-        &::before, &::after {
-            border-width: 0 1em 0.5em 1em;
-            border-color: transparent transparent white transparent;
-        }
-        &::before {
-            border-color: transparent transparent salmon transparent;
-        }
-    }
-    &[data-placement*='top'] {
-        bottom: 0;
-        left: 0;
-        margin-bottom: -0.9em;
-        &::before, 
-        &::after {
-            border-width: 1em 0.75em 0 0.75em;
-            border-color: white transparent transparent transparent;
-        }
-        &::before {
-            transform: translateY(1px);
-            border-color: #eee transparent transparent transparent;
-        }
-    }
-    &[data-placement*='right'] {
-        left: 0;
-        margin-left: -0.9em;
-        &::before {
-            border-width: 1.5em 1em 1.5em 0;
-            border-color: transparent white transparent transparent;
-        }
-    }
-    &[data-placement*='left'] {
-        right: 0;
-        margin-right: -0.9em;
-        &::before {
-            border-width: 1.5em 0 1.5em 1em;
-            border-color: transparent transparent transparent white;
-        }
-    }
-    &::before,
-    &::after {
-        content: '';
-        margin: auto;
-        display: block;
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-style: solid;
-    }
-`;
+    // Set refs for Popper
+    const [referenceElement, setReferenceElement] = useState(null);
+    const [popperElement, setPopperElement] = useState(null);
 
-const modifiers = [
-    {
-        name: 'offset',
-        options: {
-            offset: [16, 16],
-        }
-    },
-    {
-        name: 'preventOverflow',
-        options: {
-            padding: 8,
+    // Create config for popper
+    const { styles, attributes, state } = usePopper(referenceElement, popperElement, {
+        placement,
+        modifiers: [
+            { name: 'offset', options: { offset: [0, 8] } },
+            { name: 'hide' },
+        ]
+    });
+
+    // Define callback handlers for hover events
+    const handleMouseOver = useCallback(() => setHovered(true), [setHovered]);
+    const handleMouseOut = useCallback(() => setHovered(false), [setHovered]);
+    
+
+    // Create config for react-spring
+    const config = useMemo(() => getTransitionConfig(state?.placement), [state?.placement]);
+    const transitions = useTransition(isHovered, {
+        ...config,
+        config: {
+            tension: 300,
+            friction: 20,
         },
-    },
-]
+    });
 
-export class Tooltip extends PureComponent<TooltipProps> {
-    render(): JSX.Element {
-        const { children, active, ...props } = this.props;
-
-        return (
-            <Transition
-                items={active}
-                from={{ opacity: 0.6, top: -20 }}
-                enter={{ opacity: 1, top: 0 }}
-                leave={{ opacity: 0, top: -20 }}
-                config={config.stiff}
+    return (
+        <>
+            <span
+                ref={setReferenceElement}
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}
             >
-                {({ opacity }, show) => show && (
-                    <Popper {...props} modifiers={modifiers}>
-                        {({ ref, style: popperStyles, placement, arrowProps }) => (
-                            <Container 
-                                data-placement={placement}
-                                ref={ref}
-                                style={{
-                                    ...popperStyles, 
-                                    opacity,
-                                    transform: `${popperStyles.transform}
-                                    `,
-                                }}
-                            >
-                                <>{children}</>
-                                <Arrow ref={arrowProps.ref} style={arrowProps.style} data-placement={placement} />
-                            </Container>
-                        )}
-                    </Popper>
-                )}
-            </Transition>
-        );
-    }
+                {children}
+            </span>
+            {transitions(({ opacity, pos }, item) => (
+                item && (
+                    <div ref={setPopperElement} style={styles.popper} {...attributes.popper}>
+                        <StyledTooltip style={{
+                            opacity,
+                            transform: pos.to((x, y) => `translate3d(${x}%,${y}%,0)`),
+                        }}>
+                            {title}
+                        </StyledTooltip>
+                    </div>
+                )
+            ))}
+        </>
+    );
 }
+
+export default Tooltip;

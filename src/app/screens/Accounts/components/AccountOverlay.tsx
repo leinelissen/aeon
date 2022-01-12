@@ -2,19 +2,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCheck, faClock, faLink, faPlus, faQuestion, faUpload } from '@fortawesome/free-solid-svg-icons';
 import faOpenDataRights from 'app/assets/open-data-rights';
 import Button, { GhostButton } from 'app/components/Button';
-import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
+import RightSideOverlay, { DetailListItem, Section } from 'app/components/RightSideOverlay';
 import { FontLarge, H2 } from 'app/components/Typography';
 import { State, useAppDispatch } from 'app/store';
 import { dispatchEmailRequest } from 'app/store/accounts/actions';
 import { EmailProvider } from 'app/store/accounts/types';
 import Providers from 'app/utilities/Providers';
-import { formatDistanceToNow } from 'date-fns';
 import { InitialisedAccount } from 'main/providers/types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import IconBadge from 'app/components/IconBadge';
 import { PullContainer } from 'app/components/Utility';
+import Timestamp from 'app/components/Timestamp';
 
 interface Props {
     selectedAccount: string;
@@ -81,46 +81,56 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
                         <FontLarge>
                             {hasUrl(account) && 
                                 <>
-                                    <FontAwesomeIcon
-                                        icon={faOpenDataRights}
-                                        style={{ marginRight: 12 }}
-                                        fixedWidth
-                                    />
-                                    Open Data Rights API-based
-                                    <br />
-                                    <FontAwesomeIcon
-                                        icon={faLink}
-                                        style={{ marginRight: 12 }}
-                                        fixedWidth
-                                    />
-                                    Host: <i>{account.url}</i>
-                                    <br />
-                                    
+                                    <DetailListItem>
+                                        <span>
+                                            <FontAwesomeIcon
+                                                icon={faOpenDataRights}
+                                                fixedWidth
+                                            />
+                                        </span>
+                                        <span>Open Data Rights API-based</span>
+                                    </DetailListItem>
+                                    <DetailListItem>
+                                        <span>
+                                            <FontAwesomeIcon
+                                                icon={faLink}
+                                                fixedWidth
+                                            />
+                                        </span>
+                                        <span>Host: {account.url}</span>
+                                    </DetailListItem>
                                 </>
                             }
-                            <FontAwesomeIcon
-                                icon={faQuestion}
-                                style={{ marginRight: 12 }}
-                                fixedWidth
-                            />
-                            Data requested: <i>{account.status?.dispatched ? formatDistanceToNow(new Date(account.status.dispatched)) + ' ago' : 'never'}</i>
-                            <br />
-                            <FontAwesomeIcon
-                                icon={faClock}
-                                style={{ marginRight: 12 }}
-                                fixedWidth
-                            />
-                            Last check: <i>{account.status?.lastCheck ? formatDistanceToNow(new Date(account.status.lastCheck)) + ' ago' : 'never'}</i>
-                            {account.status?.completed && 
-                                <>
-                                    <br />
+                            <DetailListItem>
+                                <span>
                                     <FontAwesomeIcon
-                                        icon={faCheck}
-                                        style={{ marginRight: 12 }}
+                                        icon={faQuestion}
                                         fixedWidth
                                     />
-                                    Completed: <i>{formatDistanceToNow(new Date(account.status?.completed))} ago</i>
-                                </>
+                                </span>
+                                <span>Data requested: <Timestamp>{account.status?.dispatched}</Timestamp></span>
+                            </DetailListItem>
+                            <DetailListItem>
+                                <span>
+                                    <FontAwesomeIcon
+                                        icon={faClock}
+                                        fixedWidth
+                                    />
+                                </span>
+                                <span>
+                                    Last check: <Timestamp>{account.status.lastCheck}</Timestamp>
+                                </span>
+                            </DetailListItem>
+                            {account.status?.completed && 
+                                <DetailListItem>
+                                    <span>
+                                        <FontAwesomeIcon
+                                            icon={faCheck}
+                                            fixedWidth
+                                        />
+                                    </span>
+                                    <span>Completed: <Timestamp>{account.status?.completed}</Timestamp></span>
+                                </DetailListItem>
                             }
                         </FontLarge>
                     </Section>
