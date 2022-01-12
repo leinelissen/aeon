@@ -20,6 +20,8 @@ body * {
     box-sizing: border-box;
     user-select: none;
     text-decoration: none;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 *:focus {

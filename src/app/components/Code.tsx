@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean }>`
     font-family: 'IBM Plex Mono';
     background-color: #f8f8f8;
-    padding: 12px 24px;
+    padding: 16px 24px;
     max-width: 100%;
     line-height: 2;
     white-space: pre-wrap;

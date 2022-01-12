@@ -116,7 +116,7 @@ const Button = ({ children, loading, onClick, disabled, icon, ...props }: PropsW
 export const GhostButton = ({ children, loading, onClick, disabled, icon, ...props }: PropsWithChildren<Props>): JSX.Element => {
     return (
         <StyledGhostButton onClick={onClick} disabled={loading || disabled} {...props}>
-            {icon && !loading ? <FontAwesomeIcon icon={icon} style={{ marginRight: 5 }} fixedWidth /> : null}
+            {icon ? <FontAwesomeIcon icon={icon} style={{ marginRight: 5 }} fixedWidth /> : null}
             {children}
             {loading ? (<><Margin /><Ball size={10} /></>) : null}
         </StyledGhostButton>

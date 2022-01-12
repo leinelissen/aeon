@@ -12,6 +12,7 @@ export type RightSideOverlayProps = PropsWithChildren<{
 
 const Container = styled.div`
     pointer-events: all;
+    padding-bottom: 1em;
 
     code {
         margin-bottom: 0;
@@ -46,7 +47,7 @@ export const Section = styled.div<{ well?: boolean }>`
 
     ${(props) => props.well && css`
         background-color: var(--color-gray-100);
-        padding: 16px;
+        padding: 16px 24px;
         border-radius: 8px;
         margin: 8px 16px;
         overflow: hidden;
@@ -57,8 +58,12 @@ export const Section = styled.div<{ well?: boolean }>`
 export const DetailListItem = styled.div`
     display: flex;
 
+    &:not(:last-child) {
+        margin-bottom: 4px;
+    }
+
     & > * {
-       flex: 0 0 auto; 
+       flex: 0 1 auto; 
        color: var(--color-gray-800);
     }
 

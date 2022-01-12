@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FontLarge, H2, H5 } from 'app/components/Typography';
 import { formatDistanceToNow } from 'date-fns';
 import Code from 'app/components/Code';
-import RightSideOverlay, { RightSideOverlayOffset, Section } from 'app/components/RightSideOverlay';
+import RightSideOverlay, { DetailListItem, RightSideOverlayOffset, Section } from 'app/components/RightSideOverlay';
 import { faCodeBranch, faLink, faPlus, faSync, faUser } from '@fortawesome/free-solid-svg-icons';
 import { MarginLeft, PullContainer } from 'app/components/Utility';
 import convertMetaToObject from 'app/utilities/convertMetaToObject';
@@ -36,6 +36,8 @@ const DiffItem = styled.div`
 `;
 
 const CodeRectifier = styled.div`
+    margin: 16px;
+    
     ${Code}:first-child {
         margin-top: 0px;
     }
@@ -108,33 +110,33 @@ class Diff extends PureComponent<Props, State> {
                                 </PullContainer>
                             </H2>
                         </Section>
-                        <Section data-tour="timeline-diff-info">
+                        <Section data-tour="timeline-diff-info" well>
                             <FontLarge>
-                                <PullContainer verticalAlign>
-                                    <FontAwesomeIcon icon={faPlus} />
-                                    <MarginLeft>Committed {formatDistanceToNow(new Date(commit.author.when))} ago</MarginLeft>
-                                </PullContainer>
-                                {meta.provider && <PullContainer verticalAlign>
-                                    <FontAwesomeIcon icon={Providers.getIcon(meta.provider)} />
-                                    <MarginLeft>{meta.provider}</MarginLeft>
-                                </PullContainer>}
-                                {meta.account && <PullContainer verticalAlign>
-                                    <FontAwesomeIcon icon={faUser} />
-                                    <MarginLeft>{meta.account}</MarginLeft>
-                                </PullContainer>}
-                                {meta.updateType && <PullContainer verticalAlign>
-                                    <FontAwesomeIcon icon={faSync} />
-                                    <MarginLeft>{meta.updateType}</MarginLeft>
-                                </PullContainer>}
-                                {meta.url && <PullContainer verticalAlign>
-                                    <FontAwesomeIcon icon={faLink} />
-                                    <MarginLeft>{meta.url}</MarginLeft>
-                                </PullContainer>}
+                                <DetailListItem>
+                                    <span><FontAwesomeIcon fixedWidth icon={faPlus} /></span>
+                                    <span>Committed {formatDistanceToNow(new Date(commit.author.when))} ago</span>
+                                </DetailListItem>
+                                {meta.provider && <DetailListItem>
+                                    <span><FontAwesomeIcon fixedWidth icon={Providers.getIcon(meta.provider)} /></span>
+                                    <span>{meta.provider}</span>
+                                </DetailListItem>}
+                                {meta.account && <DetailListItem>
+                                    <span><FontAwesomeIcon fixedWidth icon={faUser} /></span>
+                                    <span>{meta.account}</span>
+                                </DetailListItem>}
+                                {meta.updateType && <DetailListItem>
+                                    <span><FontAwesomeIcon fixedWidth icon={faSync} /></span>
+                                    <span>{meta.updateType}</span>
+                                </DetailListItem>}
+                                {meta.url && <DetailListItem>
+                                    <span><FontAwesomeIcon fixedWidth icon={faLink} /></span>
+                                    <span>{meta.url}</span>
+                                </DetailListItem>}
                             </FontLarge>
                         </Section>
                         <CodeRectifier data-tour="timeline-diff-data">
                             {(diff.added.length || diff.updated.length || diff.deleted.length) ?
-                                <Section>
+                                <>
                                     {diff.added.length ? (
                                         <Code added>
                                             <H5>DATA ADDED</H5>
@@ -171,7 +173,7 @@ class Diff extends PureComponent<Props, State> {
                                             ))}
                                         </Code>
                                     ) : null}
-                                </Section>
+                                </>
                                 : null}
                         </CodeRectifier>
                     </>
