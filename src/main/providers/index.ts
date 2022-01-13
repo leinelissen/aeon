@@ -239,7 +239,12 @@ class ProviderManager extends EventEmitter2 {
         }
 
         // Alternatively, we save the files and attempt to commit
-        const commit = await this.saveFilesAndCommit(files, key, `Auto-update ${new Date().toLocaleString()}`, ProviderUpdateType.UPDATE);
+        const commit = await this.saveFilesAndCommit(
+            files,
+            key,
+            `Auto-update ${new Date().toLocaleString()}`,
+            ProviderUpdateType.UPDATE,
+        );
         
         // GUARD: Only log stuff if new data is found
         if (commit.changedFiles) {
@@ -260,8 +265,8 @@ class ProviderManager extends EventEmitter2 {
         message: string,
         updateType: ProviderUpdateType,
     ): Promise<{ changedFiles: number; commitHash: string; }> => {
-        logger.provider.info(`Saving and committing files for ${key}...`);
         const account = this.accounts.get(key);
+        logger.provider.info(`Saving and committing files for ${account.account} [${account.provider}]...`);
 
         // Then store all files using the repositor save and add handler
         await Promise.all(files.map(async (file: ProviderFile): Promise<void> => {
@@ -275,7 +280,7 @@ class ProviderManager extends EventEmitter2 {
                 await this.repository.save(location, file.data);
             }
             await this.repository.add(location);
-        })).catch(logger.repository.error);
+        })).catch(console.error);
 
         // Retrieve repository status and check if any files have actually changed
         const status = await this.repository.status();
@@ -416,7 +421,12 @@ class ProviderManager extends EventEmitter2 {
                     ? path.join(repositoryPath, account.provider, account.hostname,  account.account)
                     : path.join(repositoryPath, account.provider, account.account);
                 const files = await instance.parseDataRequest(dirPath, account.status.requestId);
-                const commit = await this.saveFilesAndCommit(files, key, `Data Request [${key}] ${new Date().toLocaleString()}`, ProviderUpdateType.DATA_REQUEST);
+                const commit = await this.saveFilesAndCommit(
+                    files,
+                    key,
+                    `Data Request [${key}] ${new Date().toLocaleString()}`,
+                    ProviderUpdateType.DATA_REQUEST,
+                );
                 
                 // Set the flag for completion
                 account.status.lastCheck = new Date().toString();

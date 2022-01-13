@@ -6,6 +6,8 @@ export interface EmailQuery {
     to?: string;
     subject?: string;
     messageId?: string;
+    /** UNIX time in seconds after which the message was sent */
+    after?: number;
 }
 
 export type Email = ParsedMail;

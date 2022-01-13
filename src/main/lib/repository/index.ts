@@ -58,7 +58,7 @@ class Repository extends EventEmitter {
 
         NodeGitRepository.open(this.dir)
             .catch((err) => {
-                logger.repository.error(err);
+                console.error(err);
                 return this.initialiseRepository();
             })
             .then(async (repository) => {
@@ -68,7 +68,7 @@ class Repository extends EventEmitter {
                 this.emit('ready');
                 logger.repository.info(`Repository was succesfully opened at ${repositoryPath}`);
             })
-            .catch(logger.repository.error);
+            .catch(console.error);
     }
 
     /**

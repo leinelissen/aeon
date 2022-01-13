@@ -111,7 +111,8 @@ class Spotify extends EmailDataRequestProvider {
             const reference = subHours(new Date, 2);
             if (reference < message.date) {
                 // If so, we find the link and click it
-                const link = message.text.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/confirm\/([a-f=\d\n]+)/)[0].replace('=', '');
+                const link = message.text.replace('=\n', '')
+                    .match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/confirm\/([a-f=\d\n]+)/)[0];
 
                 // GUARD: Check if the link is correctly extracted, else we
                 // might be in the wrong email
@@ -157,7 +158,8 @@ class Spotify extends EmailDataRequestProvider {
             throw new Error('Failed to find email text for Spotify');
         }
 
-        const link = message.text.match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/retrieve\/([a-f=\d\n]+)/)[0].replace('=', '');
+        const link = message.text.replace('=\n', '')
+            .match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/retrieve\/([a-f=\d]+)/)[0];
 
         // GUARD: Check if the download link was successfully retrieved
         if (!message || !link) {

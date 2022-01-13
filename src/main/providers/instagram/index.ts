@@ -1,5 +1,5 @@
 import { ProviderFile } from '../types';
-import { DataRequestProvider } from '../types/Provider';
+import { EmailDataRequestProvider } from '../types/Provider';
 import crypto from 'crypto';
 import path from 'path';
 import fetch from 'node-fetch';
@@ -12,7 +12,9 @@ import logger from 'main/lib/logger';
 
 const requestSavePath = path.join(app.getAppPath(), 'data');
 
-class Instagram extends DataRequestProvider {
+const downloadUrlRegex = /https:\/\/www\.instagram\.com\/dyi\/download\/auth\/([a-zA-Z\d]+)\/\?dyi_job_id=([a-zA-Z\d]+)/;
+
+class Instagram extends EmailDataRequestProvider {
     public static key = 'instagram';
 
     public static dataRequestIntervalDays = 5;
@@ -43,7 +45,7 @@ class Instagram extends DataRequestProvider {
             });
 
             return window.webContents.executeJavaScript(`
-                document.querySelector('input#pepUsername').value
+                document.querySelector('input#pepEmail').value
             `) as Promise<string>;
         });
     }
@@ -126,23 +128,21 @@ class Instagram extends DataRequestProvider {
         });
     };
 
-    async dispatchDataRequest(): Promise<void> {
+    async dispatchDataRequest(): Promise<number> {
         await this.verifyLoggedInStatus();
 
-        return withSecureWindow<void>(this.windowParams, async (window) => {
-            // GUARD: Check if a data request has already been completed. If so,
-            // we'll just pretend the request was submitted successfully, and have
-            // the normal scheduling pick up some time later.
-            if (await this.isDataRequestComplete()) {
-                return;
-            }
-
+        return withSecureWindow<number>(this.windowParams, async (window) => {
             // Load the dispatched window
             window.hide();
             await new Promise((resolve) => {
                 window.webContents.on('did-finish-load', resolve);
                 window.loadURL('https://www.instagram.com/download/request/');
             });
+
+            // Set the output format to JSON
+            window.webContents.executeJavaScript(`
+                document.querySelector('input[value="JSON"]')?.click();
+            `);
 
             // We'll click the button for the user, but we'll need to defer to the
             // user for a password
@@ -160,67 +160,73 @@ class Instagram extends DataRequestProvider {
                     urls: [ 'https://www.instagram.com/download/request_download_data_ajax/' ],
                 }, (details: Electron.OnCompletedListenerDetails) => {
                     if (details.statusCode === 200) {
-                        resolve();
+                        // Return the current UNIX time so we can filter on emails later
+                        resolve(Math.floor(new Date().getTime() / 1000));
                     }
                 });
             });             
         });
     }
 
-    async isDataRequestComplete(): Promise<boolean> {
-        await this.verifyLoggedInStatus();
-
-        return withSecureWindow<boolean>(this.windowParams, async (window) => {
-            logger.provider.info('Verified login status');
-
-            // Load page URL
-            await new Promise((resolve) => {
-                window.webContents.once('did-finish-load', resolve);
-                window.loadURL('https://www.instagram.com/download/request/');
-            });
-
-            logger.provider.info('Verification page is loaded');
-            
-            // Find a heading that reads 'Your Download is Ready'
-            return window.webContents.executeJavaScript(`
-                !!Array.from(document.querySelectorAll('h1'))
-                    .find(el => el.textContent === 'Your Download is Ready');
-            `);
+    async parseEmailForDownloadUrl(date: number): Promise<string | undefined> {
+        // Attempt to retrieve emails
+        const emails = await this.email.findMessages({
+            from: 'security@mail.instagram.com',
+            after: date,
         });
+
+        let match: string | undefined;
+        for (const email of emails) {
+            // GUARD: Check that the email has a body
+            if (!email.html) {
+                continue;
+            }
+
+            match = email.html
+                // Replace any weird line endinges
+                .replace('=\n', '')
+                // Then check if there's a download URL in there
+                .match(downloadUrlRegex)[0];
+
+            // GUARD: If a match is found, break the loop
+            if (match) {
+                break;
+            }
+        }
+
+        return match;
     }
 
-    async parseDataRequest(extractionPath: string): Promise<ProviderFile[]> {
+    async isDataRequestComplete(date: number): Promise<boolean> {
+        await this.verifyLoggedInStatus();
+        return !!(await this.parseEmailForDownloadUrl(date));
+    }
+
+    async parseDataRequest(extractionPath: string, date: number): Promise<ProviderFile[]> {
+        const downloadUrl = await this.parseEmailForDownloadUrl(date);
+
+        if (!downloadUrl) {
+            throw new Error('Couldn\'t parse download URL from email');
+        }
+
         return withSecureWindow<ProviderFile[]>(this.windowParams, async (window) => {
             logger.provider.info('Started parsing request');
 
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('did-finish-load', resolve);
-                window.loadURL('https://www.instagram.com/download/request/');
+                window.loadURL(downloadUrl);
             });
 
-            await new Promise((resolve) => {
-                // Now we defer to the user to enter their credentials
-                window.webContents.once('did-navigate', resolve); 
-                window.webContents.executeJavaScript(`
-                    Array.from(document.querySelectorAll('button'))
-                        .find(el => el.textContent === 'Log In Again')
-                        .click?.()
-                `);
+            // Show the reauthentication window to the user
+            await new Promise<void>((resolve) => {
+                window.webContents.on('did-navigate', (event, url) => {
+                    if (url.startsWith('https://www.instagram.com/download/confirm')) {
+                        resolve();
+                    }
+                });
+                window.show();
             });
-
-            logger.provider.info('Page navigated after button press');
-
-            // We can now show the window for the login screen
-            window.show();
-
-            // Then we'll await the navigation back to the data download page from
-            // the login page
-            await new Promise((resolve) => {
-                window.webContents.once('will-navigate', resolve); 
-            });
-
-            logger.provider.info('Credentials were successfully entered');
 
             // We can now close the window
             window.hide();
@@ -239,7 +245,7 @@ class Instagram extends DataRequestProvider {
                 // And then trigger the button click
                 window.webContents.executeJavaScript(`
                     Array.from(document.querySelectorAll('button'))
-                        .find(el => el.textContent === 'Download Data')
+                        .find(el => el.textContent === 'Download Information')
                         .click?.()
                 `);
             });
