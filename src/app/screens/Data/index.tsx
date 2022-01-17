@@ -40,6 +40,7 @@ function Data(): JSX.Element {
                 <Category title="Categories">
                     {Object.values(ProvidedDataTypes)
                         .filter((k) => byType[k].length > 0)
+                        .sort()
                         .map((key) => (
                             <ClickableCategory
                                 key={key}
