@@ -183,11 +183,18 @@ export interface ProviderParser {
     source: string | string[];
     /** An optional provider string */
     provider?: string;
-    /** The schema for accessing the data in the particular file */
+    /** The schema for accessing the data in the particular file.*/
     schemas: {
         /** The key which is used to access the data. This key may be nested. If 
-         * the key is not set, the root object is assumed to be the key */
+         * the key is not set, the root object is assumed to be the key 
+         * @deprecated This method is deprecated for the new `selector`
+         * property. */
         key?: string | string[];
+        /** A JMESPath expression that select one or more pieces piece of data
+         * from the source file.
+         * @example 'foo.bar[].baz'
+         * @see https://jmespath.org */
+        selector?: string;
         /** The type that is found at the particular key */
         type: ProvidedDataTypes;
         /** An optional transformer that is used to translate complex objects 
