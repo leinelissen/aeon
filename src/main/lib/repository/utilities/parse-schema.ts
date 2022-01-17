@@ -1,7 +1,15 @@
+import { compile, TreeInterpreter } from '@metrichor/jmespath';
+import { ExpressionNodeTree } from '@metrichor/jmespath/dist/types/Lexer';
 import logger from 'main/lib/logger';
+import unwrapParserSource from 'main/lib/unwrap-provider-source';
 import { ProviderDatum, ProviderParser } from 'main/providers/types/Data';
 
+// This is a single TextDecoder instance that converts the Nodegit blob to
+// something we can parse.
 const decoder = new TextDecoder('utf-8');
+
+// This keeps cached instances of compiled JMESPath selectors
+const selectorCache = new Map<string, ExpressionNodeTree>();
 
 /**
  * This function recursively travels through an object in order to retrieve any
@@ -80,7 +88,10 @@ function recursivelyExtractData(haystack: {[key: string]: any}, needle: string |
  */
 // eslint-disable-next-line
 function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderParser, account: string): ProviderDatum<any, any>[] {
-    const { source, provider } = parser;
+    const { source: baseSource, provider } = parser;
+
+    // Unwrap a possible string array
+    const source = unwrapParserSource(baseSource);
 
     // Then we decode the file
     const object = file instanceof Buffer 
@@ -94,23 +105,35 @@ function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderPar
 
     // Now we can start parsing the file
     return parser.schemas.map((schema): ProviderDatum<unknown, unknown> => {
-        const { type, transformer, key } = schema;
+        const { type, transformer, key, selector } = schema;
+
+        // GUARD: Check if we already have a cached version of the selector
+        if (selector && !selectorCache.has(selector)) {
+            // If we don't, we generate it
+            selectorCache.set(selector, compile(selector));
+        }
 
         try {
-            // We then recursively extract and possibly transform the data
-            const extractedData = key ? recursivelyExtractData(object, key) : object;
+            // We then recursively extract and possibly transform the data. This
+            // is preferably done with the selector if it is done at all.
+            const extractedWithSelector = selector && TreeInterpreter.search(selectorCache.get(selector), object);
+            const extractedWithKey = key && recursivelyExtractData(object, key);
+            const extractedData = extractedWithSelector || extractedWithKey || object;
+
             const transformedData = transformer 
                 ? (Array.isArray(extractedData) ? extractedData.map(transformer) : transformer(extractedData))
                 : extractedData;
 
-            // The next thing is a bit tricky because the transformed data
-            // might be in one of three forms:
-            // 1. The data is untransformed and is basically an array
-            //    containing all single values that were extracted from the
-            //    file
-            // 2. The data is transformed into an array of single items
-            // 3. The data is transformed and has yielded multiple items per
-            //   original item. It is now basically an array of arrays
+            /** 
+             * The next thing is a bit tricky because the transformed data
+             * might be in one of three forms:
+             * 1. The data is untransformed and is basically an array
+             *    containing all single values that were extracted from the
+             *    file
+             * 2. The data is transformed into an array of single items
+             * 3. The data is transformed and has yielded multiple items per
+             *   original item. It is now basically an array of arrays
+             */
 
             // First we'll handle the cases where the data is transformed.
             // In this case, we expect the transformer to already wrap

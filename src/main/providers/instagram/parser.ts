@@ -224,6 +224,57 @@ const parsers: ProviderParser[] = [
             },
         ],
     },
+    {
+        source: ['account_information', 'personal_information.json'],
+        schemas: [
+            {
+                selector: 'profile_user[].string_map_data.Email.value',
+                type: ProvidedDataTypes.EMAIL,
+            },
+            {
+                selector: 'profile_user[].string_map_data.Confirmed.value',
+                type: ProvidedDataTypes.TELEPHONE_NUMBER,
+            },
+            {
+                selector: 'profile_user[].string_map_data.Username.value',
+                type: ProvidedDataTypes.USERNAME,
+            },
+            {
+                selector: 'profile_user[].string_map_data.Name.value',
+                type: ProvidedDataTypes.FULL_NAME,
+            },
+            {
+                selector: 'profile_user[].string_map_data.Bio.value',
+                type: ProvidedDataTypes.BIOGRAPHY,
+            },
+            {
+                selector: 'profile_user[].string_map_data.Gender.value',
+                type: ProvidedDataTypes.GENDER,
+            },
+            {
+                selector: 'profile_user[].string_map_data."Date of birth".value',
+                type: ProvidedDataTypes.DATE_OF_BIRTH,
+            },
+        ],
+    },
+    {
+        source: ['ads_and_businesses', 'advertisers_using_your_activity_or_information.json'],
+        schemas: [
+            {
+                selector: 'ig_custom_audiences_all_types[].advertiser_name',
+                type: ProvidedDataTypes.ADVERTISER,
+            },
+        ],
+    },
+    {
+        source: ['device_information', 'devices.json'],
+        schemas: [
+            {
+                selector: 'devices_devices[].string_map_data."User Agent".value',
+                type: ProvidedDataTypes.USER_AGENT,
+            },
+        ],
+    },
 ];
 
 export default parsers;

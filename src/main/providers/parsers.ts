@@ -1,3 +1,4 @@
+import unwrapParserSource from 'main/lib/unwrap-provider-source';
 import Facebook from './facebook/parser';
 import Instagram from './instagram/parser';
 import LinkedIn from './linkedin/parser';
@@ -25,7 +26,7 @@ export const parsersByFile: Map<string, ProviderParser> = new Map(
             return [
                 // Also scope the path to the provider, as the data will be
                 // stored relatively to the parser as well
-                `${key}/${parser.source}`,
+                `${key}/${unwrapParserSource(parser.source)}`,
                 parser,
             ];
         });
@@ -40,7 +41,7 @@ export const parsersByProvider: Map<string, Map<string, ProviderParser>> = new M
             key,
             new Map(parsers.map((parser) => {
                 return [
-                    parser.source,
+                    unwrapParserSource(parser.source),
                     parser,
                 ];
             })),
