@@ -54,6 +54,7 @@ import {
     faMobile,
     faMusic,
     faRobot,
+    faBirthdayCake,
 } from '@fortawesome/free-solid-svg-icons';
 
 class DataType {
@@ -106,7 +107,7 @@ class DataType {
             case ProvidedDataTypes.GENDER:
                 return faVenusMars;
             case ProvidedDataTypes.DATE_OF_BIRTH:
-                return faIdCard;
+                return faBirthdayCake;
             case ProvidedDataTypes.JOIN_DATE:
                 return faCalendar;
             case ProvidedDataTypes.SEARCH_QUERY:
@@ -155,6 +156,10 @@ class DataType {
                 return faMusic;
             case ProvidedDataTypes.INFERENCE:
                 return faRobot;
+            case ProvidedDataTypes.BIOGRAPHY:
+                return faBook;
+            case ProvidedDataTypes.ADVERTISER:
+                return faAd;
             default:
                 return faSquare;
         }
@@ -249,6 +254,7 @@ class DataType {
             case ProvidedDataTypes.SEARCH_QUERY:
             case ProvidedDataTypes.POST_SEEN:
             case ProvidedDataTypes.INFERENCE:
+            case ProvidedDataTypes.BIOGRAPHY:
             default:
                 return datum.data as string;
         }
@@ -352,6 +358,10 @@ class DataType {
                 return 'An inference about an individual';
             case ProvidedDataTypes.PLAYED_SONG:
                 return 'A song that has been played by the user';
+            case ProvidedDataTypes.BIOGRAPHY:
+                return 'A biography that describes the user';
+            case ProvidedDataTypes.ADVERTISER:
+                return 'An advertiser that is advertising to the user';
             default:
                 return '';
         }

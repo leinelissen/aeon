@@ -1,118 +1,122 @@
 
 export enum ProvidedDataTypes {
-    // A email adress
+    /** A email adress */
     EMAIL = 'email',
-    // A first name
+    /** A first name */
     FIRST_NAME = 'first_name',
-    // A last name
+    /** A last name */
     LAST_NAME = 'last_name',
-    // A full name, including first and last name
+    /** A full name, including first and last name */
     FULL_NAME = 'full_name',
-    // An IP address
+    /** An IP address */
     IP_ADDRESS = 'ip_address',
-    // A user-agent that was saved as part as a log file
+    /** A user-agent that was saved as part as a log file */
     USER_AGENT = 'user_agent',
-    // A language that is used for browsing the platform
+    /** A language that is used for browsing the platform */
     USER_LANGUAGE = 'user_language',
-    // A cookie that was saved
+    /** A cookie that was saved */
     COOKIE = 'cookie',
-    // A follower for the user
+    /** A follower for the user */
     FOLLOWER = 'follower',
-    // Another account that the user is following
+    /** Another account that the user is following */
     ACCOUNT_FOLLOWING = 'account_following',
-    // Another account that the user has blocked
+    /** Another account that the user has blocked */
     BLOCKED_ACCOUNT = 'blocked_account',
-    // A hashtag the user is following
+    /** A hashtag the user is following */
     HASHTAG_FOLLOWING = 'hashtag_following',
-    // An ad interest that was flagged by the system for the user
+    /** An ad interest that was flagged by the system for the user */
     AD_INTEREST = 'ad_interest',
-    // A telephone number
+    /** A telephone number */
     TELEPHONE_NUMBER = 'telephone_number',
-    // A comment made by the user
+    /** A comment made by the user */
     COMMENT = 'comment',
-    // A device that was used by the user on the platform
+    /** A device that was used by the user on the platform */
     DEVICE = 'device',
-    // A username that is used for a particular platform
+    /** A username that is used for a particular platform */
     USERNAME = 'username',
-    // A place (city, town, village, etc.) where the user resides
+    /** A place (city, town, village, etc.) where the user resides */
     PLACE_OF_RESIDENCE = 'place_of_residence',
-    // A full adress, including street, number, ZIP-code and eventual state
+    /** A full adress, including street, number, ZIP-code and eventual state */
     ADDRESS = 'address',
-    // The country where a user resides
+    /** The country where a user resides */
     COUNTRY = 'country',
-    // A like thas been placed on a particular post
+    /** A like thas been placed on a particular post */
     LIKE = 'like',
-    // A saved instance of the user logging in
+    /** A saved instance of the user logging in */
     LOGIN_INSTANCE = 'login_instance',
-    // A saved instance of the user logging out
+    /** A saved instance of the user logging out */
     LOGOUT_INSTANCE = 'logout_instance',
-    // A photo
+    /** A photo */
     PHOTO = 'photo',
-    // A message by the user, to another user
+    /** A message by the user, to another user */
     MESSAGE = 'message',
-    // A gender
+    /** A gender */
     GENDER = 'gender',
-    // A profile picture
+    /** A profile picture */
     PROFILE_PICTURE = 'profile_picture',
-    // A birth date
+    /** A birth date */
     DATE_OF_BIRTH = 'date_of_birth',
-    // The date on which the user joined a platform
+    /** The date on which the user joined a platform */
     JOIN_DATE = 'join_date',
-    // A search query by the user
+    /** A search query by the user */
     SEARCH_QUERY = 'search_query',
-    // A post that the user has seen
+    /** A post that the user has seen */
     POST_SEEN = 'post_seen',
-    // A privacy setting for the user
+    /** A privacy setting for the user */
     PRIVACY_SETTING = 'privacy_setting',
-    // A telephone contact that has been uploaded by the user
+    /** A telephone contact that has been uploaded by the user */
     UPLOADED_CONTACT = 'uploaded_contact',
-    // A saved cookie with possibly extra information
+    /** A saved cookie with possibly extra information */
     SESSION = 'session',
-    // A categorisation of the peer group you belong to
+    /** A categorisation of the peer group you belong to */
     PEER_GROUP = 'peer_group',
-    // A job held currently or in the past
+    /** A job held currently or in the past */
     EMPLOYMENT = 'employment',
-    // An in-site visited page
+    /** An in-site visited page */
     VISITED_PAGE = 'visited_page',
-    // Recorded activity outside of the platform website
+    /** Recorded activity outside of the platform website */
     OFF_SITE_ACTIVITY = 'off_site_activity',
-    // Response to an event invitation
+    /** Response to an event invitation */
     EVENT_RESPONSE = 'event_response',
-    // Timezone associated with the user
+    /** Timezone associated with the user */
     TIMEZONE = 'timezone',
-    // Currency associated with the user
+    /** Currency associated with the user */
     CURRENCY = 'currency',
-    // An education experience held currently or in the past
+    /** An education experience held currently or in the past */
     EDUCATION_EXPERIENCE = 'education_experience',
-    // Registration date for the platform
+    /** Registration date for the platform */
     REGISTRATION_DATE = 'registration_date',
-    // A mobile device associated with the platform
+    /** A mobile device associated with the platform */
     MOBILE_DEVICE = 'mobile_device',
-    // An inference about an individual
+    /** An inference about an individual */
     INFERENCE = 'inference',
-    // A song that has been played by the user
+    /** A song that has been played by the user */
     PLAYED_SONG = 'played_song',
+    /** A biography that describes the user */
+    BIOGRAPHY = 'biography',
+    /** An advertiser that is advertising to the user */
+    ADVERTISER = 'advertiser',
 }
 
 export interface ProviderDatum<D, T = ProvidedDataTypes> {
-    // The data format, as it is retrieved from a file
+    /** The data format, as it is retrieved from a file */
     data: D;
-    // The type of this datum
+    /** The type of this datum */
     type: T;
-    // The provider from which this data was gained
+    /** The provider from which this data was gained */
     provider: string;
-    // The account from which this data was gained
+    /** The account from which this data was gained */
     account?: string;
-    // An API host from where the data was gained
+    /** An API host from where the data was gained */
     hostname?: string;
-    // The specific file from which the data was extracted
+    /** The specific file from which the data was extracted */
     source: string;
-    // A timestamp that is associated with this specific datapoint. For
-    // instance, when a post was posted.
+    /** A timestamp that is associated with this specific datapoint. For
+     * instance, when a post was posted. */
     timestamp?: string;
-    // Wether this datum can be edited with the provider
+    /** Wether this datum can be edited with the provider */
     isEditable?: boolean;
-    // Whether this datum can be deleted at the provider
+    /** Whether this datum can be deleted at the provider */
     isDeletable?: boolean;
 }
 
@@ -145,7 +149,7 @@ export type DateOfBirth = ProviderDatum<Date, ProvidedDataTypes.DATE_OF_BIRTH>;
 export type JoinDate = ProviderDatum<Date, ProvidedDataTypes.JOIN_DATE>;
 export type SearchQuery = ProviderDatum<string, ProvidedDataTypes.SEARCH_QUERY>;
 export type PostSeen = ProviderDatum<string, ProvidedDataTypes.POST_SEEN>;
-// eslint-disable-next-line
+/** eslint-disable-next-line */
 export type PrivacySetting = ProviderDatum<{ key: string; value: any; }, ProvidedDataTypes.PRIVACY_SETTING>;
 export type UploadedContact = ProviderDatum<unknown, ProvidedDataTypes.UPLOADED_CONTACT>;
 type SessionData = {
@@ -174,6 +178,8 @@ export type PlayedSong = ProviderDatum<{
     /** The duration of play in milliseconds */
     playDuration: number;
 }, ProvidedDataTypes.PLAYED_SONG>;
+export type Biography = ProviderDatum<string, ProvidedDataTypes.BIOGRAPHY>;
+export type Advertiser = ProviderDatum<string, ProvidedDataTypes.ADVERTISER>;
 
 export interface ProviderParser {
     /** The file from which the data has originated. Please take care to not
