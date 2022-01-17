@@ -1,4 +1,5 @@
 import logger from 'main/lib/logger';
+import unwrapParserSource from 'main/lib/unwrap-provider-source';
 import { ProviderDatum, ProviderParser } from 'main/providers/types/Data';
 
 const decoder = new TextDecoder('utf-8');
@@ -80,7 +81,10 @@ function recursivelyExtractData(haystack: {[key: string]: any}, needle: string |
  */
 // eslint-disable-next-line
 function parseSchema(file: Buffer | { [key: string] : any }, parser: ProviderParser, account: string): ProviderDatum<any, any>[] {
-    const { source, provider } = parser;
+    const { source: baseSource, provider } = parser;
+
+    // Unwrap a possible string array
+    const source = unwrapParserSource(baseSource);
 
     // Then we decode the file
     const object = file instanceof Buffer 

@@ -171,25 +171,27 @@ export type Inference = ProviderDatum<string, ProvidedDataTypes.INFERENCE>;
 export type PlayedSong = ProviderDatum<{
     artist: string;
     track: string;
-    // The duration of play in milliseconds
+    /** The duration of play in milliseconds */
     playDuration: number;
 }, ProvidedDataTypes.PLAYED_SONG>;
 
 export interface ProviderParser {
-    // The file from which the data has originated
-    source: string;
-    // An optional provider string
+    /** The file from which the data has originated. Please take care to not
+     * include any path separators (e.g. `/` or `\`) so that code is as platform
+     * independent as possible. Optionally, you may supply an array with path
+     * segments that is concatenated with `path.join()`. */
+    source: string | string[];
+    /** An optional provider string */
     provider?: string;
-    // The schema for accessing the data in the particular file
+    /** The schema for accessing the data in the particular file */
     schemas: {
-        // The key which is used to access the data. This key may be nested. If
-        // the key is not set, the root object is assumed to be the key
+        /** The key which is used to access the data. This key may be nested. If 
+         * the key is not set, the root object is assumed to be the key */
         key?: string | string[];
-        // The type that is found at the particular key
+        /** The type that is found at the particular key */
         type: ProvidedDataTypes;
-        // An optional transformer that is used to translate complex objects
-        // into the required shape
-        // eslint-disable-next-line
+        /** An optional transformer that is used to translate complex objects 
+         * into the required shape */
         transformer?(object: unknown): Partial<ProviderDatum<unknown, unknown>>[] | Partial<ProviderDatum<unknown, unknown>>;
     }[];
 }
