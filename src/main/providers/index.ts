@@ -312,7 +312,7 @@ class ProviderManager extends EventEmitter2 {
 
         // Parse the object as a series of "key: value \n" statements
         const augmentedMessage = Object.keys(messageData).reduce((sum, k) => {
-            return `${sum}\n${k}: ${messageData[key]}`;
+            return `${sum}\n${k}: ${messageData[k]}`;
         }, message);
 
         // Acutally create the commit
