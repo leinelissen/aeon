@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import { 
     createMigrate, 
@@ -58,7 +58,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 // Create a store from the persisted root reducer, optionally applying middleware
 const store = configureStore({
     reducer: persistedReducer,
-    middleware: getDefaultMiddleware({
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         // We need to ignore all redux-persist actions
         serializableCheck: {
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],

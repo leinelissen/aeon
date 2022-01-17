@@ -94,10 +94,10 @@ class OpenDataRights extends OpenDataRightsProvider {
     parseDataRequest = async (extractionPath: string, identifier: string): Promise<ProviderFile[]> => {
         // Retrieve the archive from the API
         const archive = await fetch(`${this.url}/requests/${identifier}/download`, this.getInit())
-            .then((response) => response.buffer());
+            .then((response) => response.arrayBuffer());
 
         // Then pass it over to adm-zip
-        const zip = new AdmZip(archive);
+        const zip = new AdmZip(Buffer.from(archive));
         await new Promise((resolve) => 
             zip.extractAllToAsync(extractionPath, true, resolve),
         );
