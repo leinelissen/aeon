@@ -72,7 +72,7 @@ export function ProviderSubscription(): null {
                 const notification = new Notification(
                     'Data Request Complete',
                     {
-                        body: `A data request for ${event.account} on ${event.provider}${event.url && ` (${event.url})`} was just completed`,
+                        body: `A data request for ${event.account} on ${event.provider}${event.url ? ` (${event.url})` : ''} was just completed`,
                     },
                 );
                 notification.onclick = () => navigate(`/timeline/${event.commitHash}`);
