@@ -31,6 +31,7 @@ export default function renderNode(color: string, size: number): (element: NodeS
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${size * 1.25}" height="${size}" style="text-align: center">
             <path d="${path}" fill="${color}" transform="translate(0,0)"></path>
           </svg>`;
-        return 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64');
+        /* eslint-disable deprecation/deprecation -- btoa is only deprecated in NodeJS environments. This code runs in the browser */
+        return 'data:image/svg+xml;base64,' + btoa(svg);
     };
 }
