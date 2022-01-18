@@ -140,9 +140,13 @@ class Spotify extends EmailDataRequestProvider {
                 window.loadURL('https://www.spotify.com/us/account/privacy/');
             });
 
+            // Add a timeout because it appears to solve problems 🤷‍♂️
+            // NOTE: This is a bad strategy...
+            await new Promise((resolve) => setTimeout(resolve, 2500));
+
             // Check if the third div is grayed out
             return window.webContents.executeJavaScript(`
-                document.querySelector('button[data-testid="resend-download-email"]').disabled !== true
+                document.querySelector('button[data-testid="resend-download-email"]').disabled === false
             `);
         });
     }
