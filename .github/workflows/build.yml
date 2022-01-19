@@ -140,6 +140,7 @@ jobs:
         if: |
           matrix.os != 'ubuntu-20.04'
             && matrix.arch == 'x64'
+            && matrix.os != 'macOS-11'
         run: npm run test
 
       - name: Test (Ubuntu)
