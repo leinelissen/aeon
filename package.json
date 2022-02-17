@@ -80,17 +80,17 @@
     },
     "dependencies": {
         "@fast-csv/parse": "4.3.6",
-        "@fontsource/ibm-plex-mono": "^4.5.1",
-        "@fontsource/ibm-plex-sans": "^4.5.1",
+        "@fontsource/ibm-plex-mono": "4.5.1",
+        "@fontsource/ibm-plex-sans": "4.5.1",
         "@fontsource/inter": "4.5.4",
         "@fortawesome/fontawesome-svg-core": "1.3.0",
         "@fortawesome/free-brands-svg-icons": "5.15.4",
-        "@fortawesome/free-solid-svg-icons": "^5.15.4",
+        "@fortawesome/free-solid-svg-icons": "5.15.4",
         "@fortawesome/react-fontawesome": "0.1.17",
-        "@metrichor/jmespath": "^0.3.1",
-        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
+        "@metrichor/jmespath": "0.3.1",
+        "@pmmmwh/react-refresh-webpack-plugin": "0.5.4",
         "@popperjs/core": "2.11.2",
-        "@reactour/tour": "^2.3.0",
+        "@reactour/tour": "2.3.0",
         "@reduxjs/toolkit": "1.8.0",
         "adm-zip": "0.5.9",
         "cytoscape": "3.21.0",
@@ -118,7 +118,7 @@
         "stream-chain": "2.2.5",
         "styled-components": "5.3.3",
         "v8-compile-cache": "2.3.0",
-        "winston": "^3.3.3",
-        "yargs": "^17.3.1"
+        "winston": "3.3.3",
+        "yargs": "17.3.1"
     }
 }
