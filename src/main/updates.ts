@@ -11,7 +11,16 @@ if (autoUpdates
     // Generate feed URL
     const server = 'https://updates.aeon.technology';
     const url = `${server}/update/${process.platform}${process.arch === 'arm64' ? '_arm64' : ''}/${app.getVersion()}`;
-    autoUpdater.setFeedURL({ url });
+
+    // The application needs to be codesigned in order to accept updates. If the
+    // application is not codesigned, it will crash when calling this function.
+    // Since we have no way of knowing whether the application is codesigned,
+    // we'll just swallow the error.
+    try {
+        autoUpdater.setFeedURL({ url });
+    } catch (e) {
+        logger.autoUpdater.error(e);
+    }
 
     // Periodically check for updates. The default is every six hours.
     setInterval(() => {
