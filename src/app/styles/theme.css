@@ -32,14 +32,17 @@
     --color-green-100: hsl(81, 90%, 95%);
     --color-green-200: hsl(81, 90%, 80%);
     --color-green-500: hsl(81, 90%, 42%);
+    --color-green-600: hsl(81, 90%, 37%);
     --color-red-50: hsl(10, 100%, 98%);
     --color-red-100: hsl(10, 100%, 95%);
     --color-red-200: hsl(10, 100%, 80%);
     --color-red-500: hsl(10, 100%, 65%);
+    --color-red-600: hsl(10, 100%, 58%);
     --color-yellow-50: hsl(42, 100%, 97%);
     --color-yellow-100: hsl(42, 100%, 95%);
     --color-yellow-200: hsl(42, 100%, 80%);
     --color-yellow-500: hsl(42, 100%, 58%);
+    --color-yellow-600: hsl(42, 100%, 50%);
     
     /* Specific implementations */
     --color-primary: var(--color-blue-500);
@@ -89,14 +92,17 @@
         --color-green-100: hsl(81, 55%, 12%);
         --color-green-200: hsl(81, 100%, 30%);
         --color-green-500: hsl(81, 100%, 50%);
+        --color-green-600: hsl(81, 100%, 54%);
         --color-red-50: hsl(10, 10%, 13%);
         --color-red-100: hsl(10, 35%, 17%);
         --color-red-200: hsl(10, 50%, 30%);
         --color-red-500: hsl(10, 100%, 63%);
+        --color-red-600: hsl(10, 100%, 66%);
         --color-yellow-50: hsl(42, 75%, 6%);
         --color-yellow-100: hsl(42, 100%, 12%);
         --color-yellow-200: hsl(42, 100%, 23%);
         --color-yellow-500: hsl(42, 100%, 58%);
+        --color-yellow-600: hsl(42, 100%, 62%);
         
         /* Specific implementations */
         /* --color-primary: var(--color-blue-500); */

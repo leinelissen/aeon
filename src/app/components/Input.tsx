@@ -11,6 +11,7 @@ export const TextInput = styled.input`
 
     background-color: var(--color-gray-50);
     border: 1px solid var(--color-border);
+    color: inherit;
 
     &::placeholder {
         color: var(--color-gray-500);
@@ -34,11 +35,14 @@ const Select = styled.select<{ hasPlaceholder?: boolean }>`
     height: 50px;
     padding: 16px;
     border-radius: 4px;
-    border: 1px solid var(--color-border);
-    color: black;
-    appearance: none;
     width: 100%;
     margin-bottom: 16px;
+
+    background-color: var(--color-gray-50);
+    border: 1px solid var(--color-border);
+
+    color: inherit;
+    appearance: none;
 
     ${(props) => props.hasPlaceholder && css`
         color: #00000066;
