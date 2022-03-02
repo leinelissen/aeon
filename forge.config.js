@@ -1,3 +1,8 @@
+const package = require('./package.json');
+const hash = require('child_process')
+  .execSync('git rev-parse --short HEAD')
+  .toString().trim()
+
 /**
 * This is the base electron-forge config
 */
@@ -7,6 +12,7 @@ const config = {
         icon: './src/icon',
         executableName: process.platform === 'linux' ? 'aeon' : 'Aeon',
         asar: false,
+        buildVersion: `${package.version}-${hash}`,
     },
     makers: [
         {
