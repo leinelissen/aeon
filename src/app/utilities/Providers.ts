@@ -74,6 +74,15 @@ class Providers {
         }
     }
 
+    static getPrivacyEmail(key: string): string {
+        switch (key) {
+            case 'spotify':
+                return 'privacy@spotify.com';
+            default: 
+                return '';
+        }
+    }
+
 }
 
 export default Providers;

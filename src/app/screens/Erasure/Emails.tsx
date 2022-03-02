@@ -52,7 +52,7 @@ function ErasureEmails(): JSX.Element {
                                 <Button
                                     icon={faEnvelope}
                                     fullWidth
-                                    onClick={() => window.api.openEmailClient('privacy@facebook.com', 'Request for Erasure', email)}
+                                    onClick={() => window.api.openEmailClient(Providers.getPrivacyEmail(provider), 'Request for Erasure', email)}
                                 >
                                     Send in e-mail client
                                 </Button>
