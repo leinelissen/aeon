@@ -198,8 +198,7 @@ test('it can successfully initiate an open data requests request', async () => {
     // Then, start the request
     await expect(startRequest).toBeVisible();
     await expect(startRequest).toBeEnabled();
-    await startRequest.click(),
-    await expect(startRequest).toBeDisabled();
+    await startRequest.click();
     await page.waitForSelector('button >> text=Complete Data Request');
     await expect(completeRequest).toBeVisible();
     await expect(completeRequest).toBeDisabled();
