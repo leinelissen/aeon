@@ -29,9 +29,7 @@ const StyledButtonStyles = css<ButtonProps>`
     margin: 5px 0;
     border: 0;
     padding: 0 16px;
-    text-transform: capitalize;
     border: 1px solid var(--color-${(props) => props.backgroundColor || 'blue'}-600);
-    text-overflow: ellipsis;
     overflow-wrap: break-word;
     letter-spacing: -0.3px;
 
@@ -57,6 +55,14 @@ const StyledButtonStyles = css<ButtonProps>`
 
 const StyledButton = styled.button<ButtonProps>`
     ${StyledButtonStyles}
+`;
+
+const Label = styled.div`
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const Margin = styled.div`
@@ -106,8 +112,10 @@ interface Props extends ButtonProps {
 const Button = ({ children, loading, onClick, disabled, icon, ...props }: PropsWithChildren<Props>): JSX.Element => {
     return (
         <StyledButton onClick={onClick} disabled={loading || disabled} {...props}>
-            {icon && !loading ? <FontAwesomeIcon icon={icon} style={{ marginRight: 5 }} fixedWidth /> : null}
-            {children}
+            {icon && !loading ? <FontAwesomeIcon icon={icon} style={{ marginRight: 8 }} fixedWidth /> : null}
+            <Label>
+                {children}
+            </Label>
             {loading ? (<><Margin /><Ball size={10} /></>) : null}
         </StyledButton>
     );
@@ -116,8 +124,10 @@ const Button = ({ children, loading, onClick, disabled, icon, ...props }: PropsW
 export const GhostButton = ({ children, loading, onClick, disabled, icon, ...props }: PropsWithChildren<Props>): JSX.Element => {
     return (
         <StyledGhostButton onClick={onClick} disabled={loading || disabled} {...props}>
-            {icon ? <FontAwesomeIcon icon={icon} style={{ marginRight: 5 }} fixedWidth /> : null}
-            {children}
+            {icon ? <FontAwesomeIcon icon={icon} style={{ marginRight: 8 }} fixedWidth /> : null}
+            <Label>
+                {children}
+            </Label>
             {loading ? (<><Margin /><Ball size={10} /></>) : null}
         </StyledGhostButton>
     );

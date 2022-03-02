@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import Button from 'app/components/Button';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { GhostButton } from 'app/components/Button';
 import { List, NavigatableListEntry, PanelBottomButtons, RowDescription, SplitPanel } from 'app/components/PanelGrid';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
 import { H2 } from 'app/components/Typography';
@@ -59,9 +59,9 @@ function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): 
                             </Section>
                             <Section>
                                 <p>By deleting this account, Aeon will no longer have access to it. Requests that are in progress with this e-mail address may be cancelled as a result.</p>
-                                <Button backgroundColor="red" icon={faTimes} fullWidth onClick={deleteAccount}>
+                                <GhostButton backgroundColor="red" icon={faTrash} fullWidth onClick={deleteAccount}>
                                     Delete {selectedAccount}
-                                </Button>
+                                </GhostButton>
                             </Section>
                         </>
                     </RightSideOverlay>

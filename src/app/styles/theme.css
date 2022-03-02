@@ -58,9 +58,10 @@
 @media (prefers-color-scheme: dark) {
     :root {
         /* Blue */
-        --color-blue-100: hsl(216, 100%, 5%);
-        --color-blue-200: hsl(216, 100%, 15%);
-        --color-blue-300: hsl(216, 100%, 25%);
+        --color-blue-50: hsl(216, 10%, 12%);
+        --color-blue-100: hsl(216, 20%, 15%);
+        --color-blue-200: hsl(216, 30%, 20%);
+        --color-blue-300: hsl(216, 50%, 25%);
         --color-blue-500: hsl(216, 100%, 50%);
         --color-blue-600: hsl(216, 100%, 57%);
         --color-blue-700: hsl(216, 100%, 65%);
@@ -84,13 +85,13 @@
         --color-black: #121212;
 
         /* Other Colors */
-        --color-green-50: hsl(81, 50%, 10%);
-        --color-green-100: hsl(81, 75%, 13%);
+        --color-green-50: hsl(81, 10%, 10%);
+        --color-green-100: hsl(81, 55%, 12%);
         --color-green-200: hsl(81, 100%, 30%);
         --color-green-500: hsl(81, 100%, 50%);
-        --color-red-50: hsl(10, 50%, 13%);
-        --color-red-100: hsl(10, 75%, 17%);
-        --color-red-200: hsl(10, 100%, 30%);
+        --color-red-50: hsl(10, 10%, 13%);
+        --color-red-100: hsl(10, 35%, 17%);
+        --color-red-200: hsl(10, 50%, 30%);
         --color-red-500: hsl(10, 100%, 63%);
         --color-yellow-50: hsl(42, 75%, 6%);
         --color-yellow-100: hsl(42, 100%, 12%);
@@ -103,6 +104,6 @@
         --color-background: var(--color-black);
         --color-modal-background: var(--color-black);
         /* --color-text: var(--color-white); */
-        --color-header: var(--color-black);
+        --color-header: var(--color-white);
     }
 }
