@@ -31,6 +31,7 @@
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],
         "@typescript-eslint/indent": ["error", 4],
+        "react/prop-types": "off",
         "arrow-parens": "error",
         "deprecation/deprecation": "warn"
     },

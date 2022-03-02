@@ -8,7 +8,6 @@ function Tour({ children }: PropsWithChildren<unknown>): JSX.Element {
     return (
         <TourProvider
             steps={Object.keys(steps).flatMap((key) => steps[key as TourKeys])}
-            components={{}}
             nextButton={({
                 Button: BaseButton,
                 currentStep,

@@ -181,7 +181,9 @@ class LinkedIn extends DataRequestProvider {
             // Firstly, we'll save all files in a JSON format
             const zip = new AdmZip(filePath);
             await new Promise((resolve) => 
-                zip.extractAllToAsync(extractionPath, true, resolve),
+                // Fix underway: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59070
+                // @ts-expect-error adm-zip v0.5.6 has broken compatibility
+                zip.extractAllToAsync(extractionPath, true, false, resolve),
             );
 
             // Then, we'll structure the returned data
