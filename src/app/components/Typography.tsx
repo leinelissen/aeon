@@ -11,7 +11,7 @@ export const H2 = styled.h2`
     margin: 8px 0;
     line-height: 1.3;
     /* word-break: break-all; */
-    font-family: 'Inter';
+    font-family: var(--font-header);
     color: var(--color-header);
 `;
 

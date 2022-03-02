@@ -52,7 +52,7 @@
     /* Typography */
     --font-body: 'IBM Plex Sans';
     --font-mono: 'IBM Plex Mono';
-    --font-heading: 'Inter';
+    --font-heading: 'InterVariable';
 }
 
 @media (prefers-color-scheme: dark) {

@@ -14,7 +14,7 @@ import generateEmail from './generateEmail';
 
 const ScrollContainer = styled.div`
     background-color: var(--color-gray-200);
-    font-family: 'IBM Plex Mono';
+    font-family: var(--font-mono);
     max-height: 40vh;
     overflow: auto;
     padding: 16px;

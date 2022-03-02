@@ -64,7 +64,7 @@ const Container = styled.div`
 const Link = styled(NavLink)`
     background: none;
     border: 0;
-    font-family: 'Inter';
+    font-family: var(--font-header);
     text-align: left;
     height: 36px;
     display: flex;

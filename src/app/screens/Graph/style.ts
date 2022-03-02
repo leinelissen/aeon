@@ -20,7 +20,7 @@ const style: Stylesheet[] = [
             'background-color': cssVar('--color-gray-200'),
             'color': cssVar('--color-text'),
             'font-size': '10px',
-            'font-family': 'IBM Plex Mono',
+            'font-family': cssVar('--font-mono'),
         },
     },
     {
@@ -104,7 +104,7 @@ const style: Stylesheet[] = [
             width: 2,
             // label: 'data(label)',
             'font-size': '8px',
-            'font-family': 'IBM Plex Mono',
+            'font-family': cssVar('--font-mono'),
         },
     },
     {
@@ -159,7 +159,7 @@ export const Tooltip = styled.div<{ top: number, left: number }>`
 
     span {
         opacity: 0.5;
-        font-family: 'IBM Plex Mono';
+        font-family: var(--font-mono);
         font-size: 10px;
     }
 `;

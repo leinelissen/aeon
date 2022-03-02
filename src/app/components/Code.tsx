@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean }>`
-    font-family: 'IBM Plex Mono';
+    font-family: var(--font-mono);
     background-color: #f8f8f8;
     padding: 16px 24px;
     max-width: 100%;

@@ -57,7 +57,7 @@ const Select = styled(AsyncSelect)`
     & .Select__control {
         border: 1px solid #eee;
         padding: 6px 8px;
-        font-family: 'IBM Plex Sans';
+        font-family: var(--font-body);
     }
 `;
 
