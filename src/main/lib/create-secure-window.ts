@@ -29,7 +29,7 @@ function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
 
     // Initialise the window
     const window = new BrowserWindow({ 
-        width: 400, 
+        width: 800, 
         height: 600, 
         alwaysOnTop: true, 
         show: false, 
