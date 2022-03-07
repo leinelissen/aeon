@@ -9,7 +9,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 1
           submodules: true
@@ -61,7 +61,7 @@ jobs:
         #   openssl_dir: 'C:\Program Files\OpenSSL-Win64\'
         
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 1
           submodules: true
