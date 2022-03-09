@@ -3,7 +3,6 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { GhostButton } from 'app/components/Button';
 import { List, NavigatableListEntry, PanelBottomButtons, RowDescription, SplitPanel } from 'app/components/PanelGrid';
 import RightSideOverlay, { Section } from 'app/components/RightSideOverlay';
-import { H2 } from 'app/components/Typography';
 import { MarginLeft } from 'app/components/Utility';
 import { State } from 'app/store';
 import Email from 'app/utilities/Email';
@@ -11,6 +10,7 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import NewAccountModal from './components/NewAccountModal';
+import { IconBadgeWithTitle } from 'app/components/IconBadge';
 
 function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): JSX.Element {
     const navigate = useNavigate();
@@ -49,13 +49,12 @@ function EmailSettings({ settingId: selectedAccount }: { settingId?: string }): 
                     <RightSideOverlay>
                         <>
                             <Section>
-                                <H2>
-                                    <FontAwesomeIcon icon={Email.getIcon(selectedAccount)} />
-                                    <MarginLeft>{selectedAccount}</MarginLeft>
-                                </H2>
+                                <IconBadgeWithTitle icon={Email.getIcon(selectedAccount)}>
+                                    {selectedAccount}
+                                </IconBadgeWithTitle>
                             </Section>
                             <Section>
-                                <p>This emailaddress is used to check on data requests associated with the account.</p>
+                                <p>This email address is used to check on data requests associated with the account.</p>
                             </Section>
                             <Section>
                                 <p>By deleting this account, Aeon will no longer have access to it. Requests that are in progress with this e-mail address may be cancelled as a result.</p>

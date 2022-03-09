@@ -1,4 +1,5 @@
 import { GhostButton } from 'app/components/Button';
+import { Shadow } from 'app/styles/snippets';
 import { Stylesheet } from 'cytoscape';
 import styled from 'styled-components';
 import renderNode from './renderNode';
@@ -17,7 +18,7 @@ const style: Stylesheet[] = [
             'text-valign': 'center',
             'text-halign': 'center',
             'text-max-width': '10px',
-            'background-color': cssVar('--color-gray-200'),
+            'background-color': cssVar('--color-gray-300'),
             'color': cssVar('--color-text'),
             'font-size': '10px',
             'font-family': cssVar('--font-mono'),
@@ -40,7 +41,7 @@ const style: Stylesheet[] = [
             'color': '#FFF',
             'font-size': 16,
             'border-width': 10,
-            'border-color': cssVar('--color-blue-300'),
+            'border-color': cssVar('--color-blue-200'),
             width: 100,
             height: 100,
         },
@@ -56,7 +57,7 @@ const style: Stylesheet[] = [
         style: {
             width: 75,
             height: 75,
-            'background-color': cssVar('--color-blue-300'),
+            'background-color': cssVar('--color-blue-200'),
             content: 'data(label)',
         },
     },
@@ -100,7 +101,7 @@ const style: Stylesheet[] = [
     {
         selector: 'edge',
         style: {
-            'line-color': cssVar('--color-gray-300'),
+            'line-color': cssVar('--color-gray-200'),
             width: 2,
             // label: 'data(label)',
             'font-size': '8px',
@@ -123,7 +124,7 @@ const style: Stylesheet[] = [
     {
         selector: 'edge[type="account_provider"]',
         style: {
-            'line-color': cssVar('--color-blue-300'),
+            'line-color': cssVar('--color-blue-200'),
             width: 10,
         },
     },
@@ -152,10 +153,7 @@ export const Tooltip = styled.div<{ top: number, left: number }>`
     line-height: 1.5;
     text-align: center;
     pointer-events: none;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 
-                0 2px 4px rgba(0,0,0,0.04), 
-                0 4px 8px rgba(0,0,0,0.04), 
-                0 8px 16px rgba(0,0,0,0.04);
+    ${Shadow}
 
     span {
         opacity: 0.5;

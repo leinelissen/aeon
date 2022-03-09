@@ -12,7 +12,7 @@ const Code = styled.div<{ removed?: boolean; added?: boolean; updated?: boolean 
     flex-direction: column;
     word-break: break-all;
     font-size: 12px;
-    margin: 5px 0;
+    margin: 4px 0;
     border-radius: 8px;
 
     h5 {

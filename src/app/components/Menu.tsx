@@ -8,7 +8,7 @@ import { State } from 'app/store';
 import { PullDown } from './Utility';
 import useTour from './Tour/useTour';
 
-export const MenuContainer = styled.div`
+export const PageContainer = styled.div`
     display: grid;
     grid-template-columns: 200px 1fr;
     gap: 0px 0px;
@@ -45,7 +45,6 @@ const TitleBarContainer = styled.div`
 
 export const ContentContainer = styled.div`
     grid-area: content;
-    grid-area: content;
     overflow: auto;
     position: relative;
     background-color: var(--color-background);
@@ -58,40 +57,37 @@ const Container = styled.div`
     padding: 5px 0;
     -webkit-app-region: drag;
     padding: 50px 0 10px 0;
-    border-right: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-gray-400);
+    box-shadow: inset -10px 0 8px -10px rgba(0,0,0,0.04);
 `;
 
 const Link = styled(NavLink)`
     background: none;
     border: 0;
-    font-family: var(--font-header);
+    font-family: var(--font-heading);
     text-align: left;
     height: 36px;
     display: flex;
     align-items: center;
     padding: 0 12px;
-    margin: 0px 10px;
+    margin: 0px 8px;
     font-weight: 400;
     -webkit-app-region: no-drag;
-    color: var(--color-header);
+    color: var(--color-heading);
     border-radius: 6px;
     cursor: default;
 
     span:not(.icon) {
-        margin-left: 10px;
+        margin-left: 8px;
         font-size: 14px;
     }
 
     span.icon {
-        font-size: 16px;
+        /* font-size: 16px; */
         color: var(--color-gray-700);
     }
 
     &.active {
-        span.icon {
-            color: var(--color-blue-500);
-        }
-
         @media (prefers-color-scheme: dark) {
             background-color: #FFFFFF26;
         }

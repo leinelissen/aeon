@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import { GhostButton } from 'app/components/Button';
 import { ProvidedDataTypes } from 'main/providers/types/Data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile, faClock, faLink, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
-import { FontLarge, H2 } from 'app/components/Typography';
+import { FontLarge } from 'app/components/Typography';
 import DataType from 'app/utilities/DataType';
 import Providers from 'app/utilities/Providers';
 import RightSideOverlay, { DetailListItem, Section } from 'app/components/RightSideOverlay';
@@ -12,14 +12,14 @@ import { RouteProps } from 'app/screens/types';
 import { State, useAppDispatch } from 'app/store';
 import { deleteDatum } from 'app/store/data/actions';
 import { useSelector } from 'react-redux';
-import IconBadge from 'app/components/IconBadge';
-import { PullContainer } from 'app/components/Utility';
+import { IconBadgeWithTitle } from 'app/components/IconBadge';
 
 interface Props {
     datumId: number;
+    overlay?: boolean;
 }
 
-const DatumOverlay = ({ datumId }: Props): JSX.Element => {
+const DatumOverlay = memo(function DatumOverlay({ datumId, overlay }: Props): JSX.Element {
     const { byKey, deleted } = useSelector((state: State) => state.data);
     const datum = datumId && byKey[datumId];
     const isDeleted = datumId && deleted.includes(datumId);
@@ -43,14 +43,13 @@ const DatumOverlay = ({ datumId }: Props): JSX.Element => {
     }, [dispatch, datumId]);
 
     return (
-        <RightSideOverlay onClose={handleClose} data-tour="data-datum-overlay">
+        <RightSideOverlay onClose={handleClose} data-tour="data-datum-overlay" overlay={overlay}>
             {datum && (
                 <>
                     <Section>
-                        <PullContainer verticalAlign>
-                            <IconBadge icon={DataType.getIcon(datum.type as ProvidedDataTypes)} />
-                            <H2>{DataType.toString(datum)}</H2>
-                        </PullContainer>
+                        <IconBadgeWithTitle icon={DataType.getIcon(datum.type as ProvidedDataTypes)}>
+                            {DataType.toString(datum)}
+                        </IconBadgeWithTitle>
                         {isDeleted && <p>
                             This data point is marked for erasure    
                         </p>}
@@ -157,6 +156,6 @@ const DatumOverlay = ({ datumId }: Props): JSX.Element => {
             )}
         </RightSideOverlay>
     );
-};
+});
 
 export default DatumOverlay;

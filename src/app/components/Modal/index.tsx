@@ -1,15 +1,17 @@
-import React, { Component, useRef, useEffect, PropsWithChildren, HTMLAttributes } from 'react';
+import React, { Component, useRef, useEffect, PropsWithChildren, HTMLAttributes, CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { Transition, config, animated } from 'react-spring';
 import { GhostButton } from '../Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { LargeShadow } from 'app/styles/snippets';
 
 interface SpringProps {
     transform?: string;
     backgroundOpacity?: number;
     opacity?: number;
+    pointerEvents?: CSSProperties['pointerEvents'];
 }
 type NextFunc = (props: SpringProps) => Promise<void>;
 
@@ -25,7 +27,7 @@ const Container = styled(animated.div)`
     height: 100vh;
     width: 100vw;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 10vh 0;
     z-index: 5000;
@@ -42,12 +44,7 @@ const Container = styled(animated.div)`
 
 const StyledDialog = styled(animated.div)`
     border-radius: 8px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.07), 
-                0 2px 4px rgba(0,0,0,0.07), 
-                0 4px 8px rgba(0,0,0,0.07), 
-                0 8px 16px rgba(0,0,0,0.07),
-                0 16px 32px rgba(0,0,0,0.07), 
-                0 32px 64px rgba(0,0,0,0.07);
+    margin-top: 10vh;
     min-width: 50vw;
     min-height: 25h;
     max-height: 80vh;
@@ -55,6 +52,7 @@ const StyledDialog = styled(animated.div)`
     padding-top: 32px;
     overflow-y: auto;
     background-color: var(--color-modal-background);
+    ${LargeShadow}
 `;
 
 type DialogProps = PropsWithChildren<
@@ -79,7 +77,7 @@ function Dialog(props: DialogProps): JSX.Element {
 const CloseButton = styled(GhostButton)`
     position: fixed;
     top: 0;
-    left: 0;
+    left: 4px;
     padding: 16px;
 `;
 
@@ -116,18 +114,24 @@ class Modal extends Component<Props> {
         return createPortal((
             <Transition
                 items={isOpen}
-                from={{ transform: 'translate3d(0,-40px,0)', opacity: 0, backgroundOpacity: 0 }}
+                from={{ transform: 'translate3d(0,-40px,0)', opacity: 0, backgroundOpacity: 0, pointerEvents: 'all' }}
                 enter={() => async (next: NextFunc) => {
-                    next({ backgroundOpacity: 1 });
-                    await new Promise((resolve) => setTimeout(resolve, 200));
-                    await next({ transform: 'translate3d(0,0px,0)', opacity: 1 });
+                    try {
+                        next({ backgroundOpacity: 1, pointerEvents: 'all' }).catch(() => null);
+                        await new Promise((resolve) => setTimeout(resolve, 200));
+                        await next({ transform: 'translate3d(0,0px,0)', opacity: 1 });
+                    } catch {
+                        // Async animation may be interruped. We don't care
+                        // about this, but we still need to catch an error so we
+                        // can suppress any warnings about it to the user.
+                    }
                 }}
-                leave={{ transform: 'translate3d(0,-40px,0)', opacity: 0, backgroundOpacity: 0 }}
+                leave={{ transform: 'translate3d(0,-40px,0)', opacity: 0, backgroundOpacity: 0, pointerEvents: 'none' }}
                 config={config.wobbly}
             >
-                {({ backgroundOpacity, ...props }, item) => {
+                {({ backgroundOpacity, pointerEvents, ...props }, item) => {
                     return item && (
-                        <Container style={{ opacity: backgroundOpacity }} onClick={this.handleContainerClick}>
+                        <Container style={{ opacity: backgroundOpacity, pointerEvents }} onClick={this.handleContainerClick}>
                             <Dialog 
                                 style={props}
                                 // onBlur={this.handleBlur}

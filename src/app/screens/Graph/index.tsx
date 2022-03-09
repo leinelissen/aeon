@@ -187,7 +187,7 @@ function Graph(): JSX.Element {
                     }
                 </Tooltip>
             }
-            {selectedNode && <DatumOverlay datumId={Number.parseInt(selectedNode)} />}
+            <DatumOverlay datumId={Number.parseInt(selectedNode) || null} overlay />
             <ResetButton icon={faUndo} onClick={handleReset}>Reset View</ResetButton>
         </>
     );

@@ -1,4 +1,5 @@
 import { Placement } from '@popperjs/core';
+import { Shadow } from 'app/styles/snippets';
 import React, { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
 import { usePopper } from 'react-popper';
 import { animated, useTransition } from 'react-spring';
@@ -8,10 +9,7 @@ const StyledTooltip = styled(animated.div)`
     background-color: var(--color-background);
     border-radius: 4px;
     padding: 4px 8px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 
-                0 2px 4px rgba(0,0,0,0.04), 
-                0 4px 8px rgba(0,0,0,0.04), 
-                0 8px 16px rgba(0,0,0,0.04);
+    ${Shadow}
 `;
 
 function getTransitionConfig(placement: Placement) {

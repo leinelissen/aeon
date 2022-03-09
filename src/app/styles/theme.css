@@ -6,22 +6,22 @@
     --color-blue-300: hsl(223, 100%, 70%);
     --color-blue-400: hsl(223, 100%, 60%);
     --color-blue-500: hsl(223, 100%, 50%);
-    --color-blue-600: hsl(223, 100%, 40%);
+    --color-blue-600: hsl(223, 100%, 45%);
     --color-blue-700: hsl(223, 100%, 30%);
     --color-blue-800: hsl(223, 100%, 20%);
     --color-blue-900: hsl(223, 100%, 10%);
 
     /* Grey */
-    --color-gray-50: hsl(223, 10%, 98%);
-    --color-gray-100: hsl(223, 10%, 97%);
-    --color-gray-200: hsl(223, 10%, 95%);
-    --color-gray-300: hsl(223, 10%, 90%);
-    --color-gray-400: hsl(223, 10%, 87%);
-    --color-gray-500: hsl(223, 10%, 73%);
-    --color-gray-600: hsl(223, 10%, 67%);
-    --color-gray-700: hsl(223, 10%, 47%);
-    --color-gray-800: hsl(223, 10%, 33%);
-    --color-gray-900: hsl(223, 10%, 20%);
+    --color-gray-50: hsl(223, 5%, 98%);
+    --color-gray-100: hsl(223, 5%, 97%);
+    --color-gray-200: hsl(223, 5%, 95%);
+    --color-gray-300: hsl(223, 5%, 90%);
+    --color-gray-400: hsl(223, 5%, 87%);
+    --color-gray-500: hsl(223, 5%, 73%);
+    --color-gray-600: hsl(223, 5%, 67%);
+    --color-gray-700: hsl(223, 5%, 47%);
+    --color-gray-800: hsl(223, 5%, 33%);
+    --color-gray-900: hsl(223, 5%, 20%);
 
     /* Black and White */
     --color-white: #FFFFFF;
@@ -33,7 +33,7 @@
     --color-green-200: hsl(81, 90%, 80%);
     --color-green-500: hsl(81, 90%, 42%);
     --color-green-600: hsl(81, 90%, 37%);
-    --color-red-50: hsl(10, 100%, 98%);
+    --color-red-50: hsl(10, 100%, 97%);
     --color-red-100: hsl(10, 100%, 95%);
     --color-red-200: hsl(10, 100%, 80%);
     --color-red-500: hsl(10, 100%, 65%);
@@ -65,6 +65,7 @@
         --color-blue-100: hsl(216, 20%, 15%);
         --color-blue-200: hsl(216, 30%, 20%);
         --color-blue-300: hsl(216, 50%, 25%);
+        --color-blue-400: hsl(216, 65%, 40%);
         --color-blue-500: hsl(216, 100%, 50%);
         --color-blue-600: hsl(216, 100%, 57%);
         --color-blue-700: hsl(216, 100%, 65%);

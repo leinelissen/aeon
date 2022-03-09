@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Menu, { ContentContainer, MenuContainer, TitleBar } from 'app/components/Menu';
+import Menu, { ContentContainer, PageContainer, TitleBar } from 'app/components/Menu';
 import Onboarding from './Onboarding';
 import Timeline from './Timeline';
 import Data from './Data';
@@ -12,7 +12,7 @@ import ErasureEmails from './Erasure/Emails';
 
 function Router(): JSX.Element {
     return (
-        <MenuContainer>
+        <PageContainer>
             <Menu />
             <ContentContainer id="content">
                 <TitleBar />
@@ -47,7 +47,7 @@ function Router(): JSX.Element {
                     <Route path="/" element={<Onboarding />} />
                 </Routes>
             </ContentContainer>
-        </MenuContainer>
+        </PageContainer>
     );
 }
 

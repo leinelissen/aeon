@@ -87,7 +87,7 @@ export const PanelBottomButtons = styled.div`
 `;
 
 const IconWrapper = styled.div`
-    margin: 0 8px;
+    margin-right: 8px;
     font-size: 1.25em;
 `;
 
@@ -114,11 +114,10 @@ export const NavigatableListEntryContainer = styled<React.ForwardRefExoticCompon
     margin: 1px 8px;
     padding: 8px 12px;
     font-weight: 400;
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap; 
-    color: var(--color-header);
+    color: var(--color-heading);
     font-family: var(--font-heading);
 
     img {

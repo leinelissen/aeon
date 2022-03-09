@@ -60,8 +60,9 @@ export const MarginRight = styled.span`
     margin-right: 1em;
 `;
 
-export const Ellipsis = styled.div`
-    text-overflow: ellipsis;
+export const Ellipsis = styled.div.attrs((props) => ({
+    title: props.children,
+}))`
     white-space: nowrap;
     overflow: hidden;
     margin-right: 5px;

@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import React, { Component, MouseEventHandler } from 'react';
 import { Badge } from 'app/components/Typography';
 import { Commit as CommitType } from 'main/lib/repository/types';
+import { Shadow } from 'app/styles/snippets';
 
 interface Props extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'onClick'> {
     onClick: (hash: string) => void;
@@ -15,7 +16,7 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
     position: relative;
     z-index: 3;
     padding: 35px 25px;
-    margin: 5px;
+    margin: 4px;
     text-align: left;
     border: 0;
     font-size: 14px;
@@ -38,12 +39,7 @@ export const StyledCommit = styled.button<{ active?: boolean }>`
         font-weight: 600;
         background-color: var(--color-background);
         border: 1px solid var(--color-gray-100);
-        box-shadow: 0 1px 1px rgba(0,0,0,0.02), 
-              0 2px 2px rgba(0,0,0,0.02), 
-              0 4px 4px rgba(0,0,0,0.02), 
-              0 8px 8px rgba(0,0,0,0.02), 
-              0 16px 16px rgba(0,0,0,0.02), 
-              0 32px 32px rgba(0,0,0,0.02);
+        ${Shadow}
     ` : css`
         &:hover {
             background-color: var(--color-background);
@@ -60,11 +56,7 @@ const Dot = styled.div<{ active?: boolean }>`
     z-index: 2;
     flex-shrink: 0;
     transition: transform 0.3s ease;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 
-                0 2px 4px rgba(0,0,0,0.04), 
-                0 4px 8px rgba(0,0,0,0.04), 
-                0 8px 16px rgba(0,0,0,0.04),
-                0 16px 32px rgba(0,0,0,0.04);
+    ${Shadow}
 
     border: 4px solid var(--color-gray-200);
     background-color: var(--color-gray-100);

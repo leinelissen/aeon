@@ -1,13 +1,16 @@
 import React, { PropsWithChildren } from 'react';
 import { GhostButton } from 'app/components/Button';
 import styled, { css } from 'styled-components';
-import { Transition } from 'react-spring';
+import { animated, useTransition } from 'react-spring';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { Shadow } from 'app/styles/snippets';
+import usePrevious from 'app/utilities/usePrevious';
 
 export type RightSideOverlayProps = PropsWithChildren<{
     onClose?: () => void;
     marginTop?: number;
+    overlay?: boolean;
 }>;
 
 const Container = styled.div`
@@ -65,10 +68,13 @@ export const DetailListItem = styled.div`
     & > * {
        flex: 0 1 auto; 
        color: var(--color-gray-800);
+       overflow: hidden;
+       white-space: nowrap;
     }
 
     & > *:first-child {
         margin-right: 12px;
+        flex: 0 0 auto;
     }
 `;
 
@@ -78,38 +84,60 @@ export const RightSideOverlayOffset = styled.div`
     height: 100%;
 `;
 
+export const AbsolutePosition = styled(animated.div)`
+    position: absolute;
+    right: 8px;
+    top: 58px;
+    background-color: var(--color-background);
+    border-radius: 8px;
+    width: 33%;
+    ${Shadow};
+`;
+
 const RightSideOverlay = (props: RightSideOverlayProps): JSX.Element => {
     const { 
         onClose: handleClose,
         children,
         marginTop,
+        overlay,
         ...otherProps
     } = props;
 
-    return (
-        <Transition
-            items={children}
-            from={{ opacity: 0 }}
-            enter={{ opacity: 1 }}
-        >
-            {({ opacity }, items) => items ? (
-                <Container
-                    style={{ 
-                        opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1] }),
-                        transform: opacity.to((x: number) => `translateX(${-x * 20 + 20}%)`),
-                        marginTop,
-                    }}
-                    {...otherProps}
-                >
+    const previousChildren = usePrevious(children);
+    const transitions = useTransition(children, {
+        from: { opacity: 0 },
+        enter: { opacity: 1 },
+        leave: { opacity: 0 },
+        config: {
+            tension: 300,
+            friction: 20,
+        },
+        immediate: !!children && !!previousChildren,
+    });
+
+    // Optionally wrap the overlay in an absolute position
+    const Wrapper = overlay ? AbsolutePosition : animated.div;
+
+    return transitions(({ opacity }, items) => 
+        items ? (
+            <Wrapper
+                style={{ 
+                    opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1] }),
+                    transform: opacity.to((x: number) => `translateX(${-x * 20 + 20}%)`),
+                    marginTop,
+                }}
+                {...otherProps}
+            >
+                <Container>
                     {handleClose ? 
                         <CloseButton onClick={handleClose}>
-                            <FontAwesomeIcon icon={faChevronLeft} />
+                            <FontAwesomeIcon icon={faArrowLeft} />
                         </CloseButton>
                         : null}
                     {items || ''}
                 </Container>
-            ) : null}
-        </Transition>
+            </Wrapper>
+        ) : null,
     );
 };
 

@@ -3,7 +3,7 @@ import { faBell, faCheck, faClock, faLink, faPlus, faQuestion, faUpload } from '
 import faOpenDataRights from 'app/assets/open-data-rights';
 import Button, { GhostButton } from 'app/components/Button';
 import RightSideOverlay, { DetailListItem, Section } from 'app/components/RightSideOverlay';
-import { FontLarge, H2 } from 'app/components/Typography';
+import { FontLarge } from 'app/components/Typography';
 import { State, useAppDispatch } from 'app/store';
 import { dispatchEmailRequest } from 'app/store/accounts/actions';
 import { EmailProvider } from 'app/store/accounts/types';
@@ -12,8 +12,7 @@ import { InitialisedAccount } from 'main/providers/types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import IconBadge from 'app/components/IconBadge';
-import { PullContainer } from 'app/components/Utility';
+import { IconBadgeWithTitle } from 'app/components/IconBadge';
 import Timestamp from 'app/components/Timestamp';
 
 interface Props {
@@ -72,10 +71,9 @@ function AccountOverlay({ selectedAccount }: Props): JSX.Element {
             {selectedAccount && (
                 <>
                     <Section>
-                        <PullContainer>
-                            <IconBadge icon={Providers.getIcon(account.provider)} />
-                            <H2>{account.account}</H2>
-                        </PullContainer>
+                        <IconBadgeWithTitle icon={Providers.getIcon(account.provider)}>
+                            {account.account}
+                        </IconBadgeWithTitle>
                     </Section>
                     <Section well>
                         <FontLarge>

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { H2 } from './Typography';
+import { PullContainer } from './Utility';
 
 const Container = styled.div`
     background-color: var(--color-blue-200);
@@ -29,6 +31,15 @@ function IconBadge({ icon }: IconBadgeProps) {
                 fixedWidth
             />
         </Container>
+    );
+}
+
+export function IconBadgeWithTitle({ children, icon }: PropsWithChildren<IconBadgeProps>) {
+    return (
+        <PullContainer verticalAlign>
+            <IconBadge icon={icon} />
+            <H2 lines={1}>{children}</H2>
+        </PullContainer>
     );
 }
 

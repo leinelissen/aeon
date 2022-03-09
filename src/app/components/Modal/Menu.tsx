@@ -10,20 +10,32 @@ const MenuContainer = styled.div<{ active?: boolean; }>`
 
     ${SimpleButton} {
         height: 40px;
-        border-bottom: 2px solid transparent;
         margin-right: 16px;
         color: var(--color-gray-700);
         text-transform: capitalize;
+        position: relative;
 
         &.active {
-            border-color: var(--color-text);
-            color: inherit;
+            color: var(--color-primary);
+            font-weight: 600;
+            letter-spacing: -0.35px;
+
+            &::after {
+                content: " ";
+                background-color: var(--color-primary);
+                color: inherit;
+                position: absolute;
+                bottom: 0;
+                left: -4px;
+                right: -4px;
+                height: 3px;
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+            }
         }
 
         &:hover:not(.active) {
-            border-color: var(--color-gray-500);
-            border-width: 1px;
-            padding-bottom: 2px;
+            color: var(--color-gray-800);
         }
 
         &:first-child {

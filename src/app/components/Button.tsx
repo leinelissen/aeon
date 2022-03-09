@@ -24,9 +24,9 @@ const StyledButtonStyles = css<ButtonProps>`
     font-weight: 500;
     text-decoration: none !important;
     font-family: var(--font-heading);
-    border-radius: 10px;
+    border-radius: 8px;
     outline: 0 !important;
-    margin: 5px 0;
+    margin: 4px 0;
     border: 0;
     padding: 0 16px;
     border: 1px solid var(--color-${(props) => props.backgroundColor || 'blue'}-600);
@@ -36,9 +36,6 @@ const StyledButtonStyles = css<ButtonProps>`
     &:hover&:not(:disabled) {
         cursor: default;
         background-color: var(--color-${(props) => props.backgroundColor || 'blue'}-600);
-        box-shadow: 0 1px 2px rgba(0,0,0,0.09), 
-                0 2px 4px rgba(0,0,0,0.09), 
-                0 4px 8px rgba(0,0,0,0.09), 
     }
 
     &:disabled {
@@ -62,11 +59,10 @@ const Label = styled.div`
     min-width: 0;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
 `;
 
 const Margin = styled.div`
-    width: 10px;
+    width: 8px;
 `;
 
 export const LinkButton = styled(Link)`
@@ -84,7 +80,7 @@ export const SimpleButton = styled.button`
 export const StyledGhostButton = styled(StyledButton)`
     color: ${(props) => props.backgroundColor && props.backgroundColor !== 'blue' 
         ? `var(--color-${props.backgroundColor}-500)`
-        : 'var(--color-header)'};
+        : 'var(--color-heading)'};
     font-size: 14px;
     padding: 8px 16px;
     background-color: ${() => 'transparent'};
