@@ -1,6 +1,7 @@
 import { ElectronApplication, _electron as electron, ConsoleMessage, Page, BrowserContext } from 'playwright';
 import { expect, test } from '@playwright/test';
 import path from 'path';
+import { existsSync } from 'fs';
 import { mkdir, rm } from 'fs/promises';
 import getRoute from './utilities/getRoute';
 import getRandomNode from './utilities/getRandomNode';
@@ -23,7 +24,9 @@ test.beforeAll(async () => {
     const dataPath = path.resolve(outputPath, 'data');
 
     // Delete any pre-existing files and create directory form scratch
-    await rm(outputPath, { recursive: true });
+    if (existsSync(outputPath)) {
+        await rm(outputPath, { recursive: true });
+    }
     await mkdir(dataPath, { recursive: true });
 
     // Launch electron
