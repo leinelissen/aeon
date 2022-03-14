@@ -1,31 +1,39 @@
 import { ElectronApplication, _electron as electron, ConsoleMessage, Page, BrowserContext } from 'playwright';
 import { expect, test } from '@playwright/test';
 import path from 'path';
-import { mkdtemp, rm } from 'fs/promises';
-import { tmpdir } from 'os';
+import { mkdir, rm } from 'fs/promises';
 import getRoute from './utilities/getRoute';
 import getRandomNode from './utilities/getRandomNode';
 
 // Store the Electron app so we can use it in tests
 let app: ElectronApplication;
-let tempDirectory: string;
 let page: Page;
 let context: BrowserContext;
 
 let pageErrors: Error[] = [];
 let consoleMessages: ConsoleMessage[] = [];
 
+// Annotate entire file as serial.
+test.describe.configure({ mode: 'serial' });
+
 // Prepare the application by launching it
 test.beforeAll(async () => {
-    tempDirectory = await mkdtemp(path.join(tmpdir(), 'aeon-'));
-    const mainJsPath = path.resolve('.webpack', 'main', 'index.js');
+    // Define outputh paths
+    const outputPath = path.resolve('test', 'output');
+    const dataPath = path.resolve(outputPath, 'data');
 
+    // Delete any pre-existing files and create directory form scratch
+    await rm(outputPath, { recursive: true });
+    await mkdir(dataPath, { recursive: true });
+
+    // Launch electron
+    const mainJsPath = path.resolve('.webpack', 'main', 'index.js');
     app = await electron.launch({
         args: [
             mainJsPath,
             '--no-auto-updates',
             '--no-tour',
-            `--app-data-path=${tempDirectory}`,
+            `--app-data-path=${dataPath}`,
         ],
     });
 
@@ -68,28 +76,13 @@ test.afterEach(async () => {
 });
 
 // Remove the temporary directory after the tests finish
-test.afterAll(async ({ locale }, testInfo) => {
+// eslint-disable-next-line no-empty-pattern
+test.afterAll(async ({ }, testInfo) => {
     const tracePath = testInfo.outputPath('trace.zip');
     await context.tracing.stop({ path: tracePath });
 
     // Close the app first
     await app.close();
-
-    // Then attempt to remove the temporary directory
-    try {
-        await rm(tempDirectory, { recursive: true, force: true });
-    } catch (err) {
-        // GUARD: Check for EPERM and ENOTEMPTY errors. These pop up from time
-        // to time on Windows. Since most tests are conducted on CI anyway, if
-        // removing the directory fails, we just assume someone else will clean
-        // it up 🤷‍♂️🧹
-        if (err?.code === 'EPERM' || err?.code === 'ENOTEMPTY') {
-            // Ignore the error
-        } else {
-            // Propagate the error
-            throw err;
-        }
-    }
 });
 
 test('it renders all pages', async () => {
@@ -256,7 +249,7 @@ test('it can successfully show data for a completed request', async () => {
     await datum.click();
 
     // Expect the delete data point button to be there
-    const deleteButton = page.locator('button >> text=Delete this data point');
+    const deleteButton = page.locator('button >> text=Delete this data point >> nth=-1');
     const menuItems = page.locator('#menu > *');
     await expect(deleteButton).toBeVisible();
     await expect(deleteButton).toBeEnabled();
@@ -272,7 +265,7 @@ test('it can erase data points', async () => {
     await page.waitForLoadState();
     await (await getRandomNode(page.locator('[data-tour=data-categories-list] a'))).click();
     await (await getRandomNode(page.locator('a[data-tour=data-data-point-button]'))).click();
-    await page.locator('button >> text=Delete this data point').click();
+    await page.locator('button >> text=Delete this data point >> nth=-1').click();
 
     // Navigate to page 
     await page.click('a >> text=Erasure (1)');
