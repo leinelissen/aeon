@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: '16'
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: linter-node_modules-${{hashFiles('**/package-lock.json') }}
@@ -71,7 +71,7 @@ jobs:
         with:
           node-version: '16'
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: ${{ matrix.os }}-${{ matrix.arch }}-node_modules-${{hashFiles('**/package-lock.json') }}
