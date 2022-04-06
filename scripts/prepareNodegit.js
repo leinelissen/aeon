@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 
 const debugPath = path.join(__dirname, '..', 'node_modules', 'nodegit', 'build', 'Debug');
-const mainEntry = path.join(__dirname, '..', 'node_modules', 'nodegit', 'dist', 'nodegit.js');
+const mainEntry = path.join(__dirname, '..', 'node_modules', 'nodegit', 'lib', 'nodegit.js');
 
 // First, we add an empty debug file, so we can satisfy webpack one exists
 fs.promises.mkdir(debugPath, { recursive: true })

@@ -100,7 +100,6 @@ class OpenDataRights extends OpenDataRightsProvider {
         const zip = new AdmZip(Buffer.from(archive));
         await new Promise((resolve) => 
             // Fix underway: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59070
-            // @ts-expect-error adm-zip v0.5.6 has broken compatibility
             zip.extractAllToAsync(extractionPath, true, false, resolve),
         );
 
