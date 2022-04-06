@@ -29,7 +29,7 @@ const DatumOverlay = memo(function DatumOverlay({ datumId, overlay }: Props): JS
     const navigate = useNavigate();
     const location = useLocation();
     const handleClose = useCallback(() => {
-        if (location.pathname.startsWith('/data')){
+        if (location.pathname.startsWith('/data')) {
             navigate(`/data/${category}`);
         } else if (location.pathname.startsWith('/graph')) {
             navigate('/graph');
