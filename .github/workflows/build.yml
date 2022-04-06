@@ -156,7 +156,7 @@ jobs:
           name: ${{ matrix.os }}-${{ matrix.arch }}
           path: |
             out/make
-            test/test-outputs
+            test/output
           
       - name: Release
         uses: softprops/action-gh-release@v1
