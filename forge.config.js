@@ -13,6 +13,12 @@ const config = {
         executableName: process.platform === 'linux' ? 'aeon' : 'Aeon',
         asar: false,
         buildVersion: `${package.version}-${hash}`,
+        protocols: [
+            {
+              name: "Aeon",
+              schemes: ["aeon"]
+            }
+        ]
     },
     makers: [
         {
