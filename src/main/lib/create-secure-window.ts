@@ -5,17 +5,17 @@ import logger from './logger';
 
 export interface SecureWindowParameters {
     key?: string;
+    /** The origin to which the BrowserWindow should be limited. If the page
+     * navigates to another origin, the request is denied */
     origin: string;
+    /** An optional options object that should be passed to the
+     * BrowserWindow constructor. This may not contain webPreferences */
     options?: Electron.BrowserWindowConstructorOptions;
 }
 
 /**
  * This function will create a secure BrowserWindow that implements Electron
  * best practices for loading remote content. See https://www.electronjs.org/docs/tutorial/security
- * @param origin The origin to which the BrowserWindow should be limited. If the
- * page navigates to another origin, the request is denied
- * @param options An optional options object that should be passed to the
- * BrowserWindow constructor. This may not contain webPreferences
  */
 function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
     const { key, origin, options = {} } = params;
