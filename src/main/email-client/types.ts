@@ -47,7 +47,7 @@ export interface EmailClient {
      * Send an email with the client, using the specified options
      * @param options Mail.Options
      */
-    sendMessage(options: Options): Promise<void>;
+    sendMessage?(options: Options): Promise<void>;
 }
 
 export enum EmailCommands {

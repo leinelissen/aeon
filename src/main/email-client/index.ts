@@ -3,11 +3,12 @@ import logger from 'main/lib/logger';
 import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
 import GmailEmailClient from './gmail';
+import OutlookEmailClient from './outlook';
 import { EmailClient, EmailEvents } from './types';
 
-const clients = new Map([
-    ['gmail', GmailEmailClient],
-]);
+const clients: Map<string, { new(email?: string): EmailClient }> = new Map();
+clients.set('gmail', GmailEmailClient);
+clients.set('outlook', OutlookEmailClient);
 
 export default class EmailManager extends EventEmitter2 {
     // A set of email addresses that maps to the client that is handling the
