@@ -1,4 +1,4 @@
-import { app } from 'electron/main';
+import { app } from 'electron';
 import path from 'path';
 
 /** The registered callback  */
@@ -25,7 +25,7 @@ export function getProtocolResultForPath(urlPath: string) {
     if (registeredDeferreds.has(urlPath)) {
         // If so, we reject the promise
         const [, reject] = registeredDeferreds.get(urlPath);
-        reject('A new protocol callback was registered for' + urlPath);
+        reject('The protocol handler for ' + urlPath + 'was overwritten.');
     }
     
     // Create a new promise
