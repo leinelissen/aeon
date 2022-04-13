@@ -7,7 +7,7 @@ export interface SecureWindowParameters {
     key?: string;
     /** The origin to which the BrowserWindow should be limited. If the page
      * navigates to another origin, the request is denied */
-    origin: string;
+    origin: string | string[];
     /** An optional options object that should be passed to the
      * BrowserWindow constructor. This may not contain webPreferences */
     options?: Electron.BrowserWindowConstructorOptions;
@@ -56,7 +56,13 @@ function createSecureWindow(params: SecureWindowParameters): BrowserWindow {
     const navigationHandler = (event: Electron.Event, navigationUrl: string): void => {
         const parsedUrl = new URL(navigationUrl); 
 
-        if (!parsedUrl.origin.endsWith(origin) && parsedUrl.protocol !== 'aeon:') {
+        // Loop through all origins and see if there is a match
+        const matchesOrigin = Array.isArray(origin)
+            ? !!origin.find((o) => parsedUrl.origin.endsWith(o))
+            : parsedUrl.origin.endsWith(origin);
+
+        // GUARD: Kill the request if it exceeds the origin
+        if (!matchesOrigin && parsedUrl.protocol !== 'aeon:') {
             logger.provider.error(`A request for ${navigationUrl} was blocked because it did not match the predefined domain (${origin}, read ${parsedUrl.origin})`);
             event.preventDefault();
         }

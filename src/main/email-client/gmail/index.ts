@@ -1,7 +1,7 @@
 import store from 'main/store';
 import fetch, { RequestInit, Response } from 'node-fetch';
 import authenticateGmailUser, { refreshGmailTokens } from './oauth';
-import { TokenResponse } from './types';
+import { GmailTokenResponse } from './types';
 import { Email, EmailClient, EmailQuery } from '../types';
 import { simpleParser } from 'mailparser';
 import Mail from 'nodemailer/lib/mailer';
@@ -18,7 +18,7 @@ interface MessageResponse {
 }
 
 export default class GmailEmailClient implements EmailClient {
-    tokens: TokenResponse | null;
+    tokens: GmailTokenResponse | null;
 
     isInitialized: boolean;
 
@@ -33,12 +33,12 @@ export default class GmailEmailClient implements EmailClient {
         // retrieve the tokens from the store. This also means the address has
         // already been initialised, as we know it.
         if (emailAddress) {
-            const tokens = store.get(`gmail_${emailAddress}`, null) as TokenResponse | null;
+            const tokens = store.get(`gmail_${emailAddress}`, null) as GmailTokenResponse | null;
             
             // GUARD: Double-check that whats coming back from the store is
             // actually a token.
             if (!tokens) {
-                throw new Error(`Emailaddress '${emailAddress}' was supposed to be initialised already with the Gmail Client, but no tokens could be retrieved from the store.`);
+                throw new Error(`Email address '${emailAddress}' was supposed to be initialised already with the Gmail Client, but no tokens could be retrieved from the store.`);
             }
 
             this.tokens = tokens;

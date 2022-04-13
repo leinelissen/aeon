@@ -1,11 +1,11 @@
-import crypto from 'crypto';
 import http from 'http';
 import fetch from 'node-fetch';
 import { URLSearchParams } from 'url';
 import { Socket } from 'net';
 import { shell } from 'electron';
-import { TokenResponse } from './types';
+import { GmailTokenResponse } from './types';
 import logger from 'main/lib/logger';
+import { generateVerifier, objectToUrlParams } from 'main/lib/oauth';
 
 // Pull the Gmail config variables from the environment
 const GMAIL_OAUTH_CLIENT_ID = process.env.GMAIL_OAUTH_CLIENT_ID;
@@ -21,7 +21,7 @@ interface CodeAndRedirectUri {
  * @param response 
  * @param verifier 
  */
-async function exchangeAccessCode(response: CodeAndRedirectUri, verifier: string): Promise<TokenResponse> {
+async function exchangeAccessCode(response: CodeAndRedirectUri, verifier: string): Promise<GmailTokenResponse> {
     // Gather form parameters
     const formData = new URLSearchParams();
     formData.append('code', response.code);
@@ -35,7 +35,7 @@ async function exchangeAccessCode(response: CodeAndRedirectUri, verifier: string
     return fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         body: formData,
-    }).then((res) => res.json() as Promise<TokenResponse>);
+    }).then((res) => res.json() as Promise<GmailTokenResponse>);
 }
 
 type CodeCallback = (code: CodeAndRedirectUri) => void;
@@ -117,7 +117,7 @@ async function setupRedirectListener(callback: CodeCallback): Promise<string> {
     });
 }
 
-export function refreshGmailTokens(refresh_token: string): Promise<TokenResponse> {
+export function refreshGmailTokens(refresh_token: string): Promise<GmailTokenResponse> {
     // Gather form parameters
     const formData = new URLSearchParams();
     formData.append('refresh_token', refresh_token);
@@ -129,39 +129,11 @@ export function refreshGmailTokens(refresh_token: string): Promise<TokenResponse
     return fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         body: formData,
-    }).then((response) => response.json() as Promise<TokenResponse>)
+    }).then((response) => response.json() as Promise<GmailTokenResponse>)
         .then((response) => ({
             ...response,
             refresh_token,
         }));
-}
-
-/**
- * Convert a dictionary JS object to a URL-encoded parameter string
- */
-function objectToUrlParams(data: Record<string, unknown>) {
-    return Object.keys(data).reduce((uri, key, i) => {
-        return `${uri}${i === 0 ? '?' : '&'}${key}=${data[key]}`;
-    }, '');
-}
-
-/**
- * Generate a secure code_verifier for further use with Google Oauth
- */
-function generateVerifier(): string {
-    // This is a verifier code used by the API to check stuff
-    const randomString = crypto.randomBytes(96).toString('base64');
-
-    // The valid characters in the code_verifier are [A-Z]/[a-z]/[0-9]/
-    // "-"/"."/"_"/"~". Base64 encoded strings are pretty close, so we're just
-    // swapping out a few chars.
-    // src: https://github.com/googleapis/google-auth-library-nodejs/blob/d4e56c0937adbf9561d5ca3860a1bde623696db7/src/auth/oauth2client.ts#L560
-    const verifier = randomString
-        .replace(/\+/g, '~')
-        .replace(/=/g, '_')
-        .replace(/\//g, '-');
-
-    return verifier;
 }
 
 async function retrieveAuthenticationCode(verifier: string): Promise<CodeAndRedirectUri> {
@@ -193,7 +165,7 @@ async function retrieveAuthenticationCode(verifier: string): Promise<CodeAndRedi
 /**
  * Starts the authentication workflow for a Gmail-based email API
  */
-export default async function authenticateGmailUser(): Promise<TokenResponse> {
+export default async function authenticateGmailUser(): Promise<GmailTokenResponse> {
     const verifier = generateVerifier();
     const response = await retrieveAuthenticationCode(verifier);
     const tokens = await exchangeAccessCode(response, verifier);
