@@ -51,7 +51,7 @@ export abstract class OauthAutoRefreshingMiddleware {
      * @param url URL of the API endpoint
      * @param init Extra parameters to be sent along with the fetch request
      */
-    async get(url: string, init: RequestInit = null): Promise<unknown> {
+    async get(url: string, init: RequestInit = null, parseType: 'json' | 'text' = 'json'): Promise<unknown> {
         // GUARD: Check if a token is present before sending request
         if (!this.tokens) {
             throw new Error('Cant refresh tokens if no tokens are present');
@@ -67,7 +67,7 @@ export abstract class OauthAutoRefreshingMiddleware {
         return fetch(url, options)
             .then(this.tokenMiddleware(url, options))
             .then(this.errorMiddleware)
-            .then((response) => response.json());
+            .then((response) => response[parseType]());
     }
 
     /**
