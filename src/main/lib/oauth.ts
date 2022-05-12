@@ -1,7 +1,10 @@
 import crypto from 'crypto';
+import { EmailClient } from 'main/email-client/types';
+import { KeyStore } from 'main/store';
+import fetch, { RequestInit, Response } from 'node-fetch';
 
 /**
- * Generate a secure code_verifier for further use with Google Oauth
+ * Generate a secure code_verifier for further use with, e.g. Google Oauth
  */
 export function generateVerifier(): string {
     // This is a verifier code used by the API to check stuff
@@ -28,8 +31,12 @@ export function objectToUrlParams(data: Record<string, unknown>) {
     }, '');
 }
 
-import fetch, { RequestInit, Response } from 'node-fetch';
 
+/**
+ * This defines a basic object that can store tokens for OAuth-powered APIs.
+ * Since they must include an access_token and refresh_token, these should be
+ * the minimum of data that is necessary for use.
+ */
 export interface BaseTokenResponse {
     access_token: string;
     refresh_token: string;
@@ -41,10 +48,59 @@ export interface BaseTokenResponse {
  * catching access token expiries and re-trying the requests when a access token
  * has been renewed.
  */
-export abstract class OauthAutoRefreshingMiddleware {
-    tokens: BaseTokenResponse | null;
+export abstract class OauthEmailClient<T extends BaseTokenResponse = BaseTokenResponse> extends EmailClient {
+    private tokens: T | null;
 
-    abstract refreshTokens(): void;
+    /**
+     * Implement a function that takes an existing token that might be expired,
+     * exchanges it for a new token and returns it. 
+     */
+    abstract refreshTokens(tokens: T): Promise<T>;
+
+    async delete(): Promise<void> {
+        await KeyStore.delete(`${this.key}_${this.emailAddress}`);
+    }
+
+    /**
+     * Retrieve the OAuth tokens for this client. 
+     */
+    async getTokens(): Promise<T> {
+        if (this.isInitialized) {
+            return this.tokens;
+        }
+
+        // Retrieve the tokens from the Keytar store and parse it as JSON
+        const rawTokens = await KeyStore.get(`${this.key}_${this.emailAddress}`);
+        const tokens = JSON.parse(rawTokens);
+            
+        // GUARD: Double-check that whats coming back from the store is
+        // actually a token.
+        if (!tokens) {
+            throw new Error(`Email address '${this.emailAddress}' was supposed to be initialised already with the Gmail Client, but no tokens could be retrieved from the store.`);
+        }
+
+        // Store the tokens in the class and set the initialisation flag
+        this.tokens = tokens;
+        this.isInitialized = true;
+
+        return tokens;
+    }
+
+    /**
+     * Store a new set of tokens for this particular client.
+     */
+    async storeTokens(tokens: T, persist = true): Promise<void> {
+        // GUARD: Optionally persist the key to the user's keychain. This should
+        // only be done in cases where the email address is not yet available.
+        // Any implementer setting persist to false is responsible for making
+        // sure a later call is made to this function with the persist key set
+        // to true.
+        if (persist) {
+            await KeyStore.set(`${this.key}_${this.emailAddress}`, JSON.stringify(tokens));
+        }
+        this.tokens = tokens;
+        this.isInitialized = true;
+    }
 
     /**
      * Send out a GET request to the Gmail API
@@ -52,14 +108,15 @@ export abstract class OauthAutoRefreshingMiddleware {
      * @param init Extra parameters to be sent along with the fetch request
      */
     async get(url: string, init: RequestInit = null, parseType: 'json' | 'text' = 'json'): Promise<unknown> {
+        const tokens = await this.getTokens();
         // GUARD: Check if a token is present before sending request
-        if (!this.tokens) {
+        if (!tokens) {
             throw new Error('Cant refresh tokens if no tokens are present');
         }
 
         const options = {
             headers: {
-                'Authorization': `Bearer ${this.tokens.access_token}`,
+                'Authorization': `Bearer ${tokens.access_token}`,
             },
             ...init,
         };
@@ -80,13 +137,15 @@ export abstract class OauthAutoRefreshingMiddleware {
             // GUARD: Check if the token has expired
             if (response.status === 401) {
                 // If so, refresh the token
-                await this.refreshTokens();
+                const expiredTokens = await this.getTokens();
+                const tokens = await this.refreshTokens(expiredTokens);
+                await this.storeTokens(tokens);
     
                 // Then send out a new request
                 return fetch(url, {
                     ...init,
                     headers: {
-                        'Authorization': `Bearer ${this.tokens.access_token}`,
+                        'Authorization': `Bearer ${tokens.access_token}`,
                     },
                 });
             }
