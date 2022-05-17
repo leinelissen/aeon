@@ -11,7 +11,7 @@ export const TextInput = styled.input`
 
     background-color: var(--color-gray-50);
     border: 1px solid var(--color-border);
-    color: inherit;
+    color: var(--color-gray-800);
 
     &::placeholder {
         color: var(--color-gray-500);
