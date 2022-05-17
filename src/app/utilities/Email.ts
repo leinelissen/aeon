@@ -32,6 +32,22 @@ class Email {
         return window.api.invoke(channelName, EmailCommands.GET_CLIENTS);
     }
 
+    static testImap({ 
+        email,
+        password,
+        host,
+        port,
+        secure = true,
+    }: { 
+        email: string,
+        password: string,
+        host: string,
+        port:number,
+        secure: boolean,
+    }): Promise<boolean> {
+        return window.api.invoke(channelName, EmailCommands.TEST_IMAP, email, password, host, port, secure);
+    }
+
     static getIcon(clientKey: string): IconDefinition {
         switch (clientKey) {
             case 'gmail':

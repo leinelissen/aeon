@@ -68,6 +68,7 @@ export enum EmailCommands {
     DELETE_ACCOUNT,
     GET_ACCOUNTS,
     GET_CLIENTS,
+    TEST_IMAP,
 }
 
 export enum EmailEvents {

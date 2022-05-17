@@ -12,6 +12,7 @@ interface PullContainerProps {
     vertical?: boolean;
     verticalAlign?: boolean;
     center?: boolean;
+    gap?: boolean;
 }
 
 export const PullContainer = styled.div<PullContainerProps>`
@@ -27,6 +28,10 @@ export const PullContainer = styled.div<PullContainerProps>`
 
     ${(props) => props.center && css`
         justify-content: center;
+    `}
+
+    ${(props) => props.gap && css`
+        gap: 8px;
     `}
 `;
 
