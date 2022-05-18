@@ -12,7 +12,8 @@
         "plugin:import/warnings",
         "plugin:import/typescript",
         "plugin:react/recommended",
-        "airbnb-typescript"
+        "airbnb-typescript",
+        "plugin:jsx-a11y/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -22,7 +23,8 @@
     "plugins": [
         "@typescript-eslint",
         "import",
-        "deprecation"
+        "deprecation",
+        "jsx-a11y"
     ],
     "rules": {
         "indent": ["error", 4, {
@@ -42,6 +44,9 @@
                 "paths": [ "src" ]
             }
         },
-        "import/core-modules": [ "electron", "nodegit" ]
+        "import/core-modules": [ "electron", "nodegit" ],
+        "react": {
+            "version": "detect"
+        }
     }
 }
