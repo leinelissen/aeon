@@ -51,7 +51,7 @@ function Onboarding(): JSX.Element {
 
     return (
         <Container>
-            <img src={Logo} />
+            <img src={Logo} alt="Aeon Logo" />
             <H2>Welcome to Aeon!</H2>
             <p>Aeon is an application that makes managing where your data is found online easy. If you&apos;re feeling adventerous, feel free to explore around. Adding your first account is also a good place to start.</p>
             <LinkButton to="/accounts">

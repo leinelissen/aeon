@@ -79,7 +79,6 @@ function Tooltip({ title, children, placement = 'auto' }: TooltipProps) {
     // Define callback handlers for hover events
     const handleMouseOver = useCallback(() => setHovered(true), [setHovered]);
     const handleMouseOut = useCallback(() => setHovered(false), [setHovered]);
-    
 
     // Create config for react-spring
     const config = useMemo(() => getTransitionConfig(state?.placement), [state?.placement]);
@@ -97,6 +96,8 @@ function Tooltip({ title, children, placement = 'auto' }: TooltipProps) {
                 ref={setReferenceElement}
                 onMouseOver={handleMouseOver}
                 onMouseOut={handleMouseOut}
+                onFocus={handleMouseOver}
+                onBlur={handleMouseOut}
             >
                 {children}
             </span>

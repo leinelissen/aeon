@@ -25,7 +25,7 @@ const Container = styled.div`
 function NoData(): JSX.Element {
     return (
         <Container>
-            <img src={Graphic} />
+            <img src={Graphic} alt="Man with an empty box" />
             <H2>Nothing here...</H2>
             <br />
             <H3>You haven&apos;t requested any data yet.<br /> Start your first data request by heading over to Accounts.</H3>

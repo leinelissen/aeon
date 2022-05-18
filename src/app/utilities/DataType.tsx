@@ -173,7 +173,7 @@ class DataType {
         switch (datum.type) {
             case ProvidedDataTypes.PHOTO: {
                 const { data: photo } = datum as Photo;   
-                return <img src={photo.url} />;
+                return <img src={photo.url} alt="" />;
             }
             case ProvidedDataTypes.ADDRESS: {
                 const { data: address } = datum as Address;   
@@ -193,7 +193,7 @@ class DataType {
             }
             case ProvidedDataTypes.PROFILE_PICTURE: {
                 const { data: src } = datum as ProfilePicture;
-                return <img src={src} />;
+                return <img src={src} alt="Profile" />;
             }
             case ProvidedDataTypes.SESSION: {
                 const { data: session } = datum as Session;
