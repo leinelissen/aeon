@@ -2,7 +2,7 @@ import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Label, TextInput } from 'app/components/Input';
 import Button from 'app/components/Button';
 import { PullContainer } from 'app/components/Utility';
-import { testImapConnection } from 'app/store/email/actions';
+import { createImapAccount, testImapConnection } from 'app/store/email/actions';
 import { useAppDispatch } from 'app/store';
 import styled from 'styled-components';
 
@@ -49,17 +49,24 @@ function ImapInitialiser({ onComplete }: Props) {
         setHasTested(null);
         setIsLoading(true);
         dispatch(testImapConnection({
-            email: username,
-            password,
+            user: username,
+            pass: password,
             host,
             port,
             secure: true,
         })).unwrap().then((result) => {
             if (result === true) {
-                onComplete();
+                dispatch(createImapAccount({
+                    user: username,
+                    pass: password,
+                    host,
+                    port,
+                    secure: true,
+                })).unwrap().then(onComplete);
+            } else {
+                setHasTested(result);
+                setIsLoading(false);
             }
-            setHasTested(result);
-            setIsLoading(false);
         });
     }, [username, password, host, port]);
 
