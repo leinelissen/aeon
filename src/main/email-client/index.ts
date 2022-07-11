@@ -51,15 +51,21 @@ export default class EmailManager extends EventEmitter2 {
 
         // Then, initialize the new client
         const client = new Client();
-        const emailAddress = await client.initialize();
-        this.initialisedEmailAddress.set(emailAddress, clientKey);
-        this.emailClients.set(emailAddress, client);
+        try {
+            const emailAddress = await client.initialize();
 
-        // Send out event
-        this.emit(EmailEvents.NEW_ACCOUNT);
-
-        // Return the emailaddress
-        return emailAddress;
+            this.initialisedEmailAddress.set(emailAddress, clientKey);
+            this.emailClients.set(emailAddress, client);
+    
+            // Send out event
+            this.emit(EmailEvents.NEW_ACCOUNT);
+    
+            // Return the emailaddress
+            return emailAddress;
+        } catch (e) {
+            logger.email.error({ message: e });
+            throw e;
+        }
     }
 
     /**
