@@ -53,6 +53,7 @@ const logger = loggerCategories.reduce<Logger>((loggers, categoryName) => {
             new Console({
                 format: format.combine(
                     format.timestamp(),
+                    format.errors({ stack: true }),
                     format.colorize(),
                     format.label({ label: categoryName }),
                     customFormatter,
