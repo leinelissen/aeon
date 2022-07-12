@@ -136,6 +136,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/') == false
         env:
           npm_config_openssl_dir: ${{ matrix.openssl_dir }}
+          GMAIL_OAUTH_CLIENT_ID: ${{ secrets.GMAIL_OAUTH_CLIENT_ID }}
+          GMAIL_OAUTH_CLIENT_SECRET: ${{ secrets.GMAIL_OAUTH_CLIENT_SECRET }}
         run: npm run make -- --arch=${{ matrix.arch }}
 
       - name: Test
