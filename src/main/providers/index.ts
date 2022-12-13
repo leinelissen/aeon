@@ -93,7 +93,8 @@ class ProviderManager extends EventEmitter2 {
                 const emailAccount = this.email.emailClients.get(account.account);
                 
                 if (!emailAccount) {
-                    throw new Error('Email account used to initialize a provider is no longer available...');
+                    logger.email.error(`Email account (${account.account}) used to initialize a provider is no longer available...`);
+                    return;
                 }
 
                 instance.setEmailClient(emailAccount);
