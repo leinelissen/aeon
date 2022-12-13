@@ -63,6 +63,8 @@ class Spotify extends EmailDataRequestProvider {
                 window.loadURL('https://www.spotify.com/us/account/privacy/');
             });
 
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
             // Now we must defer the page to the user, so that they can confirm
             // the request. We then listen for a succesfull AJAX call 
             await new Promise<void>((resolve) => {
@@ -74,15 +76,14 @@ class Spotify extends EmailDataRequestProvider {
                 }, (details: Electron.OnCompletedListenerDetails) => {
                     if (details.statusCode === 200) {
                         resolve();
-                    }
+                    } 
                 });
 
                 // Ensure that the data request is in JSON format
                 window.webContents.executeJavaScript(`
-                    const rqst = document.querySelector('button[data-testid="download-step-1-button"]');
-                    rqst?.offsetParent 
-                        ? rqst.click()
-                        : document.querySelector('button[data-testid="resend-confirmation-email"]')?.click();
+                    Array.from(document.querySelectorAll('button'))
+                        .find((b) => b.textContent === 'Resend email' || b.textContent === 'Download')
+                        ?.click();
                 `);
 
                 window.show();
@@ -112,7 +113,7 @@ class Spotify extends EmailDataRequestProvider {
             if (reference < message.date) {
                 // If so, we find the link and click it
                 const link = message.text.replace('=\n', '')
-                    .match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/confirm\/([a-f=\d\n]+)/)[0];
+                    .match(/https:\/\/www\.spotify\.com\/account\/privacy\/download\/confirm\/([A-Za-z0-9.]+)/)[0];
 
                 // GUARD: Check if the link is correctly extracted, else we
                 // might be in the wrong email
@@ -121,6 +122,8 @@ class Spotify extends EmailDataRequestProvider {
                     return withSecureWindow(this.windowParams, (window) => {
                         return window.loadURL(link);
                     });
+                } else {
+                    throw new Error('Could not find Spotify email confirmation link...');
                 }
             }
         }
