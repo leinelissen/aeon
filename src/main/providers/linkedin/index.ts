@@ -42,7 +42,7 @@ class LinkedIn extends DataRequestProvider {
 
     verifyLoggedInStatus = async (): Promise<Electron.Cookie[]> => {
         return withSecureWindow<Electron.Cookie[]>(this.windowParams, (window) => {
-            const settingsUrl = 'https://www.linkedin.com/psettings/member-data';
+            const settingsUrl = 'https://www.linkedin.com/mypreferences/d/download-my-data';
             window.loadURL(settingsUrl);
 
             return new Promise((resolve) => {
@@ -95,12 +95,17 @@ class LinkedIn extends DataRequestProvider {
     dispatchDataRequest = async (): Promise<void> => {
         await this.verifyLoggedInStatus();
 
+        // GUARD: Check if a data request is already complete
+        if (await this.isDataRequestComplete()) {
+            return;
+        }
+
         return withSecureWindow<void>(this.windowParams, async (window) => {
             window.hide();
 
             await new Promise((resolve) => {
                 window.webContents.on('did-finish-load', resolve);
-                window.loadURL('https://www.linkedin.com/psettings/member-data');
+                window.loadURL('https://www.linkedin.com/psettings/member-data?li_theme=light&openInMobileMode=true');
             });
 
             // Now we must defer the page to the user, so that they can enter their
@@ -137,7 +142,7 @@ class LinkedIn extends DataRequestProvider {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('did-finish-load', resolve);
-                window.loadURL('https://www.linkedin.com/psettings/member-data');
+                window.loadURL('https://www.linkedin.com/psettings/member-data?li_theme=light&openInMobileMode=true');
             });
 
             // Find the right button and check if it reads 'Download archive'
@@ -157,7 +162,7 @@ class LinkedIn extends DataRequestProvider {
             // Load page URL
             await new Promise((resolve) => {
                 window.webContents.once('did-finish-load', resolve);
-                window.loadURL('https://www.linkedin.com/psettings/member-data');
+                window.loadURL('https://www.linkedin.com/psettings/member-data?li_theme=light&openInMobileMode=true');
             });
 
             const filePath = path.join(requestSavePath, 'linkedin.zip');
