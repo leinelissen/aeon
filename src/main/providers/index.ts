@@ -414,7 +414,7 @@ class ProviderManager extends EventEmitter2 {
             }
 
             // If it is uncompleted, we need to check upon it
-            if (await instance.isDataRequestComplete(account.status.requestId).catch(() => false)) {
+            if (await instance.isDataRequestComplete(account.status.requestId).catch(logger.provider.error)) {
                 logger.provider.info('A data request has completed! Starting to parse...');
 
                 // If it is complete now, we'll fetch the data and parse it

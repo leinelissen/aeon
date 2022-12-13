@@ -157,7 +157,7 @@ class Instagram extends EmailDataRequestProvider {
             // password. We then listen for a succesfull AJAX call 
             return new Promise((resolve) => {
                 window.webContents.session.webRequest.onCompleted({
-                    urls: [ 'https://www.instagram.com/download/request_download_data_ajax/' ],
+                    urls: [ 'https://www.instagram.com/api/v1/web/download/request_download_data_ajax/' ],
                 }, (details: Electron.OnCompletedListenerDetails) => {
                     if (details.statusCode === 200) {
                         // Return the current UNIX time so we can filter on emails later
@@ -182,11 +182,15 @@ class Instagram extends EmailDataRequestProvider {
                 continue;
             }
 
-            match = email.html
+            const matches = email.html
                 // Replace any weird line endinges
                 .replace('=\n', '')
                 // Then check if there's a download URL in there
-                .match(downloadUrlRegex)[0];
+                .match(downloadUrlRegex);
+
+            if (Array.isArray(matches)) {
+                match = matches[0];
+            }
 
             // GUARD: If a match is found, break the loop
             if (match) {
@@ -228,9 +232,6 @@ class Instagram extends EmailDataRequestProvider {
                 window.show();
             });
 
-            // We can now close the window
-            window.hide();
-
             // Now that we're successfully authenticated on the data download page,
             // the only thing we have to do is download the data.
             const filePath = path.join(requestSavePath, 'instagram.zip');
@@ -245,8 +246,8 @@ class Instagram extends EmailDataRequestProvider {
                 // And then trigger the button click
                 window.webContents.executeJavaScript(`
                     Array.from(document.querySelectorAll('button'))
-                        .find(el => el.textContent === 'Download Information')
-                        .click?.()
+                        .find(el => el.textContent === 'Download information')
+                        ?.click?.()
                 `);
             });
 
