@@ -41,7 +41,7 @@ const customFormatter = format.printf((entry) => {
     const stringifiedRest = JSON.stringify(rest);
 
     // Rewrite the mssage with our custom format
-    return `[${timestamp}][${label}] ${level}: ${message} ${args} ${stringifiedRest === '{}' ? '' : stringifiedRest}`;
+    return `[${timestamp}][${label}] ${level}: ${message as unknown instanceof Object ? JSON.stringify(message) : message} ${args} ${stringifiedRest === '{}' ? '' : stringifiedRest}`;
 });
 
 // Transform the array to an object

@@ -2,6 +2,7 @@ import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import logger from 'main/lib/logger';
 import WindowStore from 'main/lib/window-store';
 import EmailManager from '.';
+import { testImap } from './imap';
 import { EmailCommands } from './types';
 
 const channelName = 'email';
@@ -36,10 +37,14 @@ class EmailBridge {
                 return Promise.resolve(this.manager.emailClients.keys());
             case EmailCommands.GET_ACCOUNTS:
                 return Promise.resolve(Object.fromEntries(this.manager.initialisedEmailAddress));
-            case EmailCommands.ADD_ACCOUNT:
-                return this.manager.initialiseNewAddress(args[0]);
+            case EmailCommands.ADD_ACCOUNT: {
+                const [key, ...rest] = args;
+                return this.manager.initialiseNewAddress(key, ...rest);
+            }
             case EmailCommands.DELETE_ACCOUNT:
                 return Promise.resolve(this.manager.deleteAccount(args[0]));
+            case EmailCommands.TEST_IMAP:
+                return testImap(args[0], args[1], args[2], args[3], args[4]);
         }
     };
 

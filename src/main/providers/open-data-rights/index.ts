@@ -33,15 +33,15 @@ class OpenDataRights extends OpenDataRightsProvider {
     async initialise(): Promise<string> {
         const code = await withSecureWindow<string>(this.windowParams, async (window) => {
             // Load the redirect URI in the window
-            const url = `${this.url}/oauth/authorize?redirect_uri=${encodeURIComponent('aeon://odr-callback')}`;
+            const url = `${this.url}/oauth/authorize?redirect_uri=${encodeURIComponent('aeon://provider/open-data-rights/callback')}`;
             await window.loadURL(url);
             window.show();
 
             // Wait for any changes in location
             return new Promise((resolve) => {
                 const eventHandler = () => {
-                    if (window.webContents.getURL().startsWith('aeon://odr-callback')) {
-                        const replacedUrl = window.webContents.getURL().replace('aeon://odr-callback', '');
+                    if (window.webContents.getURL().startsWith('aeon://provider/open-data-rights/callback')) {
+                        const replacedUrl = window.webContents.getURL().replace('aeon://provider/open-data-rights/callback', '');
                         const token = new URLSearchParams(replacedUrl).get('token');
                         resolve(token);
                     }

@@ -1,6 +1,7 @@
-import { faGoogle, IconDefinition } from '@fortawesome/free-brands-svg-icons';
+import { faGoogle, faMicrosoft, IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { IpcRendererEvent } from 'electron';
+import { ImapCredentials } from 'main/email-client/imap';
 import { EmailCommands, EmailEvents } from 'main/email-client/types';
 
 const channelName = 'email';
@@ -20,6 +21,10 @@ class Email {
         return window.api.invoke(channelName, EmailCommands.ADD_ACCOUNT, client);
     }
 
+    static initialiseImap({ user, pass, host, port, secure = true }: ImapCredentials) {
+        return window.api.invoke(channelName, EmailCommands.ADD_ACCOUNT, 'imap', user, pass, host, port, secure);
+    }
+
     static delete(account: string): Promise<string> {
         return window.api.invoke(channelName, EmailCommands.DELETE_ACCOUNT, account);
     }
@@ -32,10 +37,22 @@ class Email {
         return window.api.invoke(channelName, EmailCommands.GET_CLIENTS);
     }
 
+    static testImap({ 
+        user,
+        pass,
+        host,
+        port,
+        secure = true,
+    }: ImapCredentials): Promise<boolean> {
+        return window.api.invoke(channelName, EmailCommands.TEST_IMAP, user, pass, host, port, secure);
+    }
+
     static getIcon(clientKey: string): IconDefinition {
         switch (clientKey) {
             case 'gmail':
                 return faGoogle;
+            case 'outlook':
+                return faMicrosoft;
             default:
                 return faEnvelope;
         }

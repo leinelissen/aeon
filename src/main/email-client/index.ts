@@ -3,11 +3,14 @@ import logger from 'main/lib/logger';
 import PersistedMap from 'main/lib/persisted-map';
 import store from 'main/store';
 import GmailEmailClient from './gmail';
+import { ImapClient } from './imap';
+import OutlookEmailClient from './outlook';
 import { EmailClient, EmailEvents } from './types';
 
-const clients = new Map([
-    ['gmail', GmailEmailClient],
-]);
+const clients: Map<string, { new(email?: string): EmailClient }> = new Map();
+clients.set('gmail', GmailEmailClient);
+clients.set('outlook', OutlookEmailClient);
+clients.set('imap', ImapClient);
 
 export default class EmailManager extends EventEmitter2 {
     // A set of email addresses that maps to the client that is handling the
@@ -38,7 +41,7 @@ export default class EmailManager extends EventEmitter2 {
      * This call creates a new email client instance, which is then free to be
      * assigned to an emailadress entered as part of its initialisation logic.
      */
-    async initialiseNewAddress(clientKey: string): Promise<string> {
+    async initialiseNewAddress(clientKey: string, ...args: unknown[]): Promise<string> {
         logger.email.info('Initialising new email client: ' + clientKey);
         
         // Retrieve the correct client
@@ -51,8 +54,18 @@ export default class EmailManager extends EventEmitter2 {
 
         // Then, initialize the new client
         const client = new Client();
-        try {
-            const emailAddress = await client.initialize();
+        try {    
+            // We initialize imap clients somewhat differently, so we need to split
+            // it out
+            const emailAddress = clientKey === 'imap'
+                ? await(client as ImapClient).initializeImap(
+                    args[0] as string,
+                    args[1] as string,
+                    args[2] as string,
+                    args[3] as number,
+                    args[4] as boolean | undefined,
+                )
+                : await client.initialize();
 
             this.initialisedEmailAddress.set(emailAddress, clientKey);
             this.emailClients.set(emailAddress, client);

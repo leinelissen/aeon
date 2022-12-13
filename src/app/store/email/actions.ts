@@ -15,3 +15,13 @@ export const createEmailAccount = createAsyncThunk(
     'email/accounts/create',
     Email.initialise,
 );
+
+export const testImapConnection = createAsyncThunk(
+    'email/imap/test',
+    Email.testImap,
+);
+
+export const createImapAccount = createAsyncThunk(
+    'email/accounts/create/imap',
+    Email.initialiseImap,
+);

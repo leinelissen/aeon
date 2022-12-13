@@ -29,11 +29,13 @@ export abstract class Provider {
      * object with all new files, so they can be saved to disk. Alternatively,
      * should return false to indicate that no update was carried out. */
     abstract update(): Promise<ProviderFile[]> | Promise<false>;
+
     /** Initialise the provider. This function is called only when it is
      * initialised for the first time during onboarding. The return boolean
      * indicates whether the provider succeeded in initialising, ie. by logging
      * into a particular service */
     abstract initialise(accountName?: string): Promise<string>;
+
     constructor(windowKey: string, accountName?: string) {
         this.accountName = accountName;
         this.windowKey = windowKey;
