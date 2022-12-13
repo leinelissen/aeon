@@ -125,12 +125,12 @@ class Facebook extends DataRequestProvider {
                     (async function() {
                         document.body.querySelector('label[aria-label=Format]').click();
                         await new Promise((resolve) => setTimeout(resolve, 50));
-                        Array.from(document.querySelectorAll('[role=menuitemradio]'))
+                        Array.from(document.querySelectorAll('[role=option]'))
                             .find((el) => el.textContent === 'JSON')?.click();
                         await new Promise((resolve) => setTimeout(resolve, 50));
                         document.body.querySelector('label[aria-label="Date range (required)"]').click();
                         await new Promise((resolve) => setTimeout(resolve, 50));
-                        Array.from(document.querySelectorAll('[role=menuitemradio]'))
+                        Array.from(document.querySelectorAll('[role=option]'))
                             .find((el) => el.textContent === 'All time')?.click();
                         await new Promise((resolve) => setTimeout(resolve, 50));
                         document.body.querySelector('[aria-label="Request a download"]').click();
