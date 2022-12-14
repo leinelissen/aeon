@@ -84,7 +84,7 @@
         "@fontsource/ibm-plex-mono": "4.5.13",
         "@fontsource/ibm-plex-sans": "4.5.13",
         "@fontsource/inter": "4.5.14",
-        "@fortawesome/fontawesome-svg-core": "^6.1.1",
+        "@fortawesome/fontawesome-svg-core": "^6.2.1",
         "@fortawesome/free-brands-svg-icons": "6.2.1",
         "@fortawesome/free-solid-svg-icons": "6.2.1",
         "@fortawesome/react-fontawesome": "0.2.0",
