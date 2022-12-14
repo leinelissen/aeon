@@ -49,9 +49,9 @@ const config = {
         }
     ],
     plugins: [
-        [
-            '@electron-forge/plugin-webpack',
-            {
+        {
+            name: '@electron-forge/plugin-webpack',
+            config: {
                 // HMR Woes: https://github.com/electron-userland/electron-forge/issues/2560
                 devServer: {
                     liveReload: false,
@@ -72,7 +72,7 @@ const config = {
                 },
                 loggerPort: 9001
             }
-        ],
+        },
     ],
 };
 
