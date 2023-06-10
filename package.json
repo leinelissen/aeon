@@ -82,7 +82,7 @@
     "dependencies": {
         "@fast-csv/parse": "4.3.6",
         "@fontsource/ibm-plex-mono": "4.5.13",
-        "@fontsource/ibm-plex-sans": "4.5.13",
+        "@fontsource/ibm-plex-sans": "5.0.3",
         "@fontsource/inter": "4.5.15",
         "@fortawesome/fontawesome-svg-core": "^6.2.1",
         "@fortawesome/free-brands-svg-icons": "6.4.0",
