@@ -41,7 +41,7 @@
         "@types/imapflow": "^1.0.9",
         "@types/lodash-es": "4.17.7",
         "@types/mailparser": "3.4.0",
-        "@types/node": "16.18.22",
+        "@types/node": "18.18.6",
         "@types/node-fetch": "3.0.3",
         "@types/nodegit": "0.28.3",
         "@types/nodemailer": "6.4.7",
