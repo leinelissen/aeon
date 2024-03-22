@@ -59,7 +59,7 @@
         "cross-env": "7.0.3",
         "csp-html-webpack-plugin": "5.1.0",
         "css-loader": "6.7.3",
-        "dotenv-webpack": "7.1.1",
+        "dotenv-webpack": "8.1.0",
         "electron": "23.2.0",
         "electron-devtools-installer": "3.2.0",
         "eslint": "8.37.0",
