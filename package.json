@@ -45,7 +45,7 @@
         "@types/node-fetch": "3.0.3",
         "@types/nodegit": "0.28.3",
         "@types/nodemailer": "6.4.7",
-        "@types/react": "17.0.55",
+        "@types/react": "18.2.73",
         "@types/react-dom": "18.0.11",
         "@types/react-redux": "7.1.25",
         "@types/react-select": "5.0.1",
