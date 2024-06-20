@@ -91,7 +91,7 @@
         "@metrichor/jmespath": "0.3.1",
         "@pmmmwh/react-refresh-webpack-plugin": "0.5.10",
         "@popperjs/core": "2.11.7",
-        "@reactour/tour": "2.13.0",
+        "@reactour/tour": "3.7.0",
         "@reduxjs/toolkit": "1.9.3",
         "adm-zip": "0.5.10",
         "cytoscape": "3.23.0",
