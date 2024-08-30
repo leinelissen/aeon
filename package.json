@@ -120,7 +120,7 @@
         "redux": "4.2.1",
         "redux-persist": "6.0.0",
         "stream-chain": "2.2.5",
-        "styled-components": "5.3.9",
+        "styled-components": "6.1.13",
         "v8-compile-cache": "2.3.0",
         "winston": "3.8.2",
         "yargs": "17.7.1"
