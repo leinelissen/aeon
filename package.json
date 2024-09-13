@@ -81,9 +81,9 @@
     },
     "dependencies": {
         "@fast-csv/parse": "4.3.6",
-        "@fontsource/ibm-plex-mono": "4.5.13",
-        "@fontsource/ibm-plex-sans": "4.5.13",
-        "@fontsource/inter": "4.5.15",
+        "@fontsource/ibm-plex-mono": "5.1.0",
+        "@fontsource/ibm-plex-sans": "5.1.0",
+        "@fontsource/inter": "5.1.0",
         "@fortawesome/fontawesome-svg-core": "^6.2.1",
         "@fortawesome/free-brands-svg-icons": "6.4.0",
         "@fortawesome/free-solid-svg-icons": "6.4.0",
